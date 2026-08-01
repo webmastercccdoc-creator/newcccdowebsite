@@ -125,9 +125,9 @@ export default function CagayanDeOroCity() {
 
             {/* Padding added back for the text content below the carousel */}
             <div className="mx-auto max-w-7xl px-6 py-12 md:px-8">
-                <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-                    {/* Main Content */}
-                    <div className="lg:col-span-2 space-y-6">
+                <div className="grid grid-cols-1 gap-8 lg:grid-cols-1">
+                    {/* Main Content - Now Full Width */}
+                    <div className="space-y-6">
                         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                             <h2 className="text-2xl font-bold text-green-800 mb-4">About Cagayan de Oro</h2>
                             <p className="text-gray-600 leading-relaxed">
@@ -156,34 +156,8 @@ export default function CagayanDeOroCity() {
                         </div>
                     </div>
 
-                    {/* Sidebar */}
-                    <div className="space-y-6">
-                        <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-                            <h3 className="text-lg font-semibold text-green-800 mb-4">Quick Facts</h3>
-                            <ul className="space-y-3 text-sm">
-                                <li className="flex justify-between border-b border-gray-100 pb-2">
-                                    <span className="text-gray-500">Region</span>
-                                    <span className="font-medium text-gray-700">Northern Mindanao</span>
-                                </li>
-                                <li className="flex justify-between border-b border-gray-100 pb-2">
-                                    <span className="text-gray-500">Province</span>
-                                    <span className="font-medium text-gray-700">Misamis Oriental</span>
-                                </li>
-                                <li className="flex justify-between border-b border-gray-100 pb-2">
-                                    <span className="text-gray-500">Founded</span>
-                                    <span className="font-medium text-gray-700">June 15, 1950</span>
-                                </li>
-                                <li className="flex justify-between border-b border-gray-100 pb-2">
-                                    <span className="text-gray-500">Nickname</span>
-                                    <span className="font-medium text-gray-700">City of Golden Friendship</span>
-                                </li>
-                                <li className="flex justify-between">
-                                    <span className="text-gray-500">Language</span>
-                                    <span className="font-medium text-gray-700">Cebuano, Filipino, English</span>
-                                </li>
-                            </ul>
-                        </div>
-
+                    {/* Sidebar (Now a Row below the main content) */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
                             <h3 className="text-lg font-semibold text-green-800 mb-4">Location</h3>
                             <p className="text-gray-600 text-sm leading-relaxed">

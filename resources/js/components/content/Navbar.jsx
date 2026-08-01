@@ -153,6 +153,7 @@ const Navbar = () => {
                 { name: 'SDG (Sustainable Development Goals)', href: '/internationalization/sdg', description: 'Contributing to global sustainability goals' },
                 { name: 'THE (Times Higher Education)', href: '/internationalization/the', description: 'World university rankings and impact' },
                 { name: 'WURI (World Universities with Real Impact)', href: '/internationalization/wuri', description: 'Innovative and impactful university initiatives' },
+                { name: 'UI GreenMetric', href: '/internationalization/ui-greenmetric', description: 'World university sustainability rankings and green campus initiatives' }
                 ]
             },
         { 
@@ -161,8 +162,7 @@ const Navbar = () => {
             dropdown: [
                 { name: 'Latest News', href: '/news/latest', description: 'Recent updates and stories' },
                 { name: 'Upcoming Events', href: '/news/events', description: 'Calendar of activities' },
-                { name: 'Announcements', href: '/news/announcements', description: 'Official college notices' },
-                { name: 'Press Releases', href: '/news/press', description: 'Media and public statements' },
+                { name: 'Announcements', href: '/news/announcements', description: 'Official college notices' }
             ]
         },
         { name: 'Contact Us', href: '/contact-us' },

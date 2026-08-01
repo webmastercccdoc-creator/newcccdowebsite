@@ -30,6 +30,18 @@ Route::get('/about/mission-vision', function () {
     return Inertia::render('content/About/MissionVision');
 })->name('about.mission-vision');
 
+Route::get('/about/goals-core-values', function () {
+    return Inertia::render('content/About/GoalsCore');
+})->name('about.goals-core-values');
+
+Route::get('/about/graduate-attributes', function () {
+    return Inertia::render('content/About/GraduateAttributes');
+})->name('about.graduate-attributes');
+
+Route::get('/about/governing-board', function () {
+    return Inertia::render('content/About/GoverningBoard');
+})->name('about.governing-board');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

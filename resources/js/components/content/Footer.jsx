@@ -182,22 +182,22 @@ const Footer = () => {
                     </div>
                 </div>
 
-                {/* Bottom Bar */}
-                <div className="border-t border-green-700/50 py-6 md:flex md:items-center md:justify-between">
-                    <p className="text-sm text-white/60 text-center md:text-left">
+                {/* ✅ UPDATED BOTTOM BAR: White Background with Dark Text */}
+                <div className="bg-white rounded-t-xl py-6 px-4 border-t-4 border-green-600 md:flex md:items-center md:justify-between">
+                    <p className="text-sm text-green-800/70 text-center md:text-left font-medium">
                         &copy; {currentYear} City College of Cagayan de Oro. All rights reserved.
                     </p>
                     <div className="mt-4 flex flex-wrap justify-center gap-4 md:mt-0 md:justify-end">
-                        <Link href="/privacy" className="text-sm text-white/60 hover:text-green-300 transition-colors hover:underline">
+                        <Link href="/privacy" className="text-sm text-green-800/70 hover:text-green-600 transition-colors font-medium">
                             Privacy Policy
                         </Link>
-                        <Link href="/terms" className="text-sm text-white/60 hover:text-green-300 transition-colors hover:underline">
+                        <Link href="/terms" className="text-sm text-green-800/70 hover:text-green-600 transition-colors font-medium">
                             Terms of Service
                         </Link>
-                        <Link href="/accessibility" className="text-sm text-white/60 hover:text-green-300 transition-colors hover:underline">
+                        <Link href="/accessibility" className="text-sm text-green-800/70 hover:text-green-600 transition-colors font-medium">
                             Accessibility
                         </Link>
-                        <Link href="/sitemap" className="text-sm text-white/60 hover:text-green-300 transition-colors hover:underline">
+                        <Link href="/sitemap" className="text-sm text-green-800/70 hover:text-green-600 transition-colors font-medium">
                             Sitemap
                         </Link>
                     </div>

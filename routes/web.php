@@ -18,9 +18,13 @@ Route::get('/dashboard', function () {
     return Inertia::render('admin/Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/about', function () {
-    return Inertia::render('content/About');
-})->name('about');
+Route::get('/about/cagayan-de-oro-city', function () {
+    return Inertia::render('content/About/CagayanDeOroCity');
+})->name('about.cagayan-de-oro-city');
+
+Route::get('/about/mayors-message', function () {
+    return Inertia::render('content/About/MayorMessage');
+})->name('about.mayors-message');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

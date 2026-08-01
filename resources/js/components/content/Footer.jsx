@@ -5,18 +5,18 @@ const Footer = () => {
     const currentYear = new Date().getFullYear();
     
     return (
-        <footer className="mt-auto bg-green-800" role="contentinfo">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <footer className="mt-auto bg-green-800 w-full" role="contentinfo">
+            <div className="w-full px-4 sm:px-6 lg:px-8">
                 {/* Main Footer Content */}
                 <div className="grid grid-cols-1 gap-8 py-12 md:grid-cols-2 lg:grid-cols-4">
                     {/* Column 1: College Info */}
                     <div className="space-y-4">
                         <div className="flex items-center space-x-3">
-                            <div className="h-24 w-48 flex items-center justify-center">
+                            <div className="h-20 w-44 flex items-center justify-center">
                                 <img src={logoSrc} alt="College Logo" className="h-full w-full object-contain" />
                             </div>
                         </div>
-                        <p className="text-sm text-white/80 leading-relaxed">
+                        <p className="text-sm text-white/80 leading-relaxed max-w-xs">
                             Empowering minds, shaping futures since 1990. 
                             Committed to excellence in education and research.
                         </p>
@@ -72,7 +72,7 @@ const Footer = () => {
                     {/* Column 2: Quick Links */}
                     <div>
                         <h3 className="font-semibold text-white mb-4 flex items-center">
-                            <span className="w-1 h-6 bg-white rounded-full mr-2"></span>
+                            <span className="w-1 h-5 bg-green-400 rounded-full mr-2"></span>
                             Quick Links
                         </h3>
                         <ul className="space-y-2.5 text-sm">
@@ -107,7 +107,7 @@ const Footer = () => {
                     {/* Column 3: Resources */}
                     <div>
                         <h3 className="font-semibold text-white mb-4 flex items-center">
-                            <span className="w-1 h-6 bg-white rounded-full mr-2"></span>
+                            <span className="w-1 h-5 bg-green-400 rounded-full mr-2"></span>
                             Resources
                         </h3>
                         <ul className="space-y-2.5 text-sm">
@@ -127,8 +127,8 @@ const Footer = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/career-services" className="text-white/80 hover:text-green-300 transition-colors hover:pl-1 duration-200">
-                                    Career Services
+                                <Link href="/url-shortener" className="text-white/80 hover:text-green-300 transition-colors hover:pl-1 duration-200">
+                                    URL Shortener
                                 </Link>
                             </li>
                             <li>
@@ -142,7 +142,7 @@ const Footer = () => {
                     {/* Column 4: Contact Info */}
                     <div>
                         <h3 className="font-semibold text-white mb-4 flex items-center">
-                            <span className="w-1 h-6 bg-white rounded-full mr-2"></span>
+                            <span className="w-1 h-5 bg-green-400 rounded-full mr-2"></span>
                             Get in Touch
                         </h3>
                         <ul className="space-y-3 text-sm">
@@ -152,16 +152,16 @@ const Footer = () => {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                                 <span className="text-white/80">
-                                    123 Education Drive<br />
-                                    Campus City, ST 12345
+                                    Zone 2, Barangay Agusan,<br />
+                                    Cagayan de Oro, Philippines
                                 </span>
                             </li>
                             <li className="flex items-center space-x-3">
                                 <svg className="h-5 w-5 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                 </svg>
-                                <a href="mailto:info@college.edu" className="text-white/80 hover:text-green-300 transition-colors">
-                                    info@college.edu
+                                <a href="mailto:ict.citycollege.cdo@gmail.com" className="text-white/80 hover:text-green-300 transition-colors">
+                                    ict.citycollege.cdo@gmail.com
                                 </a>
                             </li>
                             <li className="flex items-center space-x-3">
@@ -183,7 +183,7 @@ const Footer = () => {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="border-t border-green-700 py-6 md:flex md:items-center md:justify-between">
+                <div className="border-t border-green-700/50 py-6 md:flex md:items-center md:justify-between">
                     <p className="text-sm text-white/60 text-center md:text-left">
                         &copy; {currentYear} City College of Cagayan de Oro. All rights reserved.
                     </p>

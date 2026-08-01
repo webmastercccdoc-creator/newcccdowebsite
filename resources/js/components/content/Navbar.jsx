@@ -112,26 +112,49 @@ const Navbar = () => {
     const navigationItems = [
         { name: 'Home', href: '/' },
         { 
-            name: 'About', 
+            name: 'About Us', 
             href: '/about',
             dropdown: [
-                { name: 'History', href: '/about/history', description: 'Our journey through the years' },
-                { name: 'Mission & Vision', href: '/about/mission', description: 'Our guiding principles' },
-                { name: 'Administration', href: '/about/administration', description: 'Meet our leadership team' },
-                { name: 'Accreditation', href: '/about/accreditation', description: 'Quality assured education' },
+                { name: 'Cagayan De Oro City', href: '/about/cagayan-de-oro-city', description: 'Discover the city of golden friendship' },
+                { name: 'Message of the Mayor', href: '/about/mayors-message', description: 'A message from our city mayor' },
+                { name: 'Mission & Vision', href: '/about/mission-vision', description: 'Our guiding principles and aspirations' },
+                { name: 'Goals & Core Values', href: '/about/goals-core-values', description: 'The values that drive our institution' },
+                { name: 'Graduate Attributes', href: '/about/graduate-attributes', description: 'Characteristics expected of our graduates' },
+                { name: 'Governing Board', href: '/about/governing-board', description: 'Meet our board of directors' },
+                { name: 'Organizational Chart', href: '/about/organizational-chart', description: 'View our organizational structure' },
             ]
         },
+    { 
+        name: 'Academics', 
+        href: '/Academics',
+        dropdown: [
+            { name: 'College of Education', href: '/programs/college-of-education', description: 'Teacher education and development programs' },
+            { name: 'College of Arts and Sciences', href: '/programs/college-of-arts-and-sciences', description: 'Liberal arts, sciences, and humanities' },
+            { name: 'College of Business and Management', href: '/programs/college-of-business-and-management', description: 'Business administration and management' },
+            { name: 'Technical Skill & Technology Institute', href: '/programs/technical-skill-technology', description: 'Technical and vocational education' },
+            ]
+    },
         { 
-            name: 'Programs', 
-            href: '/programs',
+            name: 'Research and Extension', 
+            href: '/research-and-extension',
             dropdown: [
-                { name: 'Undergraduate Programs', href: '/programs/undergraduate', description: 'Bachelor degree offerings' },
-                { name: 'Graduate Programs', href: '/programs/graduate', description: 'Master and doctoral degrees' },
-                { name: 'Continuing Education', href: '/programs/continuing', description: 'Lifelong learning opportunities' },
-                { name: 'Certificate Courses', href: '/programs/certificate', description: 'Specialized short-term programs' },
-                { name: 'Academic Calendar', href: '/programs/calendar', description: 'Important dates and schedules' },
+                { name: 'Research Agenda', href: '/research-and-extension/research-agenda', description: 'Strategic research priorities and focus areas' },
+                { name: 'Research Publications', href: '/research-and-extension/publications', description: 'Journals, papers, and research outputs' },
+                { name: 'Extension Programs', href: '/research-and-extension/extension-programs', description: 'Community engagement and outreach initiatives' },
+                { name: 'Research Ethics', href: '/research-and-extension/research-ethics', description: 'Guidelines and ethical standards for research' },
+                { name: 'Research Grants', href: '/research-and-extension/research-grants', description: 'Funding opportunities and grant applications' },
+                { name: 'Partners & Linkages', href: '/research-and-extension/partners', description: 'Collaborations with institutions and organizations' },
             ]
         },
+            { 
+            name: 'Internationalization', 
+            href: '/internationalization',
+            dropdown: [
+                { name: 'SDG (Sustainable Development Goals)', href: '/internationalization/sdg', description: 'Contributing to global sustainability goals' },
+                { name: 'THE (Times Higher Education)', href: '/internationalization/the', description: 'World university rankings and impact' },
+                { name: 'WURI (World Universities with Real Impact)', href: '/internationalization/wuri', description: 'Innovative and impactful university initiatives' },
+                ]
+            },
         { 
             name: 'News', 
             href: '/news',
@@ -147,26 +170,27 @@ const Navbar = () => {
 
     return (
         <nav 
-            className="bg-green-800 shadow-lg sticky top-0 z-50 border-b border-green-700" 
+            className="bg-green-800 shadow-lg sticky top-0 z-50 border-b border-green-700 w-full" 
             role="navigation" 
             aria-label="Main navigation"
         >
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="flex h-20 items-center justify-between">
+            <div className="w-full px-4 sm:px-6 lg:px-8">
+                <div className="flex h-20 items-center justify-between w-full">
                     {/* Logo */}
                     <div className="flex-shrink-0">
-                                <a 
-                                    href="/" 
-                                    className="flex items-center space-x-3 hover:opacity-90 transition-opacity duration-200"
-                                >
-                                    <div className="h-14 w-40 flex items-center justify-center overflow-hidden">
-                                        <img src={logoSrc} alt="College Logo" className="h-full w-full object-cover" />
-                                    </div>
-                                </a>
+                        <a 
+                            href="/" 
+                            className="flex items-center hover:opacity-90 transition-opacity duration-200"
+                        >
+                            <div className="h-14 w-44 flex items-center justify-center overflow-hidden">
+                                <img src={logoSrc} alt="College Logo" className="h-full w-full object-cover" />
                             </div>
-                    {/* Desktop Navigation */}
-                    <div className="hidden xl:block">
-                        <ul className="flex items-center space-x-1">
+                        </a>
+                    </div>
+
+                    {/* Desktop Navigation - Maximized Space */}
+                    <div className="hidden xl:flex xl:items-center xl:justify-between flex-1 ml-8">
+                        <ul className="flex items-center space-x-1 lg:space-x-2 xl:space-x-3">
                             {navigationItems.map((item) => (
                                 <li 
                                     key={item.name} 
@@ -184,10 +208,10 @@ const Navbar = () => {
                                             <button
                                                 onClick={() => toggleDropdown(item.name)}
                                                 className={`
-                                                    flex items-center justify-center gap-1 rounded-lg px-5 py-2.5 text-sm font-medium 
+                                                    flex items-center justify-center gap-1 rounded-lg px-3 lg:px-4 xl:px-5 py-2.5 text-sm font-medium 
                                                     transition-all duration-200 
                                                     text-white hover:bg-white/10 hover:text-green-300
-                                                    min-w-[80px] text-center
+                                                    whitespace-nowrap
                                                     ${openDropdown === item.name ? 'bg-white/10 text-green-300' : ''}
                                                 `}
                                                 aria-expanded={openDropdown === item.name}
@@ -195,7 +219,7 @@ const Navbar = () => {
                                             >
                                                 {item.name}
                                                 <svg 
-                                                    className={`h-4 w-4 transition-transform duration-200 ${openDropdown === item.name ? 'rotate-180' : ''}`}
+                                                    className={`h-3 w-3 lg:h-4 lg:w-4 transition-transform duration-200 ${openDropdown === item.name ? 'rotate-180' : ''}`}
                                                     fill="none" 
                                                     viewBox="0 0 24 24" 
                                                     stroke="currentColor"
@@ -205,11 +229,11 @@ const Navbar = () => {
                                                 </svg>
                                             </button>
 
-                                            {/* Landscape/Horizontal Dropdown - White Background, No Border Radius */}
+                                            {/* Landscape/Horizontal Dropdown - Semi-transparent with Opacity */}
                                             {openDropdown === item.name && (
                                                 <div 
                                                     ref={dropdownRef}
-                                                    className="absolute left-1/2 -translate-x-1/2 mt-2 w-auto min-w-[720px] max-w-[900px] origin-top bg-white shadow-2xl ring-1 ring-green-100 transition-all duration-200 ease-out"
+                                                    className="absolute left-1/2 -translate-x-1/2 mt-2 w-auto min-w-[720px] max-w-[950px] origin-top bg-white/80 backdrop-blur-sm shadow-2xl ring-1 ring-white/30 transition-all duration-200 ease-out"
                                                     role="menu"
                                                     style={{
                                                         animation: 'slideDown 0.25s ease-out'
@@ -219,29 +243,29 @@ const Navbar = () => {
                                                 >
                                                     <div className="p-6">
                                                         {/* Dropdown Header */}
-                                                        <div className="mb-4 pb-4 border-b border-green-100">
+                                                        <div className="mb-4 pb-4 border-b border-gray-200/50">
                                                             <div className="flex items-center justify-between">
                                                                 <div>
                                                                     <h3 className="text-lg font-bold text-green-800">
                                                                         {item.name}
                                                                     </h3>
-                                                                    <p className="text-sm text-gray-500 mt-0.5">
-                                                                        {item.name === 'About' && 'Learn about our institution'}
-                                                                        {item.name === 'Programs' && 'Explore our academic offerings'}
+                                                                    <p className="text-sm text-gray-600/80 mt-0.5">
+                                                                        {item.name === 'About Us' && 'Learn about our institution'}
+                                                                        {item.name === 'Academics' && 'Explore our academic offerings'}
                                                                         {item.name === 'News' && 'Stay updated with latest news'}
                                                                     </p>
                                                                 </div>
-                                                                <div className="h-8 w-1 bg-gradient-to-b from-green-400 to-green-600"></div>
+                                                                <div className="h-8 w-1 bg-gradient-to-b from-green-400 to-green-600 rounded-full"></div>
                                                             </div>
                                                         </div>
 
-                                                        {/* Horizontal Grid Items with Descriptions - Grey Description */}
+                                                        {/* Horizontal Grid Items with Descriptions */}
                                                         <div className="grid grid-cols-3 gap-3">
                                                             {item.dropdown.map((subItem) => (
                                                                 <a
                                                                     key={subItem.name}
                                                                     href={subItem.href}
-                                                                    className="group relative px-4 py-4 text-left transition-all duration-200 hover:bg-green-50 hover:text-green-800 border-2 border-transparent hover:border-green-200"
+                                                                    className="group relative px-4 py-4 text-left transition-all duration-200 hover:bg-green-50/70 hover:text-green-800 border-2 border-transparent hover:border-green-200/50 rounded-lg"
                                                                     role="menuitem"
                                                                     onClick={() => setOpenDropdown(null)}
                                                                 >
@@ -249,7 +273,7 @@ const Navbar = () => {
                                                                         {subItem.name}
                                                                     </div>
                                                                     {subItem.description && (
-                                                                        <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700">
+                                                                        <div className="text-xs text-gray-500/80 mt-1 group-hover:text-gray-700">
                                                                             {subItem.description}
                                                                         </div>
                                                                     )}
@@ -260,9 +284,9 @@ const Navbar = () => {
                                                     </div>
 
                                                     {/* Dropdown Footer */}
-                                                    <div className="border-t border-green-100 bg-green-50 p-4">
+                                                    <div className="border-t border-gray-200/50 bg-green-50/50 backdrop-blur-sm p-4">
                                                         <div className="flex items-center justify-between">
-                                                            <span className="text-sm text-green-700 font-medium">
+                                                            <span className="text-sm text-green-700/90 font-medium">
                                                                 Explore all {item.name}
                                                             </span>
                                                             <a 
@@ -283,7 +307,7 @@ const Navbar = () => {
                                     ) : (
                                         <a
                                             href={item.href}
-                                            className="flex items-center justify-center rounded-lg px-5 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:bg-white/10 hover:text-green-300 min-w-[80px] text-center"
+                                            className="flex items-center justify-center rounded-lg px-3 lg:px-4 xl:px-5 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:bg-white/10 hover:text-green-300 whitespace-nowrap"
                                         >
                                             {item.name}
                                         </a>
@@ -291,16 +315,16 @@ const Navbar = () => {
                                 </li>
                             ))}
                         </ul>
-                    </div>
 
-                    {/* Right Side - White CTA Button */}
-                    <div className="hidden xl:block">
-                        <a
-                            href="/apply"
-                            className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-green-700 transition-all duration-200 hover:bg-green-50 hover:shadow-lg hover:scale-105"
-                        >
-                            Apply Now
-                        </a>
+                        {/* Right Side - White CTA Button */}
+                        <div className="flex-shrink-0 ml-4">
+                            <a
+                                href="/apply"
+                                className="rounded-full bg-white px-6 lg:px-7 xl:px-8 py-2.5 text-sm font-semibold text-green-700 transition-all duration-200 hover:bg-green-50 hover:shadow-lg hover:scale-105 whitespace-nowrap"
+                            >
+                                Enroll Now
+                            </a>
+                        </div>
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -358,16 +382,16 @@ const Navbar = () => {
                                             </svg>
                                         </button>
                                         
-                                        {/* Mobile Sub-menu - White background for mobile */}
+                                        {/* Mobile Sub-menu - Semi-transparent */}
                                         <div className={`
-                                            ml-4 space-y-1 overflow-hidden transition-all duration-200 bg-white shadow-md mt-1
+                                            ml-4 space-y-1 overflow-hidden transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-lg mt-1 rounded-lg
                                             ${openDropdown === item.name ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}
                                         `}>
                                             {item.dropdown.map((subItem) => (
                                                 <a
                                                     key={subItem.name}
                                                     href={subItem.href}
-                                                    className="block px-4 py-2.5 text-sm text-green-700 transition-colors hover:bg-green-50 hover:text-green-800"
+                                                    className="block px-4 py-2.5 text-sm text-green-700 transition-colors hover:bg-green-50/70 hover:text-green-800 rounded-lg"
                                                     onClick={() => {
                                                         setOpenDropdown(null);
                                                         setIsMobileMenuOpen(false);
@@ -375,7 +399,7 @@ const Navbar = () => {
                                                 >
                                                     <div className="font-medium">{subItem.name}</div>
                                                     {subItem.description && (
-                                                        <div className="text-xs text-gray-500 mt-0.5">{subItem.description}</div>
+                                                        <div className="text-xs text-gray-500/80 mt-0.5">{subItem.description}</div>
                                                     )}
                                                 </a>
                                             ))}

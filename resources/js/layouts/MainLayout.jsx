@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Navbar from '../components/content/Navbar';
 import Footer from '../components/content/Footer';
-import LoadingSpinner from '../components/content/LoadingSpinner'; // ✅ Correct path
 
 export default function MainLayout({ 
     title, 
@@ -11,50 +10,16 @@ export default function MainLayout({
     maxWidth = '7xl', 
     containerClassName = '',
     mainClassName = '',
-    loadingDuration = 1500,
-    spinnerSpeed = 1.2,
-    showSpinner = true,
     backgroundColor = 'rgba(5, 85, 20, 0.95)',
     logoSrc = null,
     logoAlt = 'College Logo'
 }) {
-    const [loading, setLoading] = useState(showSpinner);
-    const [fadeOut, setFadeOut] = useState(false);
-
     useEffect(() => {
-        if (!showSpinner) {
-            setLoading(false);
-            return;
-        }
-
-        const fadeTimer = setTimeout(() => {
-            setFadeOut(true);
-        }, loadingDuration - 300);
-
-        const removeTimer = setTimeout(() => {
-            setLoading(false);
-        }, loadingDuration);
-
-        return () => {
-            clearTimeout(fadeTimer);
-            clearTimeout(removeTimer);
-        };
-    }, [loadingDuration, showSpinner]);
+        // No loading spinner
+    }, []);
 
     return (
-        <>
-            {showSpinner && loading && (
-                <LoadingSpinner 
-                    onComplete={() => setLoading(false)}
-                    duration={loadingDuration}
-                    spinnerSpeed={spinnerSpeed}
-                    backgroundColor={backgroundColor}
-                    logoAlt={logoAlt}
-                    fadeOut={fadeOut}
-                />
-            )}
-
-            <div className={`flex min-h-screen flex-col bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900 transition-opacity duration-500 ${showSpinner && loading ? 'opacity-0' : 'opacity-100'}`}>
+        <div className={`flex min-h-screen flex-col bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900 transition-opacity duration-500`}>
                 <Navbar />
                 
                 <main 
@@ -80,6 +45,5 @@ export default function MainLayout({
                 
                 <Footer />
             </div>
-        </>
     );
 }

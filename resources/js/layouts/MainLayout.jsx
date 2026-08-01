@@ -10,6 +10,7 @@ export default function MainLayout({
     showTitle = true, 
     maxWidth = '7xl', 
     containerClassName = '',
+    mainClassName = '',
     loadingDuration = 1500,
     spinnerSpeed = 1.2,
     showSpinner = true,
@@ -58,10 +59,11 @@ export default function MainLayout({
                 
                 <main 
                     className={`
-                        flex-1 mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 md:py-10
+                        flex-1 mx-auto w-full ${maxWidth === 'full' ? 'px-0' : 'px-4 sm:px-6 lg:px-8'} ${mainClassName || 'py-2 md:py-4'}
                         ${maxWidth === '7xl' ? 'max-w-7xl' : ''}
                         ${maxWidth === '6xl' ? 'max-w-6xl' : ''}
                         ${maxWidth === '5xl' ? 'max-w-5xl' : ''}
+                        ${maxWidth === 'full' ? 'max-w-full' : ''}
                         ${containerClassName}
                     `}
                 >

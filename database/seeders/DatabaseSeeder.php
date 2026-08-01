@@ -21,5 +21,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
-    }
+            News::factory()->count(3)->create();
+            Program::factory()->count(3)->create();
+            Setting::create(['key' => 'site_name', 'value' => config('app.name')]);
 }

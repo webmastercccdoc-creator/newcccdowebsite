@@ -54,8 +54,8 @@ export default function CagayanDeOroCity() {
             mainClassName="py-0" 
             className="overflow-hidden pb-0"
         >
-            {/* Full Width Carousel Hero Section */}
-            <div className="relative w-full h-[400px] md:h-[550px] lg:h-[650px] group">
+            {/* Full Width Carousel Hero Section - EXACTLY MATCHES MAYOR'S HEADER SIZE */}
+            <div className="relative w-full min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center group">
                 
                 {/* Image Slider */}
                 {images.map((image, index) => (

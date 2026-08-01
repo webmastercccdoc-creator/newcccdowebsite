@@ -165,7 +165,7 @@ const Navbar = () => {
                 { name: 'Press Releases', href: '/news/press', description: 'Media and public statements' },
             ]
         },
-        { name: 'Contact', href: '/contact' },
+        { name: 'Contact Us', href: '/contact-us' },
     ];
 
     return (

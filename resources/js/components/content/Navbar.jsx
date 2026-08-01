@@ -35,7 +35,7 @@ const Navbar = () => {
             }
         };
         window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        return () => document.removeEventListener('resize', handleResize);
     }, []);
 
     // Close dropdown on Escape key
@@ -146,7 +146,7 @@ const Navbar = () => {
 
     return (
         <nav 
-            className="bg-white shadow-lg sticky top-0 z-50 border-b border-green-200" 
+            className="bg-green-700 shadow-lg sticky top-0 z-50" 
             role="navigation" 
             aria-label="Main navigation"
         >
@@ -158,14 +158,14 @@ const Navbar = () => {
                             href="/" 
                             className="flex items-center space-x-3 hover:opacity-90 transition-opacity duration-200"
                         >
-                            <div className="h-12 w-12 rounded-full bg-gradient-to-br from-green-600 to-green-800 flex items-center justify-center shadow-md">
-                                <span className="text-white text-xl font-bold">CC</span>
+                            <div className="h-12 w-12 rounded-full bg-white flex items-center justify-center shadow-md">
+                                <span className="text-green-700 text-xl font-bold">CC</span>
                             </div>
                             <div>
-                                <span className="text-base font-bold text-green-800 tracking-wide block leading-tight">
+                                <span className="text-base font-bold text-white tracking-wide block leading-tight">
                                     City College of Cagayan de Oro
                                 </span>
-                                <span className="text-[11px] text-green-600 font-medium tracking-wider block">
+                                <span className="text-[11px] text-green-200 font-medium tracking-wider block">
                                     Aims Higher
                                 </span>
                             </div>
@@ -194,9 +194,9 @@ const Navbar = () => {
                                                 className={`
                                                     flex items-center justify-center gap-1 rounded-lg px-5 py-2.5 text-sm font-medium 
                                                     transition-all duration-200 
-                                                    text-green-700 hover:bg-green-50 hover:text-green-800
+                                                    text-white hover:bg-white/10 hover:text-green-200
                                                     min-w-[80px] text-center
-                                                    ${openDropdown === item.name ? 'bg-green-50 text-green-800' : ''}
+                                                    ${openDropdown === item.name ? 'bg-white/10 text-green-200' : ''}
                                                 `}
                                                 aria-expanded={openDropdown === item.name}
                                                 aria-haspopup="true"
@@ -213,11 +213,11 @@ const Navbar = () => {
                                                 </svg>
                                             </button>
 
-                                            {/* Landscape/Horizontal Dropdown */}
+                                            {/* Landscape/Horizontal Dropdown - White Background, No Border Radius */}
                                             {openDropdown === item.name && (
                                                 <div 
                                                     ref={dropdownRef}
-                                                    className="absolute left-1/2 -translate-x-1/2 mt-2 w-auto min-w-[720px] max-w-[900px] origin-top rounded-2xl bg-white shadow-2xl ring-1 ring-green-100 transition-all duration-200 ease-out"
+                                                    className="absolute left-1/2 -translate-x-1/2 mt-2 w-auto min-w-[720px] max-w-[900px] origin-top bg-white shadow-2xl ring-1 ring-green-100 transition-all duration-200 ease-out"
                                                     role="menu"
                                                     style={{
                                                         animation: 'slideDown 0.25s ease-out'
@@ -233,23 +233,23 @@ const Navbar = () => {
                                                                     <h3 className="text-lg font-bold text-green-800">
                                                                         {item.name}
                                                                     </h3>
-                                                                    <p className="text-sm text-green-600 mt-0.5">
+                                                                    <p className="text-sm text-gray-500 mt-0.5">
                                                                         {item.name === 'About' && 'Learn about our institution'}
                                                                         {item.name === 'Programs' && 'Explore our academic offerings'}
                                                                         {item.name === 'News' && 'Stay updated with latest news'}
                                                                     </p>
                                                                 </div>
-                                                                <div className="h-8 w-1 bg-gradient-to-b from-green-400 to-green-600 rounded-full"></div>
+                                                                <div className="h-8 w-1 bg-gradient-to-b from-green-400 to-green-600"></div>
                                                             </div>
                                                         </div>
 
-                                                        {/* Horizontal Grid Items with Descriptions */}
+                                                        {/* Horizontal Grid Items with Descriptions - Grey Description */}
                                                         <div className="grid grid-cols-3 gap-3">
                                                             {item.dropdown.map((subItem) => (
                                                                 <a
                                                                     key={subItem.name}
                                                                     href={subItem.href}
-                                                                    className="group relative rounded-xl px-4 py-4 text-left transition-all duration-200 hover:bg-green-50 hover:text-green-800 border-2 border-transparent hover:border-green-200 hover:shadow-md"
+                                                                    className="group relative px-4 py-4 text-left transition-all duration-200 hover:bg-green-50 hover:text-green-800 border-2 border-transparent hover:border-green-200"
                                                                     role="menuitem"
                                                                     onClick={() => setOpenDropdown(null)}
                                                                 >
@@ -257,7 +257,7 @@ const Navbar = () => {
                                                                         {subItem.name}
                                                                     </div>
                                                                     {subItem.description && (
-                                                                        <div className="text-xs text-green-600 mt-1 group-hover:text-green-700">
+                                                                        <div className="text-xs text-gray-500 mt-1 group-hover:text-gray-700">
                                                                             {subItem.description}
                                                                         </div>
                                                                     )}
@@ -268,7 +268,7 @@ const Navbar = () => {
                                                     </div>
 
                                                     {/* Dropdown Footer */}
-                                                    <div className="border-t border-green-100 bg-gradient-to-r from-green-50 to-white p-4 rounded-b-2xl">
+                                                    <div className="border-t border-green-100 bg-green-50 p-4">
                                                         <div className="flex items-center justify-between">
                                                             <span className="text-sm text-green-700 font-medium">
                                                                 Explore all {item.name}
@@ -291,7 +291,7 @@ const Navbar = () => {
                                     ) : (
                                         <a
                                             href={item.href}
-                                            className="flex items-center justify-center rounded-lg px-5 py-2.5 text-sm font-medium text-green-700 transition-all duration-200 hover:bg-green-50 hover:text-green-800 min-w-[80px] text-center"
+                                            className="flex items-center justify-center rounded-lg px-5 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:bg-white/10 hover:text-green-200 min-w-[80px] text-center"
                                         >
                                             {item.name}
                                         </a>
@@ -301,11 +301,11 @@ const Navbar = () => {
                         </ul>
                     </div>
 
-                    {/* Right Side - CTA Button */}
+                    {/* Right Side - White CTA Button */}
                     <div className="hidden xl:block">
                         <a
                             href="/apply"
-                            className="rounded-full bg-gradient-to-r from-green-600 to-green-700 px-6 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:shadow-lg hover:scale-105 hover:from-green-700 hover:to-green-800"
+                            className="rounded-full bg-white px-6 py-2.5 text-sm font-semibold text-green-700 transition-all duration-200 hover:bg-green-50 hover:shadow-lg hover:scale-105"
                         >
                             Apply Now
                         </a>
@@ -314,7 +314,7 @@ const Navbar = () => {
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="rounded-lg p-2 text-green-700 hover:bg-green-50 hover:text-green-800 transition-colors xl:hidden"
+                        className="rounded-lg p-2 text-white hover:bg-white/10 hover:text-green-200 transition-colors xl:hidden"
                         aria-expanded={isMobileMenuOpen}
                         aria-controls="mobile-menu"
                         aria-label="Toggle navigation menu"
@@ -349,8 +349,8 @@ const Navbar = () => {
                                             onClick={() => toggleDropdown(item.name)}
                                             className={`
                                                 flex w-full items-center justify-between rounded-lg px-4 py-3 text-base font-medium
-                                                transition-colors text-green-700 hover:bg-green-50 hover:text-green-800
-                                                ${openDropdown === item.name ? 'bg-green-50 text-green-800' : ''}
+                                                transition-colors text-white hover:bg-white/10 hover:text-green-200
+                                                ${openDropdown === item.name ? 'bg-white/10 text-green-200' : ''}
                                             `}
                                             aria-expanded={openDropdown === item.name}
                                         >
@@ -366,16 +366,16 @@ const Navbar = () => {
                                             </svg>
                                         </button>
                                         
-                                        {/* Mobile Sub-menu - Portrait style for mobile */}
+                                        {/* Mobile Sub-menu - White background for mobile */}
                                         <div className={`
-                                            ml-4 space-y-1 overflow-hidden transition-all duration-200
+                                            ml-4 space-y-1 overflow-hidden transition-all duration-200 bg-white shadow-md mt-1
                                             ${openDropdown === item.name ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}
                                         `}>
                                             {item.dropdown.map((subItem) => (
                                                 <a
                                                     key={subItem.name}
                                                     href={subItem.href}
-                                                    className="block rounded-lg px-4 py-2.5 text-sm text-green-600 transition-colors hover:bg-green-50 hover:text-green-800"
+                                                    className="block px-4 py-2.5 text-sm text-green-700 transition-colors hover:bg-green-50 hover:text-green-800"
                                                     onClick={() => {
                                                         setOpenDropdown(null);
                                                         setIsMobileMenuOpen(false);
@@ -383,7 +383,7 @@ const Navbar = () => {
                                                 >
                                                     <div className="font-medium">{subItem.name}</div>
                                                     {subItem.description && (
-                                                        <div className="text-xs text-green-500 mt-0.5">{subItem.description}</div>
+                                                        <div className="text-xs text-gray-500 mt-0.5">{subItem.description}</div>
                                                     )}
                                                 </a>
                                             ))}
@@ -392,7 +392,7 @@ const Navbar = () => {
                                 ) : (
                                     <a
                                         href={item.href}
-                                        className="block rounded-lg px-4 py-3 text-base font-medium text-green-700 transition-colors hover:bg-green-50 hover:text-green-800"
+                                        className="block rounded-lg px-4 py-3 text-base font-medium text-white transition-colors hover:bg-white/10 hover:text-green-200"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         {item.name}
@@ -401,11 +401,11 @@ const Navbar = () => {
                             </div>
                         ))}
                         
-                        {/* Mobile CTA Button */}
+                        {/* Mobile CTA Button - White */}
                         <div className="pt-4">
                             <a
                                 href="/apply"
-                                className="block w-full rounded-full bg-gradient-to-r from-green-600 to-green-700 px-4 py-3 text-center font-semibold text-white transition-all hover:shadow-lg hover:from-green-700 hover:to-green-800"
+                                className="block w-full rounded-full bg-white px-4 py-3 text-center font-semibold text-green-700 transition-all hover:bg-green-50 hover:shadow-lg"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
                                 Apply Now

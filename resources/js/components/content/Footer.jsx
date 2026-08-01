@@ -1,20 +1,20 @@
 import { Link } from '@inertiajs/react';
+import logoSrc from '../../assets/logos/cccdoclogo.png';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
     
     return (
-        <footer className="mt-auto bg-green-700 border-t border-green-600" role="contentinfo">
+        <footer className="mt-auto bg-green-800" role="contentinfo">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 {/* Main Footer Content */}
                 <div className="grid grid-cols-1 gap-8 py-12 md:grid-cols-2 lg:grid-cols-4">
                     {/* Column 1: College Info */}
                     <div className="space-y-4">
                         <div className="flex items-center space-x-3">
-                            <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center shadow-md">
-                                <span className="text-green-700 text-sm font-bold">CC</span>
+                            <div className="h-24 w-48 flex items-center justify-center">
+                                <img src={logoSrc} alt="College Logo" className="h-full w-full object-contain" />
                             </div>
-                            <h2 className="text-xl font-bold text-white">City College of Cagayan de Oro</h2>
                         </div>
                         <p className="text-sm text-white/80 leading-relaxed">
                             Empowering minds, shaping futures since 1990. 
@@ -23,7 +23,7 @@ const Footer = () => {
                         <div className="flex space-x-3">
                             <a 
                                 href="#" 
-                                className="text-white/60 hover:text-green-200 transition-colors hover:scale-110 transform duration-200"
+                                className="text-blue-600 hover:text-blue-500 transition-colors hover:opacity-90 transform duration-200"
                                 aria-label="Facebook"
                             >
                                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -32,7 +32,7 @@ const Footer = () => {
                             </a>
                             <a 
                                 href="#" 
-                                className="text-white/60 hover:text-green-200 transition-colors hover:scale-110 transform duration-200"
+                                className="text-sky-400 hover:text-sky-300 transition-colors hover:opacity-90 transform duration-200"
                                 aria-label="Twitter"
                             >
                                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -41,7 +41,7 @@ const Footer = () => {
                             </a>
                             <a 
                                 href="#" 
-                                className="text-white/60 hover:text-green-200 transition-colors hover:scale-110 transform duration-200"
+                                className="text-blue-700 hover:text-blue-600 transition-colors hover:opacity-90 transform duration-200"
                                 aria-label="LinkedIn"
                             >
                                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -50,7 +50,7 @@ const Footer = () => {
                             </a>
                             <a 
                                 href="#" 
-                                className="text-white/60 hover:text-green-200 transition-colors hover:scale-110 transform duration-200"
+                                className="text-red-500 hover:text-red-400 transition-colors hover:opacity-90 transform duration-200"
                                 aria-label="YouTube"
                             >
                                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -59,7 +59,7 @@ const Footer = () => {
                             </a>
                             <a 
                                 href="#" 
-                                className="text-white/60 hover:text-green-200 transition-colors hover:scale-110 transform duration-200"
+                                className="text-pink-500 hover:text-pink-400 transition-colors hover:opacity-90 transform duration-200"
                                 aria-label="Instagram"
                             >
                                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -71,33 +71,33 @@ const Footer = () => {
 
                     {/* Column 2: Quick Links */}
                     <div>
-                        <h3 className="font-semibold text-green-200 mb-4 flex items-center">
-                            <span className="w-1 h-6 bg-green-400 rounded-full mr-2"></span>
+                        <h3 className="font-semibold text-white mb-4 flex items-center">
+                            <span className="w-1 h-6 bg-white rounded-full mr-2"></span>
                             Quick Links
                         </h3>
                         <ul className="space-y-2.5 text-sm">
                             <li>
-                                <Link href="/about" className="text-white/80 hover:text-green-200 transition-colors hover:pl-1 duration-200">
+                                <Link href="/about" className="text-white/80 hover:text-green-300 transition-colors hover:pl-1 duration-200">
                                     About Us
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/academics" className="text-white/80 hover:text-green-200 transition-colors hover:pl-1 duration-200">
+                                <Link href="/academics" className="text-white/80 hover:text-green-300 transition-colors hover:pl-1 duration-200">
                                     Academics
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/admissions" className="text-white/80 hover:text-green-200 transition-colors hover:pl-1 duration-200">
+                                <Link href="/admissions" className="text-white/80 hover:text-green-300 transition-colors hover:pl-1 duration-200">
                                     Admissions
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/campus-life" className="text-white/80 hover:text-green-200 transition-colors hover:pl-1 duration-200">
+                                <Link href="/campus-life" className="text-white/80 hover:text-green-300 transition-colors hover:pl-1 duration-200">
                                     Campus Life
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/library" className="text-white/80 hover:text-green-200 transition-colors hover:pl-1 duration-200">
+                                <Link href="/library" className="text-white/80 hover:text-green-300 transition-colors hover:pl-1 duration-200">
                                     Library
                                 </Link>
                             </li>
@@ -106,33 +106,33 @@ const Footer = () => {
 
                     {/* Column 3: Resources */}
                     <div>
-                        <h3 className="font-semibold text-green-200 mb-4 flex items-center">
-                            <span className="w-1 h-6 bg-green-400 rounded-full mr-2"></span>
+                        <h3 className="font-semibold text-white mb-4 flex items-center">
+                            <span className="w-1 h-6 bg-white rounded-full mr-2"></span>
                             Resources
                         </h3>
                         <ul className="space-y-2.5 text-sm">
                             <li>
-                                <Link href="/student-portal" className="text-white/80 hover:text-green-200 transition-colors hover:pl-1 duration-200">
+                                <Link href="/student-portal" className="text-white/80 hover:text-green-300 transition-colors hover:pl-1 duration-200">
                                     Student Portal
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/faculty-staff" className="text-white/80 hover:text-green-200 transition-colors hover:pl-1 duration-200">
+                                <Link href="/faculty-staff" className="text-white/80 hover:text-green-300 transition-colors hover:pl-1 duration-200">
                                     Faculty & Staff
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/alumni" className="text-white/80 hover:text-green-200 transition-colors hover:pl-1 duration-200">
+                                <Link href="/alumni" className="text-white/80 hover:text-green-300 transition-colors hover:pl-1 duration-200">
                                     Alumni
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/career-services" className="text-white/80 hover:text-green-200 transition-colors hover:pl-1 duration-200">
+                                <Link href="/career-services" className="text-white/80 hover:text-green-300 transition-colors hover:pl-1 duration-200">
                                     Career Services
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/events" className="text-white/80 hover:text-green-200 transition-colors hover:pl-1 duration-200">
+                                <Link href="/events" className="text-white/80 hover:text-green-300 transition-colors hover:pl-1 duration-200">
                                     Events Calendar
                                 </Link>
                             </li>
@@ -141,8 +141,8 @@ const Footer = () => {
 
                     {/* Column 4: Contact Info */}
                     <div>
-                        <h3 className="font-semibold text-green-200 mb-4 flex items-center">
-                            <span className="w-1 h-6 bg-green-400 rounded-full mr-2"></span>
+                        <h3 className="font-semibold text-white mb-4 flex items-center">
+                            <span className="w-1 h-6 bg-white rounded-full mr-2"></span>
                             Get in Touch
                         </h3>
                         <ul className="space-y-3 text-sm">
@@ -160,7 +160,7 @@ const Footer = () => {
                                 <svg className="h-5 w-5 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                 </svg>
-                                <a href="mailto:info@college.edu" className="text-white/80 hover:text-green-200 transition-colors">
+                                <a href="mailto:info@college.edu" className="text-white/80 hover:text-green-300 transition-colors">
                                     info@college.edu
                                 </a>
                             </li>
@@ -168,7 +168,7 @@ const Footer = () => {
                                 <svg className="h-5 w-5 text-green-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                 </svg>
-                                <a href="tel:+1234567890" className="text-white/80 hover:text-green-200 transition-colors">
+                                <a href="tel:+1234567890" className="text-white/80 hover:text-green-300 transition-colors">
                                     (123) 456-7890
                                 </a>
                             </li>
@@ -183,21 +183,21 @@ const Footer = () => {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="border-t border-green-600 py-6 md:flex md:items-center md:justify-between">
+                <div className="border-t border-green-700 py-6 md:flex md:items-center md:justify-between">
                     <p className="text-sm text-white/60 text-center md:text-left">
                         &copy; {currentYear} City College of Cagayan de Oro. All rights reserved.
                     </p>
                     <div className="mt-4 flex flex-wrap justify-center gap-4 md:mt-0 md:justify-end">
-                        <Link href="/privacy" className="text-sm text-white/60 hover:text-green-200 transition-colors hover:underline">
+                        <Link href="/privacy" className="text-sm text-white/60 hover:text-green-300 transition-colors hover:underline">
                             Privacy Policy
                         </Link>
-                        <Link href="/terms" className="text-sm text-white/60 hover:text-green-200 transition-colors hover:underline">
+                        <Link href="/terms" className="text-sm text-white/60 hover:text-green-300 transition-colors hover:underline">
                             Terms of Service
                         </Link>
-                        <Link href="/accessibility" className="text-sm text-white/60 hover:text-green-200 transition-colors hover:underline">
+                        <Link href="/accessibility" className="text-sm text-white/60 hover:text-green-300 transition-colors hover:underline">
                             Accessibility
                         </Link>
-                        <Link href="/sitemap" className="text-sm text-white/60 hover:text-green-200 transition-colors hover:underline">
+                        <Link href="/sitemap" className="text-sm text-white/60 hover:text-green-300 transition-colors hover:underline">
                             Sitemap
                         </Link>
                     </div>

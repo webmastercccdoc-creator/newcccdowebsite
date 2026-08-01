@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import logoSrc from '../../assets/logos/cccdoclogo.png';
 
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -146,7 +147,7 @@ const Navbar = () => {
 
     return (
         <nav 
-            className="bg-green-700 shadow-lg sticky top-0 z-50" 
+            className="bg-green-800 shadow-lg sticky top-0 z-50 border-b border-green-700" 
             role="navigation" 
             aria-label="Main navigation"
         >
@@ -154,24 +155,15 @@ const Navbar = () => {
                 <div className="flex h-20 items-center justify-between">
                     {/* Logo */}
                     <div className="flex-shrink-0">
-                        <a 
-                            href="/" 
-                            className="flex items-center space-x-3 hover:opacity-90 transition-opacity duration-200"
-                        >
-                            <div className="h-12 w-12 rounded-full bg-white flex items-center justify-center shadow-md">
-                                <span className="text-green-700 text-xl font-bold">CC</span>
+                                <a 
+                                    href="/" 
+                                    className="flex items-center space-x-3 hover:opacity-90 transition-opacity duration-200"
+                                >
+                                    <div className="h-14 w-40 flex items-center justify-center overflow-hidden">
+                                        <img src={logoSrc} alt="College Logo" className="h-full w-full object-cover" />
+                                    </div>
+                                </a>
                             </div>
-                            <div>
-                                <span className="text-base font-bold text-white tracking-wide block leading-tight">
-                                    City College of Cagayan de Oro
-                                </span>
-                                <span className="text-[11px] text-green-200 font-medium tracking-wider block">
-                                    Aims Higher
-                                </span>
-                            </div>
-                        </a>
-                    </div>
-
                     {/* Desktop Navigation */}
                     <div className="hidden xl:block">
                         <ul className="flex items-center space-x-1">
@@ -194,9 +186,9 @@ const Navbar = () => {
                                                 className={`
                                                     flex items-center justify-center gap-1 rounded-lg px-5 py-2.5 text-sm font-medium 
                                                     transition-all duration-200 
-                                                    text-white hover:bg-white/10 hover:text-green-200
+                                                    text-white hover:bg-white/10 hover:text-green-300
                                                     min-w-[80px] text-center
-                                                    ${openDropdown === item.name ? 'bg-white/10 text-green-200' : ''}
+                                                    ${openDropdown === item.name ? 'bg-white/10 text-green-300' : ''}
                                                 `}
                                                 aria-expanded={openDropdown === item.name}
                                                 aria-haspopup="true"
@@ -291,7 +283,7 @@ const Navbar = () => {
                                     ) : (
                                         <a
                                             href={item.href}
-                                            className="flex items-center justify-center rounded-lg px-5 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:bg-white/10 hover:text-green-200 min-w-[80px] text-center"
+                                            className="flex items-center justify-center rounded-lg px-5 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:bg-white/10 hover:text-green-300 min-w-[80px] text-center"
                                         >
                                             {item.name}
                                         </a>
@@ -314,7 +306,7 @@ const Navbar = () => {
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="rounded-lg p-2 text-white hover:bg-white/10 hover:text-green-200 transition-colors xl:hidden"
+                        className="rounded-lg p-2 text-white hover:bg-white/10 hover:text-green-300 transition-colors xl:hidden"
                         aria-expanded={isMobileMenuOpen}
                         aria-controls="mobile-menu"
                         aria-label="Toggle navigation menu"
@@ -349,8 +341,8 @@ const Navbar = () => {
                                             onClick={() => toggleDropdown(item.name)}
                                             className={`
                                                 flex w-full items-center justify-between rounded-lg px-4 py-3 text-base font-medium
-                                                transition-colors text-white hover:bg-white/10 hover:text-green-200
-                                                ${openDropdown === item.name ? 'bg-white/10 text-green-200' : ''}
+                                                transition-colors text-white hover:bg-white/10 hover:text-green-300
+                                                ${openDropdown === item.name ? 'bg-white/10 text-green-300' : ''}
                                             `}
                                             aria-expanded={openDropdown === item.name}
                                         >
@@ -392,7 +384,7 @@ const Navbar = () => {
                                 ) : (
                                     <a
                                         href={item.href}
-                                        className="block rounded-lg px-4 py-3 text-base font-medium text-white transition-colors hover:bg-white/10 hover:text-green-200"
+                                        className="block rounded-lg px-4 py-3 text-base font-medium text-white transition-colors hover:bg-white/10 hover:text-green-300"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         {item.name}

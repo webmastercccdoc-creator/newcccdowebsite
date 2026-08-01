@@ -1,108 +1,92 @@
-import { useState, useEffect } from 'react';
+// components/content/LoadingSpinner.jsx
+import { useEffect } from 'react';
+import logoSrcDefault from '../../assets/logos/cccdologo.png';
 
-const LoadingSpinner = () => {
-    const [isVisible, setIsVisible] = useState(true);
-
+const LoadingSpinner = ({ 
+    onComplete,
+    duration = 1500,
+    spinnerSpeed = 1.2,
+    backgroundColor = 'rgba(5, 85, 20, 0.95)',
+    logoSrc = logoSrcDefault,
+    logoAlt = 'College Logo',
+    logoSize = 'h-40 w-40',
+    fadeOut = false
+}) => {
     useEffect(() => {
-        // Auto-hide after 1.5 seconds (adjust as needed)
         const timer = setTimeout(() => {
-            setIsVisible(false);
-        }, 1500);
+            if (onComplete) onComplete();
+        }, duration);
 
         return () => clearTimeout(timer);
-    }, []);
-
-    if (!isVisible) return null;
+    }, [duration, onComplete]);
 
     return (
-        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-green-700">
-            <div className="relative flex flex-col items-center">
-                {/* Animated Logo Container */}
-                <div className="relative mb-6">
-                    {/* Pulsing Rings */}
-                    <div className="absolute inset-0 rounded-full border-4 border-white/20 animate-ping"></div>
-                    <div className="absolute inset-[-8px] rounded-full border-4 border-white/10 animate-ping" style={{ animationDelay: '0.3s' }}></div>
+        <div 
+            className={`fixed inset-0 z-[9999] flex items-center justify-center transition-opacity duration-300 ${
+                fadeOut ? 'opacity-0' : 'opacity-100'
+            }`}
+            style={{ backgroundColor: backgroundColor }}
+        >
+            <div className="relative flex items-center justify-center">
+                {/* Spinning Circle Container */}
+                <div className="relative h-48 w-48">
+                    {/* Spinning Ring */}
+                    <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-white border-r-white/80 animate-spin"></div>
                     
-                    {/* Logo Circle */}
-                    <div className="relative h-28 w-28 rounded-full bg-white flex items-center justify-center shadow-2xl">
-                        <div className="flex flex-col items-center">
-                            <span className="text-green-700 text-4xl font-bold leading-none">CC</span>
-                            <span className="text-[8px] text-green-500 font-bold tracking-widest">CITY COLLEGE</span>
+                    {/* Second Spinning Ring - Opposite Direction */}
+                    <div className="absolute inset-[-12px] rounded-full border-4 border-transparent border-b-white/20 border-l-white/20 animate-spin-slow"></div>
+                    
+                    {/* Pulsing Ring */}
+                    <div className="absolute inset-[-24px] rounded-full border-4 border-white/5 animate-ping"></div>
+                    
+                    {/* Logo Inside the Spinning Circle */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="h-36 w-36 rounded-full bg-transparent flex items-center justify-center overflow-hidden">
+                            {logoSrc ? (
+                                <img 
+                                    src={logoSrc} 
+                                    alt={logoAlt} 
+                                    className={`${logoSize} object-contain p-1`}
+                                    onError={(e) => {
+                                        console.error('Logo failed to load:', logoSrc);
+                                        e.target.style.display = 'none';
+                                        // Show fallback text
+                                        const parent = e.target.parentElement;
+                                        const fallback = document.createElement('span');
+                                        fallback.className = 'text-green-700 text-3xl font-bold';
+                                        fallback.textContent = 'CC';
+                                        parent.appendChild(fallback);
+                                    }}
+                                />
+                            ) : (
+                                <span className="text-green-700 text-3xl font-bold">CC</span>
+                            )}
                         </div>
                     </div>
                 </div>
-                
-                {/* College Name */}
-                <h2 className="text-2xl font-bold text-white text-center mb-1 tracking-wide">
-                    City College of Cagayan de Oro
-                </h2>
-                <p className="text-sm text-green-200 font-medium tracking-wider mb-8">
-                    Aims Higher
-                </p>
-                
-                {/* Loading Spinner */}
-                <div className="relative">
-                    <div className="h-12 w-12 rounded-full border-4 border-white/20"></div>
-                    <div className="absolute top-0 left-0 h-12 w-12 rounded-full border-4 border-transparent border-t-white border-r-white/60 animate-spin"></div>
-                </div>
-                
-                {/* Loading Text with Dots */}
-                <div className="mt-6 flex items-center space-x-1">
-                    <span className="text-white/60 text-sm font-light">Loading</span>
-                    <span className="flex space-x-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: '0s' }}></span>
-                        <span className="h-1.5 w-1.5 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: '0.2s' }}></span>
-                        <span className="h-1.5 w-1.5 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: '0.4s' }}></span>
-                    </span>
-                </div>
             </div>
 
-            {/* CSS Animations */}
             <style>{`
                 @keyframes spin {
-                    from {
-                        transform: rotate(0deg);
-                    }
-                    to {
-                        transform: rotate(360deg);
-                    }
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
                 }
-                @keyframes pulse {
-                    0%, 100% {
-                        transform: scale(1);
-                        opacity: 1;
-                    }
-                    50% {
-                        transform: scale(1.05);
-                        opacity: 0.8;
-                    }
+                @keyframes spin-slow {
+                    from { transform: rotate(360deg); }
+                    to { transform: rotate(0deg); }
                 }
                 @keyframes ping {
-                    0% {
-                        transform: scale(1);
-                        opacity: 1;
-                    }
-                    100% {
-                        transform: scale(1.5);
-                        opacity: 0;
-                    }
-                }
-                @keyframes bounce {
-                    0%, 100% {
-                        transform: translateY(0);
-                    }
-                    50% {
-                        transform: translateY(-6px);
-                    }
+                    0% { transform: scale(1); opacity: 0.4; }
+                    100% { transform: scale(1.3); opacity: 0; }
                 }
                 .animate-spin {
-                    animation: spin 0.8s linear infinite;
+                    animation: spin ${spinnerSpeed}s linear infinite;
+                }
+                .animate-spin-slow {
+                    animation: spin-slow ${spinnerSpeed * 1.8}s linear infinite;
                 }
                 .animate-ping {
-                    animation: ping 1.5s ease-out infinite;
-                }
-                .animate-bounce {
-                    animation: bounce 0.6s ease-in-out infinite;
+                    animation: ping 2.5s ease-out infinite;
                 }
             `}</style>
         </div>

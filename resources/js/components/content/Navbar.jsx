@@ -124,7 +124,17 @@ const Navbar = () => {
                 { name: 'Organizational Chart', href: '/about/organizational-chart', description: 'View our organizational structure' },
             ]
         },
-    { 
+        { 
+            name: 'Offices', 
+            href: '/Offices',
+            dropdown: [
+                { name: 'Office of the President',  href:'/offices/president', description:'Executive leadership and overall institutional direction' },
+                { name: 'Office of the Vice President for Academic Affairs',   href: '/offices/vp-academic-affairs',  description: 'Oversight of academic programs, curriculum, and faculty development'  },
+                { name: 'Office of the Vice President for Administration and Finance', href: '/offices/vp-administration-finance', description: 'Management of administrative services, budget, and financial resources' },
+                { name: 'Office of the Vice President for Research and Extension', href: '/offices/vp-research-extension', description: 'Research initiatives, innovation, extension services, and scholarly activities' },
+            ]
+        },
+        { 
         name: 'Academics', 
         href: '/Academics',
         dropdown: [
@@ -133,7 +143,7 @@ const Navbar = () => {
             { name: 'College of Business and Management', href: '/programs/college-of-business-and-management', description: 'Business administration and management' },
             { name: 'Technical Skill & Technology Institute', href: '/programs/technical-skill-technology', description: 'Technical and vocational education' },
             ]
-    },
+        },
         { 
             name: 'Research and Extension', 
             href: '/research-and-extension',

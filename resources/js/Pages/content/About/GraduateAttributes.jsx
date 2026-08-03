@@ -17,7 +17,7 @@ export default function GraduateAttributes() {
             <div 
                 className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
                 style={{
-                    backgroundImage: `url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=1200&auto=format&fit=crop')` // Academic/graduation themed image
+                    backgroundImage: `url('')` // Academic/graduation themed image
                 }}
             >
                 {/* Dark Overlay for text readability */}

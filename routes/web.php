@@ -42,6 +42,14 @@ Route::get('/about/governing-board', function () {
     return Inertia::render('content/About/GoverningBoard');
 })->name('about.governing-board');
 
+Route::get('/about/organizational-chart', function () {
+    return Inertia::render('content/About/OrgChart');
+})->name('about.organizational-chart');
+
+Route::get('/offices/president', function () {
+    return Inertia::render('content/Offices/PresidentUnit');
+})->name('offices.president');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

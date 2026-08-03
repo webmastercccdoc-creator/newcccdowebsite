@@ -7,7 +7,7 @@ const data = [
         title2: 'ANTONIEN',
         description:
             "Tucked away in the Switzerland Alps, Saint Antönien offers an idyllic retreat for those seeking tranquility and adventure alike. It's a hidden gem for backcountry skiing in winter and boasts lush trails for hiking and mountain biking during the warmer months.",
-        image: 'https://assets.codepen.io/3685267/timed-cards-1.jpg',
+        image: '/storage/1.jpg',
     },
     {
         place: 'Japan Alps',
@@ -15,7 +15,7 @@ const data = [
         title2: 'PREFECTURE',
         description:
             "Nagano Prefecture, set within the majestic Japan Alps, is a cultural treasure trove with its historic shrines and temples, particularly the famous Zenkō-ji. The region is also a hotspot for skiing and snowboarding, offering some of the country's best powder.",
-        image: 'https://assets.codepen.io/3685267/timed-cards-2.jpg',
+        image: '/storage/2.jpg',
     },
     {
         place: 'Sahara Desert - Morocco',
@@ -23,7 +23,7 @@ const data = [
         title2: 'MEROUGA',
         description:
             'The journey from the vibrant souks and palaces of Marrakech to the tranquil, starlit sands of Merzouga showcases the diverse splendor of Morocco. Camel treks and desert camps offer an unforgettable immersion into the nomadic way of life.',
-        image: 'https://assets.codepen.io/3685267/timed-cards-3.jpg',
+        image: '/storage/3.jpg',
     },
     {
         place: 'Sierra Nevada - USA',
@@ -31,7 +31,7 @@ const data = [
         title2: 'NATIONAL PARAK',
         description:
             'Yosemite National Park is a showcase of the American wilderness, revered for its towering granite monoliths, ancient giant sequoias, and thundering waterfalls. The park offers year-round recreational activities, from rock climbing to serene valley walks.',
-        image: 'https://assets.codepen.io/3685267/timed-cards-4.jpg',
+        image: '/storage/1.jpg',
     },
     {
         place: 'Tarifa - Spain',
@@ -39,7 +39,7 @@ const data = [
         title2: 'BEACH',
         description:
             "Los Lances Beach in Tarifa is a coastal paradise known for its consistent winds, making it a world-renowned spot for kitesurfing and windsurfing. The beach's long, sandy shores provide ample space for relaxation and sunbathing, with a vibrant atmosphere of beach bars and cafes.",
-        image: 'https://assets.codepen.io/3685267/timed-cards-5.jpg',
+        image: '/storage/2.jpg',
     },
     {
         place: 'Cappadocia - Turkey',
@@ -47,7 +47,7 @@ const data = [
         title2: 'Valley',
         description:
             'Göreme Valley in Cappadocia is a historical marvel set against a unique geological backdrop, where centuries of wind and water have sculpted the landscape into whimsical formations. The valley is also famous for its open-air museums, underground cities, and the enchanting experience of hot air ballooning.',
-        image: 'https://assets.codepen.io/3685267/timed-cards-6.jpg',
+        image: '/storage/3.jpg',
     },
 ];
 

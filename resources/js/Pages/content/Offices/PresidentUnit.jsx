@@ -1,4 +1,3 @@
-export { default } from './PresiddentUnit';
 import { useEffect } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
 

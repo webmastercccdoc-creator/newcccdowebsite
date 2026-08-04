@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -14,9 +15,13 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('admin/Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/login-page', function () {
+    return Inertia::render('auth/Login');
+})->name('login.page');
+
+Route::get('/dashboard', [AdminController::class, 'dashboard'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::get('/about/cagayan-de-oro-city', function () {
     return Inertia::render('content/About/CagayanDeOroCity');

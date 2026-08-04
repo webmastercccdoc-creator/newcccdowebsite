@@ -1,20 +1,22 @@
 import { useEffect, useState } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
 
-// Import SVG images
+// Import SVG images - rename the import to avoid conflict with component name
+import OrgChartImage from '../../../assets/OrgChart/OrgChart.svg';
 import PresidentsUnit from '../../../assets/OrgChart/PresidentsUnit.svg';
 import AdministrationFinance from '../../../assets/OrgChart/AdministrationFinance.svg';
 import AcademicAffairs from '../../../assets/OrgChart/AcademicAffairs.svg';
 import ResearchExtension from '../../../assets/OrgChart/ResearchExtension.svg';
 
 export default function OrgChart() {
-    const [activeTab, setActiveTab] = useState('presidents-unit');
+    const [activeTab, setActiveTab] = useState('organizational-chart');
 
     useEffect(() => {
         document.title = 'Organizational Chart - City College of Cagayan de Oro';
     }, []);
 
     const tabs = [
+        { id: 'organizational-chart', label: 'Organizational Chart' },
         { id: 'presidents-unit', label: "President's Unit" },
         { id: 'administration-finance', label: 'Administration & Finance Cluster' },
         { id: 'academic-affairs', label: 'Academic Affairs Cluster' },
@@ -72,6 +74,19 @@ export default function OrgChart() {
 
                     {/* TAB CONTENT - IMAGES */}
                     <div className="min-h-[400px]">
+                        {/* Organizational Chart - Main Overview */}
+                        {activeTab === 'organizational-chart' && (
+                            <div className="animate-fadeIn">
+                                <div className="bg-white rounded-lg p-4 flex items-center justify-center">
+                                    <img 
+                                        src={OrgChartImage} 
+                                        alt="Complete Organizational Chart" 
+                                        className="max-w-full h-auto shadow-lg rounded-lg"
+                                    />
+                                </div>
+                            </div>
+                        )}
+
                         {/* President's Unit */}
                         {activeTab === 'presidents-unit' && (
                             <div className="animate-fadeIn">

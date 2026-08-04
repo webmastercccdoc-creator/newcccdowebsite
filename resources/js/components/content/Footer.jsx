@@ -136,6 +136,11 @@ const Footer = () => {
                                     Events Calendar
                                 </Link>
                             </li>
+                            <li>
+                                <Link href="/downloadable-forms" className="text-white/80 hover:text-green-300 transition-colors hover:pl-1 duration-200">
+                                    Downloadable Forms
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 

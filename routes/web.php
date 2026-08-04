@@ -50,6 +50,23 @@ Route::get('/offices/president', function () {
     return Inertia::render('content/Offices/PresidentUnit');
 })->name('offices.president');
 
+Route::get('/offices/vp-academic-affairs', function () {
+    return Inertia::render('content/Offices/VPAcademics');
+})->name('offices.vp-academic-affairs');
+
+Route::get('/offices/vp-administration-finance', function () {
+    return Inertia::render('content/Offices/VPAdminFinance');
+})->name('offices.vp-administration-finance');
+
+Route::get('/offices/vp-research-extension', function () {
+    return Inertia::render('content/Offices/VPResearchExtension');
+})->name('offices.vp-research-extension');
+
+Route::get('/contact-us', function () {
+    return Inertia::render('content/Contact');
+})->name('contact-us');
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

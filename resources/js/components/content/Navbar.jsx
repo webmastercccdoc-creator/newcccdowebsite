@@ -299,16 +299,7 @@ const Navbar = () => {
                                                             <span className="text-sm text-green-700/90 font-medium">
                                                                 Explore all {item.name}
                                                             </span>
-                                                            <a 
-                                                                href={item.href}
-                                                                className="group flex items-center gap-2 text-sm font-semibold text-green-700 hover:text-green-800 transition-colors"
-                                                                onClick={() => setOpenDropdown(null)}
-                                                            >
-                                                                View All
-                                                                <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                                                </svg>
-                                                            </a>
+                            
                                                         </div>
                                                     </div>
                                                 </div>

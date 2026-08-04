@@ -135,8 +135,8 @@ const Navbar = () => {
             ]
         },
         { 
-        name: 'Academics', 
-        href: '/Academics',
+        name: 'Programs', 
+        href: '/Programs',
         dropdown: [
             { name: 'College of Education', href: '/programs/college-of-education', description: 'Teacher education and development programs' },
             { name: 'College of Arts and Sciences', href: '/programs/college-of-arts-and-sciences', description: 'Liberal arts, sciences, and humanities' },
@@ -261,7 +261,7 @@ const Navbar = () => {
                                                                     </h3>
                                                                     <p className="text-sm text-gray-600/80 mt-0.5">
                                                                         {item.name === 'About Us' && 'Learn about our institution'}
-                                                                        {item.name === 'Academics' && 'Explore our academic offerings'}
+                                                                        {item.name === 'Program' && 'Explore our academic offerings'}
                                                                         {item.name === 'News' && 'Stay updated with latest news'}
                                                                     </p>
                                                                 </div>

@@ -67,10 +67,17 @@ Route::get('/offices/vp-research-extension', function () {
     return Inertia::render('content/Offices/VPResearchExtension');
 })->name('offices.vp-research-extension');
 
-Route::get('/contact-us', function () {
-    return Inertia::render('content/Contact');
-})->name('contact-us');
+Route::get('/offices/vp-research-extension', function () {
+    return Inertia::render('content/Offices/VPResearchExtension');
+})->name('offices.vp-research-extension');
 
+Route::get('/programs/college-of-education', function () {
+    return Inertia::render('content/Academics/CollegeEducation');
+})->name('academics.college-of-education');
+
+Route::get('/programs/college-of-business-and-management', function () {
+    return Inertia::render('content/Academics/CollegeBusinessManagement');
+})->name('academics.college-of-business-and-management');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

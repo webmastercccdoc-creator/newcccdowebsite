@@ -5,28 +5,31 @@ import home3 from './assets/home/3.jpg';
 
 const data = [
     {
-        place: 'Switzerland Alps',
-        title: 'SAINT',
-        title2: 'ANTONIEN',
+        place: 'City College of Cagayan de Oro',
+        title: 'WURI',
+        title2: '2026',
         description:
-            "Tucked away in the Switzerland Alps, Saint Antönien offers an idyllic retreat for those seeking tranquility and adventure alike. It's a hidden gem for backcountry skiing in winter and boasts lush trails for hiking and mountain biking during the warmer months.",
+            "• Ranked 55th worldwide for Culture/Values (B4)\n• Ranked 64th worldwide for Curricular Innovation for Future-Readiness (C3)\n\nThis recognition reflects our commitment to transformative education and future-ready programs that equip learners to thrive in a rapidly evolving world.",
         image: home1,
+        link: 'https://www.facebook.com/orocitycollegeofficial/posts/pfbid02dD3mNSvPohtLGY8UAePoTgps7e5pG1zXkeQD1d6T9HLqWBXbzpP8k5VzAEpzU92Vl?rdid=03Ah8QPugfN0WJ7w#',
     },
     {
-        place: 'Japan Alps',
-        title: 'NANGANO',
-        title2: 'PREFECTURE',
+        place: 'City College of Cagayan de Oro',
+        title: 'THE',
+        title2: 'SUSTAINABILITY',
         description:
-            "Nagano Prefecture, set within the majestic Japan Alps, is a cultural treasure trove with its historic shrines and temples, particularly the famous Zenkō-ji. The region is also a hotspot for skiing and snowboarding, offering some of the country's best powder.",
+            "• Overall Global Rank: 801–1000 in THE Sustainability Impact Ratings 2026\n\n• SDG 1 – No Poverty: 101–200\n• SDG 3 – Health and Well-Being: 801–1000\n• SDG 4 – Quality Education: 401–600\n• SDG 5 – Gender Equality: 401–600\n• SDG 10 – Reduced Inequalities: 301–400.....",
         image: home2,
+        link: 'https://www.facebook.com/orocitycollegeofficial/posts/pfbid0cKcRYDLhyQzPSba8oeQ4zsnmEXfM89ZwkxP7z8nihQaZgfEDxxhN2JFFEkXVWhSJl?rdid=iFNT8PfS8SNK5H63#',
     },
     {
-        place: 'Sahara Desert - Morocco',
-        title: 'MARRAKECH',
-        title2: 'MEROUGA',
+        place: 'City College of Cagayan de Oro',
+        title: 'ALS',
+        title2: 'BRIDGING',
         description:
-            'The journey from the vibrant souks and palaces of Marrakech to the tranquil, starlit sands of Merzouga showcases the diverse splendor of Morocco. Camel treks and desert camps offer an unforgettable immersion into the nomadic way of life.',
+            "• CCCDO, DepEd CDO, and SMART PLDT developed contextualized Learning Activity Sheets for the ALS Weekend Bridging Academy\n\n• The materials were authored by experienced ALS teachers and reviewed by CCCDO faculty experts in English, Science, and Mathematics\n\n• The initiative supports college readiness by aligning ALS competencies with the expectations of higher education and the General Education Curriculum.",
         image: home3,
+        link: 'https://www.facebook.com/orocitycollegeofficial/posts/pfbid029aVv6VwWumciiB3juVk5kRzZxbSgFudTUnthJvHm7tm3JhQaPCBk67AFi9YaV8hZl?rdid=kC5k570If5pWX9Af#',
     },
     {
         place: 'Sierra Nevada - USA',
@@ -98,6 +101,18 @@ export function initLandingAnimations() {
                 onComplete: resolve,
             });
         });
+    }
+
+    function formatDescription(text) {
+        return String(text || '')
+            .split('\n')
+            .map((line) => {
+                const trimmed = line.trim();
+                if (!trimmed) return '<div class="desc-line"></div>';
+                const className = trimmed.startsWith('•') ? 'desc-line desc-bullet' : 'desc-line';
+                return `<div class="${className}">${trimmed}</div>`;
+            })
+            .join('');
     }
 
     function queueStep(direction) {
@@ -235,8 +250,16 @@ export function initLandingAnimations() {
                 data[order[0]].title;
             document.querySelector(`${detailsActive} .title-2`).textContent =
                 data[order[0]].title2;
-            document.querySelector(`${detailsActive} .desc`).textContent =
-                data[order[0]].description;
+            document.querySelector(`${detailsActive} .desc`).innerHTML =
+                formatDescription(data[order[0]].description);
+
+            const discoverButton = document.querySelector(`${detailsActive} .discover`);
+            if (discoverButton) {
+                discoverButton.href = data[order[0]].link || '#';
+                discoverButton.textContent = 'View Post';
+                discoverButton.target = '_blank';
+                discoverButton.rel = 'noopener noreferrer';
+            }
 
             gsap.set(detailsActive, { zIndex: 22 });
             gsap.to(detailsActive, { opacity: 1, delay: 0.4, ease });

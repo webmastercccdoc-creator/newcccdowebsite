@@ -180,7 +180,7 @@ const Navbar = () => {
 
     return (
         <nav 
-            className="bg-green-800 shadow-lg sticky top-0 z-50 border-b border-green-700 w-full" 
+            className="sticky top-0 z-50 w-full backdrop-blur-md bg-gradient-to-r from-green-800 via-green-700 to-green-800 shadow-xl border-b border-green-600/30" 
             role="navigation" 
             aria-label="Main navigation"
         >
@@ -218,11 +218,11 @@ const Navbar = () => {
                                             <button
                                                 onClick={() => toggleDropdown(item.name)}
                                                 className={`
-                                                    flex items-center justify-center gap-1 rounded-lg px-3 lg:px-4 xl:px-5 py-2.5 text-sm font-medium 
-                                                    transition-all duration-200 
-                                                    text-white hover:bg-white/10 hover:text-green-300
+                                                    flex items-center justify-center gap-1 rounded-xl px-3 lg:px-4 xl:px-5 py-2.5 text-sm font-semibold 
+                                                    transition-all duration-300 cubic-bezier(0.4, 0, 0.2, 1)
+                                                    text-white hover:bg-white/15 hover:text-green-100 hover:shadow-lg
                                                     whitespace-nowrap
-                                                    ${openDropdown === item.name ? 'bg-white/10 text-green-300' : ''}
+                                                    ${openDropdown === item.name ? 'bg-white/20 text-green-100 shadow-lg' : ''}
                                                 `}
                                                 aria-expanded={openDropdown === item.name}
                                                 aria-haspopup="true"
@@ -243,7 +243,7 @@ const Navbar = () => {
                                             {openDropdown === item.name && (
                                                 <div 
                                                     ref={dropdownRef}
-                                                    className="absolute left-1/2 -translate-x-1/2 mt-2 w-auto min-w-[720px] max-w-[950px] origin-top bg-white/80 backdrop-blur-sm shadow-2xl ring-1 ring-white/30 transition-all duration-200 ease-out"
+                                                    className="absolute left-1/2 -translate-x-1/2 mt-3 w-auto min-w-[720px] max-w-[950px] origin-top bg-white/90 backdrop-blur-lg shadow-2xl ring-1 ring-white/50 transition-all duration-300 ease-out rounded-xl"
                                                     role="menu"
                                                     style={{
                                                         animation: 'slideDown 0.25s ease-out'
@@ -253,51 +253,51 @@ const Navbar = () => {
                                                 >
                                                     <div className="p-6">
                                                         {/* Dropdown Header */}
-                                                        <div className="mb-4 pb-4 border-b border-gray-200/50">
+                                                        <div className="mb-5 pb-5 border-b border-green-200/60">
                                                             <div className="flex items-center justify-between">
                                                                 <div>
-                                                                    <h3 className="text-lg font-bold text-green-800">
+                                                                    <h3 className="text-xl font-bold text-green-800 tracking-tight">
                                                                         {item.name}
                                                                     </h3>
-                                                                    <p className="text-sm text-gray-600/80 mt-0.5">
+                                                                    <p className="text-sm text-gray-600 mt-1.5 font-medium">
                                                                         {item.name === 'About Us' && 'Learn about our institution'}
                                                                         {item.name === 'Program' && 'Explore our academic offerings'}
                                                                         {item.name === 'News' && 'Stay updated with latest news'}
                                                                     </p>
                                                                 </div>
-                                                                <div className="h-8 w-1 bg-gradient-to-b from-green-400 to-green-600 rounded-full"></div>
+                                                                <div className="h-12 w-1.5 bg-gradient-to-b from-green-400 via-green-500 to-green-600 rounded-full shadow-lg"></div>
                                                             </div>
                                                         </div>
 
                                                         {/* Horizontal Grid Items with Descriptions */}
-                                                        <div className="grid grid-cols-3 gap-3">
+                                                        <div className="grid grid-cols-3 gap-4">
                                                             {item.dropdown.map((subItem) => (
                                                                 <a
                                                                     key={subItem.name}
                                                                     href={subItem.href}
-                                                                    className="group relative px-4 py-4 text-left transition-all duration-200 hover:bg-green-50/70 hover:text-green-800 border-2 border-transparent hover:border-green-200/50 rounded-lg"
+                                                                    className="group relative px-5 py-4 text-left transition-all duration-300 hover:bg-gradient-to-br hover:from-green-50 hover:to-green-100 hover:text-green-800 border-2 border-transparent hover:border-green-300/60 rounded-xl hover:shadow-md"
                                                                     role="menuitem"
                                                                     onClick={() => setOpenDropdown(null)}
                                                                 >
-                                                                    <div className="font-medium text-green-800 group-hover:font-semibold">
+                                                                    <div className="font-semibold text-green-800 group-hover:text-green-900">
                                                                         {subItem.name}
                                                                     </div>
                                                                     {subItem.description && (
-                                                                        <div className="text-xs text-gray-500/80 mt-1 group-hover:text-gray-700">
+                                                                        <div className="text-xs text-gray-600 mt-2 group-hover:text-gray-800 leading-relaxed">
                                                                             {subItem.description}
                                                                         </div>
                                                                     )}
-                                                                    <div className="mt-2 h-0.5 w-0 bg-green-500 transition-all duration-300 group-hover:w-full"></div>
+                                                                    <div className="mt-3 h-1 w-0 bg-gradient-to-r from-green-400 to-green-600 transition-all duration-300 group-hover:w-full rounded-full"></div>
                                                                 </a>
                                                             ))}
                                                         </div>
                                                     </div>
 
                                                     {/* Dropdown Footer */}
-                                                    <div className="border-t border-gray-200/50 bg-green-50/50 backdrop-blur-sm p-4">
+                                                    <div className="border-t border-green-200/60 bg-gradient-to-r from-green-50/80 to-green-100/50 backdrop-blur-sm p-5">
                                                         <div className="flex items-center justify-between">
-                                                            <span className="text-sm text-green-700/90 font-medium">
-                                                                Explore all {item.name}
+                                                            <span className="text-sm text-green-700 font-semibold tracking-wide">
+                                                                Browse all {item.name} →
                                                             </span>
                             
                                                         </div>
@@ -308,7 +308,7 @@ const Navbar = () => {
                                     ) : (
                                         <a
                                             href={item.href}
-                                            className="flex items-center justify-center rounded-lg px-3 lg:px-4 xl:px-5 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:bg-white/10 hover:text-green-300 whitespace-nowrap"
+                                            className="flex items-center justify-center rounded-xl px-3 lg:px-4 xl:px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/15 hover:text-green-100 hover:shadow-lg whitespace-nowrap"
                                         >
                                             {item.name}
                                         </a>
@@ -321,7 +321,7 @@ const Navbar = () => {
                         <div className="flex-shrink-0 ml-4">
                             <a
                                 href="/apply"
-                                className="rounded-full bg-white px-6 lg:px-7 xl:px-8 py-2.5 text-sm font-semibold text-green-700 transition-all duration-200 hover:bg-green-50 hover:shadow-lg hover:scale-105 whitespace-nowrap"
+                                className="rounded-full bg-white px-7 lg:px-8 xl:px-9 py-2.5 text-sm font-bold text-green-700 transition-all duration-300 hover:bg-green-50 hover:shadow-xl hover:scale-110 hover:-translate-y-1 whitespace-nowrap tracking-wide"
                             >
                                 Enroll Now
                             </a>

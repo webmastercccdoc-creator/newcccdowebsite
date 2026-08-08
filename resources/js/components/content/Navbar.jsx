@@ -160,9 +160,9 @@ const Navbar = () => {
             name: 'Internationalization', 
             href: '/internationalization',
             dropdown: [
-                { name: 'SDG (Sustainable Development Goals)', href: '/internationalization/sdg', description: 'Contributing to global sustainability goals' },
-                { name: 'THE (Times Higher Education)', href: '/internationalization/the', description: 'World university rankings and impact' },
-                { name: 'WURI (World Universities with Real Impact)', href: '/internationalization/wuri', description: 'Innovative and impactful university initiatives' },
+                { name: 'Sustainable Development Goals', href: '/internationalization/sdg', description: 'Contributing to global sustainability goals' },
+                { name: 'Times Higher Education', href: '/internationalization/the', description: 'World university rankings and impact' },
+                { name: 'World Universities with Real Impact', href: '/internationalization/wuri', description: 'Innovative and impactful university initiatives' },
                 { name: 'UI GreenMetric', href: '/internationalization/ui-greenmetric', description: 'World university sustainability rankings and green campus initiatives' }
                 ]
             },

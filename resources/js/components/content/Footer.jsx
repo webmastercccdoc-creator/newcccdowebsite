@@ -5,7 +5,7 @@ const Footer = () => {
     const currentYear = new Date().getFullYear();
     
     return (
-        <footer className="mt-auto w-full bg-gradient-to-b from-gray-900 via-green-900 to-gray-900" role="contentinfo">
+        <footer className="mt-auto w-full bg-gradient-to-r from-green-800 via-green-700 to-green-800" role="contentinfo">
             <div className="w-full px-4 sm:px-6 lg:px-8">
                 {/* Main Footer Content */}
                 <div className="grid grid-cols-1 gap-10 py-16 md:grid-cols-2 lg:grid-cols-4">
@@ -205,18 +205,18 @@ const Footer = () => {
                 </div>
 
                 {/* ✅ UPDATED BOTTOM BAR: Sleek Dark Background with White Text */}
-                <div className="bg-gray-950 border-t border-green-500/30 py-8 px-4 md:flex md:items-center md:justify-between">
-                    <p className="text-sm text-white/70 text-center md:text-left font-medium tracking-wide">
+                <div className="bg-white border-t border-green-200 py-8 px-4 md:flex md:items-center md:justify-between">
+                    <p className="text-sm text-slate-700 text-center md:text-left font-medium tracking-wide">
                         &copy; {currentYear} City College of Cagayan de Oro. All rights reserved.
                     </p>
                     <div className="mt-6 flex flex-wrap justify-center gap-6 md:mt-0 md:justify-end">
-                        <Link href="/privacy" className="text-sm text-white/70 hover:text-green-400 transition-all duration-300 font-medium hover:underline">
+                        <Link href="/privacy" className="text-sm text-slate-700 hover:text-green-700 transition-all duration-300 font-medium hover:underline">
                             Privacy Policy
                         </Link>
-                        <Link href="/terms" className="text-sm text-white/70 hover:text-green-400 transition-all duration-300 font-medium hover:underline">
+                        <Link href="/terms" className="text-sm text-slate-700 hover:text-green-700 transition-all duration-300 font-medium hover:underline">
                             Terms of Service
                         </Link>
-                        <Link href="/accessibility" className="text-sm text-white/70 hover:text-green-400 transition-all duration-300 font-medium hover:underline">
+                        <Link href="/accessibility" className="text-sm text-slate-700 hover:text-green-700 transition-all duration-300 font-medium hover:underline">
                             Accessibility
                         </Link>
                         <Link href="/sitemap" className="text-sm text-white/70 hover:text-green-400 transition-all duration-300 font-medium hover:underline">

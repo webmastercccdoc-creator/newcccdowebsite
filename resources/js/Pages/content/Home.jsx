@@ -3,47 +3,24 @@ import MainLayout from '../../layouts/MainLayout';
 import '../../../css/home.css';
 import { initLandingAnimations, data } from '../../home-animations';
 
-// Mock data for the News & Updates section
-const newsData = [
-    {
-        date: "November 20, 2024",
-        title: "Approved Extension Project: Project KAHANAS",
-        excerpt: "The college proudly announces the approval of Project KAHANAS, an initiative aimed at empowering local communities through skills training and education.",
-        image: "https://placehold.co/600x400/1e3a8a/ffffff?text=Project+KAHANAS"
-    },
-    {
-        date: "November 15, 2024",
-        title: "Office of the Curriculum and Instruction Kicks Off Five-Day Training",
-        excerpt: "The OCI has officially started a comprehensive five-day training program for faculty members to enhance instructional methodologies.",
-        image: "https://placehold.co/600x400/059669/ffffff?text=OCI+Training"
-    },
-    {
-        date: "November 10, 2024",
-        title: "General Parents-Teachers Assembly (GPTA) Successfully Held",
-        excerpt: "CCCO held its annual GPTA meeting, fostering a strong partnership between parents and teachers to support student success.",
-        image: "https://placehold.co/600x400/d97706/ffffff?text=GPTA+Assembly"
-    },
-    {
-        date: "November 05, 2024",
-        title: "New Faculty Appointments for the College of Education",
-        excerpt: "We welcome the newly appointed faculty members to the College of Education who bring a wealth of experience and dedication.",
-        image: "https://placehold.co/600x400/db2777/ffffff?text=Faculty+Appointments"
-    },
-    {
-        date: "October 28, 2024",
-        title: "CCCO Ranked in WURI 2024 for Future-Readiness",
-        excerpt: "Recognized globally for innovative curricular approaches and cultural values that prepare students for future challenges.",
-        image: "https://placehold.co/600x400/7c3aed/ffffff?text=WURI+2024"
-    },
-    {
-        date: "October 20, 2024",
-        title: "Student Achievers Recognized at Annual Awards Day",
-        excerpt: "Outstanding students from various departments were honored for their academic excellence and extracurricular contributions.",
-        image: "https://placehold.co/600x400/2563eb/ffffff?text=Awards+Day"
-    }
-];
+const normalizeImagePath = (value) => {
+    if (!value) return 'https://placehold.co/600x400/1e3a8a/ffffff?text=No+Image';
+    if (/^https?:\/\//i.test(value) || value.startsWith('data:')) return value;
 
-export default function Home() {
+    return '/' + value.replace(/^\/+/, '');
+};
+
+export default function Home({ newsArticles = [] }) {
+    const articles = newsArticles.map((article) => ({
+        id: article.id,
+        date: article.date || article.created_at || '',
+        title: article.title || 'News item',
+        excerpt: article.content || '',
+        image: normalizeImagePath(article.image_path || article.image),
+        alt: article.article_alt_text || article.alt_text || article.title || 'News image',
+        link: `/news/${article.id}`,
+    }));
+
     useEffect(() => {
         const cleanup = initLandingAnimations();
         return cleanup;
@@ -169,106 +146,56 @@ export default function Home() {
                     </div>
 
                     <div className="news-grid">
-                        {newsData.map((news, index) => (
-                            <article
-                                key={`news-${index}`}
-                                className="news-card"
-                            >
-                                <div className="news-card-image-wrapper">
-                                    <img
-                                        src={news.image}
-                                        alt={news.title}
-                                        className="news-card-image"
-                                    />
-                                </div>
+                        {articles.length > 0 ? (
+                            articles.map((news, index) => (
+                                <article
+                                    key={`news-${news.id || index}`}
+                                    className="news-card"
+                                >
+                                    <div className="news-card-image-wrapper">
+                                        <img
+                                            src={news.image}
+                                            alt={news.title}
+                                            className="news-card-image"
+                                        />
+                                    </div>
 
-                                <div className="news-card-content">
-                                    <p className="news-date">
-                                        {news.date}
-                                    </p>
-                                    <h3 className="news-card-title">
-                                        {news.title}
-                                    </h3>
-                                    <p className="news-excerpt">
-                                        {news.excerpt}
-                                    </p>
-                                    <a
-                                        href="#"
-                                        className="news-read-more"
-                                    >
-                                        Read More
-                                        <svg
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
+                                    <div className="news-card-content">
+                                        <p className="news-date">
+                                            {news.date}
+                                        </p>
+                                        <h3 className="news-card-title">
+                                            {news.title}
+                                        </h3>
+                                        <p className="news-excerpt">
+                                            {news.excerpt}
+                                        </p>
+                                        <a
+                                            href={news.link || '#'}
+                                            className="news-read-more"
                                         >
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                        </svg>
-                                    </a>
-                                </div>
-                            </article>
-                        ))}
+                                            Read More
+                                            <svg
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </article>
+                            ))
+                        ) : (
+                            <div className="news-empty-message">
+                                No news articles are available at this time.
+                            </div>
+                        )}
                     </div>
 
                     <div className="news-view-all-wrapper">
-                        <button className="news-view-all-btn">
+                        <a href="/news/latest" className="news-view-all-btn">
                             View All News
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            {/* --- QUICK LINKS / SYSTEMS SECTION --- */}
-            <section className="quick-links-section">
-                <div className="quick-links-container">
-                    <div className="quick-links-header">
-                        <h2 className="quick-links-title">Student & Faculty Systems</h2>
-                        <p className="quick-links-subtitle">Quick access to essential CCCO platforms and resources.</p>
-                    </div>
-
-                    <div className="quick-links-grid">
-                        {/* Attendium */}
-                        <a href="https://attendium.citycollegecdo.edu.ph/" target="_blank" rel="noopener noreferrer" className="quick-link-card">
-                            <div className="ql-icon-wrapper">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <h3 className="ql-title">Attendium</h3>
-                            <p className="ql-desc">Track and manage student attendance efficiently.</p>
-                        </a>
-
-                        {/* AIMS */}
-                        <a href="https://aims.citycollegecdo.edu.ph/" target="_blank" rel="noopener noreferrer" className="quick-link-card">
-                            <div className="ql-icon-wrapper">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                            </div>
-                            <h3 className="ql-title">AIMS</h3>
-                            <p className="ql-desc">Academic Information Management System for records and enrollment.</p>
-                        </a>
-
-                        {/* Courseware */}
-                        <a href="https://courseware.citycollegecdo.edu.ph/" target="_blank" rel="noopener noreferrer" className="quick-link-card">
-                            <div className="ql-icon-wrapper">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                </svg>
-                            </div>
-                            <h3 className="ql-title">Courseware</h3>
-                            <p className="ql-desc">Access online learning materials, assignments, and classes.</p>
-                        </a>
-
-                        {/* Smartchive */}
-                        <a href="https://smartchive.citycollegecdo.edu.ph/" target="_blank" rel="noopener noreferrer" className="quick-link-card">
-                            <div className="ql-icon-wrapper">
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                                </svg>
-                            </div>
-                            <h3 className="ql-title">Smartchive</h3>
-                            <p className="ql-desc">Digital archive for institutional documents and records.</p>
                         </a>
                     </div>
                 </div>

@@ -1,0 +1,20 @@
+/* Styles for images inside the article */
+.prose-content-img,
+.prose img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 2.5rem auto;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    background-color: #f3f4f6;
+}
+
+/* Styles for image captions if used */
+.prose figcaption {
+    text-align: center;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-style: italic;
+}

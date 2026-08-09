@@ -172,7 +172,7 @@ const Navbar = () => {
             dropdown: [
                 { name: 'Latest News', href: '/news/latest', description: 'Recent updates and stories' },
                 { name: 'Upcoming Events', href: '/news/events', description: 'Calendar of activities' },
-                { name: 'Announcements', href: '/news/announcements', description: 'Official college notices' }
+                { name: 'Newsletters', href: '/news/announcements', description: 'Official college notices' }
             ]
         },
         { name: 'Contact Us', href: '/contact-us' },

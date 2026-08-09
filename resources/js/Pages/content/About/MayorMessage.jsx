@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
 
-// debug: log the imported layout to help diagnose invalid element type errors
-console.log('MainLayout import (MayorMessage):', MainLayout);
+// 1. Import the local banner image
+import mayorBanner from '../../../assets/banner/mayor-banner.png';
 
 export default function MayorMessage() {
     useEffect(() => {
@@ -17,7 +17,8 @@ export default function MayorMessage() {
             <div 
                 className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
                 style={{
-                    backgroundImage: `url('https://images.unsplash.com/photo-1620112402301-a7d5a0a2f9f9?q=80&w=1200&auto=format&fit=crop')`
+                    // 2. Use the imported variable inside url()
+                    backgroundImage: `url(${mayorBanner})`
                 }}
             >
                 {/* Dark Overlay for text readability */}
@@ -126,4 +127,4 @@ export default function MayorMessage() {
             </div>
         </MainLayout>
     );
-}   
+}

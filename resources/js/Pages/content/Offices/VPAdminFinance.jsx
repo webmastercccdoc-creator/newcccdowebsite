@@ -1,19 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
 
 export default function VPAdminFinance() {
-    const [activeTab, setActiveTab] = useState('hr');
-
     useEffect(() => {
         document.title = "VP for Administration & Finance - City College of Cagayan de Oro";
     }, []);
-
-    const tabs = [
-        { id: 'hr', label: 'Human Resource Management and Development Office' },
-        { id: 'technology', label: 'Technology Innovation and Data Management Center' },
-        { id: 'finance', label: 'Finance' },
-        { id: 'physical-plant', label: 'Physical Plant Services' },
-    ];
 
     return (
         <MainLayout 
@@ -42,58 +33,7 @@ export default function VPAdminFinance() {
                 </div>
             </div>
 
-            {/* Main Content Area - Maximized */}
-            <div className="mx-auto max-w-full px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-                <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 md:p-8">
-                    <h2 className="text-2xl font-bold text-green-800 mb-6 text-center">Administration & Finance Offices</h2>
-
-                    {/* TABS - Centered */}
-                    <div className="flex justify-center mb-8 border-b border-gray-200 pb-1">
-                        <div className="flex flex-wrap justify-center gap-1">
-                            {tabs.map((tab) => (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)}
-                                    className={`px-4 py-2.5 text-xs sm:text-sm font-medium rounded-t-lg transition-all duration-200 whitespace-nowrap ${
-                                        activeTab === tab.id
-                                            ? 'bg-green-700 text-white shadow-md'
-                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    }`}
-                                >
-                                    {tab.label}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* TAB CONTENT - Maximized */}
-                    <div className="min-h-[500px]">
-                        {activeTab === 'hr' && (
-                            <div className="animate-fadeIn">
-                                {/* Content for Human Resource Management and Development Office */}
-                            </div>
-                        )}
-
-                        {activeTab === 'technology' && (
-                            <div className="animate-fadeIn">
-                                {/* Content for Technology Innovation and Data Management Center */}
-                            </div>
-                        )}
-
-                        {activeTab === 'finance' && (
-                            <div className="animate-fadeIn">
-                                {/* Content for Finance */}
-                            </div>
-                        )}
-
-                        {activeTab === 'physical-plant' && (
-                            <div className="animate-fadeIn">
-                                {/* Content for Physical Plant Services */}
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </div>
+            {/* BELOW BANNER IS COMPLETELY EMPTY */}
         </MainLayout>
     );
 }

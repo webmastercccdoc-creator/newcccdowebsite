@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import ccdologo from '../../assets/logos/ccdologo.png';
 
 export default function Login() {
     useEffect(() => {
@@ -93,12 +94,8 @@ export default function Login() {
                     
                     <div className="relative z-10 flex flex-col items-center text-center">
                         {/* Logo */}
-                        <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6">
-                            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.083 12.083 0 01.665-6.479L12 14z" />
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.083 12.083 0 01.665-6.479L12 14z" />
-                            </svg>
+                        <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 overflow-hidden shadow-lg">
+                            <img src={ccdologo} alt="City College of Cagayan de Oro logo" className="w-full h-full object-contain p-2" />
                         </div>
                         
                         <h2 className="text-3xl font-bold text-white mb-4">Content Management System</h2>
@@ -117,12 +114,8 @@ export default function Login() {
 
                 {/* Mobile - Image/Info (visible on mobile) */}
                 <div className="lg:hidden bg-gradient-to-br from-green-700 to-green-900 p-8 text-center">
-                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.083 12.083 0 01.665-6.479L12 14z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.083 12.083 0 01.665-6.479L12 14z" />
-                        </svg>
+                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 overflow-hidden shadow-lg">
+                        <img src={ccdologo} alt="City College of Cagayan de Oro logo" className="w-full h-full object-contain p-2" />
                     </div>
                     <h2 className="text-xl font-bold text-white mb-2">Content Management System</h2>
                     <p className="text-white/70 text-xs">

@@ -84,15 +84,10 @@ const Footer = () => {
                             <span className="w-1.5 h-6 bg-gradient-to-b from-green-400 to-green-600 rounded-full mr-3"></span>
                             Quick Links
                         </h3>
-                        <ul className="space-y-3 text-sm">
+                        <ul className="space-y-3 text-sm">  
                             <li>
                                 <Link href="/about" className="text-white/85 hover:text-green-300 transition-all duration-300 hover:translate-x-1 inline-block font-medium">
                                     → About Us
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/academics" className="text-white/85 hover:text-green-300 transition-all duration-300 hover:translate-x-1 inline-block font-medium">
-                                    → Academics
                                 </Link>
                             </li>
                             <li>

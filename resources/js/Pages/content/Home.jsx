@@ -10,6 +10,26 @@ const normalizeImagePath = (value) => {
     return '/' + value.replace(/^\/+/, '');
 };
 
+const SDG_COLORS = {
+    1: { bg: '#E5243B', text: '#FFFFFF', border: '#C81F35' },
+    2: { bg: '#DDA63A', text: '#111827', border: '#C5942A' },
+    3: { bg: '#4C9F38', text: '#FFFFFF', border: '#3D8A30' },
+    4: { bg: '#C5192D', text: '#FFFFFF', border: '#A91427' },
+    5: { bg: '#FF3A21', text: '#FFFFFF', border: '#DB2D19' },
+    6: { bg: '#26BDE2', text: '#0F172A', border: '#1AA4C8' },
+    7: { bg: '#FCC30B', text: '#111827', border: '#E6B108' },
+    8: { bg: '#A21942', text: '#FFFFFF', border: '#861635' },
+    9: { bg: '#FD6925', text: '#FFFFFF', border: '#E55B1D' },
+    10: { bg: '#DD1367', text: '#FFFFFF', border: '#C21058' },
+    11: { bg: '#FD9D24', text: '#111827', border: '#E78E1D' },
+    12: { bg: '#BF8B2E', text: '#FFFFFF', border: '#A77725' },
+    13: { bg: '#3F7E44', text: '#FFFFFF', border: '#2F6536' },
+    14: { bg: '#0A97D9', text: '#FFFFFF', border: '#087EB9' },
+    15: { bg: '#56C02B', text: '#111827', border: '#47A323' },
+    16: { bg: '#00689D', text: '#FFFFFF', border: '#00557E' },
+    17: { bg: '#19486A', text: '#FFFFFF', border: '#123A53' },
+};
+
 export default function Home({ newsArticles = [] }) {
     const articles = newsArticles.map((article) => ({
         id: article.id,
@@ -19,6 +39,11 @@ export default function Home({ newsArticles = [] }) {
         image: normalizeImagePath(article.image_path || article.image),
         alt: article.article_alt_text || article.alt_text || article.title || 'News image',
         link: `/news/${article.id}`,
+        sdgNumbers: typeof article.sdg_numbers === 'string' && article.sdg_numbers
+            ? article.sdg_numbers.split(',').map((value) => Number(value.trim())).filter((value) => !Number.isNaN(value))
+            : Array.isArray(article.sdg_numbers)
+                ? article.sdg_numbers
+                : [],
     }));
 
     useEffect(() => {
@@ -161,15 +186,42 @@ export default function Home({ newsArticles = [] }) {
                                     </div>
 
                                     <div className="news-card-content">
+                                        <div className="mb-3 flex flex-wrap gap-2">
+                                            {news.sdgNumbers.length > 0 ? (
+                                                news.sdgNumbers.map((sdgNumber) => {
+                                                    const palette = SDG_COLORS[sdgNumber] || { bg: '#E5E7EB', text: '#111827', border: '#D1D5DB' };
+
+                                                    return (
+                                                        <span
+                                                            key={`${news.id}-sdg-${sdgNumber}`}
+                                                            className="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] border"
+                                                            style={{
+                                                                backgroundColor: palette.bg,
+                                                                color: palette.text,
+                                                                borderColor: palette.border,
+                                                            }}
+                                                        >
+                                                            SDG {sdgNumber}
+                                                        </span>
+                                                    );
+                                                })
+                                            ) : (
+                                                <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.08em] text-gray-500 border border-gray-200">
+                                                    No SDG
+                                                </span>
+                                            )}
+                                        </div>
+
                                         <p className="news-date">
                                             {news.date}
                                         </p>
                                         <h3 className="news-card-title">
                                             {news.title}
                                         </h3>
-                                        <p className="news-excerpt">
-                                            {news.excerpt}
-                                        </p>
+                                        <div
+                                            className="news-excerpt"
+                                            dangerouslySetInnerHTML={{ __html: news.excerpt.replace(/<p[^>]*>|<\/p>/gi, '') }}
+                                        />
                                         <a
                                             href={news.link || '#'}
                                             className="news-read-more"
@@ -197,83 +249,6 @@ export default function Home({ newsArticles = [] }) {
                         <a href="/news/latest" className="news-view-all-btn">
                             View All News
                         </a>
-                    </div>
-                </div>
-            </section>
-
-            {/* --- VISIT OUR CAMPUS SECTION --- */}
-            <section className="visit-campus-section">
-                <div className="visit-campus-container">
-                    <div className="visit-campus-header">
-                        <h2 className="visit-campus-title">Visit Our Campus</h2>
-                        <div className="visit-campus-underline"></div>
-                    </div>
-
-                    <div className="visit-campus-grid">
-                        {/* Map Embed */}
-                        <div className="map-embed-wrapper">
-                            <iframe
-                                src="https://www.google.com/maps?q=City+College+of+Cagayan+de+Oro&output=embed"
-                                allowFullScreen=""
-                                loading="lazy"
-                                referrerPolicy="no-referrer-when-downgrade"
-                                title="CCCO Location Map"
-                            ></iframe>
-                        </div>
-
-                        {/* Contact Info */}
-                        <div className="campus-info-wrapper">
-                            <div className="contact-list">
-                                <div className="contact-item">
-                                    <div className="contact-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
-                                    </div>
-                                    <div className="contact-text">
-                                        <h4>Address</h4>
-                                        <p>Vamenta Boulevard, Carmen, Cagayan de Oro City, Misamis Oriental, Philippines</p>
-                                    </div>
-                                </div>
-
-                                <div className="contact-item">
-                                    <div className="contact-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                        </svg>
-                                    </div>
-                                    <div className="contact-text">
-                                        <h4>Contact Numbers</h4>
-                                        <p>(088) 857 1234<br />(088) 857 5678</p>
-                                    </div>
-                                </div>
-
-                                <div className="contact-item">
-                                    <div className="contact-icon">
-                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                    </div>
-                                    <div className="contact-text">
-                                        <h4>Office Hours</h4>
-                                        <p>Monday - Friday: 8:00 AM - 5:00 PM<br />Saturday: 8:00 AM - 12:00 PM</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <a
-                                href="https://www.google.com/maps/dir/?api=1&destination=City+College+of+Cagayan+de+Oro"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="get-directions-btn"
-                            >
-                                Get Directions
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                                </svg>
-                            </a>
-                        </div>
                     </div>
                 </div>
             </section>

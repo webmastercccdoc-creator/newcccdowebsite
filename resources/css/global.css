@@ -18,3 +18,16 @@
     color: #6b7280;
     font-style: italic;
 }
+
+/* Load the font */
+@font-face {
+    font-family: 'Runethia';
+    src: url('/fonts/Runethia.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Create the utility class */
+.font-runethia {
+    font-family: 'Runethia', serif;
+}

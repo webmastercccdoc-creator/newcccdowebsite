@@ -106,6 +106,10 @@ Route::get('/news/latest', function () {
     return Inertia::render('content/News/LatestNews');
 })->name('news.latest');
 
+Route::get('/news/events', function () {
+    return Inertia::render('content/News/UpcomingEvents');
+})->name('news.events');
+
 Route::get('/contact-us', function () {
     return Inertia::render('content/Contact');
 })->name('contact-us');

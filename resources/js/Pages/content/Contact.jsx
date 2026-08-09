@@ -202,7 +202,7 @@ export default function Contact() {
                         <div className="mt-6 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 md:p-6">
                             <div className="w-full h-[300px] md:h-[350px] rounded-lg overflow-hidden">
                                 <iframe
-                                    src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3941.551059877368!2d124.64872289999999!3d8.490906999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zOMKwMjknMjcuMyJOIDEyNMKwMzgnNTUuNCJF!5e0!3m2!1sen!2sph!4v1712345678901!5m2!1sen!2sph"
+                                    src="https://www.google.com/maps?q=City+College+of+Cagayan+de+Oro&output=embed"
                                     width="100%"
                                     height="100%"
                                     style={{ border: 0 }}

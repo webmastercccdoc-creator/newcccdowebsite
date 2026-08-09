@@ -67,8 +67,9 @@ export default function ViewArticle({ article: initialArticle = null, articleIma
 
             const figure = document.createElement('figure');
             figure.className = 'my-8 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm';
+            
             figure.innerHTML = `
-                <img src="${imageUrl}" alt="Article image ${index + 1}" class="h-72 w-full object-cover sm:h-80 md:h-96" />
+                <img src="${imageUrl}" alt="Article image ${index + 1}" class="w-full h-auto object-contain max-h-[600px] mx-auto" />
                 <figcaption class="px-4 py-3 text-sm text-slate-500">${article?.title || 'Article image'} ${index + 1}</figcaption>
             `;
 
@@ -87,7 +88,7 @@ export default function ViewArticle({ article: initialArticle = null, articleIma
             mainClassName="py-0" 
             className="overflow-hidden pb-0"
         >
-            {/* UPDATED: SOLID GREEN BACKGROUND WITH WHITE STRIPES */}
+            {/* SOLID GREEN BACKGROUND WITH WHITE STRIPES */}
             <div 
                 className="relative w-full py-16 md:py-24 lg:py-32 shadow-lg overflow-hidden"
                 style={{
@@ -138,11 +139,36 @@ export default function ViewArticle({ article: initialArticle = null, articleIma
                 </div>
             </div>
 
-            {/* UPDATED: ARTICLE BODY WITHOUT IMAGES */}
+            {/* ARTICLE BODY */}
             <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+                
+                {/* --- BACK BUTTON FLOATING OUTSIDE THE CARD (Top Left) --- */}
+                <div className="flex justify-start mb-6">
+                    <button
+                        onClick={() => window.history.back()}
+                        className="inline-flex items-center gap-2 text-sm font-medium text-[#0f5132] hover:text-green-800 transition-colors group"
+                    >
+                        <svg 
+                            className="w-4 h-4 transition-transform group-hover:-translate-x-1" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                        </svg>
+                        Back to Latest News
+                    </button>
+                </div>
+
                 {article ? (
                     <article className="bg-white rounded-none md:rounded-xl md:shadow-lg overflow-hidden">
                         <div className="px-4 sm:px-8 md:px-12 py-8 md:py-12">
+                            <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-green-700">
+                                {article?.department || 'News'}
+                            </p>
+                            <h2 className="mb-6 text-3xl font-bold text-gray-900 md:text-4xl">
+                                {article?.title}
+                            </h2>
                             <div
                                 className="prose prose-lg max-w-none text-gray-700"
                                 dangerouslySetInnerHTML={contentHtml}

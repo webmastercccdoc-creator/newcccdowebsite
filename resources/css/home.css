@@ -360,8 +360,8 @@
 .rankings-banner {
     width: 100%;
     background-color: #ffffff;
-    /* Reduced top and bottom padding here */
-    padding: 2.5rem 1.5rem; 
+    /* Reduced padding slightly */
+    padding: 1rem 1.5rem; 
     border-bottom: 1px solid #e2e8f0;
     position: relative;
     overflow: hidden;
@@ -379,7 +379,8 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 2.5rem 4rem;
+    /* Compressed gaps to bring them closer with tiny spacing */
+    gap: 1rem 1.5rem; 
 }
 
 .ranking-logo-item {
@@ -387,30 +388,30 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 180px;
-    max-width: 260px;
+    min-width: 140px;
+    max-width: 200px; /* Reduced from 260px */
     opacity: 0.9;
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .ranking-logo {
     width: 100%;
-    max-width: 220px;
-    height: 140px;
+    max-width: 180px; /* Reduced from 220px */
+    height: 100px; /* Reduced from 140px */
     object-fit: contain;
     display: block;
 }
 
-/* Specific tweaks for THE and WURI to make them significantly larger/zoomed */
+/* Specific tweaks for THE and WURI to be slightly smaller but still prominent */
 .ranking-logo-item:nth-child(1),
 .ranking-logo-item:nth-child(2) {
-    max-width: 340px;
+    max-width: 260px; /* Reduced from 340px */
 }
 
 .ranking-logo-item:nth-child(1) .ranking-logo,
 .ranking-logo-item:nth-child(2) .ranking-logo {
-    max-width: 340px;
-    height: 180px;
+    max-width: 260px; /* Reduced from 340px */
+    height: 130px; /* Reduced from 180px */
 }
 
 .ranking-logo-item:hover {
@@ -421,41 +422,40 @@
 /* Tablet */
 @media (max-width: 992px) {
     .rankings-inner {
-        gap: 2rem 2.5rem;
+        gap: 1rem 1.25rem; /* Tighter gap */
     }
     .ranking-logo {
-        max-width: 180px;
-        height: 110px;
+        max-width: 150px;
+        height: 85px;
     }
     .ranking-logo-item:nth-child(1) .ranking-logo,
     .ranking-logo-item:nth-child(2) .ranking-logo {
-        max-width: 260px;
-        height: 140px;
+        max-width: 200px;
+        height: 100px;
     }
 }
 
 /* Mobile */
 @media (max-width: 640px) {
     .rankings-banner {
-        /* Reduced top and bottom padding here */
-        padding: 1.5rem 1rem;
+        padding: 0.75rem 1rem; /* Tighter padding */
     }
     .rankings-inner {
-        gap: 1.5rem 2rem;
+        gap: 0.75rem 1rem; /* Tighter gap */
     }
     .ranking-logo-item {
-        min-width: 140px;
-        max-width: 170px;
+        min-width: 120px;
+        max-width: 140px;
         flex: 1 1 40%;
     }
     .ranking-logo {
-        max-width: 150px;
-        height: 90px;
+        max-width: 130px;
+        height: 75px;
     }
     .ranking-logo-item:nth-child(1) .ranking-logo,
     .ranking-logo-item:nth-child(2) .ranking-logo {
-        max-width: 170px;
-        height: 100px;
+        max-width: 140px;
+        height: 80px;
     }
 }
 
@@ -1285,4 +1285,3 @@
     background: rgba(255, 255, 255, 0.05);
     transform: translateY(-2px);
 }
-

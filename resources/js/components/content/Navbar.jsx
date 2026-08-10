@@ -180,7 +180,8 @@ const Navbar = () => {
 
     return (
         <nav 
-            className="sticky top-0 z-50 w-full backdrop-blur-md bg-gradient-to-r from-green-800 via-green-700 to-green-800 shadow-xl border-b border-green-600/30" 
+            className="sticky top-0 z-50 w-full backdrop-blur-md shadow-xl border-b border-green-600/30 font-sans" 
+            style={{ backgroundColor: '#157D3C' }}
             role="navigation" 
             aria-label="Main navigation"
         >
@@ -221,7 +222,7 @@ const Navbar = () => {
                                                     flex items-center justify-center gap-1 rounded-xl px-3 lg:px-4 xl:px-5 py-2.5 text-sm font-semibold 
                                                     transition-all duration-300 cubic-bezier(0.4, 0, 0.2, 1)
                                                     text-white hover:bg-white/15 hover:text-green-100 hover:shadow-lg
-                                                    whitespace-nowrap
+                                                    whitespace-nowrap font-sans
                                                     ${openDropdown === item.name ? 'bg-white/20 text-green-100 shadow-lg' : ''}
                                                 `}
                                                 aria-expanded={openDropdown === item.name}
@@ -243,7 +244,7 @@ const Navbar = () => {
                                             {openDropdown === item.name && (
                                                 <div 
                                                     ref={dropdownRef}
-                                                    className="absolute left-1/2 -translate-x-1/2 mt-3 w-auto min-w-[720px] max-w-[950px] origin-top bg-white/90 backdrop-blur-lg shadow-2xl ring-1 ring-white/50 transition-all duration-300 ease-out rounded-xl"
+                                                    className="absolute left-1/2 -translate-x-1/2 mt-3 w-auto min-w-[720px] max-w-[950px] origin-top bg-white/90 backdrop-blur-lg shadow-2xl ring-1 ring-white/50 transition-all duration-300 ease-out rounded-xl font-sans"
                                                     role="menu"
                                                     style={{
                                                         animation: 'slideDown 0.25s ease-out'
@@ -256,10 +257,10 @@ const Navbar = () => {
                                                         <div className="mb-5 pb-5 border-b border-green-200/60">
                                                             <div className="flex items-center justify-between">
                                                                 <div>
-                                                                    <h3 className="text-xl font-bold text-green-800 tracking-tight">
+                                                                    <h3 className="text-xl font-bold text-green-800 tracking-tight font-sans">
                                                                         {item.name}
                                                                     </h3>
-                                                                    <p className="text-sm text-gray-600 mt-1.5 font-medium">
+                                                                    <p className="text-sm text-gray-600 mt-1.5 font-medium font-sans">
                                                                         {item.name === 'About Us' && 'Learn about our institution'}
                                                                         {item.name === 'Program' && 'Explore our academic offerings'}
                                                                         {item.name === 'News' && 'Stay updated with latest news'}
@@ -275,15 +276,15 @@ const Navbar = () => {
                                                                 <a
                                                                     key={subItem.name}
                                                                     href={subItem.href}
-                                                                    className="group relative px-5 py-4 text-left transition-all duration-300 hover:bg-gradient-to-br hover:from-green-50 hover:to-green-100 hover:text-green-800 border-2 border-transparent hover:border-green-300/60 rounded-xl hover:shadow-md"
+                                                                    className="group relative px-5 py-4 text-left transition-all duration-300 hover:bg-gradient-to-br hover:from-green-50 hover:to-green-100 hover:text-green-800 border-2 border-transparent hover:border-green-300/60 rounded-xl hover:shadow-md font-sans"
                                                                     role="menuitem"
                                                                     onClick={() => setOpenDropdown(null)}
                                                                 >
-                                                                    <div className="font-semibold text-green-800 group-hover:text-green-900">
+                                                                    <div className="font-semibold text-green-800 group-hover:text-green-900 font-sans">
                                                                         {subItem.name}
                                                                     </div>
                                                                     {subItem.description && (
-                                                                        <div className="text-xs text-gray-600 mt-2 group-hover:text-gray-800 leading-relaxed">
+                                                                        <div className="text-xs text-gray-600 mt-2 group-hover:text-gray-800 leading-relaxed font-sans">
                                                                             {subItem.description}
                                                                         </div>
                                                                     )}
@@ -296,7 +297,7 @@ const Navbar = () => {
                                                     {/* Dropdown Footer */}
                                                     <div className="border-t border-green-200/60 bg-gradient-to-r from-green-50/80 to-green-100/50 backdrop-blur-sm p-5">
                                                         <div className="flex items-center justify-between">
-                                                            <span className="text-sm text-green-700 font-semibold tracking-wide">
+                                                            <span className="text-sm text-green-700 font-semibold tracking-wide font-sans">
                                                                 Browse all {item.name} →
                                                             </span>
                             
@@ -308,7 +309,7 @@ const Navbar = () => {
                                     ) : (
                                         <a
                                             href={item.href}
-                                            className="flex items-center justify-center rounded-xl px-3 lg:px-4 xl:px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/15 hover:text-green-100 hover:shadow-lg whitespace-nowrap"
+                                            className="flex items-center justify-center rounded-xl px-3 lg:px-4 xl:px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/15 hover:text-green-100 hover:shadow-lg whitespace-nowrap font-sans"
                                         >
                                             {item.name}
                                         </a>
@@ -321,7 +322,7 @@ const Navbar = () => {
                         <div className="flex-shrink-0 ml-4">
                             <a
                                 href="/apply"
-                                className="rounded-full bg-white px-7 lg:px-8 xl:px-9 py-2.5 text-sm font-bold text-green-700 transition-all duration-300 hover:bg-green-50 hover:shadow-xl hover:scale-110 hover:-translate-y-1 whitespace-nowrap tracking-wide"
+                                className="rounded-full bg-white px-7 lg:px-8 xl:px-9 py-2.5 text-sm font-bold text-green-700 transition-all duration-300 hover:bg-green-50 hover:shadow-xl hover:scale-110 hover:-translate-y-1 whitespace-nowrap tracking-wide font-sans"
                             >
                                 Enroll Now
                             </a>
@@ -366,7 +367,7 @@ const Navbar = () => {
                                             onClick={() => toggleDropdown(item.name)}
                                             className={`
                                                 flex w-full items-center justify-between rounded-lg px-4 py-3 text-base font-medium
-                                                transition-colors text-white hover:bg-white/10 hover:text-green-300
+                                                transition-colors text-white hover:bg-white/10 hover:text-green-300 font-sans
                                                 ${openDropdown === item.name ? 'bg-white/10 text-green-300' : ''}
                                             `}
                                             aria-expanded={openDropdown === item.name}
@@ -385,22 +386,22 @@ const Navbar = () => {
                                         
                                         {/* Mobile Sub-menu - Semi-transparent */}
                                         <div className={`
-                                            ml-4 space-y-1 overflow-hidden transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-lg mt-1 rounded-lg
+                                            ml-4 space-y-1 overflow-hidden transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-lg mt-1 rounded-lg font-sans
                                             ${openDropdown === item.name ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}
                                         `}>
                                             {item.dropdown.map((subItem) => (
                                                 <a
                                                     key={subItem.name}
                                                     href={subItem.href}
-                                                    className="block px-4 py-2.5 text-sm text-green-700 transition-colors hover:bg-green-50/70 hover:text-green-800 rounded-lg"
+                                                    className="block px-4 py-2.5 text-sm text-green-700 transition-colors hover:bg-green-50/70 hover:text-green-800 rounded-lg font-sans"
                                                     onClick={() => {
                                                         setOpenDropdown(null);
                                                         setIsMobileMenuOpen(false);
                                                     }}
                                                 >
-                                                    <div className="font-medium">{subItem.name}</div>
+                                                    <div className="font-medium font-sans">{subItem.name}</div>
                                                     {subItem.description && (
-                                                        <div className="text-xs text-gray-500/80 mt-0.5">{subItem.description}</div>
+                                                        <div className="text-xs text-gray-500/80 mt-0.5 font-sans">{subItem.description}</div>
                                                     )}
                                                 </a>
                                             ))}
@@ -409,7 +410,7 @@ const Navbar = () => {
                                 ) : (
                                     <a
                                         href={item.href}
-                                        className="block rounded-lg px-4 py-3 text-base font-medium text-white transition-colors hover:bg-white/10 hover:text-green-300"
+                                        className="block rounded-lg px-4 py-3 text-base font-medium text-white transition-colors hover:bg-white/10 hover:text-green-300 font-sans"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         {item.name}
@@ -422,7 +423,7 @@ const Navbar = () => {
                         <div className="pt-4">
                             <a
                                 href="/apply"
-                                className="block w-full rounded-full bg-white px-4 py-3 text-center font-semibold text-green-700 transition-all hover:bg-green-50 hover:shadow-lg"
+                                className="block w-full rounded-full bg-white px-4 py-3 text-center font-semibold text-green-700 transition-all hover:bg-green-50 hover:shadow-lg font-sans"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
                                 Apply Now

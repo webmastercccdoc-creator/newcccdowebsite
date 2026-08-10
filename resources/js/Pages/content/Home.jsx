@@ -2,12 +2,12 @@ import { useEffect } from 'react';
 import MainLayout from '../../layouts/MainLayout';
 import '../../../css/home.css';
 import { initLandingAnimations, data } from '../../home-animations';
-import logoSrc from '../../assets/logos/cccdoclogo.png';
 
-// Import your ranking logos
+// Ranking Logos
 import theLogo from '../../assets/logos/the.png';
 import wuriLogo from '../../assets/logos/wuri.png';
 import greenMetricLogo from '../../assets/logos/green-metric.png';
+import sIndexLogo from '../../assets/logos/s-index.png';
 import sdgLogo from '../../assets/logos/sdg.png';
 
 const normalizeImagePath = (value) => {
@@ -37,11 +37,20 @@ const SDG_COLORS = {
     17: { bg: '#19486A', text: '#FFFFFF', border: '#123A53' },
 };
 
+const RANKINGS = [
+    { id: 'the',          logo: theLogo,          alt: 'Times Higher Education' },
+    { id: 'wuri',         logo: wuriLogo,         alt: 'WURI - World University Rankings for Innovation' },
+    { id: 'green-metric', logo: greenMetricLogo,  alt: 'UI Green Metric World University Rankings' },
+    { id: 's-index',      logo: sIndexLogo,       alt: 'AD Scientific Index' },
+    { id: 'sdg',          logo: sdgLogo,          alt: 'UN Sustainable Development Goals' },
+];
+
 export default function Home({ newsArticles = [] }) {
-    // Take only first 8 articles for the 2x4 grid
-    const articles = newsArticles.slice(0, 8).map((article) => ({
+    const articles = newsArticles.map((article) => ({
         id: article.id,
+        date: article.date || article.created_at || '',
         title: article.title || 'News item',
+        excerpt: article.content || '',
         image: normalizeImagePath(article.image_path || article.image),
         alt: article.article_alt_text || article.alt_text || article.title || 'News image',
         link: `/news/${article.id}`,
@@ -59,8 +68,6 @@ export default function Home({ newsArticles = [] }) {
 
     return (
         <MainLayout title="Home" showTitle={false} maxWidth="full" containerClassName="px-0" mainClassName="py-0" className="overflow-hidden pb-0">
-            
-            {/* --- LANDING FEATURED CARDS --- */}
             <div className="landing-page w-full">
                 <div className="indicator"></div>
 
@@ -131,13 +138,31 @@ export default function Home({ newsArticles = [] }) {
 
                 <div className="pagination" id="pagination">
                     <div className="arrow arrow-left">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M15.75 19.5L8.25 12l7.5-7.5"
+                            />
                         </svg>
                     </div>
                     <div className="arrow arrow-right">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                            />
                         </svg>
                     </div>
                     <div className="progress-sub-container">
@@ -150,23 +175,20 @@ export default function Home({ newsArticles = [] }) {
                 <div className="cover"></div>
             </div>
 
-            {/* --- RECOGNITIONS & RANKINGS STRIP --- */}
-            <section className="recognitions-strip">
-                <div className="recognitions-container">
-                    <div className="recognition-item">
-                        <img src={theLogo} alt="Times Higher Education" className="recognition-logo" />
-                    </div>
-
-                    <div className="recognition-item">
-                        <img src={wuriLogo} alt="WURI" className="recognition-logo" />
-                    </div>
-
-                    <div className="recognition-item">
-                        <img src={greenMetricLogo} alt="UI Green Metric" className="recognition-logo" />
-                    </div>
-
-                    <div className="recognition-item">
-                        <img src={sdgLogo} alt="Sustainable Development Goals" className="recognition-logo" />
+            {/* --- RANKINGS & RECOGNITION BANNER --- */}
+            <section className="rankings-banner">
+                <div className="rankings-container">
+                    <div className="rankings-inner">
+                        {RANKINGS.map((item) => (
+                            <div className="ranking-logo-item" key={item.id}>
+                                <img
+                                    src={item.logo}
+                                    alt={item.alt}
+                                    className="ranking-logo"
+                                    loading="lazy"
+                                />
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>
@@ -183,11 +205,10 @@ export default function Home({ newsArticles = [] }) {
 
                     <div className="news-grid">
                         {articles.length > 0 ? (
-                            articles.map((news, index) => (
-                                <a
+                            articles.slice(0, 8).map((news, index) => (
+                                <article
                                     key={`news-${news.id || index}`}
-                                    className="news-card news-card-link"
-                                    href={news.link || '#'}
+                                    className="news-card"
                                 >
                                     <div className="news-card-image-wrapper">
                                         <img
@@ -195,57 +216,60 @@ export default function Home({ newsArticles = [] }) {
                                             alt={news.title}
                                             className="news-card-image"
                                         />
-
-                                        <div className="news-card-sdg-group">
-                                            <div className="news-card-sdg-badges">
-                                                {news.sdgNumbers.length > 0 ? (
-                                                    news.sdgNumbers.map((sdgNumber) => {
-                                                        const palette = SDG_COLORS[sdgNumber] || { bg: '#E5E7EB', text: '#111827', border: '#D1D5DB' };
-
-                                                        return (
-                                                            <span
-                                                                key={`${news.id}-sdg-${sdgNumber}`}
-                                                                className="sdg-badge"
-                                                                style={{
-                                                                    backgroundColor: palette.bg,
-                                                                    color: palette.text,
-                                                                    borderColor: palette.border,
-                                                                }}
-                                                            >
-                                                                SDG {sdgNumber}
-                                                            </span>
-                                                        );
-                                                    })
-                                                ) : (
-                                                    <span className="sdg-badge sdg-badge-empty">
-                                                        No SDG
-                                                    </span>
-                                                )}
-                                            </div>
-
-                                            <img src={logoSrc} alt="CCCO Logo" className="news-card-ccco-logo" />
-                                        
-                                            <div className="news-card-sdg-icon">SDG</div>
-                                        </div>
                                     </div>
 
                                     <div className="news-card-content">
-                                        <h3 
-                                            className="news-card-title"
-                                            style={{
-                                                padding: '8px 14px',
-                                                borderRadius: '6px',
-                                                display: 'inline-block',
-                                                width: '100%',
-                                                marginBottom: '0.75rem',
-                                                fontFamily: 'sans-serif',
-                                            }}
-                                        >
+                                        <div className="mb-3 flex flex-wrap gap-2">
+                                            {news.sdgNumbers.length > 0 ? (
+                                                news.sdgNumbers.map((sdgNumber) => {
+                                                    const palette = SDG_COLORS[sdgNumber] || { bg: '#E5E7EB', text: '#111827', border: '#D1D5DB' };
+
+                                                    return (
+                                                        <span
+                                                            key={`${news.id}-sdg-${sdgNumber}`}
+                                                            className="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] border"
+                                                            style={{
+                                                                backgroundColor: palette.bg,
+                                                                color: palette.text,
+                                                                borderColor: palette.border,
+                                                            }}
+                                                        >
+                                                            SDG {sdgNumber}
+                                                        </span>
+                                                    );
+                                                })
+                                            ) : (
+                                                <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.08em] text-gray-500 border border-gray-200">
+                                                    No SDG
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <p className="news-date">
+                                            {news.date}
+                                        </p>
+                                        <h3 className="news-card-title">
                                             {news.title}
                                         </h3>
-                                        <div className="news-card-footer"></div>
+                                        <div
+                                            className="news-excerpt"
+                                            dangerouslySetInnerHTML={{ __html: news.excerpt.replace(/<p[^>]*>|<\/p>/gi, '') }}
+                                        />
+                                        <a
+                                            href={news.link || '#'}
+                                            className="news-read-more"
+                                        >
+                                            Read More
+                                            <svg
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                            </svg>
+                                        </a>
                                     </div>
-                                </a>
+                                </article>
                             ))
                         ) : (
                             <div className="news-empty-message">

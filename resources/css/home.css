@@ -355,6 +355,111 @@
 }
 
 /* =============================================
+   RANKINGS & RECOGNITION BANNER
+   ============================================= */
+.rankings-banner {
+    width: 100%;
+    background-color: #ffffff;
+    /* Reduced top and bottom padding here */
+    padding: 2.5rem 1.5rem; 
+    border-bottom: 1px solid #e2e8f0;
+    position: relative;
+    overflow: hidden;
+}
+
+.rankings-container {
+    max-width: 80rem;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.rankings-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem 4rem;
+}
+
+.ranking-logo-item {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 180px;
+    max-width: 260px;
+    opacity: 0.9;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.ranking-logo {
+    width: 100%;
+    max-width: 220px;
+    height: 140px;
+    object-fit: contain;
+    display: block;
+}
+
+/* Specific tweaks for THE and WURI to make them significantly larger/zoomed */
+.ranking-logo-item:nth-child(1),
+.ranking-logo-item:nth-child(2) {
+    max-width: 340px;
+}
+
+.ranking-logo-item:nth-child(1) .ranking-logo,
+.ranking-logo-item:nth-child(2) .ranking-logo {
+    max-width: 340px;
+    height: 180px;
+}
+
+.ranking-logo-item:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+    .rankings-inner {
+        gap: 2rem 2.5rem;
+    }
+    .ranking-logo {
+        max-width: 180px;
+        height: 110px;
+    }
+    .ranking-logo-item:nth-child(1) .ranking-logo,
+    .ranking-logo-item:nth-child(2) .ranking-logo {
+        max-width: 260px;
+        height: 140px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+    .rankings-banner {
+        /* Reduced top and bottom padding here */
+        padding: 1.5rem 1rem;
+    }
+    .rankings-inner {
+        gap: 1.5rem 2rem;
+    }
+    .ranking-logo-item {
+        min-width: 140px;
+        max-width: 170px;
+        flex: 1 1 40%;
+    }
+    .ranking-logo {
+        max-width: 150px;
+        height: 90px;
+    }
+    .ranking-logo-item:nth-child(1) .ranking-logo,
+    .ranking-logo-item:nth-child(2) .ranking-logo {
+        max-width: 170px;
+        height: 100px;
+    }
+}
+
+/* =============================================
    LATEST NEWS & UPDATES
    ============================================= */
 .news-section {
@@ -1179,47 +1284,4 @@
     border-color: rgba(255, 255, 255, 0.5);
     background: rgba(255, 255, 255, 0.05);
     transform: translateY(-2px);
-}
-
-/* =============================================
-   RECOGNITIONS & RANKINGS STRIP
-   ============================================= */
-.recognitions-strip {
-    background-color: #ffffff;
-    padding: 4rem 1.5rem;
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.recognitions-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center; /* Centers the logos horizontally */
-    align-items: center;
-    gap: 4rem; /* Space between the larger logos */
-}
-
-.recognition-item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.recognition-logo {
-    height: 90px; /* Made the images bigger */
-    width: auto;
-    max-width: 100%;
-    object-fit: contain;
-    flex-shrink: 0;
-}
-
-@media (max-width: 768px) {
-    .recognitions-container {
-        gap: 2.5rem;
-    }
-    
-    .recognition-logo {
-        height: 70px; /* Slightly smaller on mobile to fit nicely */
-    }
 }

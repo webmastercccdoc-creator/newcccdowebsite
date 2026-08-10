@@ -4,6 +4,12 @@ import '../../../css/home.css';
 import { initLandingAnimations, data } from '../../home-animations';
 import logoSrc from '../../assets/logos/cccdoclogo.png';
 
+// Import your ranking logos
+import theLogo from '../../assets/logos/the.png';
+import wuriLogo from '../../assets/logos/wuri.png';
+import greenMetricLogo from '../../assets/logos/green-metric.png';
+import sdgLogo from '../../assets/logos/sdg.png';
+
 const normalizeImagePath = (value) => {
     if (!value) return 'https://placehold.co/600x400/1e3a8a/ffffff?text=No+Image';
     if (/^https?:\/\//i.test(value) || value.startsWith('data:')) return value;
@@ -32,11 +38,10 @@ const SDG_COLORS = {
 };
 
 export default function Home({ newsArticles = [] }) {
-    const articles = newsArticles.map((article) => ({
+    // Take only first 8 articles for the 2x4 grid
+    const articles = newsArticles.slice(0, 8).map((article) => ({
         id: article.id,
-        date: article.date || article.created_at || '',
         title: article.title || 'News item',
-        excerpt: article.content || '',
         image: normalizeImagePath(article.image_path || article.image),
         alt: article.article_alt_text || article.alt_text || article.title || 'News image',
         link: `/news/${article.id}`,
@@ -54,6 +59,8 @@ export default function Home({ newsArticles = [] }) {
 
     return (
         <MainLayout title="Home" showTitle={false} maxWidth="full" containerClassName="px-0" mainClassName="py-0" className="overflow-hidden pb-0">
+            
+            {/* --- LANDING FEATURED CARDS --- */}
             <div className="landing-page w-full">
                 <div className="indicator"></div>
 
@@ -124,31 +131,13 @@ export default function Home({ newsArticles = [] }) {
 
                 <div className="pagination" id="pagination">
                     <div className="arrow arrow-left">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M15.75 19.5L8.25 12l7.5-7.5"
-                            />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                         </svg>
                     </div>
                     <div className="arrow arrow-right">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-                            />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                         </svg>
                     </div>
                     <div className="progress-sub-container">
@@ -196,44 +185,43 @@ export default function Home({ newsArticles = [] }) {
                         {articles.length > 0 ? (
                             articles.map((news, index) => (
                                 <a
-                                        key={`news-${news.id || index}`}
-                                        className="news-card news-card-link"
-                                        href={news.link || '#'}
-                                    >
+                                    key={`news-${news.id || index}`}
+                                    className="news-card news-card-link"
+                                    href={news.link || '#'}
+                                >
                                     <div className="news-card-image-wrapper">
                                         <img
                                             src={news.image}
                                             alt={news.title}
                                             className="news-card-image"
                                         />
-                                    </div>
 
-                                    <div className="news-card-content">
-                                        <div className="mb-3 flex flex-wrap gap-2">
-                                            {news.sdgNumbers.length > 0 ? (
-                                                news.sdgNumbers.map((sdgNumber) => {
-                                                    const palette = SDG_COLORS[sdgNumber] || { bg: '#E5E7EB', text: '#111827', border: '#D1D5DB' };
+                                        <div className="news-card-sdg-group">
+                                            <div className="news-card-sdg-badges">
+                                                {news.sdgNumbers.length > 0 ? (
+                                                    news.sdgNumbers.map((sdgNumber) => {
+                                                        const palette = SDG_COLORS[sdgNumber] || { bg: '#E5E7EB', text: '#111827', border: '#D1D5DB' };
 
-                                                    return (
-                                                        <span
-                                                            key={`${news.id}-sdg-${sdgNumber}`}
-                                                            className="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] border"
-                                                            style={{
-                                                                backgroundColor: palette.bg,
-                                                                color: palette.text,
-                                                                borderColor: palette.border,
-                                                            }}
-                                                        >
-                                                            SDG {sdgNumber}
-                                                        </span>
-                                                    );
-                                                })
-                                            ) : (
-                                                <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.08em] text-gray-500 border border-gray-200">
-                                                    No SDG
-                                                </span>
-                                            )}
-                                        </div>
+                                                        return (
+                                                            <span
+                                                                key={`${news.id}-sdg-${sdgNumber}`}
+                                                                className="sdg-badge"
+                                                                style={{
+                                                                    backgroundColor: palette.bg,
+                                                                    color: palette.text,
+                                                                    borderColor: palette.border,
+                                                                }}
+                                                            >
+                                                                SDG {sdgNumber}
+                                                            </span>
+                                                        );
+                                                    })
+                                                ) : (
+                                                    <span className="sdg-badge sdg-badge-empty">
+                                                        No SDG
+                                                    </span>
+                                                )}
+                                            </div>
 
                                             <img src={logoSrc} alt="CCCO Logo" className="news-card-ccco-logo" />
                                         
@@ -256,8 +244,8 @@ export default function Home({ newsArticles = [] }) {
                                             {news.title}
                                         </h3>
                                         <div className="news-card-footer"></div>
-                                        </div>
-                                    </a>
+                                    </div>
+                                </a>
                             ))
                         ) : (
                             <div className="news-empty-message">

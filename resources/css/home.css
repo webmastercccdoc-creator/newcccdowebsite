@@ -1255,3 +1255,46 @@
     background: rgba(255, 255, 255, 0.05);
     transform: translateY(-2px);
 }
+
+/* =============================================
+   RECOGNITIONS & RANKINGS STRIP
+   ============================================= */
+.recognitions-strip {
+    background-color: #ffffff;
+    padding: 4rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.recognitions-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centers the logos horizontally */
+    align-items: center;
+    gap: 4rem; /* Space between the larger logos */
+}
+
+.recognition-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.recognition-logo {
+    height: 90px; /* Made the images bigger */
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .recognitions-container {
+        gap: 2.5rem;
+    }
+    
+    .recognition-logo {
+        height: 70px; /* Slightly smaller on mobile to fit nicely */
+    }
+}

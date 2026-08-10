@@ -4,6 +4,12 @@ import '../../../css/home.css';
 import { initLandingAnimations, data } from '../../home-animations';
 import logoSrc from '../../assets/logos/cccdoclogo.png';
 
+// Import your ranking logos (Make sure filenames match exactly)
+import theLogo from '../../assets/logos/the.png';
+import wuriLogo from '../../assets/logos/wuri.png';
+import greenMetricLogo from '../../assets/logos/green-metric.png';
+import sdgLogo from '../../assets/logos/sdg.png';
+
 const normalizeImagePath = (value) => {
     if (!value) return 'https://placehold.co/600x400/1e3a8a/ffffff?text=No+Image';
     if (/^https?:\/\//i.test(value) || value.startsWith('data:')) return value;
@@ -160,6 +166,27 @@ export default function Home({ newsArticles = [] }) {
                 <div className="cover"></div>
             </div>
 
+            {/* --- RECOGNITIONS & RANKINGS STRIP --- */}
+            <section className="recognitions-strip">
+                <div className="recognitions-container">
+                    <div className="recognition-item">
+                        <img src={theLogo} alt="Times Higher Education" className="recognition-logo" />
+                    </div>
+
+                    <div className="recognition-item">
+                        <img src={wuriLogo} alt="WURI" className="recognition-logo" />
+                    </div>
+
+                    <div className="recognition-item">
+                        <img src={greenMetricLogo} alt="UI Green Metric" className="recognition-logo" />
+                    </div>
+
+                    <div className="recognition-item">
+                        <img src={sdgLogo} alt="Sustainable Development Goals" className="recognition-logo" />
+                    </div>
+                </div>
+            </section>
+
             {/* --- LATEST NEWS & UPDATES SECTION --- */}
             <section className="news-section">
                 <div className="news-container">
@@ -174,10 +201,10 @@ export default function Home({ newsArticles = [] }) {
                         {articles.length > 0 ? (
                             articles.map((news, index) => (
                                 <a
-                                        key={`news-${news.id || index}`}
-                                        className="news-card news-card-link"
-                                        href={news.link || '#'}
-                                    >
+                                    key={`news-${news.id || index}`}
+                                    className="news-card news-card-link"
+                                    href={news.link || '#'}
+                                >
                                     <div className="news-card-image-wrapper">
                                         <img
                                             src={news.image}
@@ -213,13 +240,13 @@ export default function Home({ newsArticles = [] }) {
                                             </div>
 
                                             <img src={logoSrc} alt="CCCO Logo" className="news-card-ccco-logo" />
-                                        
+
                                             <div className="news-card-sdg-icon">SDG</div>
                                         </div>
                                     </div>
 
                                     <div className="news-card-content">
-                                        <h3 
+                                        <h3
                                             className="news-card-title"
                                             style={{
                                                 padding: '8px 14px',
@@ -233,8 +260,8 @@ export default function Home({ newsArticles = [] }) {
                                             {news.title}
                                         </h3>
                                         <div className="news-card-footer"></div>
-                                        </div>
-                                    </a>
+                                    </div>
+                                </a>
                             ))
                         ) : (
                             <div className="news-empty-message">

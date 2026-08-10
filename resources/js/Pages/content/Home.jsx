@@ -172,7 +172,7 @@ export default function Home({ newsArticles = [] }) {
 
                     <div className="news-grid">
                         {articles.length > 0 ? (
-                            articles.map((news, index) => (
+                            articles.slice(0, 8).map((news, index) => (
                                 <article
                                     key={`news-${news.id || index}`}
                                     className="news-card"

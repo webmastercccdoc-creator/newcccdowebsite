@@ -269,7 +269,10 @@ export default function Home({ newsArticles = [] }) {
                                                     <div className="ensemble-card-image">
                                                         <img src={ensemble.image} alt={ensemble.name} />
                                                         <div className="ensemble-card-overlay">
-                                                            <h4 className="ensemble-name">{ensemble.name}</h4>
+                                                            <div className="ensemble-overlay-content">
+                                                                <h4 className="ensemble-name">{ensemble.name}</h4>
+                                                                <p className="ensemble-overlay-description">{ensemble.description}</p>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>

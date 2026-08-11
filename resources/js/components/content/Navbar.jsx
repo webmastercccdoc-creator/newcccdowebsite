@@ -145,18 +145,18 @@ const Navbar = () => {
             ]
         },
         { 
-            name: 'Research and Extension', 
-            href: '/research-and-extension',
+            name: 'Research', 
+            href: 'https://sites.google.com/view/ritts-cccdo/home',
+        },
+        { 
+            name: 'Extension', 
+            href: '/extension',
             dropdown: [
-                { name: 'Research Agenda', href: '/research-and-extension/research-agenda', description: 'Strategic research priorities and focus areas' },
-                { name: 'Research Publications', href: '/research-and-extension/publications', description: 'Journals, papers, and research outputs' },
-                { name: 'Extension Programs', href: '/research-and-extension/extension-programs', description: 'Community engagement and outreach initiatives' },
-                { name: 'Research Ethics', href: '/research-and-extension/research-ethics', description: 'Guidelines and ethical standards for research' },
-                { name: 'Research Grants', href: '/research-and-extension/research-grants', description: 'Funding opportunities and grant applications' },
-                { name: 'Partners & Linkages', href: '/research-and-extension/partners', description: 'Collaborations with institutions and organizations' },
+                { name: 'Extension Programs', href: '/extension/programs', description: 'Community engagement and outreach initiatives' },
+                { name: 'Partners & Linkages', href: '/extension/partners', description: 'Collaborations with institutions and organizations' },
             ]
         },
-            { 
+        { 
             name: 'Internationalization', 
             href: '/internationalization',
             dropdown: [
@@ -164,8 +164,8 @@ const Navbar = () => {
                 { name: 'Times Higher Education', href: '/internationalization/the', description: 'World university rankings and impact' },
                 { name: 'World Universities with Real Impact', href: '/internationalization/wuri', description: 'Innovative and impactful university initiatives' },
                 { name: 'UI GreenMetric', href: '/internationalization/ui-greenmetric', description: 'World university sustainability rankings and green campus initiatives' }
-                ]
-            },
+            ]
+        },
         { 
             name: 'News', 
             href: '/news',
@@ -201,7 +201,7 @@ const Navbar = () => {
 
                     {/* Desktop Navigation - Maximized Space */}
                     <div className="hidden xl:flex xl:items-center xl:justify-between flex-1 ml-8">
-                        <ul className="flex items-center space-x-1 lg:space-x-2 xl:space-x-3">
+                        <ul className="flex items-center space-x-1 lg:space-x-2 xl:space-x-2">
                             {navigationItems.map((item) => (
                                 <li 
                                     key={item.name} 
@@ -219,7 +219,7 @@ const Navbar = () => {
                                             <button
                                                 onClick={() => toggleDropdown(item.name)}
                                                 className={`
-                                                    flex items-center justify-center gap-1 rounded-xl px-3 lg:px-4 xl:px-5 py-2.5 text-sm font-semibold 
+                                                    flex items-center justify-center gap-1 rounded-xl px-3 lg:px-4 xl:px-4 py-2.5 text-sm font-semibold 
                                                     transition-all duration-300 cubic-bezier(0.4, 0, 0.2, 1)
                                                     text-white hover:bg-white/15 hover:text-green-100 hover:shadow-lg
                                                     whitespace-nowrap font-sans
@@ -262,7 +262,9 @@ const Navbar = () => {
                                                                     </h3>
                                                                     <p className="text-sm text-gray-600 mt-1.5 font-medium font-sans">
                                                                         {item.name === 'About Us' && 'Learn about our institution'}
-                                                                        {item.name === 'Program' && 'Explore our academic offerings'}
+                                                                        {item.name === 'Programs' && 'Explore our academic offerings'}
+                                                                        {item.name === 'Research' && 'Discover our research initiatives'}
+                                                                        {item.name === 'Extension' && 'Community engagement and outreach'}
                                                                         {item.name === 'News' && 'Stay updated with latest news'}
                                                                     </p>
                                                                 </div>
@@ -270,8 +272,11 @@ const Navbar = () => {
                                                             </div>
                                                         </div>
 
-                                                        {/* Horizontal Grid Items with Descriptions */}
-                                                        <div className="grid grid-cols-3 gap-4">
+                                                        {/* Dynamic Grid Items based on dropdown count */}
+                                                        <div 
+                                                            className="grid gap-4" 
+                                                            style={{ gridTemplateColumns: `repeat(${Math.min(item.dropdown.length, 3)}, minmax(0, 1fr))` }}
+                                                        >
                                                             {item.dropdown.map((subItem) => (
                                                                 <a
                                                                     key={subItem.name}
@@ -309,7 +314,7 @@ const Navbar = () => {
                                     ) : (
                                         <a
                                             href={item.href}
-                                            className="flex items-center justify-center rounded-xl px-3 lg:px-4 xl:px-5 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/15 hover:text-green-100 hover:shadow-lg whitespace-nowrap font-sans"
+                                            className="flex items-center justify-center rounded-xl px-3 lg:px-4 xl:px-4 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/15 hover:text-green-100 hover:shadow-lg whitespace-nowrap font-sans"
                                         >
                                             {item.name}
                                         </a>

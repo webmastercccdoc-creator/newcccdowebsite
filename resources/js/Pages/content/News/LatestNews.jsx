@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
-import { motion } from 'framer-motion';
+import '../../../../css/home.css';
 
 const normalizeImagePath = (value) => {
     if (!value) return 'https://placehold.co/600x400/cccccc/ffffff?text=No+Image';
@@ -136,102 +136,102 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
             </div>
 
             {/* Main Content - 4-COLUMN NEWS GRID */}
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 md:py-16">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {filteredArticles.length > 0 ? (
-                        filteredArticles.map((item, index) => {
-                            const thumbnailImage = normalizeImagePath(item.image_path || item.image);
-                            const thumbnailAlt = item.article_alt_text || item.alt_text || item.title;
-                            const sdgNumbers = Array.isArray(item.sdg_numbers)
-                                ? item.sdg_numbers
-                                : typeof item.sdg_numbers === 'string' && item.sdg_numbers
-                                    ? item.sdg_numbers.split(',').map((value) => Number(value.trim())).filter((value) => !Number.isNaN(value))
-                                    : [];
+            <section className="news-section">
+                <div className="news-container">
+                    <div className="news-grid">
+                        {filteredArticles.length > 0 ? (
+                            filteredArticles.map((item, index) => {
+                                const thumbnailImage = normalizeImagePath(item.image_path || item.image);
+                                const thumbnailAlt = item.article_alt_text || item.alt_text || item.title;
+                                const sdgNumbers = Array.isArray(item.sdg_numbers)
+                                    ? item.sdg_numbers
+                                    : typeof item.sdg_numbers === 'string' && item.sdg_numbers
+                                        ? item.sdg_numbers.split(',').map((value) => Number(value.trim())).filter((value) => !Number.isNaN(value))
+                                        : [];
 
-                            return (
-                                <article
-                                    key={item.id}
-                                    className="news-card"
-                                    style={{ animationDelay: `${index * 0.1}s` }}
-                                >
-                                    <div className="news-card-image-wrapper">
-                                        <motion.img
-                                            src={thumbnailImage}
-                                            alt={thumbnailAlt}
-                                            className="news-card-image"
-                                            whileHover={{ scale: 1.06 }}
-                                            transition={{ duration: 0.4 }}
-                                        />
+                                return (
+                                    <article
+                                        key={item.id}
+                                        className="news-card"
+                                        style={{ animationDelay: `${index * 0.1}s` }}
+                                    >
+                                        <div className="news-card-image-wrapper">
+                                            <img
+                                                src={thumbnailImage}
+                                                alt={thumbnailAlt}
+                                                className="news-card-image"
+                                                loading="lazy"
+                                            />
 
-                                        {index === 0 && (
-                                            <span className="news-card-badge">
-                                                New
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    <div className="news-card-content">
-                                        <div className="space-y-3">
-                                            <div className="news-date text-sm text-slate-500">
-                                                {item.date}
-                                            </div>
-                                            {sdgNumbers.length > 0 && (
-                                                <div className="flex flex-wrap gap-2">
-                                                    {sdgNumbers.map((sdgNumber) => {
-                                                        const palette = SDG_COLORS[sdgNumber] || { bg: '#E5E7EB', text: '#111827', border: '#D1D5DB' };
-
-                                                        return (
-                                                            <span
-                                                                key={`${item.id}-sdg-${sdgNumber}`}
-                                                                className="rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em]"
-                                                                style={{
-                                                                    backgroundColor: palette.bg,
-                                                                    color: palette.text,
-                                                                    border: `1px solid ${palette.border}`,
-                                                                }}
-                                                            >
-                                                                SDG {sdgNumber}
-                                                            </span>
-                                                        );
-                                                    })}
-                                                </div>
+                                            {index === 0 && (
+                                                <span className="news-card-badge">
+                                                    New
+                                                </span>
                                             )}
                                         </div>
 
-                                        <h3 className="news-card-title">
-                                            <a href={`/news/${item.id}`} className="news-title-link-modern">
-                                                {item.title}
+                                        <div className="news-card-content">
+                                            <div className="space-y-3">
+                                                <div className="news-date">
+                                                    {item.date}
+                                                </div>
+                                                {sdgNumbers.length > 0 && (
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {sdgNumbers.map((sdgNumber) => {
+                                                            const palette = SDG_COLORS[sdgNumber] || { bg: '#E5E7EB', text: '#111827', border: '#D1D5DB' };
+
+                                                            return (
+                                                                <span
+                                                                    key={`${item.id}-sdg-${sdgNumber}`}
+                                                                    className="rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em]"
+                                                                    style={{
+                                                                        backgroundColor: palette.bg,
+                                                                        color: palette.text,
+                                                                        border: `1px solid ${palette.border}`,
+                                                                    }}
+                                                                >
+                                                                    SDG {sdgNumber}
+                                                                </span>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            <h3 className="news-card-title">
+                                                <a href={`/news/${item.id}`} className="news-title-link-modern">
+                                                    {item.title}
+                                                </a>
+                                            </h3>
+
+                                            <p className="news-excerpt">
+                                                {item.content ? item.content.replace(/<[^>]*>/g, '').slice(0, 120) + (item.content.length > 120 ? '...' : '') : ''}
+                                            </p>
+
+                                            <a href={`/news/${item.id}`} className="news-read-more">
+                                                Read Article
+                                                <svg
+                                                    className="news-arrow-icon"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                </svg>
                                             </a>
-                                        </h3>
-
-                                        <p className="news-excerpt">
-                                            {item.content ? item.content.replace(/<[^>]*>/g, '').slice(0, 120) + (item.content.length > 120 ? '...' : '') : ''}
-                                        </p>
-
-                                        <a href={`/news/${item.id}`} className="news-read-more">
-                                            Read Article
-                                            <motion.svg
-                                                className="news-arrow-icon"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                                whileHover={{ x: 4 }}
-                                            >
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                            </motion.svg>
-                                        </a>
-                                    </div>
-                                </article>
-                            );
-                        })
-                    ) : (
-                        <div className="col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-4 text-center py-20 text-gray-500">
-                            <p className="text-xl font-medium mb-2">No articles found</p>
-                            <p className="text-base">Try adjusting your search or filter criteria.</p>
-                        </div>
-                    )}
+                                        </div>
+                                    </article>
+                                );
+                            })
+                        ) : (
+                            <div className="col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-4 text-center py-20 text-gray-500">
+                                <p className="text-xl font-medium mb-2">No articles found</p>
+                                <p className="text-base">Try adjusting your search or filter criteria.</p>
+                            </div>
+                        )}
+                    </div>
                 </div>
-            </div>
+            </section>
         </MainLayout>
     );
 }

@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
+// 1. IMPORT THE BANNER IMAGE HERE
+import vpAdminFinanceBanner from '../../../assets/banner/vpadminfinance-banner.png';
 
 export default function VPAdminFinance() {
     useEffect(() => {
@@ -16,8 +18,9 @@ export default function VPAdminFinance() {
             {/* Hero Banner with Image */}
             <div 
                 className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
+                // 2. USE THE IMPORTED VARIABLE HERE
                 style={{
-                    backgroundImage: `url('https://images.unsplash.com/photo-1523050854058-8df90110c7f1?q=80&w=1200&auto=format&fit=crop')`
+                    backgroundImage: `url(${vpAdminFinanceBanner})`
                 }}
             >
                 {/* Dark Overlay for text readability */}

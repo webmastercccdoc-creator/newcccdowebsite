@@ -35,6 +35,34 @@ export default function MissionVision() {
         }
     };
 
+    // Left slide-in animation for Mission
+    const missionContainerVariants = {
+        hidden: { opacity: 0, x: -80 },
+        visible: {
+            opacity: 1,
+            x: 0,
+            transition: {
+                staggerChildren: 0.3,
+                duration: 0.6,
+                ease: "easeOut"
+            }
+        }
+    };
+
+    // Right slide-in animation for Vision
+    const visionContainerVariants = {
+        hidden: { opacity: 0, x: 80 },
+        visible: {
+            opacity: 1,
+            x: 0,
+            transition: {
+                staggerChildren: 0.3,
+                duration: 0.6,
+                ease: "easeOut"
+            }
+        }
+    };
+
     return (
         <MainLayout 
             maxWidth="full" 
@@ -63,17 +91,18 @@ export default function MissionVision() {
             </div>
 
             {/* 
-                LAYOUT: OVERLAPPING SQUARE BOXES WITH ANIMATIONS
+                LAYOUT: SIDE-BY-SIDE BOXES WITH ANIMATIONS
             */}
             <div className="mx-auto max-w-7xl px-6 py-20 md:py-24 relative">
-                <div className="flex flex-col relative">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 relative">
                     
-                    {/* ROW 1: MISSION (Pushed to the Left, Animated) */}
+                    {/* LEFT COLUMN: MISSION (Animated from Left) */}
                     <motion.div 
-                        className="self-start w-full md:w-[600px] lg:w-[700px] bg-green-800 p-8 md:p-12 lg:p-16 rounded-3xl shadow-2xl flex flex-col justify-center items-start relative overflow-hidden border border-green-900 min-h-[400px] md:min-h-[500px] -mb-20 md:-mb-24 z-10"
-                        variants={containerVariants}
+                        className="w-full bg-green-800 p-8 md:p-12 lg:p-16 rounded-3xl shadow-2xl flex flex-col justify-center items-start relative overflow-hidden border border-green-900 min-h-[400px] md:min-h-[450px]"
+                        variants={missionContainerVariants}
                         initial="hidden"
                         whileInView="visible"
+                        viewport={{ once: true, amount: 0.2 }}
                     >
                         {/* Decorative glow effect */}
                         <div className="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -85,7 +114,6 @@ export default function MissionVision() {
                             </motion.h2>
                             
                             <motion.p variants={itemVariants} className="text-lg md:text-xl lg:text-2xl text-white/95 leading-relaxed font-runethia">
-                                {/* UPDATED: Quote color is now white, font is serif italic */}
                                 <motion.span variants={itemVariants} className="text-6xl font-bold text-white font-serif italic leading-none mr-2">"</motion.span>
                                 To provide transformative and inclusive learning driven by cutting-edge technologies, 
                                 including artificial intelligence, that equip the institution and community to create 
@@ -95,12 +123,13 @@ export default function MissionVision() {
                         </div>
                     </motion.div>
 
-                    {/* ROW 2: VISION (Pushed to the Right, Overlapping, Animated) */}
+                    {/* RIGHT COLUMN: VISION (Animated from Right) */}
                     <motion.div 
-                        className="self-end w-full md:w-[600px] lg:w-[700px] bg-white p-8 md:p-12 lg:p-16 rounded-3xl shadow-2xl flex flex-col justify-center items-end relative overflow-hidden border border-gray-200 min-h-[400px] md:min-h-[500px] z-20"
-                        variants={containerVariants}
+                        className="w-full bg-white p-8 md:p-12 lg:p-16 rounded-3xl shadow-2xl flex flex-col justify-center items-end relative overflow-hidden border border-gray-200 min-h-[400px] md:min-h-[450px]"
+                        variants={visionContainerVariants}
                         initial="hidden"
                         whileInView="visible"
+                        viewport={{ once: true, amount: 0.2 }}
                     >
                         {/* Subtle glow effect */}
                         <div className="absolute -top-20 -left-20 w-64 h-64 bg-gray-100/50 rounded-full blur-3xl pointer-events-none"></div>
@@ -111,7 +140,6 @@ export default function MissionVision() {
                             </motion.h2>
                             
                             <motion.p variants={itemVariants} className="text-lg md:text-xl lg:text-2xl text-gray-900 leading-relaxed font-runethia">
-                                {/* UPDATED: Quote font is now serif italic (keeping the color black) */}
                                 <motion.span variants={itemVariants} className="text-6xl font-bold text-black font-serif italic leading-none mr-2">"</motion.span>
                                 A City College that nurtures and produces global citizens supported by cutting-edge 
                                 technologies for innovation and excellence by 2033.

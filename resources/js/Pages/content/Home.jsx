@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import MainLayout from '../../layouts/MainLayout';
 import '../../../css/home.css';
 import { initLandingAnimations, data } from '../../home-animations';
@@ -9,6 +9,9 @@ import wuriLogo from '../../assets/logos/wuri.png';
 import greenMetricLogo from '../../assets/logos/green-metric.png';
 import sIndexLogo from '../../assets/logos/s-index.png';
 import sdgLogo from '../../assets/logos/sdg.png';
+
+// Cultural Center Image
+import culturalArtsImage from '../../assets/images/Culturals Arts.jpg';
 
 const normalizeImagePath = (value) => {
     if (!value) return 'https://placehold.co/600x400/1e3a8a/ffffff?text=No+Image';
@@ -45,12 +48,48 @@ const RANKINGS = [
     { id: 'sdg',          logo: sdgLogo,          alt: 'UN Sustainable Development Goals' },
 ];
 
+const ENSEMBLES = [
+    { 
+        id: 1,
+        name: 'Oro Dayaaw',
+        description: 'Celebrating the vibrant musical heritage and rhythms of Mindanao',
+        image: 'https://placehold.co/150x150/059669/ffffff?text=Oro+Dayaaw'
+    },
+    { 
+        id: 2,
+        name: 'Talindaw Chorale',
+        description: 'A world-class vocal ensemble performing classical and contemporary compositions',
+        image: 'https://placehold.co/150x150/059669/ffffff?text=Talindaw+Chorale'
+    },
+];
+
+// Helper function to calculate read time
+const calculateReadTime = (content) => {
+    if (!content) return '1 min read';
+    const wordsPerMinute = 200;
+    const text = content.replace(/<[^>]*>/g, '');
+    const wordCount = text.split(/\s+/).length;
+    const minutes = Math.ceil(wordCount / wordsPerMinute);
+    return `${minutes} min read`;
+};
+
+// Helper function to strip HTML and truncate
+const stripHtmlAndTruncate = (html, maxLength = 120) => {
+    if (!html) return '';
+    const text = html.replace(/<[^>]*>/g, '');
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+};
+
 export default function Home({ newsArticles = [] }) {
+    const [ensembleSlide, setEnsembleSlide] = useState(0);
+
     const articles = newsArticles.map((article) => ({
         id: article.id,
         date: article.date || article.created_at || '',
         title: article.title || 'News item',
         excerpt: article.content || '',
+        category: article.category || 'News',
         image: normalizeImagePath(article.image_path || article.image),
         alt: article.article_alt_text || article.alt_text || article.title || 'News image',
         link: `/news/${article.id}`,
@@ -65,6 +104,14 @@ export default function Home({ newsArticles = [] }) {
         const cleanup = initLandingAnimations();
         return cleanup;
     }, []);
+
+    const goToPrevSlide = () => {
+        setEnsembleSlide((prev) => (prev === 0 ? ENSEMBLES.length - 1 : prev - 1));
+    };
+
+    const goToNextSlide = () => {
+        setEnsembleSlide((prev) => (prev === ENSEMBLES.length - 1 ? 0 : prev + 1));
+    };
 
     return (
         <MainLayout title="Home" showTitle={false} maxWidth="full" containerClassName="px-0" mainClassName="py-0" className="overflow-hidden pb-0">
@@ -193,7 +240,92 @@ export default function Home({ newsArticles = [] }) {
                 </div>
             </section>
 
-            {/* --- LATEST NEWS & UPDATES SECTION --- */}
+            {/* --- CENTER FOR CULTURAL AND THE ARTS SECTION --- */}
+            <section className="cultural-center-section">
+                <div className="cultural-center-container">
+                    <div className="cultural-center-content">
+                        <div className="cultural-center-image-wrapper">
+                            <img
+                                src={culturalArtsImage}
+                                alt="Center for Cultural and the Arts"
+                                className="cultural-center-image"
+                                loading="lazy"
+                            />
+                        </div>
+                        <div className="cultural-center-left">
+                            <div className="cultural-center-description">
+                                <h2 className="cultural-center-title">Center for Cultural and the Arts</h2>
+                                <p className="cultural-center-text">
+                                    The Center for Cultural and the Arts at City College of Cagayan de Oro is dedicated to preserving, promoting, and celebrating the rich cultural heritage of Mindanao. We foster artistic excellence through innovative programs, collaborative initiatives, and community engagement that honors both traditional and contemporary expressions of culture.
+                                </p>
+                                <p className="cultural-center-text">
+                                    Our mission is to nurture creative talents, preserve indigenous traditions, and provide a platform where artists and cultural enthusiasts can thrive and inspire future generations.
+                                </p>
+                            </div>
+                            <div className="cultural-ensembles">
+                                <h3 className="ensembles-title">Our Cultural Ensembles</h3>
+                                <div className="ensembles-carousel">
+                                    <div className="ensemble-carousel-content">
+                                        <div className="ensemble-carousel-slides">
+                                            {ENSEMBLES.map((ensemble, index) => (
+                                                <div
+                                                    key={ensemble.id}
+                                                    className={`ensemble-card ${index === ensembleSlide ? 'active' : ''}`}
+                                                >
+                                                    <div className="ensemble-card-image">
+                                                        <img src={ensemble.image} alt={ensemble.name} />
+                                                    </div>
+                                                    <div className="ensemble-card-content">
+                                                        <h4 className="ensemble-name">{ensemble.name}</h4>
+                                                        <p className="ensemble-description">{ensemble.description}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="ensemble-carousel-controls">
+                                        <button
+                                            type="button"
+                                            className="carousel-prev-btn"
+                                            onClick={goToPrevSlide}
+                                            aria-label="Previous ensemble"
+                                        >
+                                            <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M12 16L8 10l4-6" />
+                                            </svg>
+                                        </button>
+
+                                        <div className="ensemble-carousel-indicators">
+                                            {ENSEMBLES.map((_, index) => (
+                                                <button
+                                                    key={index}
+                                                    className={`indicator-dot ${index === ensembleSlide ? 'active' : ''}`}
+                                                    onClick={() => setEnsembleSlide(index)}
+                                                    aria-label={`Go to ensemble ${index + 1}`}
+                                                />
+                                            ))}
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            className="carousel-next-btn"
+                                            onClick={goToNextSlide}
+                                            aria-label="Next ensemble"
+                                        >
+                                            <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M8 4l4 6-4 6" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* --- LATEST NEWS & UPDATES SECTION (REDESIGNED) --- */}
             <section className="news-section">
                 <div className="news-container">
                     <div className="news-header">
@@ -209,63 +341,57 @@ export default function Home({ newsArticles = [] }) {
                                 <article
                                     key={`news-${news.id || index}`}
                                     className="news-card"
+                                    style={{ animationDelay: `${index * 0.1}s` }}
                                 >
                                     <div className="news-card-image-wrapper">
                                         <img
                                             src={news.image}
-                                            alt={news.title}
+                                            alt={news.alt}
                                             className="news-card-image"
+                                            loading="lazy"
                                         />
+                                        <div className="news-card-badge">
+                                            {news.category || 'News'}
+                                        </div>
                                     </div>
 
                                     <div className="news-card-content">
-                                        <div className="mb-3 flex flex-wrap gap-2">
-                                            {news.sdgNumbers.length > 0 ? (
-                                                news.sdgNumbers.map((sdgNumber) => {
-                                                    const palette = SDG_COLORS[sdgNumber] || { bg: '#E5E7EB', text: '#111827', border: '#D1D5DB' };
-
-                                                    return (
-                                                        <span
-                                                            key={`${news.id}-sdg-${sdgNumber}`}
-                                                            className="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] border"
-                                                            style={{
-                                                                backgroundColor: palette.bg,
-                                                                color: palette.text,
-                                                                borderColor: palette.border,
-                                                            }}
-                                                        >
-                                                            SDG {sdgNumber}
-                                                        </span>
-                                                    );
-                                                })
-                                            ) : (
-                                                <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.08em] text-gray-500 border border-gray-200">
-                                                    No SDG
-                                                </span>
+                                        <div className="space-y-3">
+                                            <div className="news-date text-sm text-slate-500">
+                                                {news.date} · {calculateReadTime(news.excerpt)}
+                                            </div>
+                                            {news.sdgNumbers && news.sdgNumbers.length > 0 && (
+                                                <div className="flex flex-wrap gap-2">
+                                                    {news.sdgNumbers.map((sdg) => {
+                                                        const color = SDG_COLORS[sdg] || { bg: '#0f172a', text: '#ffffff', border: '#0f172a' };
+                                                        return (
+                                                            <span
+                                                                key={sdg}
+                                                                className="rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em]"
+                                                                style={{ backgroundColor: color.bg, color: color.text, border: `1px solid ${color.border}` }}
+                                                            >
+                                                                SDG {sdg}
+                                                            </span>
+                                                        );
+                                                    })}
+                                                </div>
                                             )}
                                         </div>
 
-                                        <p className="news-date">
-                                            {news.date}
-                                        </p>
                                         <h3 className="news-card-title">
-                                            {news.title}
+                                            <a href={news.link} className="news-title-link-modern">
+                                                {news.title}
+                                            </a>
                                         </h3>
-                                        <div
-                                            className="news-excerpt"
-                                            dangerouslySetInnerHTML={{ __html: news.excerpt.replace(/<p[^>]*>|<\/p>/gi, '') }}
-                                        />
-                                        <a
-                                            href={news.link || '#'}
-                                            className="news-read-more"
-                                        >
-                                            Read More
-                                            <svg
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+
+                                        <p className="news-excerpt">
+                                            {stripHtmlAndTruncate(news.excerpt, 120)}
+                                        </p>
+
+                                        <a href={news.link} className="news-read-more">
+                                            Read Article
+                                            <svg className="news-arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                             </svg>
                                         </a>
                                     </div>

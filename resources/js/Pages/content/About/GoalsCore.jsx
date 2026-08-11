@@ -5,8 +5,6 @@ import { motion } from 'framer-motion';
 // Import the local banner image
 import coreGoalsBanner from '../../../assets/banner/coregoals-banner.png';
 
-console.log('MainLayout import (GoalsCore):', MainLayout);
-
 export default function GoalsCore() {
     useEffect(() => {
         document.title = 'Core Goals - City College of Cagayan de Oro';
@@ -16,16 +14,16 @@ export default function GoalsCore() {
         hidden: { opacity: 0 },
         visible: {
             opacity: 1,
-            transition: { staggerChildren: 0.15 }
+            transition: { staggerChildren: 0.1 }
         }
     };
 
     const itemVariants = {
-        hidden: { opacity: 0, y: 30 },
+        hidden: { opacity: 0, y: 20 },
         visible: { 
             opacity: 1, 
             y: 0,
-            transition: { type: "spring", stiffness: 100, damping: 12 }
+            transition: { type: "spring", stiffness: 100, damping: 15 }
         }
     };
 
@@ -56,18 +54,26 @@ export default function GoalsCore() {
             
             {/* Full-width Hero Banner */}
             <div 
-                className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[400px] md:min-h-[500px] lg:min-h-[600px] flex items-center justify-center"
+                className="relative w-full bg-cover bg-center bg-no-repeat min-h-[450px] md:min-h-[550px] flex items-center justify-center"
                 style={{
                     backgroundImage: `url(${coreGoalsBanner})`
                 }}
             >
-                <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]"></div>
-                <div className="relative z-10 mx-auto max-w-5xl px-6 text-center">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30"></div>
+                <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
+                    <motion.span 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="inline-block px-4 py-1.5 mb-6 text-xs font-semibold tracking-widest uppercase text-white bg-white/10 backdrop-blur-md rounded-full border border-white/20"
+                    >
+                        Institutional Framework
+                    </motion.span>
                     <motion.h1 
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="text-5xl md:text-7xl font-bold tracking-tight text-white drop-shadow-lg mb-6"
+                        transition={{ duration: 0.6, delay: 0.1 }}
+                        className="text-5xl md:text-7xl font-extrabold tracking-tight text-white drop-shadow-xl mb-4"
                         style={{ fontFamily: "'Inter', sans-serif" }}
                     >
                         Core Goals
@@ -75,8 +81,8 @@ export default function GoalsCore() {
                     <motion.p 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                        className="mx-auto mt-4 max-w-3xl text-lg md:text-xl text-white/80 font-light"
+                        transition={{ duration: 0.8, delay: 0.3 }}
+                        className="mx-auto max-w-2xl text-lg md:text-xl text-blue-100 font-light"
                         style={{ fontFamily: "'Inter', sans-serif" }}
                     >
                         Our strategic objectives and institutional targets for growth and excellence.
@@ -84,82 +90,103 @@ export default function GoalsCore() {
                 </div>
             </div>
 
-            {/* CONTENT SECTIONS - Stacked Layout */}
-            <div className="w-full bg-white py-16 md:py-24">
-                <div className="mx-auto max-w-4xl px-6 md:px-8">
+            {/* ==================== SCHOOL GOALS ==================== */}
+            <section className="bg-white py-20 md:py-28">
+                <div className="mx-auto max-w-7xl px-6 md:px-8">
                     
-                    {/* ==================== SCHOOL GOALS ==================== */}
-                    <div className="mb-20">
-                        <motion.div 
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            className="text-center mb-8"
-                        >
-                            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
-                                School Goals
-                            </h2>
-                            <div className="w-20 h-1 bg-green-600 rounded-full mx-auto"></div>
-                        </motion.div>
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="text-center mb-16"
+                    >
+                        <span className="text-sm font-bold tracking-widest uppercase text-emerald-600">Our Objectives</span>
+                        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-2 mb-4">
+                            School Goals
+                        </h2>
+                        <div className="w-20 h-1.5 bg-emerald-500 rounded-full mx-auto"></div>
+                    </motion.div>
 
-                        <motion.div 
-                            className="space-y-4"
-                            variants={containerVariants}
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true, amount: 0.2 }}
-                        >
-                            {schoolGoals.map((text, index) => (
-                                <motion.div 
-                                    key={index}
-                                    variants={itemVariants}
-                                    className="bg-gray-50 rounded-xl p-6 md:p-8 hover:bg-green-50 transition-colors duration-300 border-l-4 border-green-600"
-                                >
-                                    <p className="text-gray-700 text-base md:text-lg leading-relaxed">
+                    <motion.div 
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                        variants={containerVariants}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.1 }}
+                    >
+                        {schoolGoals.map((text, index) => (
+                            <motion.div 
+                                key={index}
+                                variants={itemVariants}
+                                className="relative bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                            >
+                                {/* Watermark Number */}
+                                <span className="absolute -top-4 right-2 text-8xl font-black text-gray-50 select-none pointer-events-none">
+                                    {String(index + 1).padStart(2, '0')}
+                                </span>
+                                
+                                <div className="relative z-10">
+                                    <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-5">
+                                        {/* Target Icon */}
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                        </svg>
+                                    </div>
+                                    <p className="text-gray-700 leading-relaxed text-base md:text-lg font-medium">
                                         {text}
                                     </p>
-                                </motion.div>
-                            ))}
-                        </motion.div>
-                    </div>
-
-                    {/* ==================== CORE VALUES ==================== */}
-                    <div>
-                        <motion.div 
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            className="text-center mb-8"
-                        >
-                            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
-                                Core Values
-                            </h2>
-                            <div className="w-20 h-1 bg-blue-600 rounded-full mx-auto"></div>
-                        </motion.div>
-
-                        <motion.div 
-                            className="space-y-4"
-                            variants={containerVariants}
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true, amount: 0.2 }}
-                        >
-                            {coreValues.map((text, index) => (
-                                <motion.div 
-                                    key={index}
-                                    variants={itemVariants}
-                                    className="bg-gray-50 rounded-xl p-6 md:p-8 hover:bg-blue-50 transition-colors duration-300 border-l-4 border-blue-600"
-                                >
-                                    <p className="text-gray-700 text-base md:text-lg leading-relaxed">
-                                        {text}
-                                    </p>
-                                </motion.div>
-                            ))}
-                        </motion.div>
-                    </div>
-
+                                </div>
+                            </motion.div>
+                        ))}
+                    </motion.div>
                 </div>
-            </div>
+            </section>
+
+            {/* ==================== CORE VALUES ==================== */}
+            <section className="bg-slate-50 py-20 md:py-28 border-t border-gray-100">
+                <div className="mx-auto max-w-7xl px-6 md:px-8">
+                    
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="text-center mb-16"
+                    >
+                        <span className="text-sm font-bold tracking-widest uppercase text-blue-600">Guiding Principles</span>
+                        <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-2 mb-4">
+                            Core Values
+                        </h2>
+                        <div className="w-20 h-1.5 bg-blue-500 rounded-full mx-auto"></div>
+                    </motion.div>
+
+                    {/* 3 Column Grid for Core Values to reduce vertical height */}
+                    <motion.div 
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                        variants={containerVariants}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, amount: 0.1 }}
+                    >
+                        {coreValues.map((text, index) => (
+                            <motion.div 
+                                key={index}
+                                variants={itemVariants}
+                                className="group bg-white rounded-2xl p-7 border-t-4 border-blue-600 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                            >
+                                <div className="flex items-center gap-3 mb-4">
+                                    <span className="flex-shrink-0 w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center font-bold text-sm transition-colors group-hover:bg-blue-600 group-hover:text-white">
+                                        {String(index + 1).padStart(2, '0')}
+                                    </span>
+                                    <div className="h-[1px] w-full bg-gray-100"></div>
+                                </div>
+                                <p className="text-gray-600 leading-relaxed text-sm md:text-base">
+                                    {text}
+                                </p>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                </div>
+            </section>
 
         </MainLayout>
     );

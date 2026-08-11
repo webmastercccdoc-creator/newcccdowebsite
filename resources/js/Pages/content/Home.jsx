@@ -12,6 +12,8 @@ import sdgLogo from '../../assets/logos/sdg.png';
 
 // Cultural Center Image
 import culturalArtsImage from '../../assets/images/Culturals Arts.jpg';
+import oroDayaawImage from '../../assets/images/OroDayaw.PNG';
+import talindawChoraleImage from '../../assets/images/TalndawChorale.jpg';
 
 const normalizeImagePath = (value) => {
     if (!value) return 'https://placehold.co/600x400/1e3a8a/ffffff?text=No+Image';
@@ -53,13 +55,13 @@ const ENSEMBLES = [
         id: 1,
         name: 'Oro Dayaaw',
         description: 'Celebrating the vibrant musical heritage and rhythms of Mindanao',
-        image: 'https://placehold.co/150x150/059669/ffffff?text=Oro+Dayaaw'
+        image: oroDayaawImage
     },
     { 
         id: 2,
         name: 'Talindaw Chorale',
         description: 'A world-class vocal ensemble performing classical and contemporary compositions',
-        image: 'https://placehold.co/150x150/059669/ffffff?text=Talindaw+Chorale'
+        image: talindawChoraleImage
     },
 ];
 
@@ -244,14 +246,6 @@ export default function Home({ newsArticles = [] }) {
             <section className="cultural-center-section">
                 <div className="cultural-center-container">
                     <div className="cultural-center-content">
-                        <div className="cultural-center-image-wrapper">
-                            <img
-                                src={culturalArtsImage}
-                                alt="Center for Cultural and the Arts"
-                                className="cultural-center-image"
-                                loading="lazy"
-                            />
-                        </div>
                         <div className="cultural-center-left">
                             <div className="cultural-center-description">
                                 <h2 className="cultural-center-title">Center for Cultural and the Arts</h2>
@@ -320,6 +314,14 @@ export default function Home({ newsArticles = [] }) {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div className="cultural-center-image-wrapper">
+                            <img
+                                src={culturalArtsImage}
+                                alt="Center for Cultural and the Arts"
+                                className="cultural-center-image"
+                                loading="lazy"
+                            />
                         </div>
                     </div>
                 </div>

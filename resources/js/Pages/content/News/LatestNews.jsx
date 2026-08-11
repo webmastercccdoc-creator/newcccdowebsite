@@ -151,80 +151,73 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                             return (
                                 <article
                                     key={item.id}
-                                    className="bg-white rounded-xl shadow-md border border-transparent hover:border-green-600 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full group"
+                                    className="news-card"
+                                    style={{ animationDelay: `${index * 0.1}s` }}
                                 >
-                                    <div className="relative h-56 w-full bg-gray-100 overflow-hidden">
+                                    <div className="news-card-image-wrapper">
                                         <motion.img
                                             src={thumbnailImage}
                                             alt={thumbnailAlt}
-                                            className="object-cover w-full h-full"
-                                            whileHover={{ scale: 1.1 }}
+                                            className="news-card-image"
+                                            whileHover={{ scale: 1.06 }}
                                             transition={{ duration: 0.4 }}
                                         />
 
                                         {index === 0 && (
-                                            <span className="absolute top-3 right-3 bg-green-600 text-white text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full shadow-md">
+                                            <span className="news-card-badge">
                                                 New
                                             </span>
                                         )}
                                     </div>
 
-                                    <div className="p-5 flex flex-col flex-1">
-                                        <div className="mb-3 flex flex-wrap gap-2">
-                                            {sdgNumbers.length > 0 ? (
-                                                sdgNumbers.map((sdgNumber) => {
-                                                    const palette = SDG_COLORS[sdgNumber] || { bg: '#E5E7EB', text: '#111827', border: '#D1D5DB' };
+                                    <div className="news-card-content">
+                                        <div className="space-y-3">
+                                            <div className="news-date text-sm text-slate-500">
+                                                {item.date}
+                                            </div>
+                                            {sdgNumbers.length > 0 && (
+                                                <div className="flex flex-wrap gap-2">
+                                                    {sdgNumbers.map((sdgNumber) => {
+                                                        const palette = SDG_COLORS[sdgNumber] || { bg: '#E5E7EB', text: '#111827', border: '#D1D5DB' };
 
-                                                    return (
-                                                        <span
-                                                            key={`${item.id}-sdg-${sdgNumber}`}
-                                                            className="inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.08em] border"
-                                                            style={{
-                                                                backgroundColor: palette.bg,
-                                                                color: palette.text,
-                                                                borderColor: palette.border,
-                                                            }}
-                                                        >
-                                                            SDG {sdgNumber}
-                                                        </span>
-                                                    );
-                                                })
-                                            ) : (
-                                                <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.08em] text-gray-500 border border-gray-200">
-                                                    No SDG
-                                                </span>
+                                                        return (
+                                                            <span
+                                                                key={`${item.id}-sdg-${sdgNumber}`}
+                                                                className="rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em]"
+                                                                style={{
+                                                                    backgroundColor: palette.bg,
+                                                                    color: palette.text,
+                                                                    border: `1px solid ${palette.border}`,
+                                                                }}
+                                                            >
+                                                                SDG {sdgNumber}
+                                                            </span>
+                                                        );
+                                                    })}
+                                                </div>
                                             )}
                                         </div>
 
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <svg className="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                            <p className="text-xs text-gray-500 font-medium">{item.date}</p>
-                                        </div>
-
-                                        <h3 className="text-[17px] font-bold text-gray-900 mb-2.5 line-clamp-2 leading-snug group-hover:text-green-700 transition-colors">
-                                            {item.title}
+                                        <h3 className="news-card-title">
+                                            <a href={`/news/${item.id}`} className="news-title-link-modern">
+                                                {item.title}
+                                            </a>
                                         </h3>
 
-                                        <div
-                                            className="text-sm text-gray-600 leading-relaxed mb-4 line-clamp-3 flex-1 prose-content"
-                                            dangerouslySetInnerHTML={{ __html: item.content }}
-                                        />
+                                        <p className="news-excerpt">
+                                            {item.content ? item.content.replace(/<[^>]*>/g, '').slice(0, 120) + (item.content.length > 120 ? '...' : '') : ''}
+                                        </p>
 
-                                        <a
-                                            href={`/news/${item.id}`}
-                                            className="inline-flex items-center text-[13px] font-semibold text-green-700 mt-auto border-b-2 border-transparent hover:border-green-700 transition-all duration-300 pb-0.5"
-                                        >
+                                        <a href={`/news/${item.id}`} className="news-read-more">
                                             Read Article
                                             <motion.svg
-                                                className="ml-1.5 w-4 h-4"
+                                                className="news-arrow-icon"
                                                 fill="none"
                                                 stroke="currentColor"
                                                 viewBox="0 0 24 24"
                                                 whileHover={{ x: 4 }}
                                             >
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                             </motion.svg>
                                         </a>
                                     </div>

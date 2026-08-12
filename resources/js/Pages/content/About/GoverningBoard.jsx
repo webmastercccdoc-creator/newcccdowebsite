@@ -7,6 +7,7 @@ console.log('MainLayout import (GoverningBoard):', MainLayout);
 // Import images (PNG format)
 import GoverningBoardImage1 from '../../../assets/GoverningBoard/governing-board1.png';
 import GoverningBoardImage2 from '../../../assets/GoverningBoard/governing-board2.png';
+import GoverningBoardImage3 from '../../../assets/GoverningBoard/banner.png';
 
 export default function GoverningBoard() {
     useEffect(() => {
@@ -21,7 +22,7 @@ export default function GoverningBoard() {
             <div 
                 className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
                 style={{
-                    backgroundImage: `url('')` 
+                    backgroundImage: `url('${GoverningBoardImage3}')` 
                 }}
             >
                 {/* Dark Overlay */}

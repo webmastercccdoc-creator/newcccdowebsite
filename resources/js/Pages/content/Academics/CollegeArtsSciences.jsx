@@ -11,20 +11,6 @@ export default function CollegeArtsSciences() {
         document.title = "College of Arts and Sciences - City College of Cagayan de Oro";
     }, []);
 
-    // 3. Define animation variants
-    const textVariants = {
-        hidden: { opacity: 0, y: 30 },
-        visible: { 
-            opacity: 1, 
-            y: 0,
-            transition: { 
-                type: "spring", 
-                stiffness: 100, 
-                damping: 12 
-            }
-        }
-    };
-
     return (
         <MainLayout 
             maxWidth="full" 
@@ -42,7 +28,7 @@ export default function CollegeArtsSciences() {
                 {/* Dark Overlay for text readability */}
                 <div className="absolute inset-0 bg-black/50"></div>
                 
-                {/* 4. Wrap text in a motion container with stagger children */}
+                {/* 3. Define animation variants and wrap text in a motion container */}
                 <motion.div 
                     className="relative z-10 mx-auto max-w-5xl px-6 text-center"
                     initial="hidden"
@@ -57,7 +43,7 @@ export default function CollegeArtsSciences() {
                 >
                     {/* Animated Title */}
                     <motion.h1 
-                        variants={textVariants}
+                        variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 12 } } }}
                         className="text-4xl font-bold tracking-tight text-white drop-shadow-md sm:text-5xl md:text-6xl"
                     >
                         College of Arts and Sciences
@@ -65,7 +51,7 @@ export default function CollegeArtsSciences() {
                     
                     {/* Animated Description */}
                     <motion.p 
-                        variants={textVariants}
+                        variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 12 } } }}
                         className="mx-auto mt-4 max-w-2xl text-lg text-white/90 drop-shadow-md"
                     >
                         Fostering critical thinking and holistic development through diverse academic disciplines.

@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import Navbar from '../components/content/Navbar';
 import Footer from '../components/content/Footer';
-import CookieConsent from '../components/content/CookieConsent';
 
 export default function MainLayout({ 
     title, 
@@ -45,7 +44,6 @@ export default function MainLayout({
                 </main>
                 
                 <Footer />
-                <CookieConsent />
             </div>
     );
 }

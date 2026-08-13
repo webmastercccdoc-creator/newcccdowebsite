@@ -11,7 +11,33 @@ export default function Login() {
     return (
         <div className="min-h-screen bg-white flex items-center justify-center p-4">
             <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-0 bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
-                {/* Left Side - Login Form */}
+                {/* Left Side - Image/Info */}
+                <div className="hidden lg:flex bg-gradient-to-br from-green-700 to-green-900 p-12 flex-col justify-between relative">
+                    {/* Decorative elements */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+                    
+                    <div className="relative z-10 flex flex-col items-center text-center">
+                        {/* Logo */}
+                        <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 overflow-hidden shadow-lg">
+                            <img src={ccdologo} alt="City College of Cagayan de Oro logo" className="w-full h-full object-contain p-2" />
+                        </div>
+                        
+                        <h2 className="text-3xl font-bold text-white mb-4">Content Management System</h2>
+                        <p className="text-white/80 text-sm leading-relaxed max-w-sm">
+                            Welcome to the City College of Cagayan de Oro Content Management System. 
+                            Manage your content efficiently and effectively.
+                        </p>
+                    </div>
+
+                    <div className="relative z-10 text-center">
+                        <p className="text-white/30 text-xs">
+                            &copy; {new Date().getFullYear()} City College of Cagayan de Oro
+                        </p>
+                    </div>
+                </div>
+
+                {/* Right Side - Login Form */}
                 <div className="p-8 md:p-12 lg:p-16 flex flex-col justify-center">
                     <div className="mb-8 text-center">
                         <h1 className="text-3xl font-bold text-gray-800">Welcome Back</h1>
@@ -84,32 +110,6 @@ export default function Login() {
                             Login
                         </button>
                     </form>
-                </div>
-
-                {/* Right Side - Image/Info */}
-                <div className="hidden lg:flex bg-gradient-to-br from-green-700 to-green-900 p-12 flex-col justify-between relative">
-                    {/* Decorative elements */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
-                    
-                    <div className="relative z-10 flex flex-col items-center text-center">
-                        {/* Logo */}
-                        <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 overflow-hidden shadow-lg">
-                            <img src={ccdologo} alt="City College of Cagayan de Oro logo" className="w-full h-full object-contain p-2" />
-                        </div>
-                        
-                        <h2 className="text-3xl font-bold text-white mb-4">Content Management System</h2>
-                        <p className="text-white/80 text-sm leading-relaxed max-w-sm">
-                            Welcome to the City College of Cagayan de Oro Content Management System. 
-                            Manage your content efficiently and effectively.
-                        </p>
-                    </div>
-
-                    <div className="relative z-10 text-center">
-                        <p className="text-white/30 text-xs">
-                            &copy; {new Date().getFullYear()} City College of Cagayan de Oro
-                        </p>
-                    </div>
                 </div>
 
                 {/* Mobile - Image/Info (visible on mobile) */}

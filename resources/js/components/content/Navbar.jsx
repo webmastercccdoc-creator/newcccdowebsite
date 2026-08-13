@@ -157,7 +157,7 @@ const Navbar = () => {
             ]
         },
         { 
-            name: 'Internationalization', 
+            name: 'SDG & Internationalization', 
             href: '/internationalization',
             dropdown: [
                 { name: 'Sustainable Development Goals', href: '/internationalization/sdg', description: 'Contributing to global sustainability goals' },

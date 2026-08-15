@@ -17,6 +17,7 @@ import sdg14 from '../../../assets/images/sdg14.png';
 import sdg15 from '../../../assets/images/sdg15.png';
 import sdg16 from '../../../assets/images/sdg16.png';
 import sdg17 from '../../../assets/images/sdg17.png';
+import sdg from '../../../assets/logos/sdg.png';
 import sdg_01 from '../../../assets/images/sdg_01.jpg';
 import sdg_02 from '../../../assets/images/sdg_02.jpg';
 import sdg_03 from '../../../assets/images/sdg_03.jpg';
@@ -49,6 +50,7 @@ const SDG_IMAGES = [
     { defaultImg: sdg15, hoverImg: sdg_15 },
     { defaultImg: sdg16, hoverImg: null },
     { defaultImg: sdg17, hoverImg: sdg_17 },
+    { defaultImg: sdg, hoverImg: null },
 ];
 
 export default function SDG() {
@@ -117,7 +119,7 @@ export default function SDG() {
                                 key={currentSrc}
                                 src={currentSrc}
                                 alt={`SDG ${index + 1}`}
-                                className="w-full h-auto object-contain bg-transparent transition-all duration-300 ease-in-out drop-shadow-lg hover:-translate-y-2 hover:drop-shadow-2xl cursor-pointer animate-spin-in"
+                                className={`w-full h-auto object-contain bg-transparent transition-all duration-300 ease-in-out drop-shadow-lg hover:-translate-y-2 hover:drop-shadow-2xl cursor-pointer animate-spin-in ${index === SDG_IMAGES.length - 1 ? 'animate-spin' : ''}`}
                                 onMouseEnter={() => item.hoverImg && setActiveHoverIndex(index)}
                                 onMouseLeave={() => setActiveHoverIndex(null)}
                             />

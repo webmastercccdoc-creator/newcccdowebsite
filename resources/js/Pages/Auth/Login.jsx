@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import ccdologo from '../../assets/logos/ccdologo.png';
+import { router } from '@inertiajs/react';
+import ccdologo from '../../assets/logos/ccdoclogo.png';
 
 export default function Login() {
     useEffect(() => {
@@ -7,6 +8,52 @@ export default function Login() {
     }, []);
 
     const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setErrors({});
+        setLoading(true);
+
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                }),
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (response.ok) {
+                // Redirect to admin layout on successful login
+                router.visit('/admin');
+            } else {
+                // Handle specific 419 session expired error
+                if (response.status === 419) {
+                    setErrors({ general: 'Session expired. Please refresh the page and try again.' });
+                } else if (data.errors) {
+                    setErrors(data.errors);
+                } else {
+                    setErrors({ general: data.message || 'Login failed. Please try again.' });
+                }
+            }
+        } catch (error) {
+            setErrors({ general: 'An error occurred. Please try again.' });
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-white flex items-center justify-center p-4">
@@ -19,8 +66,8 @@ export default function Login() {
                     
                     <div className="relative z-10 flex flex-col items-center text-center">
                         {/* Logo */}
-                        <div className="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 overflow-hidden shadow-lg">
-                            <img src={ccdologo} alt="City College of Cagayan de Oro logo" className="w-full h-full object-contain p-2" />
+                        <div className="w-32 h-32 flex items-center justify-center mb-6 overflow-hidden">
+                            <img src={ccdologo} alt="City College of Cagayan de Oro logo" className="w-full h-full object-contain" />
                         </div>
                         
                         <h2 className="text-3xl font-bold text-white mb-4">Content Management System</h2>
@@ -44,17 +91,31 @@ export default function Login() {
                         <p className="text-gray-500 mt-1">Sign in to your account</p>
                     </div>
 
-                    <form className="space-y-5">
+                    {errors.general && (
+                        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+                            {errors.general}
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
-                            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1.5">
-                                Username
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
+                                Email or Username
                             </label>
                             <input
                                 type="text"
-                                id="username"
-                                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-green-600 focus:border-transparent outline-none transition"
-                                placeholder="Enter your username"
+                                id="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className={`w-full px-4 py-3 bg-gray-50 border rounded-xl text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-green-600 focus:border-transparent outline-none transition ${
+                                    errors.email ? 'border-red-500' : 'border-gray-200'
+                                }`}
+                                placeholder="Enter your email or username"
+                                disabled={loading}
                             />
+                            {errors.email && (
+                                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                            )}
                         </div>
 
                         <div>
@@ -65,13 +126,19 @@ export default function Login() {
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     id="password"
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-green-600 focus:border-transparent outline-none transition"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className={`w-full px-4 py-3 bg-gray-50 border rounded-xl text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-green-600 focus:border-transparent outline-none transition ${
+                                        errors.password ? 'border-red-500' : 'border-gray-200'
+                                    }`}
                                     placeholder="Enter your password"
+                                    disabled={loading}
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
                                     className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                    disabled={loading}
                                 >
                                     {showPassword ? (
                                         <svg className="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -85,6 +152,9 @@ export default function Login() {
                                     )}
                                 </button>
                             </div>
+                            {errors.password && (
+                                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                            )}
                         </div>
 
                         <div className="flex items-center justify-between">
@@ -93,6 +163,7 @@ export default function Login() {
                                     type="checkbox"
                                     id="remember"
                                     className="h-4 w-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                                    disabled={loading}
                                 />
                                 <label htmlFor="remember" className="ml-2 block text-sm text-gray-600">
                                     Remember me
@@ -105,17 +176,18 @@ export default function Login() {
 
                         <button
                             type="submit"
-                            className="w-full bg-green-700 text-white py-3.5 px-6 rounded-xl font-bold hover:bg-green-800 transition duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+                            className="w-full bg-green-700 text-white py-3.5 px-6 rounded-xl font-bold hover:bg-green-800 transition duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                            disabled={loading}
                         >
-                            Login
+                            {loading ? 'Logging in...' : 'Login'}
                         </button>
                     </form>
                 </div>
 
                 {/* Mobile - Image/Info (visible on mobile) */}
                 <div className="lg:hidden bg-gradient-to-br from-green-700 to-green-900 p-8 text-center">
-                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4 overflow-hidden shadow-lg">
-                        <img src={ccdologo} alt="City College of Cagayan de Oro logo" className="w-full h-full object-contain p-2" />
+                    <div className="w-24 h-24 flex items-center justify-center mx-auto mb-4 overflow-hidden">
+                        <img src={ccdologo} alt="City College of Cagayan de Oro logo" className="w-full h-full object-contain" />
                     </div>
                     <h2 className="text-xl font-bold text-white mb-2">Content Management System</h2>
                     <p className="text-white/70 text-xs">

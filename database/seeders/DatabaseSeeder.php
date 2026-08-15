@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\News;
+use App\Models\Program;
+use App\Models\Setting;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -21,7 +24,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
-            News::factory()->count(3)->create();
-            Program::factory()->count(3)->create();
-            Setting::create(['key' => 'site_name', 'value' => config('app.name')]);
+        News::factory()->count(3)->create();
+        Program::factory()->count(3)->create();
+        Setting::create(['key' => 'site_name', 'value' => config('app.name')]);
+    }
 }

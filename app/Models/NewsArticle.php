@@ -15,7 +15,15 @@ class NewsArticle extends Model
         'title',
         'content',
         'date',
+        'status',
+        'department',
+        'created_by',
+        'approved_by',
         'image',
         'alt_text',
+    ];
+
+    protected $casts = [
+        'date' => 'date',
     ];
 }

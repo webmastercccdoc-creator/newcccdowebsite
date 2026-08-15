@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\ArticlesController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -14,9 +15,52 @@ Route::get('/login-page', function () {
     return Inertia::render('Auth/Login');
 })->name('login.page');
 
+// ===== ADMIN LAYOUT ROUTES =====
+// Routes using AdminLayout component (requires authentication)@
+Route::get('/admin', function () {
+    return Inertia::render('admin/Dashboard');
+})
+    ->middleware(['auth'])
+    ->name('admin');
+
+Route::get('/admin/articles', [ArticlesController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('admin.articles');
+
+Route::get('/admin/approve-articles', [ArticlesController::class, 'approve'])
+    ->middleware(['auth'])
+    ->name('admin.approve-articles');
+
+Route::post('/admin/articles', [ArticlesController::class, 'store'])
+    ->middleware(['auth'])
+    ->name('admin.articles.store');
+
+Route::get('/admin/articles/{article}', [ArticlesController::class, 'show'])
+    ->middleware(['auth'])
+    ->name('admin.articles.show');
+
+Route::put('/admin/articles/{article}', [ArticlesController::class, 'update'])
+    ->middleware(['auth'])
+    ->name('admin.articles.update');
+
+Route::delete('/admin/articles/{article}', [ArticlesController::class, 'destroy'])
+    ->middleware(['auth'])
+    ->name('admin.articles.destroy');
+
+Route::put('/admin/articles/{article}/approve', [ArticlesController::class, 'approveArticle'])
+    ->middleware(['auth'])
+    ->name('admin.articles.approve');
+
+Route::put('/admin/articles/{article}/reject', [ArticlesController::class, 'rejectArticle'])
+    ->middleware(['auth'])
+    ->name('admin.articles.reject');
+
 Route::get('/dashboard', [AdminController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+
+// ===== MAIN LAYOUT ROUTES =====
+// Public routes using MainLayout component
 
 Route::get('/about/cagayan-de-oro-city', function () {
     return Inertia::render('content/About/CagayanDeOroCity');
@@ -123,7 +167,7 @@ Route::get('/news/{id}', [\App\Http\Controllers\NewsController::class, 'show'])-
 Route::get('/api/news', [NewsController::class, 'apiIndex']);
 Route::get('/api/news/{id}', [NewsController::class, 'apiShow']);
 
-
+// ===== END MAIN LAYOUT ROUTES =====
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

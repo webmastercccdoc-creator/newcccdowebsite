@@ -383,14 +383,9 @@ export default function Users({ users = [] }) {
                                                     {String(startIndex + index + 1).padStart(2, '0')}
                                                 </td>
                                                 <td className="py-3 px-4">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
-                                                            {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
-                                                        </div>
-                                                        <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors">
-                                                            {user.name || 'Unknown User'}
-                                                        </span>
-                                                    </div>
+                                                    <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors">
+                                                        {user.name || 'Unknown User'}
+                                                    </span>
                                                 </td>
                                                 <td className="py-3 px-4 text-gray-600">{user.email || '-'}</td>
                                                 <td className="py-3 px-4">

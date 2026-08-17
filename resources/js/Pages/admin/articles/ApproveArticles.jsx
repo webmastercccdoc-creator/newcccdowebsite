@@ -431,31 +431,13 @@ export default function ApproveArticles({ articles: initialArticles = [], depart
                       {String(startIndex + index + 1).padStart(2, '0')}
                     </td>
                     <td className="py-3 px-4">
-                      <div className="flex items-center gap-3">
-                        {article.image ? (
-                          <img 
-                            src={article.image} 
-                            alt={article.title}
-                            className="w-12 h-12 rounded-lg object-cover flex-shrink-0 border border-gray-200"
-                            onError={(e) => {
-                              e.target.style.display = 'none';
-                              e.target.nextElementSibling.style.display = 'flex';
-                            }}
-                          />
-                        ) : null}
-                        <div 
-                          className={`${article.image ? 'hidden' : 'w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white text-xs font-bold flex-shrink-0'}`}
-                        >
-                          {article.title.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer">
-                            {article.title}
-                          </span>
-                          <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
-                            {getContentPreview(article.content)}
-                          </p>
-                        </div>
+                      <div>
+                        <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer">
+                          {article.title}
+                        </span>
+                        <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
+                          {getContentPreview(article.content)}
+                        </p>
                       </div>
                     </td>
                     <td className="py-3 px-4">

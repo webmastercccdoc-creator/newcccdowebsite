@@ -252,10 +252,10 @@ export default function Sidebar() {
         className="w-64 min-h-screen bg-white/30 border-r border-gray-200 flex flex-col shadow-2xl"
         aria-label="CMS sidebar"
       >
-        <div className="flex items-center px-4 py-5 bg-white/40 border-b border-gray-200">
+        <div className="flex items-center justify-center px-4 py-5 bg-white/40 border-b border-gray-200">
           <div className="w-10 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
         </div>
-        <nav className="flex-1 px-3 py-4">
+        <nav className="flex-1 px-3 py-4 overflow-hidden">
           <ul className="space-y-1">
             {[...Array(5)].map((_, i) => (
               <li key={i}>
@@ -275,16 +275,21 @@ export default function Sidebar() {
     <aside 
       className={`
         ${isCollapsed ? 'w-20' : 'w-64'} 
-        min-h-screen bg-white/30 border-r border-gray-200 dark:border-gray-700 flex flex-col shadow-2xl transition-all duration-300
+        min-h-screen bg-white/30 border-r border-gray-200 dark:border-gray-700 flex flex-col shadow-2xl transition-all duration-300 overflow-hidden
       `}
       aria-label="CMS sidebar"
     >
-      {/* Collapse Button - Hamburger Icon - 40% White Header */}
+      {/* Collapse Button - Hamburger Icon - 40% White Header with Centered Admin Panel Text */}
       <div className={`
         flex items-center px-4 py-5
-        ${isCollapsed ? 'justify-center' : ''}
-        bg-white/40 border-b border-gray-200
+        ${isCollapsed ? 'justify-center' : 'justify-between'}
+        bg-white/40 border-b border-gray-200 flex-shrink-0
       `}>
+        {!isCollapsed && (
+          <span className="text-lg font-semibold text-gray-700 whitespace-nowrap flex-1 text-center">
+            Admin Panel
+          </span>
+        )}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className={`
@@ -311,7 +316,7 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 overflow-y-auto" aria-label="Main navigation">
+      <nav className={`flex-1 px-3 py-4 ${isCollapsed ? 'overflow-hidden' : 'overflow-y-auto'}`} aria-label="Main navigation">
         <ul className="space-y-1">
           {navItems.map((item) => (
             <li key={item.href} className="relative">
@@ -393,7 +398,7 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer Section with User Info and Logout - 40% White Background */}
-      <div className="border-t border-gray-200 p-4 bg-white/40">
+      <div className="border-t border-gray-200 p-4 bg-white/40 flex-shrink-0">
         <div className={`
           flex items-center gap-3
           ${isCollapsed ? 'justify-center' : 'justify-start'}

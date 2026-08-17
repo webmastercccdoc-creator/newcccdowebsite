@@ -97,7 +97,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
       ),
       'Rejected': (
         <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l-1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
         </svg>
       ),
       'Archived': (
@@ -406,31 +406,13 @@ export default function Articles({ articles: initialArticles, departments = [] }
                       {String(startIndex + index + 1).padStart(2, '0')}
                     </td>
                     <td className="py-3 px-4">
-                      <div className="flex items-center gap-3">
-                        {article.image ? (
-                          <img 
-                            src={article.image} 
-                            alt={article.title}
-                            className="w-12 h-12 rounded-lg object-cover flex-shrink-0 border border-gray-200"
-                            onError={(e) => {
-                              e.target.style.display = 'none';
-                              e.target.nextElementSibling.style.display = 'flex';
-                            }}
-                          />
-                        ) : null}
-                        <div 
-                          className={`${article.image ? 'hidden' : 'w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white text-xs font-bold flex-shrink-0'}`}
-                        >
-                          {article.title.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer">
-                            {article.title}
-                          </span>
-                          <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
-                            {getContentPreview(article.content)}
-                          </p>
-                        </div>
+                      <div>
+                        <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer">
+                          {article.title}
+                        </span>
+                        <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
+                          {getContentPreview(article.content)}
+                        </p>
                       </div>
                     </td>
                     <td className="py-3 px-4">

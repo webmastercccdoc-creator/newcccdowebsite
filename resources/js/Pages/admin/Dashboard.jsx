@@ -107,23 +107,6 @@ export default function Dashboard({
         }
     ];
 
-    // Get motivational message based on rank
-    const getMotivationalMessage = (rank) => {
-        if (rank === 1) {
-            return "🏆 Outstanding! You're leading the way! Keep up the excellent work!";
-        } else if (rank === 2) {
-            return "🌟 Great job! You're in 2nd place. Keep pushing to reach the top!";
-        } else if (rank === 3) {
-            return "💪 Excellent work! You're in the top 3. Stay consistent!";
-        } else if (rank <= 5) {
-            return "📈 You're in the top 5! Keep creating quality content to climb higher!";
-        } else if (rank <= 10) {
-            return "✍️ Keep posting! Every article brings you closer to the top 5!";
-        } else {
-            return "🚀 Don't give up! Consistency is key. Keep posting and you'll climb the ranks!";
-        }
-    };
-
     // Loading Skeleton
     if (isLoading) {
         return (
@@ -132,7 +115,7 @@ export default function Dashboard({
                     <div className="h-8 w-64 bg-gray-200 rounded animate-pulse"></div>
                     <div className="h-4 w-96 bg-gray-200 rounded mt-2 animate-pulse"></div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {[...Array(4)].map((_, i) => (
                         <div key={i} className="bg-white rounded-xl shadow-md border border-gray-100 p-6 animate-pulse">
                             <div className="flex items-center justify-between">
@@ -144,10 +127,6 @@ export default function Dashboard({
                             </div>
                         </div>
                     ))}
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6 animate-pulse h-[180px]"></div>
-                    <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6 animate-pulse h-[180px]"></div>
                 </div>
             </AdminLayout>
         );
@@ -209,7 +188,7 @@ export default function Dashboard({
             </div>
 
             {/* Statistics Cards - Solid Colors */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {statCards.map((stat, index) => (
                     <div 
                         key={index} 
@@ -234,62 +213,6 @@ export default function Dashboard({
                         </div>
                     </div>
                 ))}
-            </div>
-
-            {/* Top Department and User Rank Cards - Side by Side */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Top Department Card */}
-                {departmentStats.length > 0 && (
-                    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-gray-500 text-sm font-medium">🏆 Top Department</p>
-                                <p className="text-3xl font-bold text-gray-800 mt-1">{departmentStats[0].name}</p>
-                                <p className="text-gray-500 text-sm mt-1">
-                                    {departmentStats[0].total} articles • {departmentStats[0].rankIcon}
-                                </p>
-                            </div>
-                            <div className="text-6xl opacity-50">
-                                {departmentStats[0].rankIcon}
-                            </div>
-                        </div>
-                        <div className="pt-3 mt-3 border-t border-gray-200">
-                            <div className="flex items-center gap-4 text-sm text-gray-600">
-                                <span>✅ {departmentStats[0].approved} approved</span>
-                                <span>⏳ {departmentStats[0].pending} pending</span>
-                                <span>❌ {departmentStats[0].rejected} rejected</span>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* User Rank Banner */}
-                {userRank && (
-                    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-                        <div>
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <div className="text-4xl">
-                                        {userRank.rank === 1 ? '🥇' : userRank.rank === 2 ? '🥈' : userRank.rank === 3 ? '🥉' : '🏅'}
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-500">Your Department Rank</p>
-                                        <p className="text-2xl font-bold text-gray-800">#{userRank.rank} - {userRank.department}</p>
-                                    </div>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-sm text-gray-500">Total Articles</p>
-                                    <p className="text-2xl font-bold text-gray-800">{userRank.total}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="pt-3 mt-3 border-t border-gray-200">
-                            <p className="text-sm text-gray-600 italic">
-                                {getMotivationalMessage(userRank.rank)}
-                            </p>
-                        </div>
-                    </div>
-                )}
             </div>
         </AdminLayout>
     );

@@ -66,11 +66,25 @@ class NewsController extends Controller
             abort(404);
         }
 
+        // Normalize image path
+        if ($article->image_path) {
+            $article->image_path = '/' . ltrim($article->image_path, '/');
+        }
+
         $images = DB::table('article_images')
             ->where('article_id', $id)
             ->orderBy('sort_order')
             ->orderBy('id')
-            ->get();
+            ->get()
+            ->map(function ($image) {
+                return [
+                    'id' => $image->id,
+                    'article_id' => $image->article_id,
+                    'image_path' => '/' . ltrim($image->image_path, '/'),
+                    'alt_text' => $image->alt_text,
+                    'sort_order' => $image->sort_order,
+                ];
+            });
 
         return Inertia::render('content/News/ViewArticle', [
             'article' => $article,
@@ -101,7 +115,21 @@ class NewsController extends Controller
             ->where('article_id', $id)
             ->orderBy('sort_order')
             ->orderBy('id')
-            ->get();
+            ->get()
+            ->map(function ($image) {
+                return [
+                    'id' => $image->id,
+                    'article_id' => $image->article_id,
+                    'image_path' => '/' . ltrim($image->image_path, '/'),
+                    'alt_text' => $image->alt_text,
+                    'sort_order' => $image->sort_order,
+                ];
+            });
+
+        // Ensure article image_path is also normalized
+        if ($article->image_path) {
+            $article->image_path = '/' . ltrim($article->image_path, '/');
+        }
 
         return response()->json([
             'article' => $article,

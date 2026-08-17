@@ -1,14 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import AdminLayout from '@/layouts/AdminLayout';
 import AddArticles from './AddArticles';
+import EditArticle from './EditArticle';
 import { ConfirmModal } from '@/components/admin/Modal';
 
 export default function Articles({ articles: initialArticles, departments = [] }) {
+  const initialArticleList = Array.isArray(initialArticles) ? initialArticles : [];
+
   // Use articles from controller or empty array as fallback
-  const [articles, setArticles] = useState(initialArticles || []);
+  const [articles, setArticles] = useState(initialArticleList);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
+
+  // Search and filter states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('Approved');
+  const [departmentFilter, setDepartmentFilter] = useState('All');
 
   // Modal states
   const [showAddModal, setShowAddModal] = useState(false);
@@ -17,11 +25,53 @@ export default function Articles({ articles: initialArticles, departments = [] }
   const [articleToDelete, setArticleToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchUserArticles = async () => {
+      try {
+        const response = await axios.get('/user/articles');
+
+        if (!isMounted) return;
+
+        const userArticles = Array.isArray(response?.data?.articles) ? response.data.articles : [];
+        setArticles(userArticles);
+      } catch (error) {
+        console.error('Failed to fetch user articles:', error);
+        if (isMounted) {
+          setArticles([]);
+        }
+      }
+    };
+
+    fetchUserArticles();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Filter articles based on search and filters
+  const filteredArticles = articles.filter(article => {
+    // Search filter
+    const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          article.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          article.created_by?.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    // Status filter
+    const matchesStatus = statusFilter === 'All' || article.status === statusFilter;
+    
+    // Department filter
+    const matchesDepartment = departmentFilter === 'All' || article.department === departmentFilter;
+    
+    return matchesSearch && matchesStatus && matchesDepartment;
+  });
+
   // Calculate pagination
-  const totalPages = Math.ceil(articles.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentArticles = articles.slice(startIndex, endIndex);
+  const currentArticles = filteredArticles.slice(startIndex, endIndex);
 
   const getStatusBadge = (status) => {
     const statusStyles = {
@@ -41,7 +91,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
         </svg>
       ),
       'Pending': (
-        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-2a6 6 0 100-12 6 6 0 000 12zm-1-8a1 1 0 00-2 0v3a1 1 0 001 1h2a1 1 0 100-2h-1V8z" clipRule="evenodd" />
         </svg>
       ),
@@ -60,7 +110,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
   };
 
   const handleView = (id) => {
-    console.log('View article:', id);
+    window.open(`/news/${id}`, '_blank', 'noopener,noreferrer');
   };
 
   const handleAddNew = () => {
@@ -71,16 +121,19 @@ export default function Articles({ articles: initialArticles, departments = [] }
   const handleEdit = async (id) => {
     try {
       const response = await axios.get(`/admin/articles/${id}`);
-      const article = response?.data?.article || null;
+      const article = response?.data?.article || response?.data;
 
       if (!article) {
+        console.error('No article data received');
+        alert('Failed to load article details');
         return;
       }
 
+      setShowAddModal(false);
       setEditingArticle(article);
-      setShowAddModal(true);
     } catch (error) {
       console.error('Failed to load article details:', error);
+      alert('Failed to load article details. Please try again.');
     }
   };
 
@@ -89,25 +142,57 @@ export default function Articles({ articles: initialArticles, departments = [] }
     setShowDeleteModal(true);
   };
 
+  const handleArchive = async (id) => {
+    try {
+      const response = await axios.put(`/admin/articles/${id}/archive`, { status: 'pending' });
+
+      if (response.status === 200 || response.data?.success) {
+        setArticles(prevArticles =>
+          prevArticles.map(article =>
+            article.id === id ? { ...article, status: 'Pending' } : article
+          )
+        );
+        alert('Article moved back to pending status.');
+      }
+    } catch (error) {
+      console.error('Failed to archive article:', error);
+      alert(error.response?.data?.message || 'Failed to archive article. Please try again.');
+    }
+  };
+
   const confirmDelete = async () => {
     setIsDeleting(true);
-    // Simulate API call - replace with actual API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setArticles(articles.filter(article => article.id !== articleToDelete));
-    setShowDeleteModal(false);
-    setIsDeleting(false);
-    setArticleToDelete(null);
+    try {
+      const response = await axios.delete(`/admin/articles/${articleToDelete}`);
+      console.log('Delete response:', response);
+      
+      if (response.data?.success) {
+        setArticles(articles.filter(article => article.id !== articleToDelete));
+        setShowDeleteModal(false);
+        alert('Article deleted successfully.');
+      }
+    } catch (error) {
+      console.error('Failed to delete article:', error);
+      console.error('Error response:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      alert(error.response?.data?.message || 'Failed to delete article. Please try again.');
+    } finally {
+      setIsDeleting(false);
+      setArticleToDelete(null);
+    }
   };
 
   const handleSaveArticle = (articleData) => {
     // Normalize status based on backend values
     let normalizedStatus = articleData.status;
-    if (normalizedStatus === 'pending') {
+    if (normalizedStatus === 'pending' || normalizedStatus === 'Draft') {
       normalizedStatus = 'Pending';
     } else if (normalizedStatus === 'approved') {
       normalizedStatus = 'Approved';
     } else if (normalizedStatus === 'rejected') {
       normalizedStatus = 'Rejected';
+    } else if (normalizedStatus === 'archived') {
+      normalizedStatus = 'Archived';
     }
 
     // Format date if needed
@@ -118,11 +203,13 @@ export default function Articles({ articles: initialArticles, departments = [] }
 
     const normalizedArticle = {
       id: articleData.id || editingArticle?.id,
-      title: articleData.title,
-      department: articleData.department,
+      title: articleData.title || '',
+      department: articleData.department || '',
       status: normalizedStatus,
-      date: formattedDate,
-      created_by: articleData.created_by || editingArticle?.created_by || ''
+      date: formattedDate || new Date().toISOString().split('T')[0],
+      created_by: articleData.created_by || editingArticle?.created_by || 'System',
+      image: articleData.image || null,
+      imagePreviews: articleData.imagePreviews || []
     };
 
     if (editingArticle) {
@@ -131,8 +218,10 @@ export default function Articles({ articles: initialArticles, departments = [] }
         a.id === normalizedArticle.id ? normalizedArticle : a
       ));
     } else {
-      // Add new article
-      setArticles([normalizedArticle, ...articles]);
+      // Add new article - ensure it has an ID from the backend response
+      if (normalizedArticle.id) {
+        setArticles([normalizedArticle, ...articles]);
+      }
     }
     setShowAddModal(false);
     setEditingArticle(null);
@@ -142,6 +231,12 @@ export default function Articles({ articles: initialArticles, departments = [] }
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
+  };
+
+  // Reset to page 1 when filters change
+  const handleFilterChange = (setter, value) => {
+    setter(value);
+    setCurrentPage(1);
   };
 
   // Generate page numbers
@@ -161,141 +256,185 @@ export default function Articles({ articles: initialArticles, departments = [] }
     return pages;
   };
 
-  const stats = [
-    {
-      label: 'Total Articles',
-      value: articles.length,
-      bg: 'bg-gray-600',
-      hoverBg: 'hover:bg-gray-700',
-      textColor: 'text-white',
-      icon: (
-        <svg className="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-        </svg>
-      )
-    },
-    {
-      label: 'Approved',
-      value: articles.filter(a => a.status === 'Approved').length,
-      bg: 'bg-emerald-600',
-      hoverBg: 'hover:bg-emerald-700',
-      textColor: 'text-white',
-      icon: (
-        <svg className="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      )
-    },
-    {
-      label: 'Pending',
-      value: articles.filter(a => a.status === 'Pending').length,
-      bg: 'bg-amber-600',
-      hoverBg: 'hover:bg-amber-700',
-      textColor: 'text-white',
-      icon: (
-        <svg className="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      )
-    },
-    {
-      label: 'Rejected',
-      value: articles.filter(a => a.status === 'Rejected').length,
-      bg: 'bg-red-600',
-      hoverBg: 'hover:bg-red-700',
-      textColor: 'text-white',
-      icon: (
-        <svg className="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      )
-    }
-  ];
+  // Get unique departments for filter
+  const uniqueDepartments = ['All', ...new Set(articles.map(a => a.department).filter(Boolean))];
+
+  // Helper function to get short content preview
+  const getContentPreview = (content) => {
+    if (!content) return 'No content available';
+    // Strip HTML tags if any
+    const plainText = content.replace(/<[^>]*>/g, '');
+    // Get first 100 characters
+    const preview = plainText.substring(0, 100);
+    return preview.length < plainText.length ? preview + '...' : preview;
+  };
 
   return (
     <AdminLayout title="Articles">
       {/* Header with Add Article Button */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-        <p className="text-sm text-gray-600">
-          Manage all articles in the system
-        </p>
+        <div>
+          <p className="text-sm text-gray-600">
+            Approved articles from your department
+          </p>
+          <p className="text-xs text-gray-500 mt-1">
+            Showing only approved articles assigned to your department(s)
+          </p>
+        </div>
         <button 
           onClick={handleAddNew}
-          className="mt-3 sm:mt-0 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-sm"
+          className="mt-3 sm:mt-0 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          Add New Article
+          Create New Article
         </button>
       </div>
 
-      {/* Stats Cards with Hover Effects */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {stats.map((stat, index) => (
-          <div 
-            key={index}
-            className={`${stat.bg} ${stat.hoverBg} rounded-xl p-5 shadow-sm transition-all duration-300 cursor-pointer transform hover:scale-105 hover:shadow-lg group`}
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-xs font-medium text-white/80 uppercase tracking-wider">
-                  {stat.label}
-                </p>
-                <p className={`text-2xl font-bold ${stat.textColor} mt-1 group-hover:scale-110 transition-transform duration-300`}>
-                  {stat.value}
-                </p>
-              </div>
-              <div className="opacity-60 group-hover:opacity-100 transition-opacity duration-300">
-                {stat.icon}
-              </div>
-            </div>
-            {/* Progress bar indicator */}
-            <div className="mt-3 h-1 w-full bg-white/20 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-white/60 rounded-full transition-all duration-500 group-hover:bg-white"
-                style={{ 
-                  width: `${articles.length > 0 ? (stat.value / articles.length) * 100 : 0}%` 
-                }}
-              />
-            </div>
+      {/* Search and Filters - Light Grey Background */}
+      <div className="bg-gray-100 border border-gray-200 shadow-sm p-4 mb-6">
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Search Input */}
+          <div className="flex-1 relative">
+            <svg 
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Search articles by title, department, or author..."
+              value={searchQuery}
+              onChange={(e) => handleFilterChange(setSearchQuery, e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none text-sm bg-white"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => handleFilterChange(setSearchQuery, '')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
           </div>
-        ))}
+
+          {/* Status Filter */}
+          <div className="flex gap-4">
+            <select
+              value={statusFilter}
+              onChange={(e) => handleFilterChange(setStatusFilter, e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none text-sm bg-white min-w-[130px]"
+            >
+              <option value="Approved">Approved</option>
+              <option value="Archived">Archived</option>
+            </select>
+
+            {/* Department Filter */}
+            <select
+              value={departmentFilter}
+              onChange={(e) => handleFilterChange(setDepartmentFilter, e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none text-sm bg-white min-w-[130px]"
+            >
+              {uniqueDepartments.map(dept => (
+                <option key={dept} value={dept}>{dept}</option>
+              ))}
+            </select>
+
+            {/* Clear Filters Button */}
+            {(searchQuery || statusFilter !== 'Approved' || departmentFilter !== 'All') && (
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setStatusFilter('Approved');
+                  setDepartmentFilter('All');
+                  setCurrentPage(1);
+                }}
+                className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg transition-colors flex items-center gap-2 border border-gray-200 bg-white"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Filter results info */}
+        <div className="mt-3 text-sm text-gray-600">
+          {filteredArticles.length === 0 ? (
+            <span>No articles found matching your criteria</span>
+          ) : (
+            <span>
+              Found <span className="font-medium text-gray-800">{filteredArticles.length}</span> article{filteredArticles.length !== 1 ? 's' : ''}
+              {searchQuery && <span> matching "<span className="font-medium text-gray-800">{searchQuery}</span>"</span>}
+              {statusFilter !== 'Approved' && <span> with status <span className="font-medium text-gray-800">{statusFilter}</span></span>}
+              {departmentFilter !== 'All' && <span> in <span className="font-medium text-gray-800">{departmentFilter}</span></span>}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Articles Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-white border border-gray-200 shadow-lg overflow-hidden">
+        <div className="overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left py-3 px-4 font-semibold text-gray-600 text-xs uppercase tracking-wider">#</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-600 text-xs uppercase tracking-wider">Title</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-600 text-xs uppercase tracking-wider">Department</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-600 text-xs uppercase tracking-wider">Status</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-600 text-xs uppercase tracking-wider">Date</th>
-                <th className="text-center py-3 px-4 font-semibold text-gray-600 text-xs uppercase tracking-wider">Actions</th>
+              <tr className="bg-gray-700 text-white">
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider">#</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider">Title & Content</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider">Department</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider">Status</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider">Date</th>
+                <th className="text-center py-4 px-4 font-semibold text-xs uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-200">
               {currentArticles.length > 0 ? (
                 currentArticles.map((article, index) => (
-                  <tr key={article.id} className="hover:bg-gray-50 transition-colors duration-150">
+                  <tr 
+                    key={article.id} 
+                    className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-300 transition-all duration-200 group`}
+                  >
                     <td className="py-3 px-4 text-gray-500 text-xs font-medium">
                       {String(startIndex + index + 1).padStart(2, '0')}
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-xs font-medium flex-shrink-0">
-                          {article.title.charAt(0)}
+                        {article.image ? (
+                          <img 
+                            src={article.image} 
+                            alt={article.title}
+                            className="w-12 h-12 rounded-lg object-cover flex-shrink-0 border border-gray-200"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextElementSibling.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <div 
+                          className={`${article.image ? 'hidden' : 'w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center text-white text-xs font-bold flex-shrink-0'}`}
+                        >
+                          {article.title.charAt(0).toUpperCase()}
                         </div>
-                        <span className="font-medium text-gray-800 hover:text-blue-600 transition-colors cursor-pointer">
-                          {article.title}
-                        </span>
+                        <div>
+                          <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer">
+                            {article.title}
+                          </span>
+                          <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
+                            {getContentPreview(article.content)}
+                          </p>
+                        </div>
                       </div>
                     </td>
                     <td className="py-3 px-4">
-                      <span className="text-gray-600 text-xs bg-gray-100 px-2 py-1 rounded-full">
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
                         {article.department}
                       </span>
                     </td>
@@ -305,12 +444,14 @@ export default function Articles({ articles: initialArticles, departments = [] }
                         {article.status}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-gray-500 text-sm">{article.date}</td>
+                    <td className="py-3 px-4 text-gray-500 text-sm">
+                      {article.date}
+                    </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => handleView(article.id)}
-                          className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all shadow-sm hover:shadow"
                         >
                           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -320,7 +461,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
                         </button>
                         <button
                           onClick={() => handleEdit(article.id)}
-                          className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-all shadow-sm hover:shadow"
                         >
                           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -328,8 +469,17 @@ export default function Articles({ articles: initialArticles, departments = [] }
                           Edit
                         </button>
                         <button
+                          onClick={() => handleArchive(article.id)}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gray-600 hover:bg-gray-700 rounded-lg transition-all shadow-sm hover:shadow"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M7 8V6a1 1 0 011-1h8a1 1 0 011 1v2m-9 4h10l-1 8H7l-1-8z" />
+                          </svg>
+                          Archive
+                        </button>
+                        <button
                           onClick={() => handleDelete(article.id)}
-                          className="inline-flex items-center gap-1 px-3 py-1 text-xs font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all shadow-sm hover:shadow"
                         >
                           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -342,13 +492,17 @@ export default function Articles({ articles: initialArticles, departments = [] }
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className="py-12 text-center">
+                  <td colSpan="6" className="py-12 text-center bg-gray-50">
                     <div className="flex flex-col items-center justify-center">
                       <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                       </svg>
                       <p className="text-gray-500 font-medium">No articles found</p>
-                      <p className="text-gray-400 text-sm mt-1">Click "Add New Article" to create one.</p>
+                      <p className="text-gray-400 text-sm mt-1">
+                        {searchQuery || statusFilter !== 'All' || departmentFilter !== 'All'
+                          ? 'Try adjusting your search or filters'
+                          : 'Click "Add New Article" to create one.'}
+                      </p>
                     </div>
                   </td>
                 </tr>
@@ -358,50 +512,52 @@ export default function Articles({ articles: initialArticles, departments = [] }
         </div>
 
         {/* Pagination */}
-        {articles.length > itemsPerPage && (
+        {filteredArticles.length > 0 && (
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 border-t border-gray-200 bg-gray-50">
             <p className="text-sm text-gray-600">
-              Showing <span className="font-medium">{startIndex + 1}</span> to{' '}
-              <span className="font-medium">{Math.min(endIndex, articles.length)}</span> of{' '}
-              <span className="font-medium">{articles.length}</span> articles
+              Showing <span className="font-medium text-gray-800">{filteredArticles.length > 0 ? startIndex + 1 : 0}</span> to{' '}
+              <span className="font-medium text-gray-800">{Math.min(endIndex, filteredArticles.length)}</span> of{' '}
+              <span className="font-medium text-gray-800">{filteredArticles.length}</span> articles
             </p>
-            <div className="flex gap-1">
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="px-3 py-1.5 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-white hover:border-gray-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                Previous
-              </button>
-              
-              {getPageNumbers().map((page) => (
+            {filteredArticles.length > itemsPerPage && (
+              <div className="flex gap-1">
                 <button
-                  key={page}
-                  onClick={() => handlePageChange(page)}
-                  className={`px-3.5 py-1.5 text-sm rounded-lg transition-all ${
-                    currentPage === page
-                      ? 'bg-gray-800 text-white hover:bg-gray-700 shadow-sm'
-                      : 'text-gray-600 hover:bg-white border border-transparent hover:border-gray-200'
-                  }`}
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-white hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 bg-white"
                 >
-                  {page}
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Previous
                 </button>
-              ))}
-              
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1.5 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-white hover:border-gray-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
-              >
-                Next
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
+                
+                {getPageNumbers().map((page) => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`px-3.5 py-1.5 text-sm rounded-lg transition-all ${
+                      currentPage === page
+                        ? 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm'
+                        : 'text-gray-600 hover:bg-white border border-transparent hover:border-gray-300 bg-white'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+                
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-white hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 bg-white"
+                >
+                  Next
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -414,8 +570,16 @@ export default function Articles({ articles: initialArticles, departments = [] }
           setEditingArticle(null);
         }}
         onSave={handleSaveArticle}
+        article={null}
+        isEditing={false}
+        departments={departments}
+      />
+
+      <EditArticle
+        isOpen={Boolean(editingArticle) && !showAddModal}
+        onClose={() => setEditingArticle(null)}
+        onSave={handleSaveArticle}
         article={editingArticle}
-        isEditing={!!editingArticle}
         departments={departments}
       />
 

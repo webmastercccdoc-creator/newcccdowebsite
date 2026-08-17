@@ -4,9 +4,23 @@ import logoSrc from '../../assets/logos/cccdoclogo.png';
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [openDropdown, setOpenDropdown] = useState(null);
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [isNavVisible, setIsNavVisible] = useState(true);
     const hoverTimeoutRef = useRef(null);
     const dropdownRef = useRef(null);
     const menuItemRefs = useRef({});
+
+    // Detect scroll while keeping the navbar visible at all times.
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 10);
+            setIsNavVisible(true);
+        };
+
+        handleScroll();
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -180,8 +194,21 @@ const Navbar = () => {
 
     return (
         <nav 
-            className="sticky top-0 z-50 w-full backdrop-blur-md shadow-xl border-b border-green-600/30 font-sans" 
-            style={{ backgroundColor: '#157D3C' }}
+            className={`
+                sticky top-0 z-50 w-full font-sans
+                transition-all duration-300 ease-in-out
+                ${isScrolled ? 'shadow-2xl' : 'shadow-xl'}
+                ${isNavVisible ? 'translate-y-0 opacity-100 visible' : '-translate-y-full opacity-0 invisible'}
+            `} 
+            style={{ 
+                backgroundColor: '#157D3C',
+                position: 'sticky',
+                top: 0,
+                zIndex: 9999,
+                transform: 'translateY(0)',
+                opacity: 1,
+                visibility: 'visible'
+            }}
             role="navigation" 
             aria-label="Main navigation"
         >
@@ -305,7 +332,6 @@ const Navbar = () => {
                                                             <span className="text-sm text-green-700 font-semibold tracking-wide font-sans">
                                                                 Browse all {item.name} →
                                                             </span>
-                            
                                                         </div>
                                                     </div>
                                                 </div>

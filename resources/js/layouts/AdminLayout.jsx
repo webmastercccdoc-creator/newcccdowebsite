@@ -1,15 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from '../components/admin/Sidebar';
 import Navbar from '../components/admin/Navbar';
-import Footer from '../components/admin/Footer';
 
 export default function AdminLayout({ title, children, activePage }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    // Check if screen is mobile on mount and resize
+    useEffect(() => {
+        const checkScreen = () => {
+            setIsMobile(window.innerWidth < 1024); // lg breakpoint
+        };
+        
+        checkScreen();
+        window.addEventListener('resize', checkScreen);
+        
+        return () => window.removeEventListener('resize', checkScreen);
+    }, []);
+
+    // Close sidebar when resizing to desktop
+    useEffect(() => {
+        if (!isMobile && sidebarOpen) {
+            setSidebarOpen(false);
+        }
+    }, [isMobile, sidebarOpen]);
 
     return (
-        <div className="flex min-h-screen bg-slate-100">
-            {/* Sidebar - Hidden on mobile, visible on lg and up */}
-            <div className="hidden lg:block">
+        <div className="flex min-h-screen bg-slate-50">
+            {/* Sidebar - Fixed position */}
+            <div className="hidden lg:block flex-shrink-0">
                 <Sidebar activePage={activePage} />
             </div>
 
@@ -23,19 +42,22 @@ export default function AdminLayout({ title, children, activePage }) {
 
             {/* Mobile Sidebar */}
             <div className={`
-                fixed left-0 top-0 h-screen w-56 bg-gray-700 z-50 lg:hidden transition-transform duration-300 transform
+                fixed left-0 top-0 h-screen w-64 z-50 lg:hidden transition-transform duration-300 transform
                 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
                 <Sidebar activePage={activePage} />
             </div>
 
             {/* Main Content Area */}
-            <div className="flex flex-1 flex-col w-full p-4 md:p-6">
-                {/* Mobile Menu Button - Only visible on mobile */}
-                <div className="lg:hidden mb-4">
+            <div className="flex flex-col flex-1 w-full overflow-hidden">
+                {/* Top Navigation */}
+                <Navbar />
+
+                {/* Mobile Menu Button */}
+                <div className="lg:hidden px-4 pt-4 pb-2">
                     <button
                         onClick={() => setSidebarOpen(!sidebarOpen)}
-                        className="p-2 rounded-lg bg-white shadow-sm hover:bg-gray-50 transition-colors"
+                        className="p-2 rounded-lg bg-white shadow-md hover:bg-gray-50 transition-colors border border-gray-200"
                         aria-label="Toggle menu"
                     >
                         <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -44,15 +66,17 @@ export default function AdminLayout({ title, children, activePage }) {
                     </button>
                 </div>
 
-                <Navbar />
-                
-                {/* Content Box - Responsive sizing */}
-                <div className="flex-1 rounded-lg md:rounded-3xl bg-white p-4 md:p-6 shadow-sm mt-4 overflow-x-auto">
-                    <h1 className="mb-4 text-xl md:text-2xl font-semibold text-gray-800">{title}</h1>
-                    {children}
-                </div>
-                
-                <Footer />
+                {/* Main Content */}
+                <main className="flex-1 px-3 md:px-5 py-4 overflow-auto">
+                    <div className="w-full h-full">
+                        <h1 className="mb-4 text-2xl md:text-3xl font-bold text-gray-900">
+                            {title}
+                        </h1>
+                        <div className="w-full h-auto">
+                            {children}
+                        </div>
+                    </div>
+                </main>
             </div>
         </div>
     );

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\NewsArticle;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -17,32 +18,69 @@ class ArticlesController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        // Match department access using the department slug column, not the display name.
+        $userDepartments = $user->departments()
+            ->pluck('departments.slug')
+            ->toArray();
+
         $articles = NewsArticle::select(
             'id',
             'title',
+            'content',
             'date',
             'department',
             'status',
             'created_by'
         )
+        ->where('status', 'approved')
         ->orderByDesc('date')
         ->get()
+        ->filter(function ($article) use ($userDepartments) {
+            foreach ($userDepartments as $department) {
+                if ($this->departmentMatches($article->department, $department)) {
+                    return true;
+                }
+            }
+
+            return false;
+        })
         ->map(function ($article) {
             $date = $article->date;
             $status = $article->status ?? 'pending';
             
+            // Get first image for preview
+            $image = DB::table('article_images')
+                ->where('article_id', $article->id)
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->first();
+            
+            $imageUrl = null;
+            if ($image && !empty($image->image_path)) {
+                $imageUrl = '/' . ltrim($image->image_path, '/');
+            }
+            
             return [
                 'id' => $article->id,
                 'title' => $article->title,
+                'content' => $article->content,
                 'department' => $article->department,
                 'status' => ucfirst($status),
                 'date' => $date ? $date->format('Y-m-d') : now()->format('Y-m-d'),
                 'created_by' => $article->created_by,
+                'image' => $imageUrl,
             ];
         });
 
-        $departments = DB::table('departments')
-            ->select('id', 'name', 'slug')
+        // Get only the departments the current user has access to
+        $departments = $user->departments()
+            ->select('departments.id', 'departments.name', 'departments.slug')
             ->orderBy('name')
             ->get();
 
@@ -53,6 +91,67 @@ class ArticlesController extends Controller
     }
 
     /**
+     * Determine whether an article department matches a user department by normalizing aliases.
+     */
+    protected function departmentMatches($articleDepartment, $userDepartment)
+    {
+        if (empty($articleDepartment) || empty($userDepartment)) {
+            return false;
+        }
+
+        $normalize = function ($value) {
+            $value = strtolower(trim((string) $value));
+            $value = str_replace(['&', '/', '-', '_'], ' ', $value);
+            $value = preg_replace('/[^a-z0-9\s]/', '', $value);
+            $value = preg_replace('/\s+/', ' ', $value);
+            return trim($value);
+        };
+
+        $articleValue = $normalize($articleDepartment);
+        $userValue = $normalize($userDepartment);
+
+        $articleSlug = Str::slug((string) $articleDepartment, '-');
+        $userSlug = Str::slug((string) $userDepartment, '-');
+
+        if ($articleValue === $userValue || $articleSlug === $userSlug) {
+            return true;
+        }
+
+        $aliases = [
+            'sdg-news' => ['sdg news', 'sdgnews', 'sdg'],
+            'office of student affairs and services' => ['osas', 'office of student affairs', 'student affairs and services'],
+            'extension and development services' => ['esds', 'extension services', 'development services'],
+            'research' => ['research office', 'researh'],
+            'office of lifelong learning and professional development' => ['ollpd', 'olld', 'lifelong learning'],
+            'technical skills and technology institute' => ['tsti', 'technical skills', 'technology institute'],
+            'guidance office' => ['guidance', 'guidance office'],
+            'library services' => ['library', 'lib services'],
+            'college of arts and sciences' => ['cas', 'arts and sciences'],
+            'college of business management' => ['cbm', 'business management'],
+            'college of teacher education' => ['cte', 'teacher education'],
+            'central student government' => ['csg', 'student government'],
+            'oro nexus' => ['oro-nexus', 'oronexus', 'oro nexus'],
+            'volunteerism & involvement' => ['volunteerism', 'volunteerism and involvement', 'involvement'],
+        ];
+
+        $aliasKeys = [$articleValue, $userValue];
+        foreach ($aliases as $canonical => $synonyms) {
+            $synonymSet = array_merge([$canonical], $synonyms);
+            foreach ($synonymSet as $synonym) {
+                if (in_array($synonym, $aliasKeys, true)) {
+                    foreach ([$articleValue, $userValue] as $value) {
+                        if ($value === $canonical || in_array($value, $synonyms, true)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Display a listing of articles for approval (pending articles only).
      */
     public function approve()
@@ -60,6 +159,7 @@ class ArticlesController extends Controller
         $articles = NewsArticle::select(
             'id',
             'title',
+            'content',
             'date',
             'department',
             'status',
@@ -71,13 +171,27 @@ class ArticlesController extends Controller
             $date = $article->date;
             $status = $article->status ?? 'pending';
             
+            // Get first image for preview
+            $image = DB::table('article_images')
+                ->where('article_id', $article->id)
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->first();
+            
+            $imageUrl = null;
+            if ($image && !empty($image->image_path)) {
+                $imageUrl = '/' . ltrim($image->image_path, '/');
+            }
+            
             return [
                 'id' => $article->id,
                 'title' => $article->title,
+                'content' => $article->content,
                 'department' => $article->department,
                 'status' => ucfirst($status),
                 'date' => $date ? $date->format('Y-m-d') : now()->format('Y-m-d'),
                 'created_by' => $article->created_by,
+                'image' => $imageUrl,
             ];
         });
 
@@ -91,6 +205,23 @@ class ArticlesController extends Controller
      */
     public function store(Request $request)
     {
+        $normalizedSdg = $request->input('sdg', []);
+        if (!is_array($normalizedSdg)) {
+            $normalizedSdg = [$normalizedSdg];
+        }
+
+        $normalizedSdg = array_values(array_filter(array_map(function ($value) {
+            if ($value === null || $value === '') {
+                return null;
+            }
+
+            $digits = preg_replace('/\D+/', '', (string) $value);
+
+            return $digits !== '' ? (int) $digits : null;
+        }, $normalizedSdg), fn ($value) => $value !== null));
+
+        $request->merge(['sdg' => $normalizedSdg]);
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],
@@ -145,16 +276,24 @@ class ArticlesController extends Controller
                     throw new \RuntimeException('Unable to store article image.');
                 }
 
+                $imagePath = 'storage/' . $storedPath;
                 $imageRecord = [
+                    'id' => null,
                     'article_id' => $article->id,
-                    'image_path' => 'storage/' . $storedPath,
+                    'image_path' => '/' . ltrim($imagePath, '/'),
+                    'alt_text' => $article->title . ' - Image ' . ($index + 1),
+                    'sort_order' => $index + 1,
+                ];
+
+                DB::table('article_images')->insert([
+                    'article_id' => $article->id,
+                    'image_path' => $imagePath,
                     'alt_text' => $article->title . ' - Image ' . ($index + 1),
                     'sort_order' => $index + 1,
                     'created_at' => now(),
                     'updated_at' => now(),
-                ];
-
-                DB::table('article_images')->insert($imageRecord);
+                ]);
+                
                 $savedImages[] = $imageRecord;
             }
         }
@@ -162,19 +301,29 @@ class ArticlesController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Article created successfully.',
-            'article' => $article,
+            'article' => [
+                'id' => $article->id,
+                'title' => $article->title,
+                'department' => $article->department,
+                'status' => ucfirst($article->status),
+                'date' => $article->date ? $article->date->format('Y-m-d') : now()->format('Y-m-d'),
+                'created_by' => $article->created_by,
+                'image' => !empty($savedImages) ? $savedImages[0]['image_path'] : null,
+            ],
             'images' => $savedImages,
         ], 201);
     }
 
     protected function normalizeArticleStatus(?string $status): string
     {
-        if ($status === 'Draft') {
+        if ($status === null || trim($status) === '') {
             return 'pending';
         }
 
-        return in_array($status, ['pending', 'approved', 'rejected'], true)
-            ? $status
+        $normalizedStatus = strtolower(trim($status));
+
+        return in_array($normalizedStatus, ['pending', 'approved', 'rejected'], true)
+            ? $normalizedStatus
             : 'pending';
     }
 
@@ -237,6 +386,23 @@ class ArticlesController extends Controller
      */
     public function update(Request $request, NewsArticle $article)
     {
+        $normalizedSdg = $request->input('sdg', []);
+        if (!is_array($normalizedSdg)) {
+            $normalizedSdg = [$normalizedSdg];
+        }
+
+        $normalizedSdg = array_values(array_filter(array_map(function ($value) {
+            if ($value === null || $value === '') {
+                return null;
+            }
+
+            $digits = preg_replace('/\D+/', '', (string) $value);
+
+            return $digits !== '' ? (int) $digits : null;
+        }, $normalizedSdg), fn ($value) => $value !== null));
+
+        $request->merge(['sdg' => $normalizedSdg]);
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],
@@ -319,27 +485,57 @@ class ArticlesController extends Controller
                     throw new \RuntimeException('Unable to store article image.');
                 }
 
+                $imagePath = 'storage/' . $storedPath;
                 $imageRecord = [
                     'article_id' => $article->id,
-                    'image_path' => 'storage/' . $storedPath,
+                    'image_path' => '/' . ltrim($imagePath, '/'),
+                    'alt_text' => $article->title . ' - Image ' . ($currentImageCount + $index + 1),
+                    'sort_order' => $currentImageCount + $index + 1,
+                ];
+
+                DB::table('article_images')->insert([
+                    'article_id' => $article->id,
+                    'image_path' => $imagePath,
                     'alt_text' => $article->title . ' - Image ' . ($currentImageCount + $index + 1),
                     'sort_order' => $currentImageCount + $index + 1,
                     'created_at' => now(),
                     'updated_at' => now(),
-                ];
-
-                DB::table('article_images')->insert($imageRecord);
+                ]);
+                
                 $savedImages[] = $imageRecord;
             }
         }
+
+        // Fetch all current images with normalized paths
+        $allImages = DB::table('article_images')
+            ->where('article_id', $article->id)
+            ->orderBy('sort_order')
+            ->get()
+            ->map(function ($image) {
+                return [
+                    'id' => $image->id,
+                    'article_id' => $image->article_id,
+                    'image_path' => '/' . ltrim($image->image_path, '/'),
+                    'alt_text' => $image->alt_text,
+                    'sort_order' => $image->sort_order,
+                ];
+            });
 
         // Return JSON response for AJAX requests
         if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Article updated successfully.',
-                'article' => $article,
-                'images' => $savedImages,
+                'article' => [
+                    'id' => $article->id,
+                    'title' => $article->title,
+                    'department' => $article->department,
+                    'status' => ucfirst($article->status),
+                    'date' => $article->date ? $article->date->format('Y-m-d') : now()->format('Y-m-d'),
+                    'created_by' => $article->created_by,
+                    'image' => $allImages->isNotEmpty() ? $allImages->first()['image_path'] : null,
+                ],
+                'images' => $allImages,
             ]);
         }
 
@@ -352,6 +548,14 @@ class ArticlesController extends Controller
     public function destroy(NewsArticle $article)
     {
         $article->delete();
+
+        // Return JSON response for AJAX requests
+        if (request()->expectsJson() || request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Article deleted successfully.',
+            ]);
+        }
 
         return redirect()->route('admin.articles')->with('success', 'Article deleted successfully.');
     }
@@ -406,5 +610,54 @@ class ArticlesController extends Controller
         }
 
         return redirect()->route('admin.approve-articles')->with('success', 'Article rejected successfully.');
+    }
+
+    /**
+     * Archive an article by resetting its status to pending.
+     */
+    public function archiveArticle(Request $request, NewsArticle $article)
+    {
+        $validated = $request->validate([
+            'status' => ['nullable', 'string'],
+        ]);
+
+        $article->update([
+            'status' => 'pending',
+        ]);
+
+        if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Article moved back to pending status.',
+                'article' => $article,
+            ]);
+        }
+
+        return redirect()->route('admin.articles')->with('success', 'Article moved back to pending status.');
+    }
+
+    /**
+     * Return article counts by status for admin notifications.
+     */
+    public function articleStatusCounts()
+    {
+        $counts = ['pending' => 0, 'rejected' => 0];
+
+        foreach (NewsArticle::query()->select('status')->get() as $article) {
+            $status = strtolower((string) ($article->status ?? 'pending'));
+
+            if (in_array($status, ['pending', 'draft'], true)) {
+                $counts['pending']++;
+            }
+
+            if ($status === 'rejected') {
+                $counts['rejected']++;
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'counts' => $counts,
+        ]);
     }
 }

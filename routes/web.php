@@ -5,63 +5,27 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ArticlesController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Foundation\Application;
+use App\Http\Controllers\UserAccessController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+// ============================================
+// PUBLIC ROUTES (No Authentication Required)
+// ============================================
+
+// Homepage
 Route::get('/', [HomeController::class, 'index']);
 
+// Login page (public)
 Route::get('/login-page', function () {
     return Inertia::render('Auth/Login');
 })->name('login.page');
 
-// ===== ADMIN LAYOUT ROUTES =====
-// Routes using AdminLayout component (requires authentication)@
-Route::get('/admin', function () {
-    return Inertia::render('admin/Dashboard');
-})
-    ->middleware(['auth'])
-    ->name('admin');
-
-Route::get('/admin/articles', [ArticlesController::class, 'index'])
-    ->middleware(['auth'])
-    ->name('admin.articles');
-
-Route::get('/admin/approve-articles', [ArticlesController::class, 'approve'])
-    ->middleware(['auth'])
-    ->name('admin.approve-articles');
-
-Route::post('/admin/articles', [ArticlesController::class, 'store'])
-    ->middleware(['auth'])
-    ->name('admin.articles.store');
-
-Route::get('/admin/articles/{article}', [ArticlesController::class, 'show'])
-    ->middleware(['auth'])
-    ->name('admin.articles.show');
-
-Route::put('/admin/articles/{article}', [ArticlesController::class, 'update'])
-    ->middleware(['auth'])
-    ->name('admin.articles.update');
-
-Route::delete('/admin/articles/{article}', [ArticlesController::class, 'destroy'])
-    ->middleware(['auth'])
-    ->name('admin.articles.destroy');
-
-Route::put('/admin/articles/{article}/approve', [ArticlesController::class, 'approveArticle'])
-    ->middleware(['auth'])
-    ->name('admin.articles.approve');
-
-Route::put('/admin/articles/{article}/reject', [ArticlesController::class, 'rejectArticle'])
-    ->middleware(['auth'])
-    ->name('admin.articles.reject');
-
-Route::get('/dashboard', [AdminController::class, 'dashboard'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
-
-// ===== MAIN LAYOUT ROUTES =====
-// Public routes using MainLayout component
-
+// ============================================
+// ABOUT PAGES
+// ============================================
 Route::get('/about/cagayan-de-oro-city', function () {
     return Inertia::render('content/About/CagayanDeOroCity');
 })->name('about.cagayan-de-oro-city');
@@ -90,6 +54,9 @@ Route::get('/about/organizational-chart', function () {
     return Inertia::render('content/About/OrgChart');
 })->name('about.organizational-chart');
 
+// ============================================
+// OFFICES PAGES
+// ============================================
 Route::get('/offices/president', function () {
     return Inertia::render('content/Offices/PresidentUnit');
 })->name('offices.president');
@@ -106,10 +73,9 @@ Route::get('/offices/vp-research-extension', function () {
     return Inertia::render('content/Offices/VPResearchExtension');
 })->name('offices.vp-research-extension');
 
-Route::get('/offices/vp-research-extension', function () {
-    return Inertia::render('content/Offices/VPResearchExtension');
-})->name('offices.vp-research-extension');
-
+// ============================================
+// ACADEMICS / PROGRAMS PAGES
+// ============================================
 Route::get('/programs/college-of-education', function () {
     return Inertia::render('content/Academics/CollegeEducation');
 })->name('academics.college-of-education');
@@ -126,10 +92,9 @@ Route::get('/programs/technical-skill-technology', function () {
     return Inertia::render('content/Academics/TechnicalSkillsTechnologyInstitute');
 })->name('academics.technical-skill-technology');
 
-Route::get('/programs/technical-skill-technology', function () {
-    return Inertia::render('content/Academics/TechnicalSkillsTechnologyInstitute');
-})->name('academics.technical-skill-technology');
-
+// ============================================
+// INTERNATIONALIZATION PAGES
+// ============================================
 Route::get('/internationalization/sdg', function () {
     return Inertia::render('content/internationalization/SDG');
 })->name('internationalization.sdg');
@@ -146,6 +111,9 @@ Route::get('/internationalization/wuri', function () {
     return Inertia::render('content/internationalization/WURI');
 })->name('internationalization.wuri');
 
+// ============================================
+// NEWS PAGES
+// ============================================
 Route::get('/news/latest', function () {
     return Inertia::render('content/News/LatestNews');
 })->name('news.latest');
@@ -158,21 +126,92 @@ Route::get('/news/news-letters', function () {
     return Inertia::render('content/News/NewsLetters');
 })->name('news.news-letters');
 
+// ============================================
+// CONTACT PAGE
+// ============================================
 Route::get('/contact-us', function () {
     return Inertia::render('content/Contact');
 })->name('contact-us');
 
-Route::get('/news/{id}', [\App\Http\Controllers\NewsController::class, 'show'])->name('news.show');
-
+// ============================================
+// NEWS API ROUTES (Public)
+// ============================================
+Route::get('/news/{id}', [NewsController::class, 'show'])->name('news.show');
 Route::get('/api/news', [NewsController::class, 'apiIndex']);
 Route::get('/api/news/{id}', [NewsController::class, 'apiShow']);
 
-// ===== END MAIN LAYOUT ROUTES =====
+// ============================================
+// ADMIN ROUTES (Requires Authentication)
+// ============================================
+Route::middleware(['auth'])->group(function () {
+    
+    // ============================================
+    // DASHBOARD ROUTES
+    // ============================================
+    // Dashboard View (Inertia)
+    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/admin/dashboard', [DashboardController::class, 'dashboard'])->name('admin.dashboard');
+    
+    // Dashboard API Endpoints
+    Route::get('/api/dashboard/stats', [DashboardController::class, 'getStats']);
+    Route::get('/api/dashboard/departments', [DashboardController::class, 'getAllDepartmentRankings']);
+    Route::get('/api/dashboard/department/{departmentName}', [DashboardController::class, 'getDepartmentStats']);
+    
+    // Admin Dashboard (legacy)
+    Route::get('/admin', function () {
+        return Inertia::render('admin/Dashboard');
+    })->name('admin');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // ============================================
+    // ARTICLES MANAGEMENT ROUTES
+    // ============================================
+    Route::get('/admin/articles', [ArticlesController::class, 'index'])->name('admin.articles');                              // List all articles
+    Route::get('/admin/approve-articles', [ArticlesController::class, 'approve'])->name('admin.approve-articles');          // Approve articles page
+    Route::post('/admin/articles', [ArticlesController::class, 'store'])->name('admin.articles.store');                     // Create new article
+    Route::get('/admin/articles/status-counts', [ArticlesController::class, 'articleStatusCounts'])->name('admin.articles.status-counts'); // Get article counts
+    Route::get('/admin/articles/{article}', [ArticlesController::class, 'show'])->name('admin.articles.show');               // View single article
+    Route::put('/admin/articles/{article}', [ArticlesController::class, 'update'])->name('admin.articles.update');           // Update article
+    Route::delete('/admin/articles/{article}', [ArticlesController::class, 'destroy'])->name('admin.articles.destroy');       // Delete article
+    Route::put('/admin/articles/{article}/approve', [ArticlesController::class, 'approveArticle'])->name('admin.articles.approve'); // Approve article
+    Route::put('/admin/articles/{article}/reject', [ArticlesController::class, 'rejectArticle'])->name('admin.articles.reject');     // Reject article
+    Route::put('/admin/articles/{article}/archive', [ArticlesController::class, 'archiveArticle'])->name('admin.articles.archive');   // Archive article
+
+    // ============================================
+    // USER MANAGEMENT ROUTES
+    // ============================================
+    Route::get('/admin/usersmanagement', [AdminController::class, 'users'])->name('admin.usersmanagement');                  // User list page
+    
+    // User CRUD Operations
+    Route::post('/admin/users', [AdminController::class, 'store'])->name('admin.users.store');                               // Create user
+    Route::put('/admin/users/{id}', [AdminController::class, 'update'])->name('admin.users.update');                         // Update user
+    Route::delete('/admin/users/{id}', [AdminController::class, 'destroy'])->name('admin.users.destroy');                     // Delete user
+    Route::get('/admin/users/{id}', [AdminController::class, 'show'])->name('admin.users.show');                             // View single user
+
+    // ============================================
+    // DEPARTMENT ROUTES
+    // ============================================
+    // For Admin - Shows ALL departments (full list)
+    Route::get('/admin/departments', [AdminController::class, 'getDepartments'])->name('admin.departments');
+    
+    // User Roles (if needed)
+    Route::get('/admin/user-roles', [AdminController::class, 'getUserRoles'])->name('admin.user-roles');
+
+    // ============================================
+    // USER ACCESS CONTROL ROUTES
+    // Gets the current authenticated user's data
+    // ============================================
+    Route::get('/user/departments', [UserAccessController::class, 'getUserAccessibleDepartments']);   // Get user's assigned departments
+    Route::get('/user/articles', [UserAccessController::class, 'getUserArticles']);                   // Get approved articles allowed for current user
+    Route::get('/user/permissions', [UserAccessController::class, 'getUserPermissions']);             // Get user's permissions & menus
+    Route::get('/user/profile', [UserAccessController::class, 'getUserProfile']);                     // Get current user's profile data
+    Route::get('/user/check-menu/{menuId}', [UserAccessController::class, 'checkMenuAccess']);        // Check if user can access a menu
+    Route::get('/user/has-permission/{permission}', [UserAccessController::class, 'hasPermission']);  // Check if user has a permission
+    Route::post('/user/has-any-permission', [UserAccessController::class, 'hasAnyPermission']);       // Check if user has any of the permissions
+    Route::get('/user/all-departments/{userId?}', [UserAccessController::class, 'getAllDepartmentsWithAccess']); // Get all departments with access info
+
 });
 
+// ============================================
+// AUTHENTICATION ROUTES
+// ============================================
 require __DIR__.'/auth.php';

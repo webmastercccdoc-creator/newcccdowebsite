@@ -1,10 +1,7 @@
 import { useEffect } from 'react';
-import MainLayout from '../../../layouts/MainLayout';
+import MainLayout from '../../../../layouts/MainLayout';
 // 1. Import motion from framer-motion
 import { motion } from 'framer-motion';
-
-// 2. Import the banner image
-import cbmBanner from '../../../assets/banner/cbm-banner.png';
 
 export default function CollegeBusinessManagement() {
     useEffect(() => {
@@ -36,7 +33,7 @@ export default function CollegeBusinessManagement() {
             <div 
                 className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
                 style={{
-                    backgroundImage: `url(${cbmBanner})`
+                    backgroundImage: `url(/assets/banner/cbm-banner.png)`
                 }}
             >
                 {/* Dark Overlay for text readability */}

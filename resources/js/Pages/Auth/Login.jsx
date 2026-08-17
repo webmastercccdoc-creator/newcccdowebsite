@@ -47,6 +47,10 @@ export default function Login() {
                 } else {
                     setErrors({ general: data.message || 'Login failed. Please try again.' });
                 }
+
+                if (data.errors?.email === 'Your account is inactive. Please contact the administrator.') {
+                    setErrors({ email: 'Your account is inactive. Please contact the administrator.' });
+                }
             }
         } catch (error) {
             setErrors({ general: 'An error occurred. Please try again.' });

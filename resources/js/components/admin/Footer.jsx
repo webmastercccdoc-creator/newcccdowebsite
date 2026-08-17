@@ -1,7 +1,7 @@
 export default function Footer() {
   return (
-    <footer className="mt-6 rounded-2xl bg-white p-4 text-sm text-gray-600 shadow-sm">
-      <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
+    <footer className="mt-6 rounded-2xl bg-white/70 backdrop-blur-sm p-3 text-sm text-gray-600 shadow-xl border border-gray-200/50">
+      <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
         <div className="flex items-center gap-2">
           <span className="font-semibold text-gray-800">Admin Panel</span>
           <span className="text-xs text-gray-400">v2.0</span>

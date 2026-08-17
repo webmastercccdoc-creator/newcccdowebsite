@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
 
 export default function Modal({ 
   isOpen, 
@@ -7,15 +8,18 @@ export default function Modal({
   children, 
   size = 'md',
   showCloseButton = true,
-  closeOnOverlayClick = true
+  closeOnOverlayClick = true,
+  preventClose = false,
+  onCloseAttempt = null
 }) {
   const modalRef = useRef(null);
+  const [showExitAlert, setShowExitAlert] = useState(false);
 
   // Close on Escape key
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape' && isOpen) {
-        onClose();
+        handleCloseAttempt();
       }
     };
     
@@ -33,10 +37,30 @@ export default function Modal({
     };
   }, [isOpen, onClose]);
 
+  // Handle close attempt with prevention
+  const handleCloseAttempt = () => {
+    if (preventClose) {
+      // Show alert if preventClose is true
+      if (onCloseAttempt) {
+        onCloseAttempt();
+      } else {
+        // Default alert
+        const confirmClose = window.confirm(
+          'You have unsaved changes. Are you sure you want to exit?'
+        );
+        if (confirmClose) {
+          onClose();
+        }
+      }
+    } else {
+      onClose();
+    }
+  };
+
   // Handle overlay click
   const handleOverlayClick = (e) => {
     if (closeOnOverlayClick && e.target === e.currentTarget) {
-      onClose();
+      handleCloseAttempt();
     }
   };
 
@@ -51,7 +75,7 @@ export default function Modal({
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       onClick={handleOverlayClick}
@@ -82,7 +106,7 @@ export default function Modal({
           </h3>
           {showCloseButton && (
             <button
-              onClick={onClose}
+              onClick={handleCloseAttempt}
               className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
               aria-label="Close modal"
             >
@@ -97,12 +121,10 @@ export default function Modal({
         <div className="px-6 py-4 max-h-[70vh] overflow-y-auto">
           {children}
         </div>
-
-        {/* Optional Footer - can be passed as children */}
       </div>
 
       {/* CSS Animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes fadeIn {
           from {
             opacity: 0;
@@ -174,6 +196,9 @@ export default function Modal({
       `}</style>
     </div>
   );
+
+  // Render modal using React Portal to avoid layout constraints
+  return ReactDOM.createPortal(modalContent, document.body);
 }
 
 // Confirmation Modal Variant
@@ -203,6 +228,59 @@ export function ConfirmModal({
           <button
             onClick={onConfirm}
             className={`px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors ${confirmColor} disabled:opacity-50 disabled:cursor-not-allowed`}
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                Loading...
+              </span>
+            ) : (
+              confirmText
+            )}
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+// Custom Exit Alert Modal
+export function ExitAlertModal({ 
+  isOpen, 
+  onClose, 
+  onConfirm, 
+  title = 'Unsaved Changes',
+  message = 'You have unsaved changes. Are you sure you want to exit?',
+  confirmText = 'Yes, Exit',
+  cancelText = 'Stay',
+  loading = false
+}) {
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title={title} size="sm" closeOnOverlayClick={false}>
+      <div className="py-2">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="p-2 bg-amber-100 rounded-full">
+            <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <p className="text-gray-700 font-medium">{message}</p>
+        </div>
+        <div className="flex justify-end gap-3 mt-6">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            disabled={loading}
+          >
+            {cancelText}
+          </button>
+          <button
+            onClick={onConfirm}
+            className={`px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
             disabled={loading}
           >
             {loading ? (

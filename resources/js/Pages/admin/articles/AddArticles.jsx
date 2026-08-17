@@ -9,7 +9,12 @@ export default function AddArticles({
   onSave, 
   article = null,
   isEditing = false,
-  departments = []
+  isViewing = false,
+  departments = [],
+  setIsEditing = null,
+  isReviewMode = false,
+  onApproveFromReview = null,
+  onRejectFromReview = null
 }) {
   const [formData, setFormData] = useState({
     title: '',
@@ -19,12 +24,19 @@ export default function AddArticles({
     sdg: [],
     images: [],
     imagePreviews: [],
-    existingImages: [] // Separate array for existing images from server
+    existingImages: []
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAutoSelecting, setIsAutoSelecting] = useState(false);
+  const [isFormReady, setIsFormReady] = useState(false);
+  const [isReviewEditing, setIsReviewEditing] = useState(false);
+  const [userDepartments, setUserDepartments] = useState([]);
+  const [isLoadingDepartments, setIsLoadingDepartments] = useState(false);
   const fileInputRef = useRef(null);
+
+  const effectiveIsEditing = isEditing || isReviewEditing;
+  const isReadOnlyView = isViewing && !effectiveIsEditing;
 
   // SDG Options with keywords for auto-detection
   const sdgOptions = [
@@ -115,25 +127,106 @@ export default function AddArticles({
     }
   ];
 
-  // Populate form when editing
+  // ============================================
+  // FETCH USER'S DEPARTMENTS
+  // ============================================
   useEffect(() => {
-    if (article && isEditing) {
-      // For existing images from server, store them in existingImages
-      // imagePreviews will be the same URLs that we'll display
-      const existingImages = article.imagePreviews || [];
+    if (isOpen) {
+      fetchUserDepartments();
+    }
+  }, [isOpen]);
+
+  const fetchUserDepartments = async () => {
+    setIsLoadingDepartments(true);
+    try {
+      const response = await axios.get('/user/departments');
       
+      console.log('User departments response:', response.data);
+      
+      // Handle different response formats
+      let deptList = [];
+      
+      if (response.data?.departments) {
+        deptList = response.data.departments;
+      } else if (response.data?.department_names) {
+        const slugs = response.data?.department_slugs || response.data?.department_names || [];
+        deptList = response.data.department_names.map((name, index) => ({
+          id: slugs[index] || name,
+          name: name,
+          slug: slugs[index] || name
+        }));
+      } else if (Array.isArray(response.data)) {
+        deptList = response.data;
+      }
+      
+      // Store the department objects directly (not just names)
+      const deptObjects = deptList.map(dept => {
+        if (typeof dept === 'string') {
+          return { id: dept, name: dept, slug: dept };
+        }
+        return {
+          id: dept.id || dept.slug || dept.name || dept,
+          name: dept.name || dept.label || dept.value || String(dept),
+          slug: dept.slug || dept.value || dept.name || dept.id || String(dept)
+        };
+      });
+      
+      console.log('Processed department objects:', deptObjects);
+      
+      setUserDepartments(deptObjects);
+      
+    } catch (error) {
+      console.error('Failed to fetch user departments:', error);
+      // Fallback to the departments prop if API fails
+      if (departments.length > 0) {
+        const fallbackDepts = departments.map(dept => {
+          if (typeof dept === 'string') return { id: dept, name: dept };
+          return { id: dept.id || dept.name, name: dept.name || dept };
+        });
+        setUserDepartments(fallbackDepts);
+      } else {
+        setUserDepartments([
+          { id: 'IT', name: 'IT' },
+          { id: 'HR', name: 'HR' },
+          { id: 'Finance', name: 'Finance' },
+          { id: 'Marketing', name: 'Marketing' },
+          { id: 'Operations', name: 'Operations' },
+          { id: 'Sales', name: 'Sales' }
+        ]);
+      }
+    } finally {
+      setIsLoadingDepartments(false);
+    }
+  };
+
+  // ============================================
+  // POPULATE FORM WHEN EDITING
+  // ============================================
+  useEffect(() => {
+    setIsFormReady(false);
+
+    if (article && (effectiveIsEditing || isViewing)) {
+      const imageList = article.imagePreviews || article.images || [];
+      const existingImages = Array.isArray(imageList) ? imageList : [];
+
+      const formattedSdg = (article.sdg || []).map(sdg => {
+        if (typeof sdg === 'number') {
+          return `sdg${sdg}`;
+        }
+        return sdg;
+      });
+
       setFormData({
         title: article.title || '',
         department: article.department || '',
         content: article.content || '',
         date: article.date || new Date().toISOString().split('T')[0],
-        sdg: article.sdg || [],
-        images: [], // No new images by default when editing
-        imagePreviews: existingImages, // Display existing images as previews
-        existingImages: existingImages // Keep track of original images
+        sdg: formattedSdg,
+        images: [],
+        imagePreviews: existingImages,
+        existingImages: existingImages
       });
     } else {
-      // Reset form for new article
       setFormData({
         title: '',
         department: '',
@@ -145,16 +238,23 @@ export default function AddArticles({
         existingImages: []
       });
     }
+    
     setErrors({});
-  }, [article, isEditing, isOpen]);
+    
+    setTimeout(() => {
+      setIsFormReady(true);
+    }, 0);
+  }, [article, isEditing, isOpen, isViewing]);
 
+  // ============================================
+  // HANDLE FORM CHANGES
+  // ============================================
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-    // Clear error for this field
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -163,6 +263,9 @@ export default function AddArticles({
     }
   };
 
+  // ============================================
+  // SDG HANDLERS
+  // ============================================
   const handleSDGChange = (e) => {
     const { value, checked } = e.target;
     setFormData(prev => {
@@ -180,20 +283,16 @@ export default function AddArticles({
     
     setIsAutoSelecting(true);
     
-    // Simulate AI processing delay
     setTimeout(() => {
       const matchedSDGs = sdgOptions
         .filter(sdg => {
-          // Check if any keyword from this SDG appears in the content
           return sdg.keywords.some(keyword => 
             combinedText.includes(keyword.toLowerCase())
           );
         })
         .map(sdg => sdg.value);
       
-      // If no SDGs matched, show a message or select none
       if (matchedSDGs.length === 0) {
-        // Optionally show a toast or notification
         console.log('No SDGs matched the content. Please select manually.');
         setFormData(prev => ({
           ...prev,
@@ -208,7 +307,6 @@ export default function AddArticles({
           ...prev,
           sdg: matchedSDGs
         }));
-        // Clear error if exists
         if (errors.sdg) {
           setErrors(prev => ({
             ...prev,
@@ -218,7 +316,7 @@ export default function AddArticles({
       }
       
       setIsAutoSelecting(false);
-    }, 800); // Simulate processing time
+    }, 800);
   };
 
   const handleClearSDG = () => {
@@ -226,17 +324,18 @@ export default function AddArticles({
       ...prev,
       sdg: []
     }));
-    // Set error if SDG is required
     setErrors(prev => ({
       ...prev,
       sdg: 'Please select at least one SDG'
     }));
   };
 
+  // ============================================
+  // IMAGE HANDLERS
+  // ============================================
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     if (files.length > 0) {
-      // When editing, check total images limit against existing + new
       const totalExisting = formData.existingImages.length;
       const totalNewBefore = formData.images.length;
       const totalAfterAdd = totalExisting + totalNewBefore + files.length;
@@ -254,7 +353,6 @@ export default function AddArticles({
       let hasError = false;
 
       files.forEach(file => {
-        // Validate file type
         const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
         if (!validTypes.includes(file.type)) {
           setErrors(prev => ({
@@ -265,7 +363,6 @@ export default function AddArticles({
           return;
         }
 
-        // Validate file size (max 5MB each)
         if (file.size > 5 * 1024 * 1024) {
           setErrors(prev => ({
             ...prev,
@@ -277,7 +374,6 @@ export default function AddArticles({
 
         validFiles.push(file);
         
-        // Create preview
         const reader = new FileReader();
         reader.onloadend = () => {
           validPreviews.push(reader.result);
@@ -287,7 +383,6 @@ export default function AddArticles({
               images: [...prev.images, ...validFiles],
               imagePreviews: [...prev.imagePreviews, ...validPreviews]
             }));
-            // Clear image error if exists
             if (errors.images) {
               setErrors(prev => ({
                 ...prev,
@@ -311,9 +406,7 @@ export default function AddArticles({
       const newImages = [...prev.images];
       const existingCount = prev.existingImages.length;
       
-      // Check if removing an existing image or a new image
       if (index < existingCount) {
-        // Removing an existing image from server
         const newExisting = [...prev.existingImages];
         newExisting.splice(index, 1);
         newPreviews.splice(index, 1);
@@ -324,7 +417,6 @@ export default function AddArticles({
           existingImages: newExisting
         };
       } else {
-        // Removing a newly added image
         const newImageIndex = index - existingCount;
         newImages.splice(newImageIndex, 1);
         newPreviews.splice(index, 1);
@@ -342,15 +434,40 @@ export default function AddArticles({
     }
   };
 
+  // ============================================
+  // FORM ACTIONS
+  // ============================================
+  const handleClear = () => {
+    setFormData({
+      title: '',
+      department: '',
+      content: '',
+      date: new Date().toISOString().split('T')[0],
+      sdg: [],
+      images: [],
+      imagePreviews: [],
+      existingImages: []
+    });
+    setErrors({});
+    setIsReviewEditing(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const validate = () => {
     const newErrors = {};
-    if (!formData.title.trim()) {
+    const title = (formData.title || '').trim();
+    const content = (formData.content || '').trim();
+    const department = (formData.department || '').trim();
+    
+    if (!title) {
       newErrors.title = 'Title is required';
     }
-    if (!formData.department.trim()) {
+    if (!department) {
       newErrors.department = 'Department is required';
     }
-    if (!formData.content.trim()) {
+    if (!content) {
       newErrors.content = 'Content is required';
     }
     if (!formData.date) {
@@ -366,6 +483,13 @@ export default function AddArticles({
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (!isFormReady) {
+      setErrors({
+        title: 'Form is still loading, please wait...'
+      });
+      return;
+    }
+    
     if (!validate()) {
       return;
     }
@@ -378,75 +502,155 @@ export default function AddArticles({
       submitData.append('department', formData.department);
       submitData.append('content', formData.content.trim());
       submitData.append('date', formData.date);
-      submitData.append('status', isEditing ? (article?.status || 'pending') : 'Draft');
+      
+      let statusValue = effectiveIsEditing ? (article?.status || 'pending') : 'Draft';
+      if (statusValue === 'Draft' || statusValue === 'draft') {
+        statusValue = 'pending';
+      } else if (statusValue === 'Approved' || statusValue === 'approved') {
+        statusValue = 'approved';
+      } else if (statusValue === 'Rejected' || statusValue === 'rejected') {
+        statusValue = 'rejected';
+      } else if (statusValue === 'Pending' || statusValue === 'pending') {
+        statusValue = 'pending';
+      }
+      submitData.append('status', statusValue);
 
-      formData.sdg.forEach((sdg) => {
-        // Extract number from 'sdg1', 'sdg2', etc. to get 1, 2, etc.
-        const sdgNumber = parseInt(sdg.replace('sdg', ''), 10);
+      const normalizedSdgs = formData.sdg
+        .map((sdg) => {
+          if (typeof sdg === 'number') return sdg;
+          const digits = String(sdg).match(/\d+/g);
+          return digits ? Number(digits[0]) : null;
+        })
+        .filter((sdg) => Number.isInteger(sdg) && sdg >= 1 && sdg <= 17);
+
+      if (effectiveIsEditing) {
+        submitData.append('_method', 'PUT');
+      }
+
+      normalizedSdgs.forEach((sdgNumber) => {
         submitData.append('sdg[]', sdgNumber);
       });
 
-      // Only append new images (not existing ones)
       formData.images.forEach((file) => {
         if (file instanceof File) {
           submitData.append('images[]', file);
         }
       });
 
-      // When editing, send the count of existing images to keep
       if (isEditing) {
         submitData.append('keep_existing_images_count', formData.existingImages.length);
       }
 
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      };
+      const config = {};
 
       let response;
-      if (isEditing) {
-        // Use PUT for updates
-        response = await axios.put(`/admin/articles/${article.id}`, submitData, config);
+      if (effectiveIsEditing) {
+        response = await axios.post(`/admin/articles/${article.id}`, submitData, config);
       } else {
-        // Use POST for create
         response = await axios.post('/admin/articles', submitData, config);
       }
 
-      const savedArticle = response?.data?.article || {
+      const savedArticle = response?.data?.article || response?.data || {
         ...formData,
         id: isEditing ? article.id : Date.now(),
-        status: isEditing ? article.status : 'Draft',
+        status: isEditing ? article.status : 'pending',
         imageUrls: formData.imagePreviews || [],
       };
 
-      onSave({
-        ...savedArticle,
-        status: savedArticle.status === 'pending' ? 'Draft' : savedArticle.status,
-      });
+      const responseImages = response?.data?.images || [];
+      
+      let displayStatus = savedArticle.status;
+      if (displayStatus === 'pending' || displayStatus === 'Draft' || displayStatus === 'draft') {
+        displayStatus = 'Pending';
+      } else if (displayStatus === 'approved') {
+        displayStatus = 'Approved';
+      } else if (displayStatus === 'rejected') {
+        displayStatus = 'Rejected';
+      } else if (displayStatus === 'archived') {
+        displayStatus = 'Archived';
+      }
+
+      if (onSave) {
+        onSave({
+          ...savedArticle,
+          status: displayStatus,
+          imagePreviews: responseImages.map(img => img.image_path || img.image),
+        });
+      }
+      
+      handleClear();
       onClose();
     } catch (error) {
       console.error('Error saving article:', error);
-      setErrors(prev => ({
-        ...prev,
-        submit: 'Unable to save article. Please try again.'
-      }));
+      
+      if (error.response?.data?.errors) {
+        const validationErrors = error.response.data.errors;
+        const newErrors = {};
+        Object.keys(validationErrors).forEach(field => {
+          newErrors[field] = Array.isArray(validationErrors[field]) 
+            ? validationErrors[field].join(', ')
+            : validationErrors[field];
+        });
+        setErrors(newErrors);
+        
+        const errorDetails = Object.entries(newErrors)
+          .map(([field, msg]) => `${field}: ${msg}`)
+          .join('\n');
+        setErrors(prev => ({
+          ...prev,
+          submit: `Validation error: ${errorDetails}`
+        }));
+      } else if (error.response?.status === 404) {
+        setErrors(prev => ({
+          ...prev,
+          submit: 'Article not found. Please refresh and try again.'
+        }));
+      } else if (error.response?.status === 422) {
+        const errorMsg = error.response?.data?.message || 'Validation failed. Check the console for details.';
+        setErrors(prev => ({
+          ...prev,
+          submit: errorMsg
+        }));
+      } else {
+        setErrors(prev => ({
+          ...prev,
+          submit: error.response?.data?.message || 'Unable to save article. Please try again.'
+        }));
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const departmentOptions = Array.isArray(departments)
-    ? departments.map((dept) => {
-        if (typeof dept === 'string') return { id: dept, name: dept };
+  // ============================================
+  // GET DEPARTMENT OPTIONS
+  // ============================================
+  const getDepartmentOptions = () => {
+    // userDepartments is already an array of objects with id and name
+    if (userDepartments.length > 0) {
+      return userDepartments;
+    }
+    
+    // Fallback to the departments prop
+    if (Array.isArray(departments) && departments.length > 0) {
+      return departments.map((dept) => {
+        if (typeof dept === 'string') return { id: dept, name: dept, slug: dept };
         return {
           id: dept.id ?? dept.slug ?? dept.name,
-          name: dept.name ?? dept.label ?? dept.value ?? 'Unknown Department'
+          name: dept.name ?? dept.label ?? dept.value ?? 'Unknown Department',
+          slug: dept.slug ?? dept.value ?? dept.name ?? dept.id ?? 'unknown-department'
         };
-      })
-    : [];
+      });
+    }
+    
+    return [];
+  };
 
-  // Function to render image slots
+  const departmentOptions = getDepartmentOptions();
+
+  // ============================================
+  // RENDER IMAGE SLOTS
+  // ============================================
   const renderImageSlots = () => {
     const slots = [];
     const totalSlots = 3;
@@ -455,7 +659,6 @@ export default function AddArticles({
       const hasImage = i < formData.imagePreviews.length;
       
       if (hasImage) {
-        // Show uploaded image
         slots.push(
           <div key={i} className="relative group">
             <img 
@@ -478,7 +681,6 @@ export default function AddArticles({
           </div>
         );
       } else {
-        // Show grey placeholder
         slots.push(
           <div key={i} className="w-full h-24 rounded-lg bg-gray-200 border-2 border-dashed border-gray-300 flex items-center justify-center">
             <div className="text-center">
@@ -495,12 +697,16 @@ export default function AddArticles({
     return slots;
   };
 
+  // ============================================
+  // RENDER
+  // ============================================
   return (
     <Modal 
       isOpen={isOpen} 
       onClose={onClose} 
-      title={isEditing ? "Edit Article" : "Add New Article"}
+      title={effectiveIsEditing ? "Edit Article" : (isViewing ? "View Article" : (isEditing ? "Edit Article" : "Add New Article"))}
       size="full"
+      fullScreen={true}
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Title - Full Width */}
@@ -514,37 +720,54 @@ export default function AddArticles({
             name="title"
             value={formData.title}
             onChange={handleChange}
+            disabled={isReadOnlyView}
             placeholder="Enter article title"
             className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent transition-all outline-none ${
               errors.title ? 'border-red-500' : 'border-gray-300'
-            }`}
+            } ${isReadOnlyView ? 'bg-gray-50 cursor-not-allowed' : ''}`}
           />
           {errors.title && (
             <p className="mt-1.5 text-sm text-red-500">{errors.title}</p>
           )}
         </div>
 
-        {/* Department */}
+        {/* Department - Filtered by user's accessible departments */}
         <div>
           <label htmlFor="department" className="block text-sm font-medium text-gray-700 mb-1.5">
             Department <span className="text-red-500">*</span>
           </label>
-          <select
-            id="department"
-            name="department"
-            value={formData.department}
-            onChange={handleChange}
-            className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent transition-all outline-none bg-white ${
-              errors.department ? 'border-red-500' : 'border-gray-300'
-            }`}
-          >
-            <option value="">Select department</option>
-            {departmentOptions.map((dept) => (
-              <option key={dept.id} value={dept.name}>{dept.name}</option>
-            ))}
-          </select>
+          {isLoadingDepartments ? (
+            <div className="w-full px-4 py-2.5 border rounded-lg bg-gray-50 text-gray-500">
+              Loading departments...
+            </div>
+          ) : (
+            <select
+              id="department"
+              name="department"
+              value={formData.department}
+              onChange={handleChange}
+              disabled={isReadOnlyView || departmentOptions.length === 0}
+              className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent transition-all outline-none bg-white ${
+                errors.department ? 'border-red-500' : 'border-gray-300'
+              } ${(isReadOnlyView || departmentOptions.length === 0) ? 'bg-gray-50 cursor-not-allowed' : ''}`}
+            >
+              <option value="">
+                {departmentOptions.length === 0 ? 'No departments available' : 'Select department'}
+              </option>
+              {departmentOptions.map((dept) => (
+                <option key={dept.id} value={dept.slug ?? dept.name}>
+                  {dept.name}
+                </option>
+              ))}
+            </select>
+          )}
           {errors.department && (
             <p className="mt-1.5 text-sm text-red-500">{errors.department}</p>
+          )}
+          {departmentOptions.length === 0 && !isLoadingDepartments && (
+            <p className="mt-1.5 text-sm text-amber-600">
+              ⚠️ No departments assigned to you. Please contact your administrator.
+            </p>
           )}
         </div>
 
@@ -559,9 +782,10 @@ export default function AddArticles({
             name="date"
             value={formData.date}
             onChange={handleChange}
+            disabled={isReadOnlyView}
             className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent transition-all outline-none ${
               errors.date ? 'border-red-500' : 'border-gray-300'
-            }`}
+            } ${isReadOnlyView ? 'bg-gray-50 cursor-not-allowed' : ''}`}
           />
           {errors.date && (
             <p className="mt-1.5 text-sm text-red-500">{errors.date}</p>
@@ -587,7 +811,7 @@ export default function AddArticles({
                     ? 'border-green-500 text-green-600 hover:border-green-400'
                     : 'border-gray-300 text-gray-600 hover:border-gray-400'
               }`}
-              disabled={formData.imagePreviews.length >= 3}
+              disabled={isReadOnlyView || formData.imagePreviews.length >= 3}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -618,7 +842,6 @@ export default function AddArticles({
             Supported formats: JPEG, PNG, GIF, WebP. Max size: 5MB each
           </p>
           
-          {/* Image Previews Grid - Always shows 3 slots */}
           <div className="mt-3 grid grid-cols-3 gap-2">
             {renderImageSlots()}
           </div>
@@ -634,11 +857,12 @@ export default function AddArticles({
             name="content"
             value={formData.content}
             onChange={handleChange}
+            disabled={isReadOnlyView}
             rows="8"
             placeholder="Write your article content here..."
             className={`w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-gray-800 focus:border-transparent transition-all outline-none resize-y min-h-[200px] ${
               errors.content ? 'border-red-500' : 'border-gray-300'
-            }`}
+            } ${isReadOnlyView ? 'bg-gray-50 cursor-not-allowed' : ''}`}
           />
           {errors.content && (
             <p className="mt-1.5 text-sm text-red-500">{errors.content}</p>
@@ -727,33 +951,106 @@ export default function AddArticles({
           )}
         </div>
 
-        {/* Form Actions */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors disabled:opacity-50"
-            disabled={isSubmitting}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-5 py-2.5 text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <>
-                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                {isEditing ? 'Updating...' : 'Creating...'}
-              </>
-            ) : (
-              <>{isEditing ? 'Update Article' : 'Create Article'}</>
-            )}
-          </button>
+        {/* Form Actions - Full Width Buttons */}
+        <div className="flex gap-3 pt-4 border-t border-gray-200">
+          {isViewing && effectiveIsEditing ? (
+            <>
+              <button
+                type="button"
+                onClick={() => setIsReviewEditing(false)}
+                className="flex-1 px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors disabled:opacity-50"
+                disabled={isSubmitting}
+              >
+                Cancel Edit
+              </button>
+              <button
+                type="submit"
+                className="flex-1 px-5 py-2.5 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    Saving...
+                  </>
+                ) : (
+                  'Save Changes'
+                )}
+              </button>
+            </>
+          ) : isViewing ? (
+            <>
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsReviewEditing(true)}
+                className="flex-1 px-5 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+              >
+                Edit
+              </button>
+              {onApproveFromReview && (
+                <button
+                  type="button"
+                  onClick={onApproveFromReview}
+                  className="flex-1 px-5 py-2.5 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors"
+                >
+                  Approve
+                </button>
+              )}
+              {onRejectFromReview && (
+                <button
+                  type="button"
+                  onClick={onRejectFromReview}
+                  className="flex-1 px-5 py-2.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
+                >
+                  Reject
+                </button>
+              )}
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleClear}
+                className="flex-1 px-5 py-2.5 text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors"
+              >
+                Clear
+              </button>
+              <button
+                type="submit"
+                className="flex-1 px-5 py-2.5 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    {isEditing ? 'Updating...' : 'Creating...'}
+                  </>
+                ) : (
+                  <>{isEditing ? 'Update Article' : 'Create Article'}</>
+                )}
+              </button>
+            </>
+          )}
         </div>
       </form>
     </Modal>

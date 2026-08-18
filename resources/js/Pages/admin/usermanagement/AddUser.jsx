@@ -28,11 +28,13 @@ export default function AddUser({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Access Control Options
+  // Access Control Options - Updated with Content and Research
   const accessControlOptions = [
     { id: 'articles', label: 'Articles' },
     { id: 'approve_articles', label: 'Approve Articles' },
     { id: 'promotions', label: 'Promotions' },
+    { id: 'research', label: 'Research' },
+    { id: 'content', label: 'Content' },
     { id: 'user_management', label: 'User Management' },
     { id: 'events', label: 'Events' },
     { id: 'settings', label: 'Settings' }
@@ -486,7 +488,7 @@ export default function AddUser({
           <div className={`p-3 border rounded-lg ${
             errors.access_controls ? 'border-red-500' : 'border-gray-200'
           }`}>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
               {accessControlOptions.map(option => (
                 <label
                   key={option.id}

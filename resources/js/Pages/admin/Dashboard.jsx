@@ -192,7 +192,7 @@ export default function Dashboard({
                 {statCards.map((stat, index) => (
                     <div 
                         key={index} 
-                        className={`${stat.cardBg} rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden transform hover:scale-105`}
+                        className={`${stat.cardBg} rounded-xl shadow-lg`}
                     >
                         <div className="p-6">
                             <div className="flex items-center justify-between">

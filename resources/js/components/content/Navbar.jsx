@@ -5,16 +5,14 @@ const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [openDropdown, setOpenDropdown] = useState(null);
     const [isScrolled, setIsScrolled] = useState(false);
-    const [isNavVisible, setIsNavVisible] = useState(true);
     const hoverTimeoutRef = useRef(null);
     const dropdownRef = useRef(null);
     const menuItemRefs = useRef({});
 
-    // Detect scroll while keeping the navbar visible at all times.
+    // Detect scroll for shadow and height effect
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 10);
-            setIsNavVisible(true);
         };
 
         handleScroll();
@@ -26,7 +24,6 @@ const Navbar = () => {
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                // Check if click is on any menu item
                 let isOnMenuItem = false;
                 Object.values(menuItemRefs.current).forEach(ref => {
                     if (ref && ref.contains(event.target)) {
@@ -74,13 +71,11 @@ const Navbar = () => {
     };
 
     const handleMouseLeave = (event) => {
-        // Check if mouse is moving to dropdown
         const relatedTarget = event.relatedTarget;
         if (dropdownRef.current && dropdownRef.current.contains(relatedTarget)) {
             return;
         }
         
-        // Check if mouse is moving to another menu item
         let isOnMenuItem = false;
         Object.values(menuItemRefs.current).forEach(ref => {
             if (ref && ref.contains(relatedTarget)) {
@@ -104,7 +99,6 @@ const Navbar = () => {
 
     const handleDropdownMouseLeave = (event) => {
         const relatedTarget = event.relatedTarget;
-        // Check if mouse is moving to any menu item
         let isOnMenuItem = false;
         Object.values(menuItemRefs.current).forEach(ref => {
             if (ref && ref.contains(relatedTarget)) {
@@ -195,32 +189,33 @@ const Navbar = () => {
     return (
         <nav 
             className={`
-                sticky top-0 z-50 w-full font-sans
+                fixed top-0 left-0 right-0 z-50 w-full font-sans
                 transition-all duration-300 ease-in-out
-                ${isScrolled ? 'shadow-2xl' : 'shadow-xl'}
-                ${isNavVisible ? 'translate-y-0 opacity-100 visible' : '-translate-y-full opacity-0 invisible'}
+                ${isScrolled 
+                    ? 'shadow-2xl bg-opacity-95 backdrop-blur-sm' 
+                    : 'shadow-xl bg-opacity-100'
+                }
             `} 
             style={{ 
                 backgroundColor: '#157D3C',
-                position: 'sticky',
-                top: 0,
-                zIndex: 9999,
-                transform: 'translateY(0)',
-                opacity: 1,
-                visibility: 'visible'
+                height: isScrolled ? '64px' : '80px',
             }}
             role="navigation" 
             aria-label="Main navigation"
         >
-            <div className="w-full px-4 sm:px-6 lg:px-8">
-                <div className="flex h-20 items-center justify-between w-full">
+            <div className="w-full px-4 sm:px-6 lg:px-8 h-full">
+                <div className="flex h-full items-center justify-between w-full">
                     {/* Logo */}
                     <div className="flex-shrink-0">
                         <a 
                             href="/" 
                             className="flex items-center hover:opacity-90 transition-opacity duration-200"
                         >
-                            <div className="h-14 w-44 flex items-center justify-center overflow-hidden">
+                            <div className={`
+                                flex items-center justify-center overflow-hidden
+                                transition-all duration-300
+                                ${isScrolled ? 'h-10 w-36' : 'h-14 w-44'}
+                            `}>
                                 <img src={logoSrc} alt="College Logo" className="h-full w-full object-cover" />
                             </div>
                         </a>
@@ -246,10 +241,11 @@ const Navbar = () => {
                                             <button
                                                 onClick={() => toggleDropdown(item.name)}
                                                 className={`
-                                                    flex items-center justify-center gap-1 rounded-xl px-3 lg:px-4 xl:px-4 py-2.5 text-sm font-semibold 
+                                                    flex items-center justify-center gap-1 rounded-xl px-3 lg:px-4 xl:px-4 
                                                     transition-all duration-300 cubic-bezier(0.4, 0, 0.2, 1)
                                                     text-white hover:bg-white/15 hover:text-green-100 hover:shadow-lg
                                                     whitespace-nowrap font-sans
+                                                    ${isScrolled ? 'text-sm py-2' : 'text-sm font-semibold py-2.5'}
                                                     ${openDropdown === item.name ? 'bg-white/20 text-green-100 shadow-lg' : ''}
                                                 `}
                                                 aria-expanded={openDropdown === item.name}
@@ -340,7 +336,12 @@ const Navbar = () => {
                                     ) : (
                                         <a
                                             href={item.href}
-                                            className="flex items-center justify-center rounded-xl px-3 lg:px-4 xl:px-4 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-white/15 hover:text-green-100 hover:shadow-lg whitespace-nowrap font-sans"
+                                            className={`
+                                                flex items-center justify-center rounded-xl px-3 lg:px-4 xl:px-4 
+                                                text-white transition-all duration-300 hover:bg-white/15 hover:text-green-100 hover:shadow-lg 
+                                                whitespace-nowrap font-sans
+                                                ${isScrolled ? 'text-sm py-2' : 'text-sm font-semibold py-2.5'}
+                                            `}
                                         >
                                             {item.name}
                                         </a>
@@ -353,7 +354,12 @@ const Navbar = () => {
                         <div className="flex-shrink-0 ml-4">
                             <a
                                 href="/apply"
-                                className="rounded-full bg-white px-7 lg:px-8 xl:px-9 py-2.5 text-sm font-bold text-green-700 transition-all duration-300 hover:bg-green-50 hover:shadow-xl hover:scale-110 hover:-translate-y-1 whitespace-nowrap tracking-wide font-sans"
+                                className={`
+                                    rounded-full bg-white text-green-700 transition-all duration-300 
+                                    hover:bg-green-50 hover:shadow-xl hover:scale-110 hover:-translate-y-1 
+                                    whitespace-nowrap tracking-wide font-sans font-bold
+                                    ${isScrolled ? 'px-5 lg:px-6 py-2 text-xs' : 'px-7 lg:px-8 xl:px-9 py-2.5 text-sm'}
+                                `}
                             >
                                 Enroll Now
                             </a>
@@ -381,7 +387,7 @@ const Navbar = () => {
                     </button>
                 </div>
 
-                {/* Mobile Menu - Portrait for mobile only */}
+                {/* Mobile Menu - Fixed with proper background */}
                 <div 
                     id="mobile-menu"
                     className={`
@@ -389,17 +395,17 @@ const Navbar = () => {
                         ${isMobileMenuOpen ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'}
                     `}
                 >
-                    <div className="space-y-1 pb-4 pt-2">
+                    <div className="bg-white rounded-b-2xl shadow-2xl mt-2 pb-4 pt-2">
                         {navigationItems.map((item) => (
-                            <div key={item.name}>
+                            <div key={item.name} className="px-3">
                                 {item.dropdown ? (
                                     <>
                                         <button
                                             onClick={() => toggleDropdown(item.name)}
                                             className={`
                                                 flex w-full items-center justify-between rounded-lg px-4 py-3 text-base font-medium
-                                                transition-colors text-white hover:bg-white/10 hover:text-green-300 font-sans
-                                                ${openDropdown === item.name ? 'bg-white/10 text-green-300' : ''}
+                                                transition-colors text-green-700 hover:bg-green-50 hover:text-green-800 font-sans
+                                                ${openDropdown === item.name ? 'bg-green-50 text-green-800' : ''}
                                             `}
                                             aria-expanded={openDropdown === item.name}
                                         >
@@ -415,16 +421,16 @@ const Navbar = () => {
                                             </svg>
                                         </button>
                                         
-                                        {/* Mobile Sub-menu - Semi-transparent */}
+                                        {/* Mobile Sub-menu - Solid White Background */}
                                         <div className={`
-                                            ml-4 space-y-1 overflow-hidden transition-all duration-200 bg-white/80 backdrop-blur-sm shadow-lg mt-1 rounded-lg font-sans
-                                            ${openDropdown === item.name ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}
+                                            ml-2 space-y-1 overflow-hidden transition-all duration-200 bg-white shadow-inner rounded-lg
+                                            ${openDropdown === item.name ? 'max-h-96 opacity-100 p-2' : 'max-h-0 opacity-0 p-0'}
                                         `}>
                                             {item.dropdown.map((subItem) => (
                                                 <a
                                                     key={subItem.name}
                                                     href={subItem.href}
-                                                    className="block px-4 py-2.5 text-sm text-green-700 transition-colors hover:bg-green-50/70 hover:text-green-800 rounded-lg font-sans"
+                                                    className="block px-4 py-3 text-sm text-gray-700 transition-colors hover:bg-green-50 hover:text-green-700 rounded-lg font-sans border-b border-gray-100 last:border-b-0"
                                                     onClick={() => {
                                                         setOpenDropdown(null);
                                                         setIsMobileMenuOpen(false);
@@ -432,7 +438,7 @@ const Navbar = () => {
                                                 >
                                                     <div className="font-medium font-sans">{subItem.name}</div>
                                                     {subItem.description && (
-                                                        <div className="text-xs text-gray-500/80 mt-0.5 font-sans">{subItem.description}</div>
+                                                        <div className="text-xs text-gray-500 mt-0.5 font-sans">{subItem.description}</div>
                                                     )}
                                                 </a>
                                             ))}
@@ -441,7 +447,7 @@ const Navbar = () => {
                                 ) : (
                                     <a
                                         href={item.href}
-                                        className="block rounded-lg px-4 py-3 text-base font-medium text-white transition-colors hover:bg-white/10 hover:text-green-300 font-sans"
+                                        className="block rounded-lg px-4 py-3 text-base font-medium text-green-700 transition-colors hover:bg-green-50 hover:text-green-800 font-sans"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         {item.name}
@@ -451,10 +457,10 @@ const Navbar = () => {
                         ))}
                         
                         {/* Mobile CTA Button - White */}
-                        <div className="pt-4">
+                        <div className="px-3 pt-4 pb-2">
                             <a
                                 href="/apply"
-                                className="block w-full rounded-full bg-white px-4 py-3 text-center font-semibold text-green-700 transition-all hover:bg-green-50 hover:shadow-lg font-sans"
+                                className="block w-full rounded-full bg-green-700 px-4 py-3 text-center font-semibold text-white transition-all hover:bg-green-800 hover:shadow-lg font-sans"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
                                 Apply Now

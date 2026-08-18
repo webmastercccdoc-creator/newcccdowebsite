@@ -86,7 +86,7 @@ class AdminController extends Controller
             'status' => 'required|in:active,inactive',
             'password' => 'required|string|min:6',
             'access_controls' => 'required|array|min:1',
-            'access_controls.*' => 'string|in:articles,approve_articles,promotions,user_management,events,settings',
+            'access_controls.*' => 'string|in:articles,approve_articles,promotions,content,research,user_management,events,settings',
         ]);
 
         try {
@@ -172,7 +172,7 @@ class AdminController extends Controller
             'status' => 'required|in:active,inactive',
             'password' => 'nullable|string|min:6',
             'access_controls' => 'required|array|min:1',
-            'access_controls.*' => 'string|in:articles,approve_articles,promotions,user_management,events,settings',
+            'access_controls.*' => 'string|in:articles,approve_articles,promotions,content,research,user_management,events,settings',
         ]);
 
         try {

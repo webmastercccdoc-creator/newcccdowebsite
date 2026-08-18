@@ -340,7 +340,7 @@ class UserAccessController extends Controller
             [
                 'id' => 'articles',
                 'name' => 'Articles',
-                'required_permission' => 'articles', // Now requires 'articles' permission
+                'required_permission' => 'articles',
                 'route' => 'admin.articles'
             ],
             [
@@ -360,6 +360,18 @@ class UserAccessController extends Controller
                 'name' => 'Events',
                 'required_permission' => 'events',
                 'route' => 'admin.events'
+            ],
+            [
+                'id' => 'research',
+                'name' => 'Research',
+                'required_permission' => 'research',
+                'route' => 'admin.research'
+            ],
+            [
+                'id' => 'content',
+                'name' => 'Content',
+                'required_permission' => 'content',
+                'route' => 'admin.content'
             ],
             [
                 'id' => 'user_management',
@@ -407,6 +419,8 @@ class UserAccessController extends Controller
             'approve_articles' => 'approve_articles',
             'promotions' => 'promotions',
             'events' => 'events',
+            'research' => 'research',
+            'content' => 'content',
             'user_management' => 'user_management',
             'settings' => 'settings',
         ];

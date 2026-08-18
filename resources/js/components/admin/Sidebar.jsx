@@ -156,6 +156,8 @@ export default function Sidebar() {
     if (url.startsWith('/admin/approve-articles')) return '/admin/approve-articles';
     if (url.startsWith('/admin/promotions')) return '/admin/promotions';
     if (url.startsWith('/admin/events')) return '/admin/events';
+    if (url.startsWith('/admin/research')) return '/admin/research';
+    if (url.startsWith('/admin/content')) return '/admin/content';
     if (url.startsWith('/admin/users')) return '/admin/usersmanagement';
     if (url.startsWith('/admin/settings')) return '/admin/settings';
     if (url.startsWith('/dashboard') || url === '/admin') return '/dashboard';
@@ -211,6 +213,24 @@ export default function Sidebar() {
         </svg>
       )
     },
+    research: {
+      name: 'Research',
+      href: '/admin/research',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      )
+    },
+    content: {
+      name: 'Content',
+      href: '/admin/content',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+      )
+    },
     user_management: {
       name: 'User Management',
       href: '/admin/usersmanagement',
@@ -257,7 +277,7 @@ export default function Sidebar() {
         </div>
         <nav className="flex-1 px-3 py-4 overflow-hidden">
           <ul className="space-y-1">
-            {[...Array(5)].map((_, i) => (
+            {[...Array(7)].map((_, i) => (
               <li key={i}>
                 <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg">
                   <div className="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
@@ -334,7 +354,7 @@ export default function Sidebar() {
                   flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium group
                   ${activeItem === item.href    
                     ? 'bg-gray-700 text-white shadow-sm' 
-                    : 'bg-gray-200/80 text-gray-700 hover:bg-gray-300 hover:text-gray-800'
+                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                   } 
                   ${isCollapsed ? 'justify-center' : ''}
                   hover:scale-[1.02] transform transition-transform duration-200
@@ -346,7 +366,7 @@ export default function Sidebar() {
                   flex-shrink-0 flex items-center justify-center w-6 h-6 transition-colors duration-200
                   ${activeItem === item.href 
                     ? 'text-white' 
-                    : 'text-gray-600 group-hover:text-gray-700'
+                    : 'text-gray-500 group-hover:text-gray-700'
                   }
                 `}>
                   {item.icon}

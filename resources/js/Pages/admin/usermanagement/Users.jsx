@@ -252,7 +252,7 @@ export default function Users({ users = [] }) {
                     <button
                         onClick={() => setShowAddModal(true)}
                         disabled={isLoading}
-                        className="mt-3 sm:mt-0 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="mt-3 sm:mt-0 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-gray-600 hover:gray-600 rounded-lg transition-colors shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -290,15 +290,6 @@ export default function Users({ users = [] }) {
 
                         {/* Filters */}
                         <div className="flex-1 flex flex-wrap gap-4">
-                            <select
-                                value={roleFilter}
-                                onChange={(e) => handleFilterChange(setRoleFilter, e.target.value)}
-                                className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none text-sm bg-white min-w-[140px]"
-                            >
-                                {uniqueRoles.map(role => (
-                                    <option key={role} value={role}>Role: {role}</option>
-                                ))}
-                            </select>
 
                             <select
                                 value={departmentFilter}
@@ -357,7 +348,7 @@ export default function Users({ users = [] }) {
                 </div>
 
                 {/* Users Table */}
-                <div className="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden">
+                <div className="bg-white border border-gray-200 shadow-lg overflow-hidden">
                     <div className="overflow-hidden">
                         <table className="w-full text-sm">
                             <thead>

@@ -283,7 +283,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
         </div>
         <button 
           onClick={handleAddNew}
-          className="mt-3 sm:mt-0 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
+          className="mt-3 sm:mt-0 bg-gray-600 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -296,7 +296,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
       <div className="bg-gray-100 border border-gray-200 shadow-sm p-4 mb-6">
         <div className="flex flex-col md:flex-row gap-4">
           {/* Search Input */}
-          <div className="flex-1 relative">
+          <div className="md:w-80 relative flex-shrink-0">
             <svg 
               className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
               fill="none" 
@@ -324,8 +324,8 @@ export default function Articles({ articles: initialArticles, departments = [] }
             )}
           </div>
 
-          {/* Status Filter */}
-          <div className="flex gap-4">
+          {/* Filters */}
+          <div className="flex-1 flex flex-wrap gap-4">
             <select
               value={statusFilter}
               onChange={(e) => handleFilterChange(setStatusFilter, e.target.value)}
@@ -387,11 +387,11 @@ export default function Articles({ articles: initialArticles, departments = [] }
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-700 text-white">
-                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider">#</th>
-                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider">Title & Content</th>
-                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider">Department</th>
-                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider">Status</th>
-                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider">Date</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">#</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Title & Content</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Department</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Status</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Date</th>
                 <th className="text-center py-4 px-4 font-semibold text-xs uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
@@ -402,10 +402,10 @@ export default function Articles({ articles: initialArticles, departments = [] }
                     key={article.id} 
                     className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-300 transition-all duration-200 group`}
                   >
-                    <td className="py-3 px-4 text-gray-500 text-xs font-medium">
+                    <td className="py-3 px-4 text-gray-500 text-xs font-medium border-r border-gray-200">
                       {String(startIndex + index + 1).padStart(2, '0')}
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="py-3 px-4 border-r border-gray-200">
                       <div>
                         <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer">
                           {article.title}
@@ -415,18 +415,18 @@ export default function Articles({ articles: initialArticles, departments = [] }
                         </p>
                       </div>
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="py-3 px-4 border-r border-gray-200">
                       <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
                         {article.department}
                       </span>
                     </td>
-                    <td className="py-3 px-4">
+                    <td className="py-3 px-4 border-r border-gray-200">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${getStatusBadge(article.status)}`}>
                         {getStatusIcon(article.status)}
                         {article.status}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-gray-500 text-sm">
+                    <td className="py-3 px-4 text-gray-500 text-sm border-r border-gray-200">
                       {article.date}
                     </td>
                     <td className="py-3 px-4">
@@ -520,7 +520,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
                     onClick={() => handlePageChange(page)}
                     className={`px-3.5 py-1.5 text-sm rounded-lg transition-all ${
                       currentPage === page
-                        ? 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm'
+                        ? 'bg-gray-700 text-white hover:bg-gray-800 shadow-sm'
                         : 'text-gray-600 hover:bg-white border border-transparent hover:border-gray-300 bg-white'
                     }`}
                   >

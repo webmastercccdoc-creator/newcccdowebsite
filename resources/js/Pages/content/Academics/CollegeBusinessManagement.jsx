@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
+import cedBanner from '../../../assets/banner/cbm-banner.png';
 import { motion } from 'framer-motion';
-import tstiBanner from '../../../assets/banner/tsti-banner.png';
 
 // Placeholder components for each section
 const AboutContent = () => (
@@ -11,7 +11,7 @@ const AboutContent = () => (
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 100, damping: 15 }}
     >
-        <h2 className="text-3xl font-bold text-gray-800 mb-6">About the Institute</h2>
+        <h2 className="text-3xl font-bold text-gray-800 mb-6">About the College</h2>
         <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed">
             <p className="mb-4">Coming soon...</p>
         </div>
@@ -116,12 +116,12 @@ const NewsContent = () => (
     </motion.div>
 );
 
-export default function TechnicalSkillsTechnologyInstitute() {
+export default function CollegeBusinessManagement() {
     const [selectedMenuId, setSelectedMenuId] = useState(1);
     const [imageError, setImageError] = useState(false);
 
     useEffect(() => {
-        document.title = "Technical Skills and Technology Institute - City College of Cagayan de Oro";
+        document.title = "College of Business Management - City College of Cagayan de Oro";
     }, []);
 
     const textVariants = {
@@ -205,7 +205,7 @@ export default function TechnicalSkillsTechnologyInstitute() {
             <div 
                 className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
                 style={{
-                    backgroundImage: imageError ? 'none' : `url(${tstiBanner})`,
+                    backgroundImage: imageError ? 'none' : `url(${cedBanner})`,
                     backgroundColor: imageError ? '#1a365d' : 'transparent',
                 }}
             >
@@ -231,20 +231,20 @@ export default function TechnicalSkillsTechnologyInstitute() {
                         variants={textVariants}
                         className="text-4xl font-bold tracking-tight text-white drop-shadow-md sm:text-5xl md:text-6xl"
                     >
-                        Technical Skills and Technology Institute
+                        College of Business Management
                     </motion.h1>
                     
                     <motion.p 
                         variants={textVariants}
                         className="mx-auto mt-4 max-w-2xl text-lg text-white/90 drop-shadow-md"
                     >
-                        Equipping students with practical skills and technological expertise for industry readiness.
+                        Developing future business leaders through innovative education and entrepreneurial excellence.
                     </motion.p>
                 </motion.div>
 
                 {/* Hidden img to detect load error */}
                 <img
-                    src={tstiBanner}
+                    src={cedBanner}
                     alt=""
                     className="hidden"
                     onError={() => setImageError(true)}

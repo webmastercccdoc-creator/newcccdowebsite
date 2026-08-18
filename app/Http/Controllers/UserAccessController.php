@@ -38,8 +38,8 @@ class UserAccessController extends Controller
 
         // Get user's departments from user_departments table using the slug column.
         $departments = $user->departments()
-            ->select('id', 'name', 'slug')
-            ->orderBy('name')
+            ->select('departments.id', 'departments.name', 'departments.slug')
+            ->orderBy('departments.name')
             ->get();
 
         // If user has no assigned departments, return empty array

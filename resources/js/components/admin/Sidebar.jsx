@@ -38,14 +38,12 @@ export default function Sidebar() {
 
   // Fetch user permissions and menus - using cached data
   useEffect(() => {
-    // If we already have cached menus, use them
     if (cachedMenus) {
       setMenus(cachedMenus);
       setIsLoading(false);
       return;
     }
 
-    // If we're already fetching, wait for the promise
     if (menusFetchPromise) {
       menusFetchPromise.then(data => {
         if (data) {
@@ -57,7 +55,6 @@ export default function Sidebar() {
       return;
     }
 
-    // Start fetching
     isMenusFetching = true;
     menusFetchPromise = (async () => {
       try {
@@ -114,7 +111,7 @@ export default function Sidebar() {
     fetchUserData();
   }, [initialUser]);
 
-  // Fetch article counts for pending articles - only if user has approve_articles permission
+  // Fetch article counts for pending articles
   useEffect(() => {
     if (!menus.length) return;
     
@@ -265,221 +262,225 @@ export default function Sidebar() {
     };
   }).filter(Boolean);
 
-  // Show loading state only on first load
+  // Loading state
   if (isLoading && !cachedMenus) {
     return (
       <aside 
-        className="w-64 min-h-screen bg-white/30 border-r border-gray-200 flex flex-col shadow-2xl"
-        aria-label="CMS sidebar"
-      >
-        <div className="flex items-center justify-center px-4 py-5 bg-white/40 border-b border-gray-200">
-          <div className="w-10 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
-        </div>
-        <nav className="flex-1 px-3 py-4 overflow-hidden">
-          <ul className="space-y-1">
-            {[...Array(7)].map((_, i) => (
-              <li key={i}>
-                <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg">
-                  <div className="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
-                  <div className="flex-1 h-4 bg-gray-200 rounded animate-pulse"></div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </aside>
+          className="fixed left-0 top-0 z-40 w-64 h-screen bg-white border-r border-gray-200 shadow-xl flex flex-col"
+          aria-label="CMS sidebar"
+        >
+          <div className="flex items-center justify-center px-4 py-5 bg-white border-b border-gray-200">
+            <div className="w-10 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
+          </div>
+          <nav className="flex-1 px-3 py-4 overflow-hidden">
+            <ul className="space-y-1">
+              {[...Array(7)].map((_, i) => (
+                <li key={i}>
+                  <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <div className="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="flex-1 h-4 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </aside>
     );
   }
 
   return (
-    <aside 
-      className={`
-        ${isCollapsed ? 'w-20' : 'w-64'} 
-        min-h-screen bg-white/30 border-r border-gray-200 dark:border-gray-700 flex flex-col shadow-2xl transition-all duration-300 overflow-hidden
-      `}
-      aria-label="CMS sidebar"
-    >
-      {/* Collapse Button - Hamburger Icon - 40% White Header with Centered Admin Panel Text */}
-      <div className={`
-        flex items-center px-4 py-5
-        ${isCollapsed ? 'justify-center' : 'justify-between'}
-        bg-white/40 border-b border-gray-200 flex-shrink-0
-      `}>
-        {!isCollapsed && (
-          <span className="text-lg font-semibold text-gray-700 whitespace-nowrap flex-1 text-center">
-            Admin Panel
-          </span>
-        )}
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className={`
-            flex items-center justify-center p-2 rounded-lg transition-all duration-200
-            text-gray-700 hover:bg-gray-100/50 hover:text-gray-900
-            ${isCollapsed ? 'mx-auto' : ''}
-          `}
-          aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          <svg 
-            className="w-6 h-6 flex-shrink-0" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
+      
+      <aside 
+        className={`
+          hidden lg:flex
+          bg-white border-r border-gray-200 shadow-xl
+          h-screen flex-col
+          ${isCollapsed ? 'w-20' : 'w-64'}
+        `}
+        aria-label="CMS sidebar"
+      >
+        {/* Header - Admin Panel */}
+        <div className={`
+          flex items-center px-4 py-5
+          ${isCollapsed ? 'justify-center' : 'justify-between'}
+          bg-white border-b border-gray-200 flex-shrink-0
+        `}>
+          {!isCollapsed && (
+            <span className="text-lg font-semibold text-gray-800 whitespace-nowrap flex-1 text-center">
+              Admin Panel
+            </span>
+          )}
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className={`
+              hidden md:flex items-center justify-center p-2 rounded-lg transition-all duration-200
+              text-gray-600 hover:bg-gray-100 hover:text-gray-900
+              ${isCollapsed ? 'mx-auto' : ''}
+            `}
+            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
-      </div>
+            <svg 
+              className="w-6 h-6 flex-shrink-0" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
+        </div>
 
-      {/* Navigation */}
-      <nav className={`flex-1 px-3 py-4 ${isCollapsed ? 'overflow-hidden' : 'overflow-y-auto'}`} aria-label="Main navigation">
-        <ul className="space-y-1">
-          {navItems.map((item) => (
-            <li key={item.href} className="relative">
-              <Link
-                href={item.href}
-                onClick={(event) => {
-                  event.preventDefault();
-                  router.visit(item.href, {
-                    preserveScroll: true,
-                    preserveState: true,
-                    replace: false,
-                  });
-                }}
-                className={`
-                  flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium group
-                  ${activeItem === item.href    
-                    ? 'bg-gray-700 text-white shadow-sm' 
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                  } 
-                  ${isCollapsed ? 'justify-center' : ''}
-                  hover:scale-[1.02] transform transition-transform duration-200
-                `}
-                aria-current={activeItem === item.href ? 'page' : undefined}
-                title={isCollapsed ? item.name : undefined}
-              >
-                <span className={`
-                  flex-shrink-0 flex items-center justify-center w-6 h-6 transition-colors duration-200
-                  ${activeItem === item.href 
-                    ? 'text-white' 
-                    : 'text-gray-500 group-hover:text-gray-700'
-                  }
-                `}>
-                  {item.icon}
-                </span>
-                {!isCollapsed && (
+        {/* Navigation */}
+        <nav className={`flex-1 px-3 py-4 ${isCollapsed ? 'overflow-hidden' : 'overflow-y-auto'}`} aria-label="Main navigation">
+          <ul className="space-y-1">
+            {navItems.map((item) => (
+              <li key={item.href} className="relative">
+                <Link
+                  href={item.href}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    router.visit(item.href, {
+                      preserveScroll: true,
+                      preserveState: true,
+                      replace: false,
+                    });
+                  }}
+                  className={`
+                    flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium group
+                    ${activeItem === item.href    
+                      ? 'bg-gray-800 text-white shadow-sm' 
+                      : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                    } 
+                    ${isCollapsed ? 'justify-center' : ''}
+                    hover:scale-[1.02] transform transition-transform duration-200
+                    relative
+                  `}
+                  aria-current={activeItem === item.href ? 'page' : undefined}
+                  title={isCollapsed ? item.name : undefined}
+                >
                   <span className={`
-                    font-medium transition-colors duration-200
+                    flex-shrink-0 flex items-center justify-center w-6 h-6 transition-colors duration-200
                     ${activeItem === item.href 
                       ? 'text-white' 
-                      : 'text-gray-700 group-hover:text-gray-800'
+                      : 'text-gray-500 group-hover:text-gray-700'
                     }
                   `}>
-                    {item.name}
+                    {item.icon}
                   </span>
-                )}
-
-                {/* Bell Icon for Approve Articles with count badge */}
-                {item.id === 'approve_articles' && hasPendingArticles && !isCollapsed && (
-                  <div className="ml-auto flex items-center gap-1.5">
-                    <svg 
-                      className={`w-5 h-5 text-amber-500 flex-shrink-0 ${shake ? 'animate-shake' : 'animate-pulse'}`}
-                      fill="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9" />
-                    </svg>
+                  {!isCollapsed && (
                     <span className={`
-                      inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold shadow-lg
+                      font-medium transition-colors duration-200
+                      ${activeItem === item.href 
+                        ? 'text-white' 
+                        : 'text-gray-700 group-hover:text-gray-800'
+                      }
+                    `}>
+                      {item.name}
+                    </span>
+                  )}
+
+                  {/* Bell Icon for Approve Articles with count badge */}
+                  {item.id === 'approve_articles' && hasPendingArticles && !isCollapsed && (
+                    <div className="ml-auto flex items-center gap-1.5">
+                      <svg 
+                        className={`w-5 h-5 text-amber-500 flex-shrink-0 ${shake ? 'animate-shake' : 'animate-pulse'}`}
+                        fill="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9" />
+                      </svg>
+                      <span className={`
+                        inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold shadow-lg
+                        ${shake ? 'animate-shake' : ''}
+                      `}>
+                        {effectivePendingCount > 99 ? '99+' : effectivePendingCount}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Show badge for Approve Articles item in collapsed mode */}
+                  {item.id === 'approve_articles' && hasPendingArticles && isCollapsed && (
+                    <span className={`
+                      absolute -right-1 -top-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[8px] text-white font-bold shadow-lg ring-2 ring-white
                       ${shake ? 'animate-shake' : ''}
                     `}>
                       {effectivePendingCount > 99 ? '99+' : effectivePendingCount}
                     </span>
-                  </div>
-                )}
+                  )}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
 
-                {/* Show badge for Approve Articles item in collapsed mode when there are pending articles */}
-                {item.id === 'approve_articles' && hasPendingArticles && isCollapsed && (
-                  <span className={`
-                    absolute -right-1 -top-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[8px] text-white font-bold shadow-lg ring-2 ring-white
-                    ${shake ? 'animate-shake' : ''}
-                  `}>
-                    {effectivePendingCount > 99 ? '99+' : effectivePendingCount}
-                  </span>
-                )}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      {/* Footer Section with User Info and Logout - 40% White Background */}
-      <div className="border-t border-gray-200 p-4 bg-white/40 flex-shrink-0">
-        <div className={`
-          flex items-center gap-3
-          ${isCollapsed ? 'justify-center' : 'justify-start'}
-        `}>
-          <div className="flex-shrink-0">
-            <div className="w-9 h-9 rounded-full bg-gray-200/80 flex items-center justify-center">
-              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            </div>
-          </div>
-          {!isCollapsed && (
-            <>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-700 truncate">
-                  {user?.name || 'User'}
-                </p>
-                <p className="text-xs text-gray-500 truncate">
-                  {user?.email || 'user@example.com'}
-                </p>
-              </div>
-              <button
-                onClick={handleLogout}
-                className="p-1.5 rounded-lg hover:bg-gray-100/50 transition-colors duration-200 text-gray-400 hover:text-red-600"
-                aria-label="Logout"
-                title="Sign Out"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        {/* Footer - User Info and Logout */}
+        <div className="border-t border-gray-200 p-4 bg-white flex-shrink-0">
+          <div className={`
+            flex items-center gap-3
+            ${isCollapsed ? 'justify-center' : 'justify-start'}
+          `}>
+            <div className="flex-shrink-0">
+              <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
+                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
-              </button>
-            </>
-          )}
+              </div>
+            </div>
+            {!isCollapsed && (
+              <>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-800 truncate">
+                    {user?.name || 'User'}
+                  </p>
+                  <p className="text-xs text-gray-500 truncate">
+                    {user?.email || 'user@example.com'}
+                  </p>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-gray-400 hover:text-red-600"
+                  aria-label="Logout"
+                  title="Sign Out"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                </button>
+              </>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Add keyframe animation for shake */}
-      <style>{`
-        @keyframes shake {
-          0%, 100% { transform: rotate(0deg); }
-          10% { transform: rotate(15deg); }
-          20% { transform: rotate(-15deg); }
-          30% { transform: rotate(10deg); }
-          40% { transform: rotate(-10deg); }    
-          50% { transform: rotate(5deg); }
-          60% { transform: rotate(-5deg); }
-          70% { transform: rotate(2deg); }
-          80% { transform: rotate(-2deg); }
-          90% { transform: rotate(1deg); }
-        }
-        .animate-shake {
-          animation: shake 0.5s ease-in-out;
-        }
-        .animate-pulse {
-          animation: pulse 2s ease-in-out infinite;
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
-        }
-      `}</style>
-    </aside>
-  );
+        {/* Animations */}
+        <style>{`
+          @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            10% { transform: rotate(15deg); }
+            20% { transform: rotate(-15deg); }
+            30% { transform: rotate(10deg); }
+            40% { transform: rotate(-10deg); }    
+            50% { transform: rotate(5deg); }
+            60% { transform: rotate(-5deg); }
+            70% { transform: rotate(2deg); }
+            80% { transform: rotate(-2deg); }
+            90% { transform: rotate(1deg); }
+          }
+          .animate-shake {
+            animation: shake 0.5s ease-in-out;
+          }
+          .animate-pulse {
+            animation: pulse 2s ease-in-out infinite;
+          }
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+          }
+        `}</style>
+      </aside>
+    );
 }

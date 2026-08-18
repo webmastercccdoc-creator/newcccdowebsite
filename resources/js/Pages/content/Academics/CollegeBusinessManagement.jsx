@@ -310,7 +310,7 @@ export default function CollegeBusinessManagement() {
                                             }`}>
                                                 →
                                             </span>
-                                        </span>
+                                        </span> 
                                     </motion.button>
                                 ))}
                             </nav>

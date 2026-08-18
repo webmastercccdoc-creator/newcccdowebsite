@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ArticlesController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PromotionsController;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\UserAccessController;
 use Illuminate\Support\Facades\Route;
@@ -127,6 +128,13 @@ Route::get('/news/news-letters', function () {
 })->name('news.news-letters');
 
 // ============================================
+// PROMOTIONS PAGE (Public) - FIXED
+// ============================================
+Route::get('/promotions', function () {
+    return Inertia::render('admin/promotions/promotions');
+})->name('promotions');
+
+// ============================================
 // CONTACT PAGE
 // ============================================
 Route::get('/contact-us', function () {
@@ -139,6 +147,12 @@ Route::get('/contact-us', function () {
 Route::get('/news/{id}', [NewsController::class, 'show'])->name('news.show');
 Route::get('/api/news', [NewsController::class, 'apiIndex']);
 Route::get('/api/news/{id}', [NewsController::class, 'apiShow']);
+
+// ============================================
+// PROMOTIONS API ROUTES (Public)
+// ============================================
+Route::get('/api/promotions', [PromotionsController::class, 'apiIndex']);
+Route::get('/api/promotions/{id}', [PromotionsController::class, 'apiShow']);
 
 // ============================================
 // ADMIN ROUTES (Requires Authentication)
@@ -175,6 +189,15 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/admin/articles/{article}/approve', [ArticlesController::class, 'approveArticle'])->name('admin.articles.approve'); // Approve article
     Route::put('/admin/articles/{article}/reject', [ArticlesController::class, 'rejectArticle'])->name('admin.articles.reject');     // Reject article
     Route::put('/admin/articles/{article}/archive', [ArticlesController::class, 'archiveArticle'])->name('admin.articles.archive');   // Archive article
+
+    // ============================================
+    // PROMOTIONS MANAGEMENT ROUTES (Admin)
+    // ============================================
+    Route::get('/admin/promotions', [PromotionsController::class, 'index'])->name('admin.promotions');                       // List all promotions
+    Route::post('/admin/promotions', [PromotionsController::class, 'store'])->name('admin.promotions.store');                // Create new promotion
+    Route::get('/admin/promotions/{id}', [PromotionsController::class, 'show'])->name('admin.promotions.show');              // View single promotion
+    Route::put('/admin/promotions/{id}', [PromotionsController::class, 'update'])->name('admin.promotions.update');          // Update promotion
+    Route::delete('/admin/promotions/{id}', [PromotionsController::class, 'destroy'])->name('admin.promotions.destroy');      // Delete promotion
 
     // ============================================
     // USER MANAGEMENT ROUTES

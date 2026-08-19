@@ -19,7 +19,8 @@ export default function Promotions() {
 
     const fetchPromotions = async () => {
         try {
-            const response = await axios.get('/api/promotions');
+            const apiBase = import.meta.env.BASE_URL || '/';
+            const response = await axios.get(`${apiBase}api/promotions`);
             setPromotions(response.data.data || []);
         } catch (error) {
             console.error('Error fetching promotions:', error);

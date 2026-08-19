@@ -40,9 +40,12 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
         if (!initialArticles || initialArticles.length === 0) {
             setIsLoading(true);
             fetch('/api/news')
-                .then((res) => res.json())
+                .then((res) => {
+                    if (!res.ok) throw new Error(`News request failed: ${res.status}`);
+                    return res.json();
+                })
                 .then((data) => {
-                    setNewsArticles(data);
+                    setNewsArticles(Array.isArray(data) ? data : []);
                     setIsLoading(false);
                 })
                 .catch(() => {

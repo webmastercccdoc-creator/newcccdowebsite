@@ -214,6 +214,17 @@ export default function Home({ newsArticles = [] }) {
                             />
                         </svg>
                     </div>
+                    <div className="slide-numbers" aria-hidden="true">
+                        {data.map((_, index) => (
+                            <div
+                                key={`slide-number-${index}`}
+                                id={`slide-item-${index}`}
+                                className="item"
+                            >
+                                {String(index + 1).padStart(2, '0')}
+                            </div>
+                        ))}
+                    </div>
                     <div className="progress-sub-container">
                         <div className="progress-sub-background">
                             <div className="progress-sub-foreground"></div>

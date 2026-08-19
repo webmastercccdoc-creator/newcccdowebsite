@@ -36,7 +36,8 @@ export default function Dashboard({
     const fetchDashboardData = async () => {
         try {
             // Fetch dashboard stats from API
-            const response = await axios.get('/api/dashboard/stats');
+            const apiBase = import.meta.env.BASE_URL || '/';
+            const response = await axios.get(`${apiBase}api/dashboard/stats`);
             const data = response.data;
             
             setStats(data.stats || {

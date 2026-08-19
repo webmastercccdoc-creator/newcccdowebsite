@@ -94,6 +94,17 @@ Route::get('/programs/technical-skill-technology', function () {
 })->name('academics.technical-skill-technology');
 
 // ============================================
+// EXTENSION / EXTENSION PAGES
+// ============================================
+Route::get('/extension/programs', function () {
+    return Inertia::render('content/Extension/ExtensionPrograms');
+})->name('extension.programs');
+
+Route::get('/extension/partners', function () {
+    return Inertia::render('content/Extension/PartnersLinkages');
+})->name('extension.partners');
+
+// ============================================
 // INTERNATIONALIZATION PAGES
 // ============================================
 Route::get('/internationalization/sdg', function () {

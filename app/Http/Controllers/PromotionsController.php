@@ -6,6 +6,8 @@ use App\Models\Promotion;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PromotionsController extends Controller
 {
@@ -14,7 +16,7 @@ class PromotionsController extends Controller
      */
     public function index()
     {
-        return Inertia::render('admin/Promotions');
+        return Inertia::render('admin/promotions/Promotions');
     }
 
     /**
@@ -30,21 +32,19 @@ class PromotionsController extends Controller
             $query->where(function($q) use ($search) {
                 $q->where('title', 'LIKE', "%{$search}%")
                   ->orWhere('content', 'LIKE', "%{$search}%")
-                  ->orWhere('date', 'LIKE', "%{$search}%");
+                  ->orWhere('date', 'LIKE', "%{$search}%")
+                  ->orWhere('department', 'LIKE', "%{$search}%");
             });
         }
 
         // Filter by status
-        if ($request->has('status')) {
-            $now = now();
-            if ($request->status === 'active') {
-                $query->where('expire', '>=', $now);
-            } elseif ($request->status === 'expired') {
-                $query->where('expire', '<', $now);
-            } elseif ($request->status === 'expiring_soon') {
-                $query->where('expire', '>=', $now)
-                      ->where('expire', '<=', $now->addDays(7));
-            }
+        if ($request->has('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        // Filter by department
+        if ($request->has('department') && $request->department) {
+            $query->where('department', $request->department);
         }
 
         $promotions = $query->orderBy('date', 'desc')->get();
@@ -69,8 +69,13 @@ class PromotionsController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'date' => 'required|date',
-            'expire' => 'required|date|after:date',
+            'date' => 'nullable|date',
+            'expire' => 'nullable|date',
+            'status' => 'nullable|in:active,inactive,expired',
+            'link' => 'nullable|url',
+            'department' => 'nullable|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
+            'image_alt_text' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -80,11 +85,45 @@ class PromotionsController extends Controller
         }
 
         try {
+            // Handle image upload
+            $imagePath = null;
+            $imageAltText = $request->image_alt_text;
+
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $filename = Str::slug($request->title) . '-' . time() . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('promotions', $filename, 'public');
+                
+                // If no alt text provided, use title
+                if (!$imageAltText) {
+                    $imageAltText = $request->title;
+                }
+            }
+
+            // Convert empty strings to null for date fields
+            $date = $request->date ?: null;
+            $expire = $request->expire ?: null;
+
+            // Validate date relationship only if both exist
+            if ($date && $expire && $expire < $date) {
+                return response()->json([
+                    'errors' => [
+                        'expire' => ['The expiry date must be after the start date.']
+                    ]
+                ], 422);
+            }
+
             $promotion = Promotion::create([
                 'title' => $request->title,
                 'content' => $request->content,
-                'date' => $request->date,
-                'expire' => $request->expire,
+                'image_path' => $imagePath,
+                'image_alt_text' => $imageAltText,
+                'date' => $date,
+                'expire' => $expire,
+                'status' => $request->status ?? 'active',
+                'link' => $request->link,
+                'department' => $request->department,
+                'created_by' => auth()->id(),
             ]);
 
             return response()->json([
@@ -107,8 +146,14 @@ class PromotionsController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'date' => 'required|date',
-            'expire' => 'required|date|after:date',
+            'date' => 'nullable|date',
+            'expire' => 'nullable|date',
+            'status' => 'nullable|in:active,inactive,expired',
+            'link' => 'nullable|url',
+            'department' => 'nullable|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
+            'image_alt_text' => 'nullable|string|max:255',
+            'remove_image' => 'nullable|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -119,11 +164,60 @@ class PromotionsController extends Controller
 
         try {
             $promotion = Promotion::findOrFail($id);
+
+            // Handle image upload
+            $imagePath = $promotion->image_path;
+            $imageAltText = $request->image_alt_text ?? $promotion->image_alt_text;
+
+            // Check if image should be removed
+            if ($request->has('remove_image') && $request->remove_image === 'true') {
+                if ($promotion->image_path) {
+                    Storage::disk('public')->delete($promotion->image_path);
+                }
+                $imagePath = null;
+                $imageAltText = null;
+            }
+
+            if ($request->hasFile('image')) {
+                // Delete old image if exists
+                if ($promotion->image_path) {
+                    Storage::disk('public')->delete($promotion->image_path);
+                }
+
+                $image = $request->file('image');
+                $filename = Str::slug($request->title) . '-' . time() . '.' . $image->getClientOriginalExtension();
+                $imagePath = $image->storeAs('promotions', $filename, 'public');
+                
+                // If no alt text provided, use title
+                if (!$imageAltText) {
+                    $imageAltText = $request->title;
+                }
+            }
+
+            // Convert empty strings to null for date fields
+            $date = $request->date ?: null;
+            $expire = $request->expire ?: null;
+
+            // Validate date relationship only if both exist
+            if ($date && $expire && $expire < $date) {
+                return response()->json([
+                    'errors' => [
+                        'expire' => ['The expiry date must be after the start date.']
+                    ]
+                ], 422);
+            }
+
             $promotion->update([
                 'title' => $request->title,
                 'content' => $request->content,
-                'date' => $request->date,
-                'expire' => $request->expire,
+                'image_path' => $imagePath,
+                'image_alt_text' => $imageAltText,
+                'date' => $date,
+                'expire' => $expire,
+                'status' => $request->status ?? $promotion->status,
+                'link' => $request->link,
+                'department' => $request->department,
+                'updated_by' => auth()->id(),
             ]);
 
             return response()->json([
@@ -145,6 +239,12 @@ class PromotionsController extends Controller
     {
         try {
             $promotion = Promotion::findOrFail($id);
+            
+            // Delete image if exists
+            if ($promotion->image_path) {
+                Storage::disk('public')->delete($promotion->image_path);
+            }
+            
             $promotion->delete();
 
             return response()->json([
@@ -163,31 +263,31 @@ class PromotionsController extends Controller
      */
     public function getStatusCounts()
     {
-        $now = now();
-        
-        $active = Promotion::where('expire', '>=', $now)->count();
-        $expired = Promotion::where('expire', '<', $now)->count();
+        $active = Promotion::where('status', 'active')->count();
+        $inactive = Promotion::where('status', 'inactive')->count();
+        $expired = Promotion::where('status', 'expired')->count();
         $total = Promotion::count();
-        $expiringSoon = Promotion::where('expire', '>=', $now)
-            ->where('expire', '<=', $now->addDays(7))
-            ->count();
 
         return response()->json([
             'active' => $active,
+            'inactive' => $inactive,
             'expired' => $expired,
             'total' => $total,
-            'expiring_soon' => $expiringSoon
         ]);
     }
 
     /**
-     * Get active promotions for public display (if needed for frontend).
+     * Get active promotions for public display.
      */
     public function getActivePromotions()
     {
-        $promotions = Promotion::where('expire', '>=', now())
+        $promotions = Promotion::where('status', 'active')
+            ->where(function($query) {
+                $query->whereNull('expire')
+                      ->orWhere('expire', '>=', now());
+            })
             ->orderBy('date', 'desc')
-            ->limit(5)
+            ->limit(6)
             ->get();
 
         return response()->json($promotions);
@@ -210,6 +310,14 @@ class PromotionsController extends Controller
         }
 
         try {
+            // Delete images for all promotions
+            $promotions = Promotion::whereIn('id', $request->ids)->get();
+            foreach ($promotions as $promotion) {
+                if ($promotion->image_path) {
+                    Storage::disk('public')->delete($promotion->image_path);
+                }
+            }
+
             Promotion::whereIn('id', $request->ids)->delete();
 
             return response()->json([
@@ -231,15 +339,48 @@ class PromotionsController extends Controller
         try {
             $promotion = Promotion::findOrFail($id);
             
-            // For toggle, we can extend the expire date or set it to past
-            // This is a simple implementation - you can customize as needed
-            if ($promotion->isActive()) {
-                // Deactivate: set expire to yesterday
-                $promotion->expire = now()->subDay();
+            if ($promotion->status === 'active') {
+                $promotion->status = 'inactive';
+                $message = 'Promotion deactivated successfully';
             } else {
-                // Activate: set expire to 30 days from now
-                $promotion->expire = now()->addDays(30);
+                $promotion->status = 'active';
+                $message = 'Promotion activated successfully';
             }
+            
+            $promotion->updated_by = auth()->id();
+            $promotion->save();
+
+            return response()->json([
+                'message' => $message,
+                'promotion' => $promotion
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to update promotion status',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Update promotion status specifically.
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:active,inactive,expired'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $promotion = Promotion::findOrFail($id);
+            $promotion->status = $request->status;
+            $promotion->updated_by = auth()->id();
             $promotion->save();
 
             return response()->json([
@@ -252,5 +393,35 @@ class PromotionsController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Get promotions by department.
+     */
+    public function getByDepartment($department)
+    {
+        $promotions = Promotion::where('department', $department)
+            ->where('status', 'active')
+            ->where(function($query) {
+                $query->whereNull('expire')
+                      ->orWhere('expire', '>=', now());
+            })
+            ->orderBy('date', 'desc')
+            ->get();
+
+        return response()->json($promotions);
+    }
+
+    /**
+     * Get all departments that have promotions.
+     */
+    public function getDepartments()
+    {
+        $departments = Promotion::select('department')
+            ->whereNotNull('department')
+            ->distinct()
+            ->pluck('department');
+
+        return response()->json($departments);
     }
 }

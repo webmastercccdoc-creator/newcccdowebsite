@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import AdminLayout from '@/layouts/AdminLayout';
+import AddPromotions from './AddPromotions';
+import EditPromotions from './EditPromotions';
 
 export default function Promotions() {
     const [promotions, setPromotions] = useState([]);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [selectedPromotionId, setSelectedPromotionId] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
 
@@ -19,15 +24,26 @@ export default function Promotions() {
 
     const fetchPromotions = async () => {
         try {
-            const apiBase = import.meta.env.BASE_URL || '/';
-            const response = await axios.get(`${apiBase}api/promotions`);
-            setPromotions(response.data.data || []);
+            const response = await axios.get('/api/promotions');
+            setPromotions(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
             console.error('Error fetching promotions:', error);
             setPromotions([]);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handlePromotionCreated = () => {
+        setCurrentPage(1);
+        fetchPromotions();
+    };
+
+    const handlePromotionUpdated = () => {
+        setCurrentPage(1);
+        fetchPromotions();
+        setIsEditModalOpen(false);
+        setSelectedPromotionId(null);
     };
 
     // Filter promotions based on search and filters
@@ -96,7 +112,8 @@ export default function Promotions() {
     };
 
     const handleEdit = (promo) => {
-        window.location.href = `/admin/promotions/${promo.id}/edit`;
+        setSelectedPromotionId(promo.id);
+        setIsEditModalOpen(true);
     };
 
     const handlePageChange = (page) => {
@@ -158,15 +175,16 @@ export default function Promotions() {
                         Create, edit, and manage promotional content
                     </p>
                 </div>
-                <a 
-                    href="/admin/promotions/create"
+                <button
+                    type="button"
+                    onClick={() => setIsAddModalOpen(true)}
                     className="mt-3 sm:mt-0 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg w-fit"
                 >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
                     Create New Promotion
-                </a>
+                </button>
             </div>
 
             {/* Search and Filters - Light Grey Background */}
@@ -378,6 +396,24 @@ export default function Promotions() {
                     </div>
                 )}
             </div>
+
+            {/* Add Promotions Modal */}
+            <AddPromotions
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                onCreated={handlePromotionCreated}
+            />
+
+            {/* Edit Promotions Modal */}
+            <EditPromotions
+                isOpen={isEditModalOpen}
+                onClose={() => {
+                    setIsEditModalOpen(false);
+                    setSelectedPromotionId(null);
+                }}
+                onUpdated={handlePromotionUpdated}
+                promotionId={selectedPromotionId}
+            />
         </AdminLayout>
     );
 }

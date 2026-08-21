@@ -142,7 +142,7 @@ Route::get('/news/news-letters', function () {
 // PROMOTIONS PAGE (Public) - FIXED
 // ============================================
 Route::get('/promotions', function () {
-    return Inertia::render('admin/promotions/promotions');
+    return Inertia::render('admin/promotions/Promotions');
 })->name('promotions');
 
 // ============================================

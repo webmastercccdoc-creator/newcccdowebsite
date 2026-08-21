@@ -189,7 +189,7 @@ const Navbar = () => {
     return (
         <nav 
             className={`
-                fixed top-0 left-0 right-0 z-50 w-full font-sans
+                w-full flex-shrink-0 font-sans
                 transition-all duration-300 ease-in-out
                 ${isScrolled 
                     ? 'shadow-2xl bg-opacity-95 backdrop-blur-sm' 
@@ -197,8 +197,13 @@ const Navbar = () => {
                 }
             `} 
             style={{ 
+                position: 'sticky',
+                top: 0,
+                left: 0,
+                right: 0,
+                zIndex: 50,
                 backgroundColor: '#157D3C',
-                height: isScrolled ? '64px' : '80px',
+                height: '80px',
             }}
             role="navigation" 
             aria-label="Main navigation"
@@ -463,7 +468,7 @@ const Navbar = () => {
                                 className="block w-full rounded-full bg-green-700 px-4 py-3 text-center font-semibold text-white transition-all hover:bg-green-800 hover:shadow-lg font-sans"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
-                                Apply Now
+                                Enroll 
                             </a>
                         </div>
                     </div>

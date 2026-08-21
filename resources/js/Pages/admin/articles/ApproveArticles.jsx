@@ -390,13 +390,13 @@ export default function ApproveArticles({ articles: initialArticles = [], depart
         </div>
       )}
 
-      {/* ✅ Articles Table with FIXED PERCENTAGE WIDTHS and Minimal Padding */}
+      {/* Articles Table */}
       <div className="bg-white border border-gray-200 shadow-lg overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm whitespace-nowrap table-fixed">
+        <div className="overflow-hidden">
+          <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-700 text-white">
-                <th className="w-[5%] text-center py-2 px-1.5 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider">
                   <input 
                     type="checkbox"
                     checked={selectedIds.size === displayArticles.length && displayArticles.length > 0}
@@ -404,12 +404,12 @@ export default function ApproveArticles({ articles: initialArticles = [], depart
                     className="w-4 h-4 rounded cursor-pointer bg-white/20 border-white/30 checked:bg-gray-600"
                   />
                 </th>
-                <th className="w-[5%] text-left py-2 px-1.5 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">#</th>
-                <th className="w-[32%] text-left py-2 px-1.5 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Title & Content</th>
-                <th className="w-[15%] text-left py-2 px-1.5 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Department</th>
-                <th className="w-[12%] text-left py-2 px-1.5 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Status</th>
-                <th className="w-[10%] text-left py-2 px-1.5 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Date</th>
-                <th className="w-[21%] text-center py-2 px-1.5 font-semibold text-xs uppercase tracking-wider">Actions</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider">#</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider">Title & Content</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider">Department</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider">Status</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider">Date</th>
+                <th className="text-center py-4 px-4 font-semibold text-xs uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -419,7 +419,7 @@ export default function ApproveArticles({ articles: initialArticles = [], depart
                     key={article.id} 
                     className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-300 transition-all duration-200 group`}
                   >
-                    <td className="py-2 px-1.5 text-center border-r border-gray-200">
+                    <td className="py-3 px-4">
                       <input 
                         type="checkbox"
                         checked={selectedIds.has(article.id)}
@@ -427,48 +427,40 @@ export default function ApproveArticles({ articles: initialArticles = [], depart
                         className="w-4 h-4 rounded cursor-pointer"
                       />
                     </td>
-                    <td className="py-2 px-1.5 text-gray-500 text-xs font-medium border-r border-gray-200">
+                    <td className="py-3 px-4 text-gray-500 text-xs font-medium">
                       {String(startIndex + index + 1).padStart(2, '0')}
                     </td>
-                    
-                    {/* Title & Content with Hover Tooltip */}
-                    <td className="py-2 px-1.5 border-r border-gray-200 cursor-pointer">
-                      <div 
-                        className="flex flex-col w-full"
-                        title={`${article.title}\n\n${getContentPreview(article.content)}`}
-                      >
-                        <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors truncate w-full">
+                    <td className="py-3 px-4">
+                      <div>
+                        <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer">
                           {article.title}
                         </span>
-                        <p className="text-xs text-gray-500 mt-0.5 truncate w-full">
+                        <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
                           {getContentPreview(article.content)}
                         </p>
                       </div>
                     </td>
-                    
-                    <td className="py-2 px-1.5 border-r border-gray-200">
-                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-gray-100 text-gray-700 border border-gray-200">
+                    <td className="py-3 px-4">
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
                         {article.department}
                       </span>
                     </td>
-                    <td className="py-2 px-1.5 border-r border-gray-200">
-                      <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium ${getStatusBadge(article.status)}`}>
+                    <td className="py-3 px-4">
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${getStatusBadge(article.status)}`}>
                         {getStatusIcon(article.status)}
                         {article.status}
                       </span>
                     </td>
-                    <td className="py-2 px-1.5 text-gray-500 text-xs border-r border-gray-200">
+                    <td className="py-3 px-4 text-gray-500 text-sm">
                       {article.date}
                     </td>
-                    
-                    {/* ✅ Actions Column - Minimal Padding, Smallest Buttons */}
-                    <td className="py-2 px-1.5">
-                      <div className="flex items-center justify-center gap-0.5 flex-wrap">
+                    <td className="py-3 px-4">
+                      <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => handleView(article)}
-                          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-medium text-white bg-blue-600 hover:bg-blue-700 rounded transition-all shadow-sm"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all shadow-sm hover:shadow"
                         >
-                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                           </svg>
@@ -478,18 +470,18 @@ export default function ApproveArticles({ articles: initialArticles = [], depart
                           <>
                             <button
                               onClick={() => handleApprove(article)}
-                              className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded transition-all shadow-sm"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-all shadow-sm hover:shadow"
                             >
-                              <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                               </svg>
                               Approve
                             </button>
                             <button
                               onClick={() => handleReject(article)}
-                              className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-medium text-white bg-red-600 hover:bg-red-700 rounded transition-all shadow-sm"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all shadow-sm hover:shadow"
                             >
-                              <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                               </svg>
                               Reject
@@ -498,9 +490,9 @@ export default function ApproveArticles({ articles: initialArticles = [], depart
                         ) : (
                           <button
                             onClick={() => handleApprove(article)}
-                            className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded transition-all shadow-sm"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-all shadow-sm hover:shadow"
                           >
-                            <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
                             Restore
@@ -633,4 +625,4 @@ export default function ApproveArticles({ articles: initialArticles = [], depart
       />
     </AdminLayout>
   );
-}
+}s

@@ -12,7 +12,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
   const [articles, setArticles] = useState(initialArticleList);
   const [currentPage, setCurrentPage] = useState(1);
   
-  // Show only 5 items per page
+  // ✅ CHANGED: Show only 5 items per page
   const itemsPerPage = 5;
 
   // Search and filter states
@@ -383,18 +383,18 @@ export default function Articles({ articles: initialArticles, departments = [] }
         </div>
       </div>
 
-      {/* ✅ Articles Table with FIXED PERCENTAGE WIDTHS and Minimal Padding */}
+      {/* Articles Table */}
       <div className="bg-white border border-gray-200 shadow-lg overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm whitespace-nowrap table-fixed">
+        <div className="overflow-hidden">
+          <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-700 text-white">
-                <th className="w-[5%] text-left py-2 px-1.5 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">#</th>
-                <th className="w-[35%] text-left py-2 px-1.5 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Title & Content</th>
-                <th className="w-[15%] text-left py-2 px-1.5 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Department</th>
-                <th className="w-[12%] text-left py-2 px-1.5 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Status</th>
-                <th className="w-[10%] text-left py-2 px-1.5 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Date</th>
-                <th className="w-[23%] text-center py-2 px-1.5 font-semibold text-xs uppercase tracking-wider">Actions</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">#</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Title & Content</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Department</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Status</th>
+                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Date</th>
+                <th className="text-center py-4 px-4 font-semibold text-xs uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -404,48 +404,50 @@ export default function Articles({ articles: initialArticles, departments = [] }
                     key={article.id} 
                     className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-300 transition-all duration-200 group`}
                   >
-                    <td className="py-2 px-1.5 text-gray-500 text-xs font-medium border-r border-gray-200 text-center">
+                    <td className="py-3 px-4 text-gray-500 text-xs font-medium border-r border-gray-200">
                       {String(startIndex + index + 1).padStart(2, '0')}
                     </td>
-                    
-                    {/* Title & Content with Hover Tooltip */}
-                    <td className="py-2 px-1.5 border-r border-gray-200 cursor-pointer">
-                      <div 
-                        className="flex flex-col w-full"
-                        title={`${article.title}\n\n${getContentPreview(article.content)}`}
-                      >
-                        <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors truncate w-full">
+                    {/* FIXED TITLE & CONTENT COLUMN BELOW */}
+                    <td className="py-3 px-4 border-r border-gray-200 max-w-[260px]">
+                      <div className="flex flex-col w-full">
+                        {/* Added truncate to prevent title from wrapping */}
+                        <span 
+                          className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer truncate w-full"
+                          title={article.title} // Optional: shows full title on hover
+                        >
                           {article.title}
                         </span>
-                        <p className="text-xs text-gray-500 mt-0.5 truncate w-full">
+                        {/* Added truncate and max-width to keep description on one line */}
+                        <p 
+                          className="text-xs text-gray-500 mt-0.5 truncate w-full"
+                          title={getContentPreview(article.content)} // Optional: shows full preview on hover
+                        >
                           {getContentPreview(article.content)}
                         </p>
                       </div>
                     </td>
-                    
-                    <td className="py-2 px-1.5 border-r border-gray-200">
-                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-gray-100 text-gray-700 border border-gray-200">
+                    {/* END OF FIX */}
+                    <td className="py-3 px-4 border-r border-gray-200">
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
                         {article.department}
                       </span>
                     </td>
-                    <td className="py-2 px-1.5 border-r border-gray-200">
-                      <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium ${getStatusBadge(article.status)}`}>
+                    <td className="py-3 px-4 border-r border-gray-200">
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${getStatusBadge(article.status)}`}>
                         {getStatusIcon(article.status)}
                         {article.status}
                       </span>
                     </td>
-                    <td className="py-2 px-1.5 text-gray-500 text-xs border-r border-gray-200">
+                    <td className="py-3 px-4 text-gray-500 text-sm border-r border-gray-200">
                       {article.date}
                     </td>
-                    
-                    {/* ✅ Actions Column - Minimal Padding, Smallest Buttons */}
-                    <td className="py-2 px-1.5">
-                      <div className="flex items-center justify-center gap-0.5 flex-wrap">
+                    <td className="py-3 px-4">
+                      <div className="flex items-center justify-center gap-2">
                         <button
                           onClick={() => handleView(article.id)}
-                          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-medium text-white bg-blue-600 hover:bg-blue-700 rounded transition-all shadow-sm"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all shadow-sm hover:shadow"
                         >
-                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                           </svg>
@@ -453,27 +455,27 @@ export default function Articles({ articles: initialArticles, departments = [] }
                         </button>
                         <button
                           onClick={() => handleEdit(article.id)}
-                          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-medium text-white bg-amber-600 hover:bg-amber-700 rounded transition-all shadow-sm"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-all shadow-sm hover:shadow"
                         >
-                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                           </svg>
                           Edit
                         </button>
                         <button
                           onClick={() => handleArchive(article.id)}
-                          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-medium text-white bg-gray-600 hover:bg-gray-700 rounded transition-all shadow-sm"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gray-600 hover:bg-gray-700 rounded-lg transition-all shadow-sm hover:shadow"
                         >
-                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M7 8V6a1 1 0 011-1h8a1 1 0 011 1v2m-9 4h10l-1 8H7l-1-8z" />
                           </svg>
                           Archive
                         </button>
                         <button
                           onClick={() => handleDelete(article.id)}
-                          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-medium text-white bg-red-600 hover:bg-red-700 rounded transition-all shadow-sm"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all shadow-sm hover:shadow"
                         >
-                          <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
                           Delete

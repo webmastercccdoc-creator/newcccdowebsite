@@ -368,7 +368,7 @@ export default function Users({ users = [] }) {
                                         return (
                                             <tr 
                                                 key={user.id || index} 
-                                                className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-emerald-50 transition-all duration-200 group`}
+                                                className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100 transition-all duration-200 group`}
                                             >
                                                 <td className="py-3 px-4 text-gray-500 text-xs font-medium">
                                                     {String(startIndex + index + 1).padStart(2, '0')}

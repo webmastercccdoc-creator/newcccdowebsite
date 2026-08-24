@@ -14,8 +14,6 @@ class Promotion extends Model
         'title',
         'content',
         'image_path',
-        'banner_image_path',
-        'carousel_image_path',
         'image_alt_text',
         'date',
         'expire',

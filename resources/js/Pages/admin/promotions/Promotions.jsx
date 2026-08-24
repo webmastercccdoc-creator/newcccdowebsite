@@ -158,15 +158,10 @@ export default function Promotions() {
     };
 
     const getContentPreview = (content) => {
-        if (!content) return '';
+        if (!content) return 'No content available';
         const plainText = content.replace(/<[^>]*>/g, '');
-        return plainText;
-    };
-
-    const truncateText = (text, maxLength = 60) => {
-        if (!text) return '';
-        if (text.length <= maxLength) return text;
-        return text.substring(0, maxLength) + '...';
+        const preview = plainText.substring(0, 100);
+        return preview.length < plainText.length ? preview + '...' : preview;
     };
 
     if (loading) {
@@ -290,12 +285,12 @@ export default function Promotions() {
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="bg-gray-700 text-white">
-                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600 w-[50px]">#</th>
+                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">#</th>
                                 <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Title & Content</th>
-                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600 w-[120px]">Status</th>
-                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600 w-[130px]">Start Date</th>
-                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600 w-[130px]">Expiry Date</th>
-                                <th className="text-center py-4 px-4 font-semibold text-xs uppercase tracking-wider w-[180px]">Actions</th>
+                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Status</th>
+                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Start Date</th>
+                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Expiry Date</th>
+                                <th className="text-center py-4 px-4 font-semibold text-xs uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
@@ -305,17 +300,17 @@ export default function Promotions() {
                                         key={promo.id} 
                                         className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-300 transition-all duration-200 group`}
                                     >
-                                        <td className="py-3 px-4 text-gray-500 text-xs font-medium border-r border-gray-200 text-center">
+                                        <td className="py-3 px-4 text-gray-500 text-xs font-medium border-r border-gray-200">
                                             {String(startIndex + index + 1).padStart(2, '0')}
                                         </td>
                                         <td className="py-3 px-4 border-r border-gray-200">
-                                            <div className="flex flex-col">
-                                                <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer truncate max-w-[400px]">
-                                                    {truncateText(promo.title, 60)}
+                                            <div>
+                                                <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer">
+                                                    {promo.title}
                                                 </span>
-                                                <span className="text-gray-600 text-xs truncate max-w-[400px] mt-0.5">
-                                                    {truncateText(getContentPreview(promo.content), 80)}
-                                                </span>
+                                                <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
+                                                    {getContentPreview(promo.content)}
+                                                </p>
                                             </div>
                                         </td>
                                         <td className="py-3 px-4 border-r border-gray-200">
@@ -325,10 +320,10 @@ export default function Promotions() {
                                             </span>
                                         </td>
                                         <td className="py-3 px-4 text-gray-500 text-sm border-r border-gray-200">
-                                            {promo.date || '-'}
+                                            {promo.date}
                                         </td>
                                         <td className="py-3 px-4 text-gray-500 text-sm border-r border-gray-200">
-                                            {promo.expire || '-'}
+                                            {promo.expire}
                                         </td>
                                         <td className="py-3 px-4">
                                             <div className="flex items-center justify-center gap-2">

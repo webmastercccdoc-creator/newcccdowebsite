@@ -113,8 +113,8 @@ export default function MainLayout({
     };
 
     return (
-        <div className="flex min-h-screen flex-col bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900 transition-opacity duration-500 overflow-x-clip overflow-y-visible">
-            {/* Sticky navbar stays visible while scrolling and spans the top of the page */}
+        <div className="flex min-h-screen flex-col bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900 transition-opacity duration-500 overflow-x-clip">
+            {/* Sticky navbar stays in flow so banners start below it */}
             <Navbar />
             
             <main 

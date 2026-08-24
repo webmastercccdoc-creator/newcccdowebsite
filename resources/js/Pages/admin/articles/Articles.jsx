@@ -56,9 +56,9 @@ export default function Articles({ articles: initialArticles, departments = [] }
   // Filter articles based on search and filters
   const filteredArticles = articles.filter(article => {
     // Search filter
-    const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          article.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          article.created_by?.toLowerCase().includes(searchQuery.toLowerCase());
+    const normalizedSearchQuery = searchQuery.toLowerCase();
+    const matchesSearch = [article.title, article.department, article.created_by]
+      .some(value => String(value ?? '').toLowerCase().includes(normalizedSearchQuery));
     
     // Status filter
     const matchesStatus = statusFilter === 'All' || article.status === statusFilter;
@@ -296,7 +296,10 @@ export default function Articles({ articles: initialArticles, departments = [] }
 
       {/* Search and Filters - Light Grey Background */}
       <div className="bg-gray-100 border border-gray-200 shadow-sm p-4 mb-6">
-        <div className="flex flex-col md:flex-row gap-4">
+        <div
+          className="flex flex-col md:flex-row gap-4"
+          autoComplete="off"
+        >
           {/* Search Input */}
           <div className="md:w-80 relative flex-shrink-0">
             <svg 
@@ -312,10 +315,17 @@ export default function Articles({ articles: initialArticles, departments = [] }
               placeholder="Search articles by title, department, or author..."
               value={searchQuery}
               onChange={(e) => handleFilterChange(setSearchQuery, e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+              }}
               className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none text-sm bg-white"
             />
             {searchQuery && (
               <button
+                type="button"
                 onClick={() => handleFilterChange(setSearchQuery, '')}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
@@ -351,6 +361,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
             {/* Clear Filters Button */}
             {(searchQuery || statusFilter !== 'Approved' || departmentFilter !== 'All') && (
               <button
+                type="button"
                 onClick={() => {
                   setSearchQuery('');
                   setStatusFilter('Approved');
@@ -407,26 +418,22 @@ export default function Articles({ articles: initialArticles, departments = [] }
                     <td className="py-3 px-4 text-gray-500 text-xs font-medium border-r border-gray-200">
                       {String(startIndex + index + 1).padStart(2, '0')}
                     </td>
-                    {/* FIXED TITLE & CONTENT COLUMN BELOW */}
                     <td className="py-3 px-4 border-r border-gray-200 max-w-[260px]">
                       <div className="flex flex-col w-full">
-                        {/* Added truncate to prevent title from wrapping */}
                         <span 
                           className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer truncate w-full"
-                          title={article.title} // Optional: shows full title on hover
+                          title={article.title}
                         >
                           {article.title}
                         </span>
-                        {/* Added truncate and max-width to keep description on one line */}
                         <p 
                           className="text-xs text-gray-500 mt-0.5 truncate w-full"
-                          title={getContentPreview(article.content)} // Optional: shows full preview on hover
+                          title={getContentPreview(article.content)}
                         >
                           {getContentPreview(article.content)}
                         </p>
                       </div>
                     </td>
-                    {/* END OF FIX */}
                     <td className="py-3 px-4 border-r border-gray-200">
                       <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
                         {article.department}
@@ -444,6 +451,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
                     <td className="py-3 px-4">
                       <div className="flex items-center justify-center gap-2">
                         <button
+                          type="button"
                           onClick={() => handleView(article.id)}
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all shadow-sm hover:shadow"
                         >
@@ -454,6 +462,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
                           View
                         </button>
                         <button
+                          type="button"
                           onClick={() => handleEdit(article.id)}
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-all shadow-sm hover:shadow"
                         >
@@ -463,6 +472,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
                           Edit
                         </button>
                         <button
+                          type="button"
                           onClick={() => handleArchive(article.id)}
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gray-600 hover:bg-gray-700 rounded-lg transition-all shadow-sm hover:shadow"
                         >
@@ -472,6 +482,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
                           Archive
                         </button>
                         <button
+                          type="button"
                           onClick={() => handleDelete(article.id)}
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all shadow-sm hover:shadow"
                         >
@@ -516,6 +527,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
             {filteredArticles.length > itemsPerPage && (
               <div className="flex gap-1">
                 <button
+                  type="button"
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                   className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-white hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 bg-white"
@@ -529,6 +541,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
                 {getPageNumbers().map((page) => (
                   <button
                     key={page}
+                    type="button"
                     onClick={() => handlePageChange(page)}
                     className={`px-3.5 py-1.5 text-sm rounded-lg transition-all ${
                       currentPage === page
@@ -541,6 +554,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
                 ))}
                 
                 <button
+                  type="button"
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
                   className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-white hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 bg-white"

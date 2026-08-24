@@ -4,14 +4,10 @@ import '../../../css/home.css';
 import { initLandingAnimations } from '../../home-animations';
 
 // Ranking Logos
-import theLogo from '../../assets/logos/the.png';
-import wuriLogo from '../../assets/logos/wuri.png';
-import greenMetricLogo from '../../assets/logos/green-metric.png';
-import sIndexLogo from '../../assets/logos/s-index.png';
-import sdgLogo from '../../assets/logos/sdg.png';
+import homeLogo from '../../assets/logos/home-logo.png';
 
 // Cultural Center Image
-import culturalArtsImage from '../../assets/images/Culturals Arts.jpg';
+import culturalArtsImage from '../../assets/images/Culturals Arts.jfif';
 import oroDayaawImage from '../../assets/images/OroDayaw.PNG';
 import talindawChoraleImage from '../../assets/images/TalndawChorale.jpg';
 
@@ -41,14 +37,6 @@ const SDG_COLORS = {
     16: { bg: '#00689D', text: '#FFFFFF', border: '#00557E' },
     17: { bg: '#19486A', text: '#FFFFFF', border: '#123A53' },
 };
-
-const RANKINGS = [
-    { id: 'the',          logo: theLogo,          alt: 'Times Higher Education' },
-    { id: 'wuri',         logo: wuriLogo,         alt: 'WURI - World University Rankings for Innovation' },
-    { id: 'green-metric', logo: greenMetricLogo,  alt: 'UI Green Metric World University Rankings' },
-    { id: 's-index',      logo: sIndexLogo,       alt: 'AD Scientific Index' },
-    { id: 'sdg',          logo: sdgLogo,          alt: 'UN Sustainable Development Goals' },
-];
 
 const ENSEMBLES = [
     { 
@@ -124,6 +112,37 @@ export default function Home({ newsArticles = [], promotions = [] }) {
         const cleanup = initLandingAnimations(bannerData);
         return cleanup;
     }, [bannerData]);
+
+    useEffect(() => {
+        const revealElements = document.querySelectorAll('.home-content-reveal');
+        if (!revealElements.length) return undefined;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+        );
+
+        revealElements.forEach((element) => observer.observe(element));
+
+        return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+        if (ENSEMBLES.length < 2) return undefined;
+
+        const interval = window.setInterval(() => {
+            setEnsembleSlide((prev) => (prev === ENSEMBLES.length - 1 ? 0 : prev + 1));
+        }, 5000);
+
+        return () => window.clearInterval(interval);
+    }, []);
 
     const goToPrevSlide = () => {
         setEnsembleSlide((prev) => (prev === 0 ? ENSEMBLES.length - 1 : prev - 1));
@@ -248,114 +267,39 @@ export default function Home({ newsArticles = [], promotions = [] }) {
             {/* --- RANKINGS & RECOGNITION BANNER --- */}
             <section className="rankings-banner">
                 <div className="rankings-container">
-                    <div className="rankings-inner">
-                        {RANKINGS.map((item) => (
-                            <div className="ranking-logo-item" key={item.id}>
-                                <img
-                                    src={item.logo}
-                                    alt={item.alt}
-                                    className="ranking-logo"
-                                    loading="lazy"
-                                />
-                            </div>
-                        ))}
-                    </div>
+                    <img
+                        src={homeLogo}
+                        alt="University rankings and recognition logos"
+                        className="home-logo"
+                        loading="lazy"
+                    />
                 </div>
             </section>
 
-            {/* --- CENTER FOR CULTURAL AND THE ARTS SECTION --- */}
-            <section className="cultural-center-section">
-                <div className="cultural-center-container">
-                    <div className="cultural-center-content">
-                        <div className="cultural-center-left">
-                            <div className="cultural-center-description">
-                                <h2 className="cultural-center-title">Center for Cultural and the Arts</h2>
-                                <p className="cultural-center-text">
-                                    The Center for Cultural and the Arts at City College of Cagayan de Oro is dedicated to preserving, promoting, and celebrating the rich cultural heritage of Mindanao. We foster artistic excellence through innovative programs, collaborative initiatives, and community engagement that honors both traditional and contemporary expressions of culture.
-                                </p>
-                                <p className="cultural-center-text">
-                                    Our mission is to nurture creative talents, preserve indigenous traditions, and provide a platform where artists and cultural enthusiasts can thrive and inspire future generations.
-                                </p>
-                            </div>
-                            <div className="cultural-ensembles">
-                                <h3 className="ensembles-title">Our Cultural Ensembles</h3>
-                                <div className="ensembles-carousel">
-                                    <div className="ensemble-carousel-content">
-                                        <div className="ensemble-carousel-slides">
-                                            {ENSEMBLES.map((ensemble, index) => (
-                                                <div
-                                                    key={ensemble.id}
-                                                    className={`ensemble-card ${index === ensembleSlide ? 'active' : ''}`}
-                                                >
-                                                    <div className="ensemble-card-image">
-                                                        <img src={ensemble.image} alt={ensemble.name} />
-                                                        <div className="ensemble-card-overlay">
-                                                            <div className="ensemble-overlay-content">
-                                                                <h4 className="ensemble-name">{ensemble.name}</h4>
-                                                                <p className="ensemble-overlay-description">{ensemble.description}</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="ensemble-carousel-controls">
-                                        <button
-                                            type="button"
-                                            className="carousel-prev-btn"
-                                            onClick={goToPrevSlide}
-                                            aria-label="Previous ensemble"
-                                        >
-                                            <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M12 16L8 10l4-6" />
-                                            </svg>
-                                        </button>
-
-                                        <div className="ensemble-carousel-indicators">
-                                            {ENSEMBLES.map((_, index) => (
-                                                <button
-                                                    key={index}
-                                                    className={`indicator-dot ${index === ensembleSlide ? 'active' : ''}`}
-                                                    onClick={() => setEnsembleSlide(index)}
-                                                    aria-label={`Go to ensemble ${index + 1}`}
-                                                />
-                                            ))}
-                                        </div>
-
-                                        <button
-                                            type="button"
-                                            className="carousel-next-btn"
-                                            onClick={goToNextSlide}
-                                            aria-label="Next ensemble"
-                                        >
-                                            <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <path d="M8 4l4 6-4 6" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="cultural-center-image-wrapper">
-                            <img
-                                src={culturalArtsImage}
-                                alt="Center for Cultural and the Arts"
-                                className="cultural-center-image"
-                                loading="lazy"
-                            />
-                        </div>
+            {/* --- WHY CHOOSE CITY COLLEGE OF CDO --- */}
+            <section className="features-section">
+                <div className="features-container">
+                    <div className="features-header reveal-on-scroll home-content-reveal">
+                        <span className="features-eyebrow">Our Difference</span>
+                        <h2 className="features-title">Why Choose City College of CDO?</h2>
+                        <div className="features-underline" aria-hidden="true"></div>
+                        <p className="features-subtitle">
+                            Discover an education grounded in excellence, opportunity, and service to the community.
+                        </p>
                     </div>
+
+                    <p className="features-subtitle reveal-on-scroll home-content-reveal">
+                        City College of CDO provides quality education through relevant programs and dedicated instruction. Students gain practical experience, leadership opportunities, and a strong appreciation for culture and excellence while developing the skills to serve their community and build meaningful careers.
+                    </p>
                 </div>
             </section>
 
             {/* --- LATEST NEWS & UPDATES SECTION (REDESIGNED) --- */}
             <section className="news-section">
-                <div className="news-container">
+                <div className="news-container reveal-on-scroll home-content-reveal">
                     <div className="news-header">
                         <h2 className="news-title">
-                            Latest News & Updates
+                           News & Updates
                         </h2>
                         <div className="news-title-underline"></div>
                     </div>
@@ -365,8 +309,8 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                             articles.slice(0, 8).map((news, index) => (
                                 <article
                                     key={`news-${news.id || index}`}
-                                    className="news-card"
-                                    style={{ animationDelay: `${index * 0.1}s` }}
+                                    className="news-card reveal-on-scroll home-content-reveal"
+                                    style={{ transitionDelay: `${index * 0.1}s` }}
                                 >
                                     <div className="news-card-image-wrapper">
                                         <img
@@ -387,7 +331,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                                             </div>
                                             {news.sdgNumbers && news.sdgNumbers.length > 0 && (
                                                 <div className="flex flex-wrap gap-2">
-                                                    {news.sdgNumbers.map((sdg) => {
+                                                    {news.sdgNumbers.slice(0, 3).map((sdg) => {
                                                         const color = SDG_COLORS[sdg] || { bg: '#0f172a', text: '#ffffff', border: '#0f172a' };
                                                         return (
                                                             <span
@@ -433,6 +377,93 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                         <a href="/news/latest" className="news-view-all-btn">
                             View All News
                         </a>
+                    </div>
+                </div>
+            </section>
+
+            {/* --- CENTER FOR CULTURAL AND THE ARTS SECTION --- */}
+            <section className="cultural-center-section">
+                <div className="cultural-center-container">
+                    <div className="cultural-center-content reveal-on-scroll home-content-reveal">
+                        <div className="cultural-center-left">
+                            <div className="cultural-center-description reveal-on-scroll reveal-from-left home-content-reveal">
+                                <h2 className="cultural-center-title">Center for Cultural and the Arts</h2>
+                                <p className="cultural-center-text">
+                                    The Center for Cultural and the Arts at City College of Cagayan de Oro is dedicated to preserving, promoting, and celebrating the rich cultural heritage of Mindanao. We foster artistic excellence through innovative programs, collaborative initiatives, and community engagement that honors both traditional and contemporary expressions of culture.
+                                </p>
+                                <p className="cultural-center-text">
+                                    Our mission is to nurture creative talents, preserve indigenous traditions, and provide a platform where artists and cultural enthusiasts can thrive and inspire future generations.
+                                </p>
+                                <div className="h-1 w-full rounded-full bg-[#d4af37]" aria-hidden="true" />
+                            </div>
+                            <div className="cultural-ensembles reveal-on-scroll home-content-reveal">
+                                <h3 className="ensembles-title">Our Cultural Ensembles</h3>
+                                <div className="ensembles-carousel">
+                                    <div className="ensemble-carousel-content">
+                                        <div className="ensemble-carousel-slides">
+                                            {ENSEMBLES.map((ensemble, index) => (
+                                                <div
+                                                    key={ensemble.id}
+                                                    className={`ensemble-card ${index === ensembleSlide ? 'active' : ''}`}
+                                                >
+                                                    <div className="ensemble-card-image">
+                                                        <img src={ensemble.image} alt={ensemble.name} />
+                                                        <div className="ensemble-card-overlay">
+                                                            <div className="ensemble-overlay-content">
+                                                                <h4 className="ensemble-name">{ensemble.name}</h4>
+                                                                <p className="ensemble-overlay-description">{ensemble.description}</p>
+                                                            </div>
+                                                        </div>
+                                                        <button
+                                                            type="button"
+                                                            className="carousel-prev-btn carousel-image-control carousel-image-control-prev"
+                                                            onClick={goToPrevSlide}
+                                                            aria-label="Previous ensemble"
+                                                        >
+                                                            <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                                <path d="M12 16L8 10l4-6" />
+                                                            </svg>
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className="carousel-next-btn carousel-image-control carousel-image-control-next"
+                                                            onClick={goToNextSlide}
+                                                            aria-label="Next ensemble"
+                                                        >
+                                                            <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                                <path d="M8 4l4 6-4 6" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="ensemble-carousel-controls">
+                                        <div className="ensemble-carousel-indicators">
+                                            {ENSEMBLES.map((_, index) => (
+                                                <button
+                                                    key={index}
+                                                    className={`indicator-dot ${index === ensembleSlide ? 'active' : ''}`}
+                                                    onClick={() => setEnsembleSlide(index)}
+                                                    aria-label={`Go to ensemble ${index + 1}`}
+                                                />
+                                            ))}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="cultural-center-image-wrapper reveal-on-scroll reveal-from-right home-content-reveal">
+                            <img
+                                src={culturalArtsImage}
+                                alt="Center for Cultural and the Arts"
+                                className="cultural-center-image"
+                                loading="lazy"
+                            />
+                        </div>
                     </div>
                 </div>
             </section>

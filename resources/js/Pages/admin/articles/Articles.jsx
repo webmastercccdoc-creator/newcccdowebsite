@@ -413,7 +413,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
                 currentArticles.map((article, index) => (
                   <tr 
                     key={article.id} 
-                    className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-300 transition-all duration-200 group`}
+                    className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}
                   >
                     <td className="py-3 px-4 text-gray-500 text-xs font-medium border-r border-gray-200">
                       {String(startIndex + index + 1).padStart(2, '0')}
@@ -421,7 +421,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
                     <td className="py-3 px-4 border-r border-gray-200 max-w-[260px]">
                       <div className="flex flex-col w-full">
                         <span 
-                          className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer truncate w-full"
+                          className="font-semibold text-gray-800 truncate w-full"
                           title={article.title}
                         >
                           {article.title}

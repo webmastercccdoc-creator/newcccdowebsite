@@ -80,6 +80,14 @@ class PromotionsController extends Controller
             'image_alt_text' => 'nullable|string|max:255',
         ]);
 
+        $validator->after(function ($validator) use ($request) {
+            foreach (['banner_image', 'carousel_image'] as $field) {
+                if ($request->hasFile($field) && !$request->file($field)->isValid()) {
+                    $validator->errors()->add($field, 'The uploaded image could not be read. Please try selecting the file again.');
+                }
+            }
+        });
+
         if ($validator->fails()) {
             return response()->json([
                 'errors' => $validator->errors()
@@ -151,6 +159,14 @@ class PromotionsController extends Controller
             'remove_banner_image' => 'nullable|boolean',
             'remove_carousel_image' => 'nullable|boolean',
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+            foreach (['banner_image', 'carousel_image'] as $field) {
+                if ($request->hasFile($field) && !$request->file($field)->isValid()) {
+                    $validator->errors()->add($field, 'The uploaded image could not be read. Please try selecting the file again.');
+                }
+            }
+        });
 
         if ($validator->fails()) {
             return response()->json([
@@ -412,7 +428,7 @@ class PromotionsController extends Controller
         $image = $request->file($field);
         $filename = Str::slug($request->title) . '-' . $field . '-' . time() . '.' . $image->getClientOriginalExtension();
 
-        return $image->storeAs('promotions', $filename, 'public');
+        return Storage::disk('public')->putFileAs('promotions', $image, $filename);
     }
 
     private function deletePromotionImage(?string $path): void

@@ -169,11 +169,7 @@ export default function AddPromotions({ isOpen, onClose, onCreated }) {
                 formData.append('carousel_image', carouselFile);
             }
 
-            const response = await axios.post('/admin/promotions', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+            const response = await axios.post('/admin/promotions', formData);
 
             setForm(initialForm);
             setBannerPreview(null);

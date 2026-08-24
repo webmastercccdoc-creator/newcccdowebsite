@@ -3,12 +3,16 @@ import axios from 'axios';
 import AdminLayout from '@/layouts/AdminLayout';
 import AddPromotions from './AddPromotions';
 import EditPromotions from './EditPromotions';
+import { ConfirmModal } from '@/components/admin/Modal';
 
 export default function Promotions() {
     const [promotions, setPromotions] = useState([]);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedPromotionId, setSelectedPromotionId] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [promotionToDelete, setPromotionToDelete] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
 
@@ -99,15 +103,25 @@ export default function Promotions() {
         return icons[status] || null;
     };
 
-    const handleDelete = async (id) => {
-        if (confirm('Are you sure you want to delete this promotion?')) {
-            try {
-                await axios.delete(`/admin/promotions/${id}`);
-                fetchPromotions();
-            } catch (error) {
-                console.error('Failed to delete promotion:', error);
-                alert('Failed to delete promotion');
-            }
+    const handleDelete = (id) => {
+        setPromotionToDelete(id);
+        setShowDeleteModal(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!promotionToDelete) return;
+
+        setIsDeleting(true);
+        try {
+            await axios.delete(`/admin/promotions/${promotionToDelete}`);
+            setShowDeleteModal(false);
+            setPromotionToDelete(null);
+            fetchPromotions();
+        } catch (error) {
+            console.error('Failed to delete promotion:', error);
+            alert('Failed to delete promotion');
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -144,10 +158,15 @@ export default function Promotions() {
     };
 
     const getContentPreview = (content) => {
-        if (!content) return 'No content available';
+        if (!content) return '';
         const plainText = content.replace(/<[^>]*>/g, '');
-        const preview = plainText.substring(0, 100);
-        return preview.length < plainText.length ? preview + '...' : preview;
+        return plainText;
+    };
+
+    const truncateText = (text, maxLength = 60) => {
+        if (!text) return '';
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength) + '...';
     };
 
     if (loading) {
@@ -271,12 +290,12 @@ export default function Promotions() {
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="bg-gray-700 text-white">
-                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">#</th>
+                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600 w-[50px]">#</th>
                                 <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Title & Content</th>
-                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Status</th>
-                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Start Date</th>
-                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Expiry Date</th>
-                                <th className="text-center py-4 px-4 font-semibold text-xs uppercase tracking-wider">Actions</th>
+                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600 w-[120px]">Status</th>
+                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600 w-[130px]">Start Date</th>
+                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600 w-[130px]">Expiry Date</th>
+                                <th className="text-center py-4 px-4 font-semibold text-xs uppercase tracking-wider w-[180px]">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
@@ -286,17 +305,17 @@ export default function Promotions() {
                                         key={promo.id} 
                                         className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-300 transition-all duration-200 group`}
                                     >
-                                        <td className="py-3 px-4 text-gray-500 text-xs font-medium border-r border-gray-200">
+                                        <td className="py-3 px-4 text-gray-500 text-xs font-medium border-r border-gray-200 text-center">
                                             {String(startIndex + index + 1).padStart(2, '0')}
                                         </td>
                                         <td className="py-3 px-4 border-r border-gray-200">
-                                            <div>
-                                                <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer">
-                                                    {promo.title}
+                                            <div className="flex flex-col">
+                                                <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer truncate max-w-[400px]">
+                                                    {truncateText(promo.title, 60)}
                                                 </span>
-                                                <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
-                                                    {getContentPreview(promo.content)}
-                                                </p>
+                                                <span className="text-gray-600 text-xs truncate max-w-[400px] mt-0.5">
+                                                    {truncateText(getContentPreview(promo.content), 80)}
+                                                </span>
                                             </div>
                                         </td>
                                         <td className="py-3 px-4 border-r border-gray-200">
@@ -306,10 +325,10 @@ export default function Promotions() {
                                             </span>
                                         </td>
                                         <td className="py-3 px-4 text-gray-500 text-sm border-r border-gray-200">
-                                            {promo.date}
+                                            {promo.date || '-'}
                                         </td>
                                         <td className="py-3 px-4 text-gray-500 text-sm border-r border-gray-200">
-                                            {promo.expire}
+                                            {promo.expire || '-'}
                                         </td>
                                         <td className="py-3 px-4">
                                             <div className="flex items-center justify-center gap-2">
@@ -413,6 +432,22 @@ export default function Promotions() {
                 }}
                 onUpdated={handlePromotionUpdated}
                 promotionId={selectedPromotionId}
+            />
+
+            {/* Delete Confirmation Modal */}
+            <ConfirmModal
+                isOpen={showDeleteModal}
+                onClose={() => {
+                    setShowDeleteModal(false);
+                    setPromotionToDelete(null);
+                }}
+                onConfirm={confirmDelete}
+                title="Delete Promotion"
+                message="Are you sure you want to delete this promotion? This action cannot be undone."
+                confirmText="Delete"
+                cancelText="Cancel"
+                confirmColor="bg-red-600 hover:bg-red-700"
+                loading={isDeleting}
             />
         </AdminLayout>
     );

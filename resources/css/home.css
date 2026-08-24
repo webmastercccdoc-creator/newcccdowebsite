@@ -79,17 +79,23 @@
 .landing-page .details .title-box-1,
 .landing-page .details .title-box-2 {
     margin-top: 2px;
-    height: 90px;
-    overflow: hidden;
+    min-height: 90px;
+    height: auto;
+    overflow: visible;
 }
 
 .landing-page .details .title-1,
 .landing-page .details .title-2 {
     font-weight: 700;
-    font-size: clamp(36px, 6vw, 76px); /* Reduced minimum size for mobile */
+    font-size: clamp(32px, 5vw, 64px);
     font-family: "Oswald", sans-serif;
-    line-height: 1;
+    line-height: 1.05;
     letter-spacing: 0.02em;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
 }
 
 .landing-page .details > .desc {
@@ -99,6 +105,11 @@
     line-height: 1.65;
     font-size: 14px;
     color: rgba(255, 255, 255, 0.82);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    white-space: pre-line;
 }
 
 .landing-page .details > .cta {
@@ -148,15 +159,24 @@
     position: absolute;
     left: 0;
     top: 0;
+    width: 160px;
+    box-sizing: border-box;
     color: #ffffffdd;
-    padding-left: 16px;
+    padding: 0 12px 0 16px;
+    overflow: hidden;
 }
 
 .landing-page .content-place {
     margin-top: 6px;
     font-size: 12px;
+    line-height: 1.2;
     font-weight: 500;
     letter-spacing: 0.02em;
+    max-height: 2.4em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
 }
 
 .landing-page .content-title-1,
@@ -164,6 +184,13 @@
     font-weight: 600;
     font-size: 18px;
     font-family: "Oswald", sans-serif;
+    line-height: 1.1;
+    max-height: 2.2em;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
 }
 
 .landing-page .content-start {
@@ -285,6 +312,21 @@
    LANDING PAGE MOBILE ADJUSTMENTS
    ============================================= */
 @media (max-width: 768px) {
+    .landing-page .card-content {
+        width: 100px;
+        padding-left: 10px;
+        padding-right: 8px;
+    }
+
+    .landing-page .content-place {
+        font-size: 10px;
+    }
+
+    .landing-page .content-title-1,
+    .landing-page .content-title-2 {
+        font-size: 14px;
+    }
+
     .landing-page .details {
         top: 6vh;
         left: 16px;
@@ -307,6 +349,14 @@
     .landing-page .pagination .progress-sub-container {
         width: 100px;
         margin-left: 8px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1023px) {
+    .landing-page .card-content {
+        width: 130px;
+        padding-left: 12px;
+        padding-right: 10px;
     }
 }
 

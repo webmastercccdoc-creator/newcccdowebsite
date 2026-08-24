@@ -625,4 +625,4 @@ export default function ApproveArticles({ articles: initialArticles = [], depart
       />
     </AdminLayout>
   );
-}s
+}

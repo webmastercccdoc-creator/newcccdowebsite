@@ -27,12 +27,41 @@ class HomeController extends Controller
             ->limit(9)
             ->get();
 
+        // Fetch active promotions for the banner
+        $promotions = DB::table('promotions')
+            ->where('status', 'active')
+            ->where(function($query) {
+                $query->whereNull('expire')
+                      ->orWhere('expire', '>=', now());
+            })
+            ->orderByDesc('date')
+            ->limit(5)
+            ->get()
+            ->map(function ($promotion) {
+                // Normalize image path for frontend
+                $bannerPath = $promotion->banner_image_path ?: $promotion->image_path;
+                $carouselPath = $promotion->carousel_image_path ?: $bannerPath;
+                $promotion->banner_image_url = $bannerPath && !str_starts_with($bannerPath, 'http')
+                    ? asset('storage/' . $bannerPath)
+                    : $bannerPath;
+                $promotion->carousel_image_url = $carouselPath && !str_starts_with($carouselPath, 'http')
+                    ? asset('storage/' . $carouselPath)
+                    : $carouselPath;
+                $promotion->image_url = $promotion->carousel_image_url;
+                
+                // Ensure alt text exists
+                $promotion->image_alt_text = $promotion->image_alt_text ?? $promotion->title ?? 'Promotion banner';
+                
+                return $promotion;
+            });
+
         return Inertia::render('content/Home', [
             'canLogin' => \Route::has('login'),
             'canRegister' => \Route::has('register'),
             'laravelVersion' => Application::VERSION,
             'phpVersion' => PHP_VERSION,
             'newsArticles' => $newsArticles,
+            'promotions' => $promotions, // Add promotions to the view data
         ]);
     }
 }

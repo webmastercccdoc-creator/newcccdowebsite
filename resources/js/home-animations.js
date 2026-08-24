@@ -1,61 +1,10 @@
 import gsap from 'gsap';
-import home1 from './assets/home/1.jpg';
-import home2 from './assets/home/2.jpg';
-import home3 from './assets/home/3.jpg';
 
-const data = [
-    {
-        place: 'City College of Cagayan de Oro',
-        title: 'WURI',
-        title2: '2026',
-        description:
-            '• Ranked 55th worldwide for Culture/Values (B4)\n• Ranked 64th worldwide for Curricular Innovation for Future-Readiness (C3)\n\nThis recognition reflects our commitment to transformative education and future-ready programs that equip learners to thrive in a rapidly evolving world.',
-        image: home1,
-        link: 'https://www.facebook.com/orocitycollegeofficial/posts/pfbid02dD3mNSvPohtLGY8UAePoTgps7e5pG1zXkeQD1d6T9HLqWBXbzpP8k5VzAEpzU92Vl',
-    },
-    {
-        place: 'City College of Cagayan de Oro',
-        title: 'THE',
-        title2: 'SUSTAINABILITY',
-        description:
-            '• Overall Global Rank: 801–1000 in THE Sustainability Impact Ratings 2026\n\n• SDG 1 – No Poverty: 101–200\n• SDG 4 – Quality Education: 401–600\n• SDG 5 – Gender Equality: 401–600\n• SDG 10 – Reduced Inequalities: 301–400\n\nA testament to CCCO\'s dedication to sustainable development and social responsibility.',
-        image: home2,
-        link: 'https://www.facebook.com/orocitycollegeofficial/posts/pfbid0cKcRYDLhyQzPSba8oeQ4zsnmEXfM89ZwkxP7z8nihQaZgfEDxxhN2JFFEkXVWhSJl',
-    },
-    {
-        place: 'City College of Cagayan de Oro',
-        title: 'ALS',
-        title2: 'BRIDGING',
-        description:
-            '• CCCDO, DepEd CDO, and SMART PLDT developed contextualized Learning Activity Sheets for the ALS Weekend Bridging Academy\n\n• Materials authored by experienced ALS teachers and reviewed by CCCDO faculty experts\n\n• Supports college readiness by aligning ALS competencies with higher education expectations.',
-        image: home3,
-        link: 'https://www.facebook.com/orocitycollegeofficial/posts/pfbid029aVv6VwWumciiB3juVk5kRzZxbSgFudTUnthJvHm7tm3JhQaPCBk67AFi9YaV8hZl',
-    },
-    {
-        place: 'City College of Cagayan de Oro',
-        title: 'PROJECT',
-        title2: 'KAHANAS',
-        description:
-            '• An approved extension project empowering local communities through skills training and education\n\n• Facilitates partnership between the college and grassroots organizations\n\n• Demonstrates CCCO\'s commitment to community engagement and public service.',
-        image: home1,
-        link: '#',
-    },
-    {
-        place: 'City College of Cagayan de Oro',
-        title: 'NEW FACULTY',
-        title2: 'APPOINTMENTS',
-        description:
-            '• Welcoming newly appointed faculty members to the College of Education\n\n• Bringing a wealth of experience, research expertise, and dedication to mentorship\n\n• Strengthening CCCO\'s capacity to deliver quality instruction across all programs.',
-        image: home2,
-        link: '#',
-    },
-];
-
-export { data };
-
-export function initLandingAnimations() {
+export function initLandingAnimations(slides = []) {
     let mounted = true;
-    let order = [0, 1, 2, 3, 4];
+    const slideData = slides;
+    if (slideData.length === 0) return () => {};
+    let order = slideData.map((_, index) => index);
     let detailsEven = true;
     let clickQueue = [];
     let isAnimating = false;
@@ -88,6 +37,11 @@ export function initLandingAnimations() {
         return `#slide-item-${index}`;
     }
 
+    function setCardImage(index, isActive) {
+        const card = document.querySelector(getCard(index));
+        if (card) card.style.backgroundImage = `url(${isActive ? slideData[index].bannerImage : slideData[index].image})`;
+    }
+
     function animate(target, duration, properties) {
         return new Promise((resolve) => {
             gsap.to(target, {
@@ -100,14 +54,11 @@ export function initLandingAnimations() {
 
     function formatDescription(text) {
         return String(text || '')
-            .split('\n')
-            .map((line) => {
-                const trimmed = line.trim();
-                if (!trimmed) return '<div class="desc-line"></div>';
-                const className = trimmed.startsWith('•') ? 'desc-line desc-bullet' : 'desc-line';
-                return `<div class="${className}">${trimmed}</div>`;
-            })
-            .join('');
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
     }
 
     function queueStep(direction) {
@@ -146,13 +97,13 @@ export function initLandingAnimations() {
         const { innerHeight: height, innerWidth: width } = window;
 
         // Set initial content for the active details panel
-        document.querySelector(`${detailsActive} .place-box .text`).textContent = data[order[0]].place;
-        document.querySelector(`${detailsActive} .title-1`).textContent = data[order[0]].title;
-        document.querySelector(`${detailsActive} .title-2`).textContent = data[order[0]].title2;
-        document.querySelector(`${detailsActive} .desc`).innerHTML = formatDescription(data[order[0]].description);
+        document.querySelector(`${detailsActive} .place-box .text`).textContent = slideData[order[0]].place;
+        document.querySelector(`${detailsActive} .title-1`).textContent = slideData[order[0]].title;
+        document.querySelector(`${detailsActive} .title-2`).textContent = slideData[order[0]].title2;
+        document.querySelector(`${detailsActive} .desc`).innerHTML = formatDescription(slideData[order[0]].description);
         const initDiscoverBtn = document.querySelector(`${detailsActive} .discover`);
         if (initDiscoverBtn) {
-            initDiscoverBtn.href = data[order[0]].link || '#';
+            initDiscoverBtn.href = slideData[order[0]].link || '#';
         }
 
         gsap.set('#pagination', { y: 200, opacity: 0, zIndex: 60 });
@@ -162,6 +113,7 @@ export function initLandingAnimations() {
             x: 0, y: 0,
             width: window.innerWidth, height: window.innerHeight,
         });
+        setCardImage(active, true);
         gsap.set(getCardContent(active), { x: 0, y: 0, opacity: 0 });
         gsap.set(detailsActive, { opacity: 0, zIndex: 22, x: -200 });
         gsap.set(detailsInactive, { opacity: 0, zIndex: 12 });
@@ -176,6 +128,7 @@ export function initLandingAnimations() {
         });
 
         rest.forEach((i, index) => {
+            setCardImage(i, false);
             gsap.set(getCard(i), {
                 x: offsetLeft + 400 + index * (cardWidth + gap),
                 y: offsetTop,
@@ -249,14 +202,14 @@ export function initLandingAnimations() {
             const detailsActive = detailsEven ? '#details-even' : '#details-odd';
             const detailsInactive = detailsEven ? '#details-odd' : '#details-even';
 
-            document.querySelector(`${detailsActive} .place-box .text`).textContent = data[order[0]].place;
-            document.querySelector(`${detailsActive} .title-1`).textContent = data[order[0]].title;
-            document.querySelector(`${detailsActive} .title-2`).textContent = data[order[0]].title2;
-            document.querySelector(`${detailsActive} .desc`).innerHTML = formatDescription(data[order[0]].description);
+            document.querySelector(`${detailsActive} .place-box .text`).textContent = slideData[order[0]].place;
+            document.querySelector(`${detailsActive} .title-1`).textContent = slideData[order[0]].title;
+            document.querySelector(`${detailsActive} .title-2`).textContent = slideData[order[0]].title2;
+            document.querySelector(`${detailsActive} .desc`).innerHTML = formatDescription(slideData[order[0]].description);
 
             const discoverButton = document.querySelector(`${detailsActive} .discover`);
             if (discoverButton) {
-                discoverButton.href = data[order[0]].link || '#';
+                discoverButton.href = slideData[order[0]].link || '#';
                 discoverButton.target = '_blank';
                 discoverButton.rel = 'noopener noreferrer';
             }
@@ -274,6 +227,8 @@ export function initLandingAnimations() {
 
             const [active, ...rest] = order;
             const prv = rest[rest.length - 1];
+
+            setCardImage(active, true);
 
             gsap.set(getCard(prv), { zIndex: 10 });
             gsap.set(getCard(active), { zIndex: 20 });
@@ -300,6 +255,7 @@ export function initLandingAnimations() {
                         width: cardWidth, height: cardHeight,
                         zIndex: 30, borderRadius: 10, scale: 1,
                     });
+                    setCardImage(prv, false);
                     gsap.set(getCardContent(prv), {
                         x: xNew, y: offsetTop + cardHeight - 100, opacity: 1, zIndex: 40,
                     });
@@ -368,7 +324,7 @@ export function initLandingAnimations() {
     }
 
     async function loadImages() {
-        const promises = data.map(({ image }) => loadImage(image));
+        const promises = slideData.flatMap(({ image, bannerImage }) => [image, bannerImage].map(loadImage));
         return Promise.all(promises);
     }
 

@@ -8,8 +8,8 @@ const initialForm = {
     date: '',
     expire: '',
     status: 'active',
-    image: null,
-    image_alt_text: '',
+    banner_image: null,
+    carousel_image: null,
 };
 
 export default function AddPromotions({ isOpen, onClose, onCreated }) {
@@ -17,8 +17,10 @@ export default function AddPromotions({ isOpen, onClose, onCreated }) {
     const [errors, setErrors] = useState({});
     const [submitError, setSubmitError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [previewImage, setPreviewImage] = useState(null);
-    const [imageFile, setImageFile] = useState(null);
+    const [bannerPreview, setBannerPreview] = useState(null);
+    const [carouselPreview, setCarouselPreview] = useState(null);
+    const [bannerFile, setBannerFile] = useState(null);
+    const [carouselFile, setCarouselFile] = useState(null);
 
     const updateField = (field, value) => {
         setForm((current) => ({ ...current, [field]: value }));
@@ -26,15 +28,15 @@ export default function AddPromotions({ isOpen, onClose, onCreated }) {
         setSubmitError('');
     };
 
-    const handleImageChange = (e) => {
+    const handleBannerImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             // Validate file type
-            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
             if (!validTypes.includes(file.type)) {
                 setErrors((current) => ({
                     ...current,
-                    image: 'Please upload a valid image file (JPEG, PNG, GIF, or WEBP)'
+                    banner_image: 'Please upload a valid image file (JPEG, PNG, or WEBP)'
                 }));
                 return;
             }
@@ -43,31 +45,76 @@ export default function AddPromotions({ isOpen, onClose, onCreated }) {
             if (file.size > 5 * 1024 * 1024) {
                 setErrors((current) => ({
                     ...current,
-                    image: 'Image size must be less than 5MB'
+                    banner_image: 'Image size must be less than 5MB'
                 }));
                 return;
             }
 
-            setImageFile(file);
-            setForm((current) => ({ ...current, image: file }));
+            setBannerFile(file);
+            setForm((current) => ({ ...current, banner_image: file }));
             
             const reader = new FileReader();
             reader.onloadend = () => {
-                setPreviewImage(reader.result);
+                setBannerPreview(reader.result);
             };
             reader.readAsDataURL(file);
             
             // Clear image errors
-            setErrors((current) => ({ ...current, image: undefined }));
+            setErrors((current) => ({ ...current, banner_image: undefined }));
         }
     };
 
-    const removeImage = () => {
-        setPreviewImage(null);
-        setImageFile(null);
-        setForm((current) => ({ ...current, image: null }));
-        // Reset the file input
-        const fileInput = document.getElementById('image-upload');
+    const handleCarouselImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            // Validate file type
+            const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                setErrors((current) => ({
+                    ...current,
+                    carousel_image: 'Please upload a valid image file (JPEG, PNG, or WEBP)'
+                }));
+                return;
+            }
+
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                setErrors((current) => ({
+                    ...current,
+                    carousel_image: 'Image size must be less than 5MB'
+                }));
+                return;
+            }
+
+            setCarouselFile(file);
+            setForm((current) => ({ ...current, carousel_image: file }));
+            
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setCarouselPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+            
+            // Clear image errors
+            setErrors((current) => ({ ...current, carousel_image: undefined }));
+        }
+    };
+
+    const removeBannerImage = () => {
+        setBannerPreview(null);
+        setBannerFile(null);
+        setForm((current) => ({ ...current, banner_image: null }));
+        const fileInput = document.getElementById('banner-image-upload');
+        if (fileInput) {
+            fileInput.value = '';
+        }
+    };
+
+    const removeCarouselImage = () => {
+        setCarouselPreview(null);
+        setCarouselFile(null);
+        setForm((current) => ({ ...current, carousel_image: null }));
+        const fileInput = document.getElementById('carousel-image-upload');
         if (fileInput) {
             fileInput.value = '';
         }
@@ -78,8 +125,10 @@ export default function AddPromotions({ isOpen, onClose, onCreated }) {
         setForm(initialForm);
         setErrors({});
         setSubmitError('');
-        setPreviewImage(null);
-        setImageFile(null);
+        setBannerPreview(null);
+        setCarouselPreview(null);
+        setBannerFile(null);
+        setCarouselFile(null);
         onClose();
     };
 
@@ -111,10 +160,13 @@ export default function AddPromotions({ isOpen, onClose, onCreated }) {
             if (form.date) formData.append('date', form.date);
             if (form.expire) formData.append('expire', form.expire);
             formData.append('status', form.status);
-            formData.append('image_alt_text', form.image_alt_text || form.title);
             
-            if (imageFile) {
-                formData.append('image', imageFile);
+            if (bannerFile) {
+                formData.append('banner_image', bannerFile);
+            }
+            
+            if (carouselFile) {
+                formData.append('carousel_image', carouselFile);
             }
 
             const response = await axios.post('/admin/promotions', formData, {
@@ -124,8 +176,10 @@ export default function AddPromotions({ isOpen, onClose, onCreated }) {
             });
 
             setForm(initialForm);
-            setPreviewImage(null);
-            setImageFile(null);
+            setBannerPreview(null);
+            setCarouselPreview(null);
+            setBannerFile(null);
+            setCarouselFile(null);
             if (onCreated) {
                 onCreated(response.data.promotion);
             }
@@ -197,22 +251,41 @@ export default function AddPromotions({ isOpen, onClose, onCreated }) {
                     {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content[0]}</p>}
                 </div>
 
-                {/* Image Upload */}
+                {/* Banner Image Upload */}
                 <div>
                     <label className="mb-1 block text-sm font-medium text-gray-700">
-                        Image (Optional)
+                        Banner Image <span className="text-gray-400 text-xs">(Optional)</span>
                     </label>
+                    
+                    {/* Banner Image Guidelines */}
+                    <div className="mb-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <h4 className="text-xs font-semibold text-blue-800 uppercase tracking-wider mb-1">
+                            <svg className="inline-block w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Banner Image Guidelines
+                        </h4>
+                        <ul className="text-xs text-blue-700 space-y-0.5">
+                            <li>• <strong>Recommended:</strong> 1920 × 1080 px</li>
+                            <li>• <strong>Minimum:</strong> 1280 × 720 px</li>
+                            <li>• <strong>Ratio:</strong> 16:9 landscape</li>
+                            <li>• <strong>Keep important text/logos near the center</strong></li>
+                            <li>• <strong>Maximum file size:</strong> 5 MB</li>
+                            <li>• <strong>Formats:</strong> JPEG, PNG, WEBP</li>
+                        </ul>
+                    </div>
+
                     <div className="flex items-center justify-center w-full">
-                        {previewImage ? (
+                        {bannerPreview ? (
                             <div className="relative w-full">
                                 <img 
-                                    src={previewImage} 
-                                    alt="Preview" 
+                                    src={bannerPreview} 
+                                    alt="Banner Preview" 
                                     className="w-full h-48 object-cover rounded-lg border border-gray-200"
                                 />
                                 <button
                                     type="button"
-                                    onClick={removeImage}
+                                    onClick={removeBannerImage}
                                     className="absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
                                 >
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -221,44 +294,93 @@ export default function AddPromotions({ isOpen, onClose, onCreated }) {
                                 </button>
                             </div>
                         ) : (
-                            <label htmlFor="image-upload" className="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all duration-200">
+                            <label htmlFor="banner-image-upload" className="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all duration-200">
                                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                     <svg className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                     <p className="mb-2 text-sm text-gray-500">
-                                        <span className="font-semibold">Click to upload</span> or drag and drop
+                                        <span className="font-semibold">Upload Banner Image</span>
                                     </p>
-                                    <p className="text-xs text-gray-500">PNG, JPG, GIF, WEBP (Max 5MB)</p>
+                                    <p className="text-xs text-gray-500">JPEG, PNG, WEBP (Max 5MB)</p>
                                 </div>
                                 <input
-                                    id="image-upload"
+                                    id="banner-image-upload"
                                     type="file"
                                     accept="image/*"
-                                    onChange={handleImageChange}
+                                    onChange={handleBannerImageChange}
                                     className="hidden"
                                 />
                             </label>
                         )}
                     </div>
-                    {errors.image && <p className="mt-1 text-sm text-red-600">{errors.image[0]}</p>}
+                    {errors.banner_image && <p className="mt-1 text-sm text-red-600">{errors.banner_image[0]}</p>}
+                </div>
+
+                {/* Carousel Image Upload */}
+                <div>
+                    <label className="mb-1 block text-sm font-medium text-gray-700">
+                        Carousel Card Image <span className="text-gray-400 text-xs">(Optional)</span>
+                    </label>
                     
-                    {/* Image Alt Text */}
-                    {previewImage && (
-                        <div className="mt-2">
-                            <label htmlFor="image-alt-text" className="mb-1 block text-sm font-medium text-gray-700">
-                                Image Alt Text
+                    {/* Carousel Image Guidelines */}
+                    <div className="mb-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                        <h4 className="text-xs font-semibold text-purple-800 uppercase tracking-wider mb-1">
+                            <svg className="inline-block w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+                            </svg>
+                            Carousel Card Image Guidelines
+                        </h4>
+                        <ul className="text-xs text-purple-700 space-y-0.5">
+                            <li>• <strong>Recommended:</strong> 800 × 1200 px</li>
+                            <li>• <strong>Minimum:</strong> 600 × 900 px</li>
+                            <li>• <strong>Ratio:</strong> 2:3 portrait</li>
+                            <li>• <strong>Keep important text/logos inside the center area</strong></li>
+                            <li>• <strong>Maximum file size:</strong> 5 MB</li>
+                            <li>• <strong>Formats:</strong> JPEG, PNG, WEBP</li>
+                        </ul>
+                    </div>
+
+                    <div className="flex items-center justify-center w-full">
+                        {carouselPreview ? (
+                            <div className="relative w-full">
+                                <img 
+                                    src={carouselPreview} 
+                                    alt="Carousel Preview" 
+                                    className="w-full h-48 object-cover rounded-lg border border-gray-200"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={removeCarouselImage}
+                                    className="absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                        ) : (
+                            <label htmlFor="carousel-image-upload" className="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all duration-200">
+                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <svg className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <p className="mb-2 text-sm text-gray-500">
+                                        <span className="font-semibold">Upload Carousel Image</span>
+                                    </p>
+                                    <p className="text-xs text-gray-500">JPEG, PNG, WEBP (Max 5MB)</p>
+                                </div>
+                                <input
+                                    id="carousel-image-upload"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleCarouselImageChange}
+                                    className="hidden"
+                                />
                             </label>
-                            <input
-                                id="image-alt-text"
-                                type="text"
-                                value={form.image_alt_text}
-                                onChange={(event) => updateField('image_alt_text', event.target.value)}
-                                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                                placeholder="Describe the image for accessibility"
-                            />
-                        </div>
-                    )}
+                        )}
+                    </div>
+                    {errors.carousel_image && <p className="mt-1 text-sm text-red-600">{errors.carousel_image[0]}</p>}
                 </div>
 
                 {/* Date Range */}

@@ -47,7 +47,8 @@ class PromotionsController extends Controller
             $query->where('department', $request->department);
         }
 
-        $promotions = $query->orderBy('date', 'desc')->get();
+        $promotions = $query->orderBy('date', 'desc')->get()
+            ->map(fn ($promotion) => $this->addImageUrls($promotion));
 
         return response()->json($promotions);
     }
@@ -58,7 +59,7 @@ class PromotionsController extends Controller
     public function apiShow($id)
     {
         $promotion = Promotion::findOrFail($id);
-        return response()->json($promotion);
+        return response()->json($this->addImageUrls($promotion));
     }
 
     /**
@@ -74,7 +75,8 @@ class PromotionsController extends Controller
             'status' => 'nullable|in:active,inactive,expired',
             'link' => 'nullable|url',
             'department' => 'nullable|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
+            'banner_image' => 'nullable|image|mimes:jpeg,png,webp|max:5120',
+            'carousel_image' => 'nullable|image|mimes:jpeg,png,webp|max:5120',
             'image_alt_text' => 'nullable|string|max:255',
         ]);
 
@@ -85,20 +87,10 @@ class PromotionsController extends Controller
         }
 
         try {
-            // Handle image upload
-            $imagePath = null;
+            $bannerImagePath = $this->storePromotionImage($request, 'banner_image');
+            $carouselImagePath = $this->storePromotionImage($request, 'carousel_image');
             $imageAltText = $request->image_alt_text;
-
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $filename = Str::slug($request->title) . '-' . time() . '.' . $image->getClientOriginalExtension();
-                $imagePath = $image->storeAs('promotions', $filename, 'public');
-                
-                // If no alt text provided, use title
-                if (!$imageAltText) {
-                    $imageAltText = $request->title;
-                }
-            }
+            if (!$imageAltText && ($bannerImagePath || $carouselImagePath)) $imageAltText = $request->title;
 
             // Convert empty strings to null for date fields
             $date = $request->date ?: null;
@@ -116,7 +108,9 @@ class PromotionsController extends Controller
             $promotion = Promotion::create([
                 'title' => $request->title,
                 'content' => $request->content,
-                'image_path' => $imagePath,
+                'image_path' => $bannerImagePath,
+                'banner_image_path' => $bannerImagePath,
+                'carousel_image_path' => $carouselImagePath,
                 'image_alt_text' => $imageAltText,
                 'date' => $date,
                 'expire' => $expire,
@@ -151,9 +145,11 @@ class PromotionsController extends Controller
             'status' => 'nullable|in:active,inactive,expired',
             'link' => 'nullable|url',
             'department' => 'nullable|string|max:255',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
+            'banner_image' => 'nullable|image|mimes:jpeg,png,webp|max:5120',
+            'carousel_image' => 'nullable|image|mimes:jpeg,png,webp|max:5120',
             'image_alt_text' => 'nullable|string|max:255',
-            'remove_image' => 'nullable|boolean',
+            'remove_banner_image' => 'nullable|boolean',
+            'remove_carousel_image' => 'nullable|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -165,33 +161,29 @@ class PromotionsController extends Controller
         try {
             $promotion = Promotion::findOrFail($id);
 
-            // Handle image upload
-            $imagePath = $promotion->image_path;
+            $bannerImagePath = $promotion->banner_image_path ?: $promotion->image_path;
+            $carouselImagePath = $promotion->carousel_image_path;
             $imageAltText = $request->image_alt_text ?? $promotion->image_alt_text;
 
-            // Check if image should be removed
-            if ($request->has('remove_image') && $request->remove_image === 'true') {
-                if ($promotion->image_path) {
-                    Storage::disk('public')->delete($promotion->image_path);
-                }
-                $imagePath = null;
+            if ($request->boolean('remove_banner_image')) {
+                $this->deletePromotionImage($bannerImagePath);
+                $bannerImagePath = null;
                 $imageAltText = null;
             }
 
-            if ($request->hasFile('image')) {
-                // Delete old image if exists
-                if ($promotion->image_path) {
-                    Storage::disk('public')->delete($promotion->image_path);
-                }
+            if ($request->boolean('remove_carousel_image')) {
+                $this->deletePromotionImage($carouselImagePath);
+                $carouselImagePath = null;
+            }
 
-                $image = $request->file('image');
-                $filename = Str::slug($request->title) . '-' . time() . '.' . $image->getClientOriginalExtension();
-                $imagePath = $image->storeAs('promotions', $filename, 'public');
-                
-                // If no alt text provided, use title
-                if (!$imageAltText) {
-                    $imageAltText = $request->title;
-                }
+            if ($request->hasFile('banner_image')) {
+                $this->deletePromotionImage($bannerImagePath);
+                $bannerImagePath = $this->storePromotionImage($request, 'banner_image');
+            }
+
+            if ($request->hasFile('carousel_image')) {
+                $this->deletePromotionImage($carouselImagePath);
+                $carouselImagePath = $this->storePromotionImage($request, 'carousel_image');
             }
 
             // Convert empty strings to null for date fields
@@ -210,7 +202,9 @@ class PromotionsController extends Controller
             $promotion->update([
                 'title' => $request->title,
                 'content' => $request->content,
-                'image_path' => $imagePath,
+                'image_path' => $bannerImagePath,
+                'banner_image_path' => $bannerImagePath,
+                'carousel_image_path' => $carouselImagePath,
                 'image_alt_text' => $imageAltText,
                 'date' => $date,
                 'expire' => $expire,
@@ -240,10 +234,8 @@ class PromotionsController extends Controller
         try {
             $promotion = Promotion::findOrFail($id);
             
-            // Delete image if exists
-            if ($promotion->image_path) {
-                Storage::disk('public')->delete($promotion->image_path);
-            }
+            $this->deletePromotionImage($promotion->banner_image_path ?: $promotion->image_path);
+            $this->deletePromotionImage($promotion->carousel_image_path);
             
             $promotion->delete();
 
@@ -288,7 +280,8 @@ class PromotionsController extends Controller
             })
             ->orderBy('date', 'desc')
             ->limit(6)
-            ->get();
+            ->get()
+            ->map(fn ($promotion) => $this->addImageUrls($promotion));
 
         return response()->json($promotions);
     }
@@ -313,9 +306,8 @@ class PromotionsController extends Controller
             // Delete images for all promotions
             $promotions = Promotion::whereIn('id', $request->ids)->get();
             foreach ($promotions as $promotion) {
-                if ($promotion->image_path) {
-                    Storage::disk('public')->delete($promotion->image_path);
-                }
+                $this->deletePromotionImage($promotion->banner_image_path ?: $promotion->image_path);
+                $this->deletePromotionImage($promotion->carousel_image_path);
             }
 
             Promotion::whereIn('id', $request->ids)->delete();
@@ -407,9 +399,41 @@ class PromotionsController extends Controller
                       ->orWhere('expire', '>=', now());
             })
             ->orderBy('date', 'desc')
-            ->get();
+            ->get()
+            ->map(fn ($promotion) => $this->addImageUrls($promotion));
 
         return response()->json($promotions);
+    }
+
+    private function storePromotionImage(Request $request, string $field): ?string
+    {
+        if (!$request->hasFile($field)) return null;
+
+        $image = $request->file($field);
+        $filename = Str::slug($request->title) . '-' . $field . '-' . time() . '.' . $image->getClientOriginalExtension();
+
+        return $image->storeAs('promotions', $filename, 'public');
+    }
+
+    private function deletePromotionImage(?string $path): void
+    {
+        if ($path) Storage::disk('public')->delete($path);
+    }
+
+    private function addImageUrls(Promotion $promotion): Promotion
+    {
+        $bannerPath = $promotion->banner_image_path ?: $promotion->image_path;
+
+        $promotion->banner_image_url = $this->imageUrl($bannerPath);
+        $promotion->carousel_image_url = $this->imageUrl($promotion->carousel_image_path ?: $bannerPath);
+
+        return $promotion;
+    }
+
+    private function imageUrl(?string $path): ?string
+    {
+        if (!$path) return null;
+        return filter_var($path, FILTER_VALIDATE_URL) ? $path : asset('storage/' . $path);
     }
 
     /**

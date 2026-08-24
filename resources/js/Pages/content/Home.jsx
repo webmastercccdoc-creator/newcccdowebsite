@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import MainLayout from '../../layouts/MainLayout';
 import '../../../css/home.css';
-import { initLandingAnimations, data } from '../../home-animations';
+import { initLandingAnimations } from '../../home-animations';
 
 // Ranking Logos
 import theLogo from '../../assets/logos/the.png';
@@ -83,8 +83,26 @@ const stripHtmlAndTruncate = (html, maxLength = 120) => {
     return text.substring(0, maxLength) + '...';
 };
 
-export default function Home({ newsArticles = [] }) {
+export default function Home({ newsArticles = [], promotions = [] }) {
     const [ensembleSlide, setEnsembleSlide] = useState(0);
+
+    const bannerData = useMemo(() => {
+        const mappedPromotions = promotions.map((promotion) => ({
+            place: promotion.department || 'City College of Cagayan de Oro',
+            title: promotion.title || 'Promotion',
+            title2: '',
+            description: promotion.content || '',
+            image: normalizeImagePath(promotion.carousel_image_url || promotion.image_url || promotion.image_path),
+            bannerImage: normalizeImagePath(promotion.banner_image_url || promotion.image_url || promotion.image_path),
+            link: promotion.link || '#',
+        }));
+
+        if (mappedPromotions.length === 0) return [];
+
+        return Array.from({ length: Math.max(mappedPromotions.length, 5) }, (_, index) => (
+            mappedPromotions[index % mappedPromotions.length]
+        ));
+    }, [promotions]);
 
     const articles = newsArticles.map((article) => ({
         id: article.id,
@@ -103,9 +121,9 @@ export default function Home({ newsArticles = [] }) {
     }));
 
     useEffect(() => {
-        const cleanup = initLandingAnimations();
+        const cleanup = initLandingAnimations(bannerData);
         return cleanup;
-    }, []);
+    }, [bannerData]);
 
     const goToPrevSlide = () => {
         setEnsembleSlide((prev) => (prev === 0 ? ENSEMBLES.length - 1 : prev - 1));
@@ -121,7 +139,7 @@ export default function Home({ newsArticles = [] }) {
                 <div className="indicator"></div>
 
                 <div id="demo">
-                    {data.map((item, index) => (
+                    {bannerData.map((item, index) => (
                         <div
                             key={`card-${index}`}
                             className="card"
@@ -131,7 +149,7 @@ export default function Home({ newsArticles = [] }) {
                             }}
                         />
                     ))}
-                    {data.map((item, index) => (
+                    {bannerData.map((item, index) => (
                         <div
                             key={`content-${index}`}
                             className="card-content"
@@ -147,41 +165,33 @@ export default function Home({ newsArticles = [] }) {
 
                 <div className="details" id="details-even">
                     <div className="place-box">
-                        <div className="text">City College of Cagayan de Oro</div>
+                        <div className="text"></div>
                     </div>
                     <div className="title-box-1">
-                        <div className="title-1">WURI</div>
+                        <div className="title-1"></div>
                     </div>
                     <div className="title-box-2">
-                        <div className="title-2">2026</div>
+                        <div className="title-2"></div>
                     </div>
-                    <div className="desc">
-                        <div className="desc-line desc-bullet">• Ranked 55th worldwide for Culture/Values (B4)</div>
-                        <div className="desc-line desc-bullet">• Ranked 64th worldwide for Curricular Innovation for Future-Readiness (C3)</div>
-                        <div className="desc-line">This recognition reflects our commitment to transformative education and future-ready programs.</div>
-                    </div>
+                    <div className="desc"></div>
                     <div className="cta">
-                        <a className="discover" href={data[0].link || '#'} target="_blank" rel="noopener noreferrer">View Post</a>
+                        <a className="discover" href={bannerData[0]?.link || '#'} target="_blank" rel="noopener noreferrer">View Post</a>
                     </div>
                 </div>
 
                 <div className="details" id="details-odd">
                     <div className="place-box">
-                        <div className="text">City College of Cagayan de Oro</div>
+                        <div className="text"></div>
                     </div>
                     <div className="title-box-1">
-                        <div className="title-1">WURI</div>
+                        <div className="title-1"></div>
                     </div>
                     <div className="title-box-2">
-                        <div className="title-2">2026</div>
+                        <div className="title-2"></div>
                     </div>
-                    <div className="desc">
-                        <div className="desc-line desc-bullet">• Ranked 55th worldwide for Culture/Values (B4)</div>
-                        <div className="desc-line desc-bullet">• Ranked 64th worldwide for Curricular Innovation for Future-Readiness (C3)</div>
-                        <div className="desc-line">This recognition reflects our commitment to transformative education and future-ready programs.</div>
-                    </div>
+                    <div className="desc"></div>
                     <div className="cta">
-                        <a className="discover" href={data[0].link || '#'} target="_blank" rel="noopener noreferrer">View Post</a>
+                        <a className="discover" href={bannerData[0]?.link || '#'} target="_blank" rel="noopener noreferrer">View Post</a>
                     </div>
                 </div>
 
@@ -215,7 +225,7 @@ export default function Home({ newsArticles = [] }) {
                         </svg>
                     </div>
                     <div className="slide-numbers" aria-hidden="true">
-                        {data.map((_, index) => (
+                        {bannerData.map((_, index) => (
                             <div
                                 key={`slide-number-${index}`}
                                 id={`slide-item-${index}`}

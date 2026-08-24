@@ -8,6 +8,7 @@ const Navbar = () => {
     const hoverTimeoutRef = useRef(null);
     const dropdownRef = useRef(null);
     const menuItemRefs = useRef({});
+    const mobileMenuRef = useRef(null);
 
     // Detect scroll for shadow and height effect
     useEffect(() => {
@@ -61,6 +62,18 @@ const Navbar = () => {
         document.addEventListener('keydown', handleEsc);
         return () => document.removeEventListener('keydown', handleEsc);
     }, []);
+
+    // Prevent body scroll when mobile menu is open
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMobileMenuOpen]);
 
     const handleMouseEnter = (menu) => {
         if (hoverTimeoutRef.current) {
@@ -189,7 +202,7 @@ const Navbar = () => {
     return (
         <nav 
             className={`
-                w-full flex-shrink-0 font-sans
+                sticky top-0 z-50 w-full flex-shrink-0 font-sans
                 transition-all duration-300 ease-in-out
                 ${isScrolled 
                     ? 'shadow-2xl bg-opacity-95 backdrop-blur-sm' 
@@ -197,11 +210,6 @@ const Navbar = () => {
                 }
             `} 
             style={{ 
-                position: 'sticky',
-                top: 0,
-                left: 0,
-                right: 0,
-                zIndex: 50,
                 backgroundColor: '#157D3C',
                 height: '80px',
             }}
@@ -392,15 +400,16 @@ const Navbar = () => {
                     </button>
                 </div>
 
-                {/* Mobile Menu - Fixed with proper background */}
+                {/* Mobile Menu - Fixed with proper background and scrolling */}
                 <div 
                     id="mobile-menu"
+                    ref={mobileMenuRef}
                     className={`
                         xl:hidden overflow-hidden transition-all duration-300 ease-in-out
-                        ${isMobileMenuOpen ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'}
+                        ${isMobileMenuOpen ? 'max-h-[calc(100vh-80px)] opacity-100' : 'max-h-0 opacity-0'}
                     `}
                 >
-                    <div className="bg-white rounded-b-2xl shadow-2xl mt-2 pb-4 pt-2">
+                    <div className="bg-white rounded-b-2xl shadow-2xl mt-2 pb-4 pt-2 overflow-y-auto max-h-[calc(100vh-100px)]">
                         {navigationItems.map((item) => (
                             <div key={item.name} className="px-3">
                                 {item.dropdown ? (
@@ -426,10 +435,10 @@ const Navbar = () => {
                                             </svg>
                                         </button>
                                         
-                                        {/* Mobile Sub-menu - Solid White Background */}
+                                        {/* Mobile Sub-menu - Scrollable with max height */}
                                         <div className={`
-                                            ml-2 space-y-1 overflow-hidden transition-all duration-200 bg-white shadow-inner rounded-lg
-                                            ${openDropdown === item.name ? 'max-h-96 opacity-100 p-2' : 'max-h-0 opacity-0 p-0'}
+                                            ml-2 space-y-1 overflow-y-auto transition-all duration-200 bg-white shadow-inner rounded-lg
+                                            ${openDropdown === item.name ? 'max-h-[400px] opacity-100 p-2' : 'max-h-0 opacity-0 p-0'}
                                         `}>
                                             {item.dropdown.map((subItem) => (
                                                 <a
@@ -468,7 +477,7 @@ const Navbar = () => {
                                 className="block w-full rounded-full bg-green-700 px-4 py-3 text-center font-semibold text-white transition-all hover:bg-green-800 hover:shadow-lg font-sans"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
-                                Enroll 
+                                Apply Now
                             </a>
                         </div>
                     </div>
@@ -486,6 +495,25 @@ const Navbar = () => {
                         opacity: 1;
                         transform: translateY(0) scale(1) translateX(-50%);
                     }
+                }
+                
+                /* Hide scrollbar for Chrome, Safari and Opera */
+                .overflow-y-auto::-webkit-scrollbar {
+                    width: 4px;
+                }
+                
+                .overflow-y-auto::-webkit-scrollbar-track {
+                    background: #f1f1f1;
+                    border-radius: 4px;
+                }
+                
+                .overflow-y-auto::-webkit-scrollbar-thumb {
+                    background: #157D3C;
+                    border-radius: 4px;
+                }
+                
+                .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+                    background: #0f5f2e;
                 }
             `}</style>
         </nav>

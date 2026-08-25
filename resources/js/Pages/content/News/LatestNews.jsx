@@ -312,7 +312,7 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                         <div className="space-y-3 text-gray-600 text-sm leading-relaxed">
                             <p>
                                 Welcome to the official news hub of City College
-                                of Cagayan de Oro (CC de Oro), your premier
+                                of Cagayan de Oro, your premier
                                 source for the latest developments,
                                 announcements, and stories from our vibrant
                                 academic community. As a leading institution
@@ -325,7 +325,7 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
 
                             <p>
                                 Our news section serves as a digital window into
-                                the dynamic life at CC de Oro, featuring a
+                                the dynamic life at City College, featuring a
                                 comprehensive coverage of academic achievements,
                                 groundbreaking research initiatives, campus
                                 events, student success stories, faculty
@@ -333,7 +333,7 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                                 Whether it's a new academic program launch, a
                                 significant research breakthrough, or a
                                 community outreach initiative, we bring you the
-                                stories that matter most to our CC de Oro
+                                stories that matter most to our Ciity College
                                 family.
                             </p>
 
@@ -345,8 +345,8 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                                 research projects to innovative teaching
                                 methodologies, from cultural celebrations to
                                 sports achievements, our news coverage reflects
-                                the diverse and inclusive spirit that defines CC
-                                de Oro.
+                                the diverse and inclusive spirit that defines City 
+                                College of Cagayan de Oro.   
                             </p>
 
                             <p>
@@ -359,17 +359,6 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                                 ongoing journey towards academic excellence and
                                 social transformation.
                             </p>
-
-                            {/* Simple text labels without colors */}
-                            <div className="flex flex-wrap gap-4 pt-2 text-xs font-medium text-gray-500">
-                                <span>Student Achievements</span>
-                                <span>•</span>
-                                <span>Campus Events</span>
-                                <span>•</span>
-                                <span>Academic Excellence</span>
-                                <span>•</span>
-                                <span>Community Engagement</span>
-                            </div>
                         </div>
                     </div>
                 </div>

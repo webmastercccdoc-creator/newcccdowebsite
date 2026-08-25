@@ -419,14 +419,14 @@ export default function Articles({ articles: initialArticles, departments = [] }
                       {String(startIndex + index + 1).padStart(2, '0')}
                     </td>
                     <td className="py-3 px-4 border-r border-gray-200 max-w-[260px]">
-                      <div className="flex flex-col w-full">
-                        <span 
+                      <div className="flex flex-col min-w-0 w-full">
+                        <span
                           className="font-semibold text-gray-800 truncate w-full"
                           title={article.title}
                         >
                           {article.title}
                         </span>
-                        <p 
+                        <p
                           className="text-xs text-gray-500 mt-0.5 truncate w-full"
                           title={getContentPreview(article.content)}
                         >

@@ -369,7 +369,7 @@
     }
 }
 
-@media (min-width: 769px) and (max-width: 1023px) {
+@media (min-width: 769px) and (max-width: 899px) {
     .landing-page .card-content {
         width: 130px;
         padding-left: 12px;
@@ -1174,6 +1174,7 @@
 
 .news-card-content {
     padding: 1.5rem;
+    background-color: #157D3C;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -1182,7 +1183,7 @@
 .news-date {
     font-size: 0.75rem;
     font-weight: 700;
-    color: #6b7280;
+    color: rgba(255, 255, 255, 0.88);
     margin-bottom: 0.625rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -1191,7 +1192,7 @@
 .news-card-title {
     font-size: 1.0625rem;
     font-weight: 700;
-    color: #1f2937;
+    color: #ffffff;
     margin-bottom: 0.625rem;
     line-height: 1.35;
     letter-spacing: -0.01em;
@@ -1203,7 +1204,7 @@
 }
 
 .news-excerpt {
-    color: #4b5563;
+    color: rgba(255, 255, 255, 0.92);
     font-size: 0.875rem;
     line-height: 1.6;
     margin-bottom: 1rem;
@@ -1220,7 +1221,7 @@
     align-items: center;
     font-size: 0.8125rem;
     font-weight: 600;
-    color: #157D3C;
+    color: #d4f2df;
     transition: all 0.25s ease;
     text-decoration: none;
     margin-top: auto;
@@ -1228,7 +1229,7 @@
 }
 
 .news-read-more:hover {
-    color: #145a2f;
+    color: #ffffff;
     gap: 0.5rem;
 }
 

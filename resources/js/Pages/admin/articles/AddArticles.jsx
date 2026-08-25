@@ -279,44 +279,67 @@ export default function AddArticles({
   const handleAutoSelectSDG = () => {
     const title = formData.title || '';
     const content = formData.content || '';
-    const combinedText = (title + ' ' + content).toLowerCase();
-    
+
     setIsAutoSelecting(true);
-    
-    setTimeout(() => {
-      const matchedSDGs = sdgOptions
-        .filter(sdg => {
-          return sdg.keywords.some(keyword => 
-            combinedText.includes(keyword.toLowerCase())
-          );
-        })
-        .map(sdg => sdg.value);
-      
+
+    const applySuggestions = (matchedSDGs) => {
       if (matchedSDGs.length === 0) {
-        console.log('No SDGs matched the content. Please select manually.');
-        setFormData(prev => ({
-          ...prev,
-          sdg: []
-        }));
+        setFormData(prev => ({ ...prev, sdg: [] }));
         setErrors(prev => ({
           ...prev,
-          sdg: 'No SDGs detected. Please select manually.'
+          sdg: 'No confident SDGs detected. Please select manually.'
         }));
-      } else {
-        setFormData(prev => ({
-          ...prev,
-          sdg: matchedSDGs
-        }));
-        if (errors.sdg) {
-          setErrors(prev => ({
-            ...prev,
-            sdg: ''
-          }));
-        }
+        return;
       }
-      
-      setIsAutoSelecting(false);
-    }, 800);
+
+      setFormData(prev => ({ ...prev, sdg: matchedSDGs }));
+      setErrors(prev => ({ ...prev, sdg: '' }));
+    };
+
+    const useLocalFallback = () => {
+      const combinedText = `${title} ${content}`
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      const matchedSDGs = sdgOptions
+        .filter(sdg => {
+          const score = sdg.keywords.reduce((total, keyword) => {
+            const normalizedKeyword = keyword.toLowerCase();
+            const keywordPattern = new RegExp(
+              `(^|\\s)${normalizedKeyword.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}(?=\\s|$)`,
+              'i'
+            );
+
+            if (!keywordPattern.test(combinedText)) {
+              return total;
+            }
+
+            return total + (normalizedKeyword.includes(' ') || normalizedKeyword.length >= 6 ? 2 : 1);
+          }, 0);
+
+          return score >= 2;
+        })
+        .map(sdg => sdg.value);
+
+      applySuggestions(matchedSDGs);
+    };
+
+    axios.post('/admin/articles/suggest-sdgs', { title, content })
+      .then(response => {
+        const matchedSDGs = (response.data?.sdgs || [])
+          .filter(sdg => Number(sdg.confidence) >= 0.75)
+          .map(sdg => `sdg${Number(sdg.number)}`);
+
+        applySuggestions([...new Set(matchedSDGs)]);
+      })
+      .catch(() => {
+        useLocalFallback();
+      })
+      .finally(() => {
+        setIsAutoSelecting(false);
+      });
   };
 
   const handleClearSDG = () => {

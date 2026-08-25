@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -198,6 +199,84 @@ class ArticlesController extends Controller
         return Inertia::render('admin/articles/ApproveArticles', [
             'articles' => $articles,
         ]);
+    }
+
+    /**
+     * Suggest relevant SDGs for an article using the configured AI provider.
+     */
+    public function suggestSdgs(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'content' => ['required', 'string', 'max:30000'],
+        ]);
+
+        $apiKey = config('services.openai.key');
+        if (!$apiKey) {
+            return response()->json([
+                'message' => 'SDG AI suggestions are not configured.',
+            ], 503);
+        }
+
+        $sdgDescriptions = [
+            1 => 'No Poverty',
+            2 => 'Zero Hunger',
+            3 => 'Good Health and Well-being',
+            4 => 'Quality Education',
+            5 => 'Gender Equality',
+            6 => 'Clean Water and Sanitation',
+            7 => 'Affordable and Clean Energy',
+            8 => 'Decent Work and Economic Growth',
+            9 => 'Industry, Innovation and Infrastructure',
+            10 => 'Reduced Inequalities',
+            11 => 'Sustainable Cities and Communities',
+            12 => 'Responsible Consumption and Production',
+            13 => 'Climate Action',
+            14 => 'Life Below Water',
+            15 => 'Life on Land',
+            16 => 'Peace, Justice and Strong Institutions',
+            17 => 'Partnerships for the Goals',
+        ];
+
+        $response = Http::timeout(30)
+            ->withToken($apiKey)
+            ->post('https://api.openai.com/v1/chat/completions', [
+                'model' => config('services.openai.model', 'gpt-4o-mini'),
+                'temperature' => 0,
+                'response_format' => ['type' => 'json_object'],
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => 'Classify the article against the official UN Sustainable Development Goals. Return only JSON in the form {"sdgs":[{"number":1,"confidence":0.0,"reason":"short evidence-based reason"}]}. Include only genuinely relevant goals, use numbers 1-17, confidence between 0 and 1, and do not infer a goal from a passing mention. The available goals are: ' . json_encode($sdgDescriptions),
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => "Title: {$validated['title']}\n\nContent: {$validated['content']}",
+                    ],
+                ],
+            ]);
+
+        if ($response->failed()) {
+            return response()->json([
+                'message' => 'The SDG suggestion service is temporarily unavailable.',
+            ], 502);
+        }
+
+        $payload = json_decode($response->json('choices.0.message.content', '{}'), true);
+        $suggestions = collect($payload['sdgs'] ?? [])
+            ->filter(fn ($suggestion) => is_array($suggestion))
+            ->map(function ($suggestion) {
+                return [
+                    'number' => (int) ($suggestion['number'] ?? 0),
+                    'confidence' => max(0, min(1, (float) ($suggestion['confidence'] ?? 0))),
+                    'reason' => trim((string) ($suggestion['reason'] ?? '')),
+                ];
+            })
+            ->filter(fn ($suggestion) => $suggestion['number'] >= 1 && $suggestion['number'] <= 17)
+            ->unique('number')
+            ->values();
+
+        return response()->json(['sdgs' => $suggestions]);
     }
 
     /**

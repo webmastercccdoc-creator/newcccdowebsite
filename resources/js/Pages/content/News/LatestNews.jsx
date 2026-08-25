@@ -305,13 +305,13 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                                             )}
                                         </div>
 
-                                        <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-3">
+                                        <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-3 text-justify">
                                             <a href={`/news/${item.id}`} className="hover:text-green-700 transition-colors hover:underline">
                                                 {item.title}
                                             </a>
                                         </h3>
 
-                                        <p className="text-gray-600 text-sm md:text-base mb-4 line-clamp-3">
+                                        <p className="text-gray-600 text-sm md:text-base mb-4 line-clamp-3 text-justify">
                                             {item.content}
                                         </p>
 

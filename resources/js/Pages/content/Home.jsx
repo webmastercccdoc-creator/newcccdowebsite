@@ -108,6 +108,11 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                 : [],
     }));
 
+    const carouselArticles = articles.slice(0, 6);
+    const carouselItems = carouselArticles.length > 0
+        ? [...carouselArticles, ...carouselArticles]
+        : [];
+
     useEffect(() => {
         const cleanup = initLandingAnimations(bannerData);
         return cleanup;
@@ -312,11 +317,11 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                                     className="news-card reveal-on-scroll home-content-reveal"
                                     style={{ transitionDelay: `${index * 0.1}s` }}
                                 >
-                                    <div className="news-card-image-wrapper">
+                                    <div className="news-card-image-wrapper group">
                                         <img
                                             src={news.image}
                                             alt={news.alt}
-                                            className="news-card-image"
+                                            className="news-card-image transition-transform duration-500 ease-out group-hover:scale-105"
                                             loading="lazy"
                                         />
                                         <div className="news-card-badge">

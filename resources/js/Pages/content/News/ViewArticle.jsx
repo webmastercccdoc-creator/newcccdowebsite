@@ -10,9 +10,20 @@ const normalizeImagePath = (value) => {
     return normalized;
 };
 
+const getSdgNumbers = (article) => {
+    const values = article?.sdg ?? article?.sdg_numbers ?? [];
+    const entries = Array.isArray(values) ? values : String(values).split(',');
+
+    return entries
+        .map((value) => String(value).match(/\d+/)?.[0])
+        .filter(Boolean)
+        .slice(0, 3);
+};
+
 export default function ViewArticle({ article: initialArticle = null, articleImages: initialImages = [] }) {
     const [article, setArticle] = useState(initialArticle);
     const [articleImages, setArticleImages] = useState(initialImages);
+    const sdgNumbers = getSdgNumbers(article);
 
     useEffect(() => {
         document.title = article?.title ? `${article.title} - City College of Cagayan de Oro` : 'View Article - City College of Cagayan de Oro';
@@ -172,6 +183,19 @@ export default function ViewArticle({ article: initialArticle = null, articleIma
                     <p className="inline-block mb-4 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-white bg-white/10 backdrop-blur-sm rounded-full border border-white/20 shadow-sm">
                         {article?.department || 'News'}
                     </p>
+
+                    {sdgNumbers.length > 0 && (
+                        <div className="mb-5 flex flex-wrap justify-center gap-2" aria-label="Sustainable Development Goals">
+                            {sdgNumbers.map((sdgNumber) => (
+                                <span
+                                    key={`hero-sdg-${sdgNumber}`}
+                                    className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white backdrop-blur-sm"
+                                >
+                                    SDG {sdgNumber}
+                                </span>
+                            ))}
+                        </div>
+                    )}
                     
                     {/* Title - Pure white for maximum contrast */}
                     <h1 className="text-4xl font-bold tracking-tight text-white drop-shadow-md sm:text-5xl md:text-6xl lg:text-7xl">
@@ -228,6 +252,19 @@ export default function ViewArticle({ article: initialArticle = null, articleIma
                             <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-green-700">
                                 {article?.department || 'News'}
                             </p>
+
+                            {sdgNumbers.length > 0 && (
+                                <div className="mb-5 flex flex-wrap gap-2" aria-label="Sustainable Development Goals">
+                                    {sdgNumbers.map((sdgNumber) => (
+                                        <span
+                                            key={sdgNumber}
+                                            className="rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-green-800"
+                                        >
+                                            SDG {sdgNumber}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
                             
                             <h2 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">
                                 {article?.title}

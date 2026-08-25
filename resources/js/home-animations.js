@@ -78,7 +78,7 @@ export function initLandingAnimations(slides = []) {
             cardWidth = 100;
             cardHeight = 150;
             gap = 16;
-        } else if (width < 1024) {
+        } else if (width < 900) {
             cardWidth = 130;
             cardHeight = 195;
             gap = 24;

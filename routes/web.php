@@ -192,6 +192,7 @@ Route::middleware(['auth'])->group(function () {
     // ============================================
     Route::get('/admin/articles', [ArticlesController::class, 'index'])->name('admin.articles');                              // List all articles
     Route::get('/admin/approve-articles', [ArticlesController::class, 'approve'])->name('admin.approve-articles');          // Approve articles page
+    Route::post('/admin/articles/suggest-sdgs', [ArticlesController::class, 'suggestSdgs'])->name('admin.articles.suggest-sdgs');
     Route::post('/admin/articles', [ArticlesController::class, 'store'])->name('admin.articles.store');                     // Create new article
     Route::get('/admin/articles/status-counts', [ArticlesController::class, 'articleStatusCounts'])->name('admin.articles.status-counts'); // Get article counts
     Route::get('/admin/articles/{article}', [ArticlesController::class, 'show'])->name('admin.articles.show');               // View single article

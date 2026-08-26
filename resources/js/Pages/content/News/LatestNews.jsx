@@ -251,6 +251,8 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                 </div>
             </div>
 
+            {false && (
+                <>
             {/* FEATURED NEWS CAROUSEL */}
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-6">
                 <div className="flex items-center justify-between mb-6">
@@ -399,7 +401,7 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                                         <img
                                             src={thumbnailImage}
                                             alt={thumbnailAlt}
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                                             loading="lazy"
                                         />
                                         <div className="absolute top-4 left-4">
@@ -553,6 +555,9 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                     </div>
                 </div>
             </div>
+                </>
+
+            )}
 
             {/* LATEST NEWS TITLE */}
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-6 pb-2">
@@ -567,6 +572,8 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                 </div>
             </div>
 
+            {false && (
+                <>
             {/* Search and Filter Bar - Clean & Presentable */}
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-4 pb-4">
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
@@ -774,6 +781,9 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                     </div>
                 </div>
             </div>
+                </>
+
+            )}
 
             {/* Main Content - 4-COLUMN NEWS GRID */}
             <section className="news-section">
@@ -832,16 +842,13 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                                             <img
                                                 src={thumbnailImage}
                                                 alt={thumbnailAlt}
-                                                className="news-card-image"
+                                                className="news-card-image transition-transform duration-500 hover:scale-105"
                                                 loading="lazy"
                                             />
 
-                                            {index === 0 &&
-                                                currentPage === 1 && (
-                                                    <span className="news-card-badge">
-                                                        New
-                                                    </span>
-                                                )}
+                                            <span className="news-card-badge">
+                                                {item.department || "News"}
+                                            </span>
                                         </div>
 
                                         <div className="news-card-content">

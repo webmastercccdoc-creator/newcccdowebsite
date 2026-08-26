@@ -50,7 +50,7 @@ export default function EditPromotions({
     status: promotion.status || 'active',
     image: promotion.image || null,
     image_alt_text: promotion.image_alt_text || '',
-    existing_image: promotion.image || null,
+    banner_image_url: promotion.banner_image_url || promotion.image_url || null,
   } : null;
 
   // Create a wrapped onUpdated that handles the update

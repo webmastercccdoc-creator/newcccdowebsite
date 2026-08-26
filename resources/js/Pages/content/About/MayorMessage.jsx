@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
+import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
 
 // 1. Import the local banner image
 import mayorBanner from '../../../assets/banner/mayor-banner.png';
@@ -24,14 +25,7 @@ export default function MayorMessage() {
                 {/* Dark Overlay for text readability */}
                 <div className="absolute inset-0 bg-black/50"></div>
                 
-                <div className="relative z-10 mx-auto max-w-5xl px-6 text-center">
-                    <h1 className="text-4xl font-bold tracking-tight text-white drop-shadow-md sm:text-5xl md:text-6xl">
-                        Mayor's Message
-                    </h1>
-                    <p className="mx-auto mt-4 max-w-2xl text-lg text-white/90 drop-shadow-md">
-                        A warm welcome and vision for the future of Cagayan de Oro City
-                    </p>
-                </div>
+                <AnimatedBannerText title="Mayor's Message" description="A warm welcome and vision for the future of Cagayan de Oro City" />
             </div>
 
             {/* MAXIMIZED CONTENT AREA - Full width centered */}

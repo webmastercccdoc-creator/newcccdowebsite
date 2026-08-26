@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
+import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
 
 export default function PartnersLinkages() {
     useEffect(() => {
@@ -21,14 +22,10 @@ export default function PartnersLinkages() {
                 }}
             >
                 <div className="absolute inset-0 bg-black/50"></div>
-                <div className="relative z-10 mx-auto max-w-7xl px-6 text-center">
-                    <h1 className="text-4xl font-bold tracking-tight text-white drop-shadow-md sm:text-5xl md:text-6xl">
-                        Partners and Linkages
-                    </h1>
-                    <p className="mx-auto mt-4 max-w-3xl text-lg text-white/90 drop-shadow-md">
-                        Building strategic partnerships and collaborations for academic excellence and community development.
-                    </p>
-                </div>
+                <AnimatedBannerText
+                    title="Partners and Linkages"
+                    description="Building strategic partnerships and collaborations for academic excellence and community development."
+                />
             </div>
 
             {/* Content will go here */}

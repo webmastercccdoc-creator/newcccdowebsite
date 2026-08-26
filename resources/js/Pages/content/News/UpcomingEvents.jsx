@@ -2,6 +2,7 @@ import { useState } from "react";
 import MainLayout from "../../../layouts/MainLayout";
 import { motion, AnimatePresence } from "framer-motion";
 import UpcomingEventsBanner from "../../../assets/banner/upcoming-events.jpg";
+import AnimatedBannerText from "../../../components/content/AnimatedBannerText";
 
 // Helper function to fix broken images and use a clean placeholder
 const normalizeImagePath = (value) => {
@@ -99,15 +100,10 @@ export default function UpcomingEvents() {
                 }}
             >
                 <div className="absolute inset-0 bg-black/50"></div>
-                <div className="relative z-10 mx-auto max-w-7xl px-6 text-center">
-                    <h1 className="text-4xl font-bold tracking-tight text-white drop-shadow-md sm:text-5xl md:text-6xl">
-                        Upcoming Events
-                    </h1>
-                    <p className="mx-auto mt-4 max-w-3xl text-lg text-white/90 drop-shadow-md">
-                        Stay informed about the latest activities, assemblies,
-                        and academic schedules.
-                    </p>
-                </div>
+                <AnimatedBannerText
+                    title="Upcoming Events"
+                    description="Stay informed about the latest activities, assemblies, and academic schedules."
+                />
             </div>
 
             {/* MAIN CONTENT AREA */}

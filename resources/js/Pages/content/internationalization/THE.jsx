@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
 import theImg from '../../../assets/banner/the-banner.png';
+import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
 
 export default function THE() {
     useEffect(() => {
@@ -24,14 +25,7 @@ export default function THE() {
                 {/* Dark Overlay for text readability */}
                 <div className="absolute inset-0 bg-black/50"></div>
                 
-                <div className="relative z-10 mx-auto max-w-5xl px-6 text-center">
-                    <h1 className="text-4xl font-bold tracking-tight text-white drop-shadow-md sm:text-5xl md:text-6xl">
-                        THE
-                    </h1>
-                    <p className="mx-auto mt-4 max-w-2xl text-lg text-white/90 drop-shadow-md">
-                        Transdisciplinary Higher Education at CC de Oro.
-                    </p>
-                </div>
+                <AnimatedBannerText title="THE" description="Transdisciplinary Higher Education at CC de Oro." />
             </div>
 
             {/* Empty Main Content */}

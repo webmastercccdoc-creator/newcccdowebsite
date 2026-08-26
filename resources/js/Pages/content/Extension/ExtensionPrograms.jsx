@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
+import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
 
 export default function ExtensionPrograms() {
     useEffect(() => {
@@ -21,14 +22,10 @@ export default function ExtensionPrograms() {
                 }}
             >
                 <div className="absolute inset-0 bg-black/50"></div>
-                <div className="relative z-10 mx-auto max-w-7xl px-6 text-center">
-                    <h1 className="text-4xl font-bold tracking-tight text-white drop-shadow-md sm:text-5xl md:text-6xl">
-                        Extension Programs
-                    </h1>
-                    <p className="mx-auto mt-4 max-w-3xl text-lg text-white/90 drop-shadow-md">
-                        Discover the community outreach and extension programs of the City College of Cagayan de Oro.
-                    </p>
-                </div>
+                <AnimatedBannerText
+                    title="Extension Programs"
+                    description="Discover the community outreach and extension programs of the City College of Cagayan de Oro."
+                />
             </div>
 
             {/* Content will go here */}

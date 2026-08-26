@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Modal from '@/components/admin/Modal';
 
@@ -12,13 +12,37 @@ const initialForm = {
     image_alt_text: '',
 };
 
-export default function AddPromotions({ isOpen, onClose, onCreated }) {
+export default function AddPromotions({
+    isOpen,
+    onClose,
+    onCreated,
+    isEditing = false,
+    promotion = null,
+}) {
     const [form, setForm] = useState(initialForm);
     const [errors, setErrors] = useState({});
     const [submitError, setSubmitError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [previewImage, setPreviewImage] = useState(null);
     const [imageFile, setImageFile] = useState(null);
+
+    useEffect(() => {
+        if (!isEditing || !promotion) return;
+
+        setForm({
+            title: promotion.title || '',
+            content: promotion.content || '',
+            date: promotion.date || '',
+            expire: promotion.expire || '',
+            status: promotion.status || 'active',
+            image: null,
+            image_alt_text: promotion.image_alt_text || '',
+        });
+        setPreviewImage(
+            promotion.banner_image_url || promotion.image_url || null,
+        );
+        setImageFile(null);
+    }, [isEditing, promotion]);
 
     const updateField = (field, value) => {
         setForm((current) => ({ ...current, [field]: value }));
@@ -114,10 +138,15 @@ export default function AddPromotions({ isOpen, onClose, onCreated }) {
             formData.append('image_alt_text', form.image_alt_text || form.title);
             
             if (imageFile) {
-                formData.append('image', imageFile);
+                formData.append('banner_image', imageFile);
             }
 
-            const response = await axios.post('/admin/promotions', formData);
+            const endpoint = isEditing
+                ? `/admin/promotions/${promotion.id}`
+                : '/admin/promotions';
+            if (isEditing) formData.append('_method', 'PUT');
+
+            const response = await axios.post(endpoint, formData);
 
             setForm(initialForm);
             setPreviewImage(null);
@@ -130,7 +159,7 @@ export default function AddPromotions({ isOpen, onClose, onCreated }) {
             if (error.response?.status === 422) {
                 setErrors(error.response.data.errors || {});
             } else {
-                setSubmitError(error.response?.data?.message || 'Failed to create promotion. Please try again.');
+                setSubmitError(error.response?.data?.message || `Failed to ${isEditing ? 'update' : 'create'} promotion. Please try again.`);
             }
         } finally {
             setIsSubmitting(false);

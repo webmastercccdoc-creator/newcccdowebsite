@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import MainLayout from '../../layouts/MainLayout';
 import '../../../css/home.css';
 import { initLandingAnimations } from '../../home-animations';
@@ -6,15 +6,12 @@ import { initLandingAnimations } from '../../home-animations';
 // Ranking Logos
 import homeLogo from '../../assets/logos/home-logo.png';
 
-// Cultural Center Image
-import culturalArtsImage from '../../assets/images/Culturals Arts.jfif';
-import oroDayaawImage from '../../assets/images/OroDayaw.PNG';
-import talindawChoraleImage from '../../assets/images/TalndawChorale.jpg';
+// Import Video
+import bannerVideo from '../../assets/video/video-banner.mp4';
 
 const normalizeImagePath = (value) => {
     if (!value) return 'https://placehold.co/600x400/1e3a8a/ffffff?text=No+Image';
     if (/^https?:\/\//i.test(value) || value.startsWith('data:')) return value;
-
     return '/' + value.replace(/^\/+/, '');
 };
 
@@ -38,22 +35,6 @@ const SDG_COLORS = {
     17: { bg: '#19486A', text: '#FFFFFF', border: '#123A53' },
 };
 
-const ENSEMBLES = [
-    { 
-        id: 1,
-        name: 'Oro Dayaaw',
-        description: 'Celebrating the vibrant musical heritage and rhythms of Mindanao',
-        image: oroDayaawImage
-    },
-    { 
-        id: 2,
-        name: 'Talindaw Chorale',
-        description: 'A world-class vocal ensemble performing classical and contemporary compositions',
-        image: talindawChoraleImage
-    },
-];
-
-// Helper function to calculate read time
 const calculateReadTime = (content) => {
     if (!content) return '1 min read';
     const wordsPerMinute = 200;
@@ -63,7 +44,6 @@ const calculateReadTime = (content) => {
     return `${minutes} min read`;
 };
 
-// Helper function to strip HTML and truncate
 const stripHtmlAndTruncate = (html, maxLength = 120) => {
     if (!html) return '';
     const text = html.replace(/<[^>]*>/g, '');
@@ -71,56 +51,345 @@ const stripHtmlAndTruncate = (html, maxLength = 120) => {
     return text.substring(0, maxLength) + '...';
 };
 
-export default function Home({ newsArticles = [], promotions = [] }) {
-    const [ensembleSlide, setEnsembleSlide] = useState(0);
+// DUMMY BANNER DATA - Used when database is empty
+const DUMMY_BANNER = {
+    place: 'City College of Cagayan de Oro',
+    title: 'Your City to learn, create, and grow',
+    title2: 'Discover opportunities at the City College of Cagayan de Oro.',
+    description: 'Through innovation and excellence, we shape the future of education in Northern Mindanao.',
+    image: 'https://placehold.co/1200x600/1a237e/ffffff?text=City+College+of+CDO',
+    bannerImage: 'https://placehold.co/1200x600/1a237e/ffffff?text=City+College+of+CDO',
+    link: '#',
+};
 
+// DUMMY NEWS DATA - Used when database is empty
+const DUMMY_ARTICLES = [
+    {
+        id: 'dummy-1',
+        date: 'January 15, 2026',
+        title: 'Welcome to City College of CDO',
+        content: 'City College of Cagayan de Oro is dedicated to providing quality education and fostering excellence in our students. Discover our programs and opportunities.',
+        category: 'Announcement',
+        department: 'Office of the President',
+        image: 'https://placehold.co/600x400/1a237e/ffffff?text=Welcome+to+CCCDO',
+        alt: 'City College of CDO Campus',
+        sdg_numbers: [4, 8],
+    },
+    {
+        id: 'dummy-2',
+        date: 'January 10, 2026',
+        title: 'New Academic Programs Announced',
+        content: 'We are excited to announce new academic programs designed to meet the evolving needs of our students and the community.',
+        category: 'Academics',
+        department: 'Academic Affairs',
+        image: 'https://placehold.co/600x400/0d47a1/ffffff?text=New+Programs',
+        alt: 'Academic Programs',
+        sdg_numbers: [4],
+    },
+    {
+        id: 'dummy-3',
+        date: 'January 5, 2026',
+        title: 'Student Achievements and Recognition',
+        content: 'Our students continue to excel in various fields, bringing honor to the institution through their achievements and contributions.',
+        category: 'Student Life',
+        department: 'Student Affairs',
+        image: 'https://placehold.co/600x400/1565c0/ffffff?text=Student+Achievements',
+        alt: 'Student Achievements',
+        sdg_numbers: [4, 10],
+    },
+    {
+        id: 'dummy-4',
+        date: 'December 20, 2025',
+        title: 'Community Engagement Programs',
+        content: 'City College of CDO remains committed to community service and engagement, fostering meaningful partnerships and initiatives.',
+        category: 'Community',
+        department: 'Community Relations',
+        image: 'https://placehold.co/600x400/0d47a1/ffffff?text=Community+Engagement',
+        alt: 'Community Engagement',
+        sdg_numbers: [11, 17],
+    },
+];
+
+export default function Home({ newsArticles = [], promotions = [] }) {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [isTransitioning, setIsTransitioning] = useState(false);
+    const [showVideo, setShowVideo] = useState(true);
+    const [isFading, setIsFading] = useState(false);
+    const [slidesPerView, setSlidesPerView] = useState(4);
+    const [isMobile, setIsMobile] = useState(false);
+    const carouselRef = useRef(null);
+    const autoPlayRef = useRef(null);
+    const videoRef = useRef(null);
+    const isMounted = useRef(true);
+
+    // Banner data with fallback to dummy
     const bannerData = useMemo(() => {
         const mappedPromotions = promotions.map((promotion) => ({
             place: promotion.department || 'City College of Cagayan de Oro',
             title: promotion.title || 'Promotion',
-            title2: '',
-            description: promotion.content || '',
+            title2: promotion.subtitle || promotion.title2 || '',
+            description: promotion.content || promotion.description || '',
             image: normalizeImagePath(promotion.carousel_image_url || promotion.image_url || promotion.image_path),
             bannerImage: normalizeImagePath(promotion.banner_image_url || promotion.image_url || promotion.image_path),
             link: promotion.link || '#',
         }));
 
-        if (mappedPromotions.length === 0) return [];
+        if (mappedPromotions.length === 0) {
+            return [DUMMY_BANNER];
+        }
 
-        return Array.from({ length: Math.max(mappedPromotions.length, 5) }, (_, index) => (
-            mappedPromotions[index % mappedPromotions.length]
-        ));
+        const slides = [];
+        const repeatCount = Math.max(5, mappedPromotions.length);
+        for (let i = 0; i < repeatCount; i++) {
+            slides.push(mappedPromotions[i % mappedPromotions.length]);
+        }
+        return slides;
     }, [promotions]);
 
-    const articles = newsArticles.map((article) => ({
-        id: article.id,
-        date: article.date || article.created_at || '',
-        title: article.title || 'News item',
-        excerpt: article.content || '',
-        category: article.category || 'News',
-        image: normalizeImagePath(article.image_path || article.image),
-        alt: article.article_alt_text || article.alt_text || article.title || 'News image',
-        link: `/news/${article.id}`,
-        sdgNumbers: typeof article.sdg_numbers === 'string' && article.sdg_numbers
-            ? article.sdg_numbers.split(',').map((value) => Number(value.trim())).filter((value) => !Number.isNaN(value))
-            : Array.isArray(article.sdg_numbers)
-                ? article.sdg_numbers
-                : [],
-    }));
+    // Articles with fallback to dummy
+    const articles = useMemo(() => {
+        const mappedArticles = newsArticles.map((article) => ({
+            id: article.id || `article-${Date.now()}-${Math.random()}`,
+            date: article.date || article.created_at || '',
+            title: article.title || 'News item',
+            excerpt: article.content || '',
+            category: article.category || 'News',
+            department: article.department || article.category || 'News',
+            image: normalizeImagePath(article.image_path || article.image),
+            alt: article.article_alt_text || article.alt_text || article.title || 'News image',
+            link: `/news/${article.id}`,
+            sdgNumbers: (() => {
+                if (!article.sdg_numbers) return [];
+                if (Array.isArray(article.sdg_numbers)) {
+                    return article.sdg_numbers.filter(num => !isNaN(num));
+                }
+                if (typeof article.sdg_numbers === 'string') {
+                    return article.sdg_numbers
+                        .split(',')
+                        .map((value) => Number(value.trim()))
+                        .filter((value) => !Number.isNaN(value));
+                }
+                return [];
+            })(),
+        }));
 
-    const carouselArticles = articles.slice(0, 6);
-    const carouselItems = carouselArticles.length > 0
-        ? [...carouselArticles, ...carouselArticles]
-        : [];
+        return mappedArticles.length > 0 ? mappedArticles : DUMMY_ARTICLES;
+    }, [newsArticles]);
+
+    // Create carousel items with unique keys
+    const carouselItems = useMemo(() => {
+        if (articles.length === 0) return [];
+        return articles.map((article, idx) => ({
+            ...article,
+            _uniqueKey: `article-${article.id}-${idx}`
+        }));
+    }, [articles]);
+
+    // For infinite scroll, triple the items
+    const carouselSlides = useMemo(() => {
+        if (carouselItems.length === 0) return [];
+        return [...carouselItems, ...carouselItems, ...carouselItems];
+    }, [carouselItems]);
+
+    const totalSlides = articles.length;
+
+    // Get slides per view based on screen width
+    const getSlidesPerView = useCallback(() => {
+        if (typeof window !== 'undefined') {
+            const width = window.innerWidth;
+            if (width <= 640) return 1;
+            if (width <= 992) return 2;
+            if (width <= 1200) return 3;
+        }
+        return 4;
+    }, []);
+
+    // Check if mobile
+    const checkIsMobile = useCallback(() => {
+        if (typeof window !== 'undefined') {
+            return window.innerWidth <= 640;
+        }
+        return false;
+    }, []);
+
+    // Update slides per view and mobile state on resize
+    useEffect(() => {
+        const updateView = () => {
+            setSlidesPerView(getSlidesPerView());
+            setIsMobile(checkIsMobile());
+        };
+        
+        updateView();
+        window.addEventListener('resize', updateView);
+        return () => window.removeEventListener('resize', updateView);
+    }, [getSlidesPerView, checkIsMobile]);
+
+    // Auto-play the video and start fade out when it ends
+    useEffect(() => {
+        if (videoRef.current && showVideo) {
+            videoRef.current.play().catch(error => {
+                console.log('Video autoplay failed:', error);
+            });
+
+            const handleVideoEnd = () => {
+                setIsFading(true);
+                setTimeout(() => {
+                    setShowVideo(false);
+                    setIsFading(false);
+                }, 1000);
+            };
+
+            videoRef.current.addEventListener('ended', handleVideoEnd);
+
+            return () => {
+                if (videoRef.current) {
+                    videoRef.current.removeEventListener('ended', handleVideoEnd);
+                }
+            };
+        }
+    }, [showVideo]);
+
+    // Reset to middle position when initializing (only when video is hidden)
+    useEffect(() => {
+        if (!showVideo && totalSlides > 0) {
+            setCurrentIndex(totalSlides);
+        }
+    }, [showVideo, totalSlides]);
+
+    const goToSlide = useCallback((index) => {
+        if (isTransitioning || totalSlides === 0) return;
+        setIsTransitioning(true);
+        setCurrentIndex(index);
+        setTimeout(() => {
+            if (isMounted.current) {
+                setIsTransitioning(false);
+            }
+        }, 500);
+    }, [isTransitioning, totalSlides]);
+
+    const goToNextSlide = useCallback(() => {
+        if (isTransitioning || totalSlides === 0 || showVideo) return;
+        const nextIndex = currentIndex + 1;
+        goToSlide(nextIndex);
+    }, [currentIndex, isTransitioning, goToSlide, totalSlides, showVideo]);
+
+    const goToPrevSlide = useCallback(() => {
+        if (isTransitioning || totalSlides === 0 || showVideo) return;
+        const prevIndex = currentIndex - 1;
+        goToSlide(prevIndex);
+    }, [currentIndex, isTransitioning, goToSlide, totalSlides, showVideo]);
+
+    // Handle infinite scroll - reset position when reaching boundaries
+    useEffect(() => {
+        if (carouselSlides.length === 0 || totalSlides === 0 || showVideo) return;
+
+        const handleTransitionEnd = () => {
+            if (!isMounted.current) return;
+            
+            if (currentIndex >= totalSlides * 2) {
+                setIsTransitioning(true);
+                setCurrentIndex(totalSlides);
+                setTimeout(() => {
+                    if (isMounted.current) {
+                        setIsTransitioning(false);
+                    }
+                }, 50);
+            } else if (currentIndex < totalSlides) {
+                setIsTransitioning(true);
+                setCurrentIndex(totalSlides);
+                setTimeout(() => {
+                    if (isMounted.current) {
+                        setIsTransitioning(false);
+                    }
+                }, 50);
+            }
+        };
+
+        const carousel = carouselRef.current;
+        if (carousel) {
+            carousel.addEventListener('transitionend', handleTransitionEnd);
+            return () => {
+                carousel.removeEventListener('transitionend', handleTransitionEnd);
+            };
+        }
+    }, [currentIndex, totalSlides, carouselSlides.length, showVideo]);
+
+    // Auto-play - ONLY on desktop (not mobile)
+    useEffect(() => {
+        // Clear any existing interval
+        if (autoPlayRef.current) {
+            clearInterval(autoPlayRef.current);
+            autoPlayRef.current = null;
+        }
+
+        // Only start auto-play if NOT mobile and video is hidden
+        if (carouselSlides.length === 0 || totalSlides === 0 || showVideo || isMobile) {
+            return;
+        }
+
+        autoPlayRef.current = setInterval(() => {
+            if (isMounted.current && !showVideo && !isMobile) {
+                goToNextSlide();
+            }
+        }, 5000);
+
+        return () => {
+            if (autoPlayRef.current) {
+                clearInterval(autoPlayRef.current);
+                autoPlayRef.current = null;
+            }
+        };
+    }, [goToNextSlide, carouselSlides.length, totalSlides, showVideo, isMobile]);
+
+    // Pause auto-play on hover (desktop only)
+    const handleMouseEnter = useCallback(() => {
+        if (isMobile) return;
+        if (autoPlayRef.current) {
+            clearInterval(autoPlayRef.current);
+            autoPlayRef.current = null;
+        }
+    }, [isMobile]);
+
+    const handleMouseLeave = useCallback(() => {
+        if (isMobile) return;
+        if (carouselSlides.length === 0 || totalSlides === 0 || showVideo) return;
+
+        // Clear existing interval
+        if (autoPlayRef.current) {
+            clearInterval(autoPlayRef.current);
+            autoPlayRef.current = null;
+        }
+
+        // Start new interval
+        autoPlayRef.current = setInterval(() => {
+            if (isMounted.current && !showVideo && !isMobile) {
+                goToNextSlide();
+            }
+        }, 5000);
+    }, [goToNextSlide, carouselSlides.length, totalSlides, showVideo, isMobile]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        isMounted.current = true;
+        return () => {
+            isMounted.current = false;
+            if (autoPlayRef.current) {
+                clearInterval(autoPlayRef.current);
+                autoPlayRef.current = null;
+            }
+        };
+    }, []);
 
     useEffect(() => {
         const cleanup = initLandingAnimations(bannerData);
-        return cleanup;
+        return () => {
+            if (cleanup) cleanup();
+        };
     }, [bannerData]);
 
     useEffect(() => {
         const revealElements = document.querySelectorAll('.home-content-reveal');
-        if (!revealElements.length) return undefined;
+        if (!revealElements.length) return;
 
         const observer = new IntersectionObserver(
             (entries) => {
@@ -139,30 +408,105 @@ export default function Home({ newsArticles = [], promotions = [] }) {
         return () => observer.disconnect();
     }, []);
 
-    useEffect(() => {
-        if (ENSEMBLES.length < 2) return undefined;
-
-        const interval = window.setInterval(() => {
-            setEnsembleSlide((prev) => (prev === ENSEMBLES.length - 1 ? 0 : prev + 1));
-        }, 5000);
-
-        return () => window.clearInterval(interval);
-    }, []);
-
-    const goToPrevSlide = () => {
-        setEnsembleSlide((prev) => (prev === 0 ? ENSEMBLES.length - 1 : prev - 1));
+    // Get current slide index for indicators (mobile only)
+    const getCurrentSlideIndex = () => {
+        if (totalSlides === 0) return 0;
+        if (currentIndex >= totalSlides * 2) {
+            return currentIndex - totalSlides * 2;
+        }
+        if (currentIndex >= totalSlides) {
+            return currentIndex - totalSlides;
+        }
+        return currentIndex;
     };
 
-    const goToNextSlide = () => {
-        setEnsembleSlide((prev) => (prev === ENSEMBLES.length - 1 ? 0 : prev + 1));
-    };
+    // Render news card
+    const renderNewsCard = (news, index) => (
+        <article
+            key={news._uniqueKey || `news-${news.id}-${index}`}
+            className="news-card reveal-on-scroll home-content-reveal"
+        >
+            <div className="news-card-image-wrapper group">
+                <img
+                    src={news.image}
+                    alt={news.alt}
+                    className="news-card-image transition-transform duration-500 ease-out group-hover:scale-105"
+                    loading="lazy"
+                />
+                <div className="news-card-badge">
+                    {news.department || news.category || 'News'}
+                </div>
+            </div>
+
+            <div className="news-card-content">
+                <div className="space-y-3">
+                    <div className="news-date">
+                        {news.date} · {calculateReadTime(news.excerpt)}
+                    </div>
+                    {news.sdgNumbers && news.sdgNumbers.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                            {news.sdgNumbers.slice(0, 3).map((sdg) => {
+                                const color = SDG_COLORS[sdg] || { bg: '#e2e8f0', text: '#0f172a', border: '#cbd5e1' };
+                                return (
+                                    <span
+                                        key={`sdg-${news.id}-${sdg}`}
+                                        className="rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em]"
+                                        style={{ backgroundColor: color.bg, color: color.text, border: `1px solid ${color.border}` }}
+                                    >
+                                        SDG {sdg}
+                                    </span>
+                                );
+                            })}
+                            {news.sdgNumbers.length > 3 && (
+                                <span className="rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] bg-gray-200 text-gray-700 border border-gray-300">
+                                    +{news.sdgNumbers.length - 3}
+                                </span>
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                <h3 className="news-card-title">
+                    <a href={news.link} className="news-title-link-modern">
+                        {news.title}
+                    </a>
+                </h3>
+
+                <p className="news-excerpt">
+                    {stripHtmlAndTruncate(news.excerpt, 120)}
+                </p>
+
+                <a href={news.link} className="news-read-more">
+                    Read Article
+                    <svg className="news-arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </a>
+            </div>
+        </article>
+    );
 
     return (
         <MainLayout title="Home" showTitle={false} maxWidth="full" containerClassName="px-0" mainClassName="py-0" className="overflow-hidden pb-0">
             <div className="landing-page w-full">
                 <div className="indicator"></div>
 
-                <div id="demo">
+                {/* Video Banner Overlay */}
+                {showVideo && (
+                    <div className={`video-banner-overlay ${isFading ? 'fade-out' : ''}`}>
+                        <video
+                            ref={videoRef}
+                            className="video-banner"
+                            muted
+                            playsInline
+                            preload="auto"
+                        >
+                            <source src={bannerVideo} type="video/mp4" />
+                        </video>
+                    </div>
+                )}
+
+                <div id="demo" style={{ display: showVideo ? 'none' : 'block' }}>
                     {bannerData.map((item, index) => (
                         <div
                             key={`card-${index}`}
@@ -187,7 +531,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     ))}
                 </div>
 
-                <div className="details" id="details-even">
+                <div className="details" id="details-even" style={{ display: showVideo ? 'none' : 'flex' }}>
                     <div className="place-box">
                         <div className="text"></div>
                     </div>
@@ -203,7 +547,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     </div>
                 </div>
 
-                <div className="details" id="details-odd">
+                <div className="details" id="details-odd" style={{ display: showVideo ? 'none' : 'flex' }}>
                     <div className="place-box">
                         <div className="text"></div>
                     </div>
@@ -219,7 +563,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     </div>
                 </div>
 
-                <div className="pagination" id="pagination">
+                <div className="pagination" id="pagination" style={{ display: showVideo ? 'none' : 'flex' }}>
                     <div className="arrow arrow-left">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -299,7 +643,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                 </div>
             </section>
 
-            {/* --- LATEST NEWS & UPDATES SECTION (REDESIGNED) --- */}
+            {/* --- LATEST NEWS & UPDATES SECTION --- */}
             <section className="news-section">
                 <div className="news-container reveal-on-scroll home-content-reveal">
                     <div className="news-header">
@@ -309,167 +653,85 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                         <div className="news-title-underline"></div>
                     </div>
 
-                    <div className="news-grid">
-                        {articles.length > 0 ? (
-                            articles.slice(0, 8).map((news, index) => (
-                                <article
-                                    key={`news-${news.id || index}`}
-                                    className="news-card reveal-on-scroll home-content-reveal"
-                                    style={{ transitionDelay: `${index * 0.1}s` }}
+                    {articles.length > 0 ? (
+                        <>
+                            {/* Carousel Container */}
+                            <div 
+                                className="news-carousel-wrapper"
+                                onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
+                            >
+                                <div 
+                                    ref={carouselRef}
+                                    className="news-carousel-track"
+                                    style={{
+                                        transform: `translateX(-${currentIndex * (100 / slidesPerView)}%)`,
+                                        transition: isTransitioning ? 'transform 0.5s ease-in-out' : 'none',
+                                    }}
                                 >
-                                    <div className="news-card-image-wrapper group">
-                                        <img
-                                            src={news.image}
-                                            alt={news.alt}
-                                            className="news-card-image transition-transform duration-500 ease-out group-hover:scale-105"
-                                            loading="lazy"
-                                        />
-                                        <div className="news-card-badge">
-                                            {news.category || 'News'}
+                                    {carouselSlides.map((news, index) => (
+                                        <div 
+                                            key={`carousel-${news._uniqueKey || news.id}-${index}`}
+                                            className="news-carousel-slide"
+                                            style={{
+                                                flex: `0 0 ${100 / slidesPerView}%`,
+                                                padding: '0 0.875rem',
+                                            }}
+                                        >
+                                            {renderNewsCard(news, index)}
                                         </div>
-                                    </div>
-
-                                    <div className="news-card-content">
-                                        <div className="space-y-3">
-                                            <div className="news-date text-sm text-slate-500">
-                                                {news.date} · {calculateReadTime(news.excerpt)}
-                                            </div>
-                                            {news.sdgNumbers && news.sdgNumbers.length > 0 && (
-                                                <div className="flex flex-wrap gap-2">
-                                                    {news.sdgNumbers.slice(0, 3).map((sdg) => {
-                                                        const color = SDG_COLORS[sdg] || { bg: '#0f172a', text: '#ffffff', border: '#0f172a' };
-                                                        return (
-                                                            <span
-                                                                key={sdg}
-                                                                className="rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em]"
-                                                                style={{ backgroundColor: color.bg, color: color.text, border: `1px solid ${color.border}` }}
-                                                            >
-                                                                SDG {sdg}
-                                                            </span>
-                                                        );
-                                                    })}
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        <h3 className="news-card-title">
-                                            <a href={news.link} className="news-title-link-modern">
-                                                {news.title}
-                                            </a>
-                                        </h3>
-
-                                        <p className="news-excerpt">
-                                            {stripHtmlAndTruncate(news.excerpt, 120)}
-                                        </p>
-
-                                        <a href={news.link} className="news-read-more">
-                                            Read Article
-                                            <svg className="news-arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                            </svg>
-                                        </a>
-                                    </div>
-                                </article>
-                            ))
-                        ) : (
-                            <div className="news-empty-message">
-                                No news articles are available at this time.
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="news-view-all-wrapper">
-                        <a href="/news/latest" className="news-view-all-btn">
-                            View All News
-                        </a>
-                    </div>
-                </div>
-            </section>
-
-            {/* --- CENTER FOR CULTURAL AND THE ARTS SECTION --- */}
-            <section className="cultural-center-section">
-                <div className="cultural-center-container">
-                    <div className="cultural-center-content reveal-on-scroll home-content-reveal">
-                        <div className="cultural-center-left">
-                            <div className="cultural-center-description reveal-on-scroll reveal-from-left home-content-reveal">
-                                <h2 className="cultural-center-title">Center for Cultural and the Arts</h2>
-                                <p className="cultural-center-text">
-                                    The Center for Cultural and the Arts at City College of Cagayan de Oro is dedicated to preserving, promoting, and celebrating the rich cultural heritage of Mindanao. We foster artistic excellence through innovative programs, collaborative initiatives, and community engagement that honors both traditional and contemporary expressions of culture.
-                                </p>
-                                <p className="cultural-center-text">
-                                    Our mission is to nurture creative talents, preserve indigenous traditions, and provide a platform where artists and cultural enthusiasts can thrive and inspire future generations.
-                                </p>
-                                <div className="h-1 w-full rounded-full bg-[#d4af37]" aria-hidden="true" />
-                            </div>
-                            <div className="cultural-ensembles reveal-on-scroll home-content-reveal">
-                                <h3 className="ensembles-title">Our Cultural Ensembles</h3>
-                                <div className="ensembles-carousel">
-                                    <div className="ensemble-carousel-content">
-                                        <div className="ensemble-carousel-slides">
-                                            {ENSEMBLES.map((ensemble, index) => (
-                                                <div
-                                                    key={ensemble.id}
-                                                    className={`ensemble-card ${index === ensembleSlide ? 'active' : ''}`}
-                                                >
-                                                    <div className="ensemble-card-image">
-                                                        <img src={ensemble.image} alt={ensemble.name} />
-                                                        <div className="ensemble-card-overlay">
-                                                            <div className="ensemble-overlay-content">
-                                                                <h4 className="ensemble-name">{ensemble.name}</h4>
-                                                                <p className="ensemble-overlay-description">{ensemble.description}</p>
-                                                            </div>
-                                                        </div>
-                                                        <button
-                                                            type="button"
-                                                            className="carousel-prev-btn carousel-image-control carousel-image-control-prev"
-                                                            onClick={goToPrevSlide}
-                                                            aria-label="Previous ensemble"
-                                                        >
-                                                            <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                                <path d="M12 16L8 10l4-6" />
-                                                            </svg>
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            className="carousel-next-btn carousel-image-control carousel-image-control-next"
-                                                            onClick={goToNextSlide}
-                                                            aria-label="Next ensemble"
-                                                        >
-                                                            <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                                <path d="M8 4l4 6-4 6" />
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="ensemble-carousel-controls">
-                                        <div className="ensemble-carousel-indicators">
-                                            {ENSEMBLES.map((_, index) => (
-                                                <button
-                                                    key={index}
-                                                    className={`indicator-dot ${index === ensembleSlide ? 'active' : ''}`}
-                                                    onClick={() => setEnsembleSlide(index)}
-                                                    aria-label={`Go to ensemble ${index + 1}`}
-                                                />
-                                            ))}
-                                        </div>
-
-                                    </div>
+                                    ))}
                                 </div>
                             </div>
+
+                            {/* Mobile Controls - Only visible on mobile */}
+                            {isMobile && (
+                                <div className="news-mobile-controls">
+                                    <button 
+                                        className="mobile-prev-btn"
+                                        onClick={goToPrevSlide}
+                                        aria-label="Previous news"
+                                    >
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M15 18l-6-6 6-6" />
+                                        </svg>
+                                    </button>
+
+                                    <div className="mobile-indicators">
+                                        {articles.map((_, index) => (
+                                            <button
+                                                key={`mobile-indicator-${index}`}
+                                                className={`mobile-dot ${index === getCurrentSlideIndex() % articles.length ? 'active' : ''}`}
+                                                onClick={() => goToSlide(index + totalSlides)}
+                                                aria-label={`Go to slide ${index + 1}`}
+                                            />
+                                        ))}
+                                    </div>
+
+                                    <button 
+                                        className="mobile-next-btn"
+                                        onClick={goToNextSlide}
+                                        aria-label="Next news"
+                                    >
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M9 18l6-6-6-6" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* View All News Button */}
+                            <div className="news-view-all-wrapper">
+                                <a href="/news/latest" className="news-view-all-btn">
+                                    View All News
+                                </a>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="news-empty-message">
+                            No news articles are available at this time.
                         </div>
-                        <div className="cultural-center-image-wrapper reveal-on-scroll reveal-from-right home-content-reveal">
-                            <img
-                                src={culturalArtsImage}
-                                alt="Center for Cultural and the Arts"
-                                className="cultural-center-image"
-                                loading="lazy"
-                            />
-                        </div>
-                    </div>
+                    )}
                 </div>
             </section>
 

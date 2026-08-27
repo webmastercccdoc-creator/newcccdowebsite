@@ -157,6 +157,17 @@ class ArticlesController extends Controller
      */
     public function approve()
     {
+        // 🆕 Check if user has permission to approve articles
+        if (!$this->hasPermission('approve_articles')) {
+            if (request()->expectsJson() || request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized: You do not have permission to approve articles'
+                ], 403);
+            }
+            return redirect()->route('admin.dashboard')->with('error', 'You do not have permission to approve articles.');
+        }
+
         $articles = NewsArticle::select(
             'id',
             'title',
@@ -284,6 +295,14 @@ class ArticlesController extends Controller
      */
     public function store(Request $request)
     {
+        // 🆕 Check if user has permission to create articles
+        if (!$this->hasPermission('articles')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized: You do not have permission to create articles'
+            ], 403);
+        }
+
         $normalizedSdg = $request->input('sdg', []);
         if (!is_array($normalizedSdg)) {
             $normalizedSdg = [$normalizedSdg];
@@ -465,6 +484,17 @@ class ArticlesController extends Controller
      */
     public function update(Request $request, NewsArticle $article)
     {
+        // 🆕 Check if user has permission to edit articles
+        if (!$this->hasPermission('articles')) {
+            if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized: You do not have permission to edit articles'
+                ], 403);
+            }
+            return redirect()->route('admin.articles')->with('error', 'You do not have permission to edit articles.');
+        }
+
         $normalizedSdg = $request->input('sdg', []);
         if (!is_array($normalizedSdg)) {
             $normalizedSdg = [$normalizedSdg];
@@ -626,6 +656,17 @@ class ArticlesController extends Controller
      */
     public function destroy(NewsArticle $article)
     {
+        // 🆕 Check if user has permission to delete articles
+        if (!$this->hasPermission('user_management')) {
+            if (request()->expectsJson() || request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized: You do not have permission to delete articles'
+                ], 403);
+            }
+            return redirect()->route('admin.articles')->with('error', 'You do not have permission to delete articles.');
+        }
+
         $article->delete();
 
         // Return JSON response for AJAX requests
@@ -644,6 +685,17 @@ class ArticlesController extends Controller
      */
     public function approveArticle(Request $request, NewsArticle $article)
     {
+        // 🆕 Check if user has permission to approve articles
+        if (!$this->hasPermission('approve_articles')) {
+            if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized: You do not have permission to approve articles'
+                ], 403);
+            }
+            return redirect()->route('admin.approve-articles')->with('error', 'You do not have permission to approve articles.');
+        }
+
         $validated = $request->validate([
             'status' => ['nullable', 'string'],
         ]);
@@ -670,6 +722,17 @@ class ArticlesController extends Controller
      */
     public function rejectArticle(Request $request, NewsArticle $article)
     {
+        // 🆕 Check if user has permission to approve articles (reject is part of approval flow)
+        if (!$this->hasPermission('approve_articles')) {
+            if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized: You do not have permission to reject articles'
+                ], 403);
+            }
+            return redirect()->route('admin.approve-articles')->with('error', 'You do not have permission to reject articles.');
+        }
+
         $validated = $request->validate([
             'status' => ['nullable', 'string'],
         ]);
@@ -696,6 +759,17 @@ class ArticlesController extends Controller
      */
     public function archiveArticle(Request $request, NewsArticle $article)
     {
+        // 🆕 Check if user has permission to archive articles (requires 'articles' permission)
+        if (!$this->hasPermission('articles')) {
+            if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized: You do not have permission to archive articles'
+                ], 403);
+            }
+            return redirect()->route('admin.articles')->with('error', 'You do not have permission to archive articles.');
+        }
+
         $validated = $request->validate([
             'status' => ['nullable', 'string'],
         ]);
@@ -738,5 +812,25 @@ class ArticlesController extends Controller
             'success' => true,
             'counts' => $counts,
         ]);
+    }
+
+    /**
+     * 🆕 Helper method to check if user has a specific permission
+     * 
+     * @param string $permission
+     * @return bool
+     */
+    private function hasPermission($permission)
+    {
+        $user = Auth::user();
+        
+        if (!$user) {
+            return false;
+        }
+
+        return DB::table('access_controls')
+            ->where('user_id', $user->id)
+            ->where('permission', $permission)
+            ->exists();
     }
 }

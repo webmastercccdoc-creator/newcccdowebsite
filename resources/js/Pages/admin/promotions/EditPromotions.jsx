@@ -27,7 +27,16 @@ export default function EditPromotions({
     setError(null);
     try {
       const response = await axios.get(`/api/promotions/${id}`);
-      setPromotion(response.data);
+      const data = response.data;
+      
+      // 🔥 Format dates for the form (ensure YYYY-MM-DD format)
+      const formattedData = {
+        ...data,
+        date: data.date ? formatDateForInput(data.date) : '',
+        expire: data.expire ? formatDateForInput(data.expire) : '',
+      };
+      
+      setPromotion(formattedData);
     } catch (error) {
       console.error('Error fetching promotion:', error);
       setError('Failed to load promotion data. Please try again.');
@@ -40,17 +49,49 @@ export default function EditPromotions({
     }
   };
 
+  // 🔥 Helper function to format date for input field (YYYY-MM-DD)
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return '';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return dateString;
+      return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD
+    } catch {
+      return dateString;
+    }
+  };
+
+  // 🔥 Helper function to format date for display (optional)
+  const formatDateForDisplay = (dateString) => {
+    if (!dateString) return '';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return dateString;
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    } catch {
+      return dateString;
+    }
+  };
+
   // Prepare promotion data for the AddPromotions component
   const promotionData = promotion ? {
     id: promotion.id,
     title: promotion.title || '',
     content: promotion.content || '',
+    // 🔥 Use formatted dates
     date: promotion.date || '',
     expire: promotion.expire || '',
     status: promotion.status || 'active',
     image: promotion.image || null,
     image_alt_text: promotion.image_alt_text || '',
     banner_image_url: promotion.banner_image_url || promotion.image_url || null,
+    // Keep original dates for reference if needed
+    original_date: promotion.original_date || promotion.date,
+    original_expire: promotion.original_expire || promotion.expire,
   } : null;
 
   // Create a wrapped onUpdated that handles the update

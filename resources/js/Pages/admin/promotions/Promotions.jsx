@@ -16,15 +16,48 @@ export default function Promotions() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
 
+    // Permissions state
+    const [userPermissions, setUserPermissions] = useState([]);
+    const [loadingPermissions, setLoadingPermissions] = useState(true);
+
     // Search and filter states
     const [searchQuery, setSearchQuery] = useState('');
-    const [statusFilter, setStatusFilter] = useState('active');
+    const [statusFilter, setStatusFilter] = useState('all');
     const [loading, setLoading] = useState(true);
+
+    // Status toggle states
+    const [showStatusModal, setShowStatusModal] = useState(false);
+    const [promotionToToggle, setPromotionToToggle] = useState(null);
+    const [isToggling, setIsToggling] = useState(false);
+
+    // Fetch user permissions
+    useEffect(() => {
+        const fetchUserPermissions = async () => {
+            try {
+                const response = await axios.get('/user/permissions');
+                if (response.data?.user?.permissions) {
+                    setUserPermissions(response.data.user.permissions);
+                }
+            } catch (error) {
+                console.error('Failed to fetch user permissions:', error);
+                setUserPermissions([]);
+            } finally {
+                setLoadingPermissions(false);
+            }
+        };
+
+        fetchUserPermissions();
+    }, []);
 
     useEffect(() => {
         document.title = "Promotions - City College of Cagayan de Oro";
         fetchPromotions();
     }, []);
+
+    // Permission check helper
+    const hasPermission = (permission) => {
+        return userPermissions.includes(permission);
+    };
 
     const fetchPromotions = async () => {
         try {
@@ -50,13 +83,25 @@ export default function Promotions() {
         setSelectedPromotionId(null);
     };
 
+    // 🔥 Helper function to format dates
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD
+        } catch {
+            return dateString;
+        }
+    };
+
     // Filter promotions based on search and filters
     const filteredPromotions = promotions.filter(promo => {
         // Search filter
         const matchesSearch = 
-            promo.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            promo.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            promo.date.includes(searchQuery);
+            promo.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            promo.content?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            promo.date?.includes(searchQuery);
         
         // Status filter
         let matchesStatus = true;
@@ -96,7 +141,7 @@ export default function Promotions() {
             ),
             'expired': (
                 <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l-1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                 </svg>
             )
         };
@@ -117,9 +162,10 @@ export default function Promotions() {
             setShowDeleteModal(false);
             setPromotionToDelete(null);
             fetchPromotions();
+            alert('Promotion deleted successfully.');
         } catch (error) {
             console.error('Failed to delete promotion:', error);
-            alert('Failed to delete promotion');
+            alert(error.response?.data?.message || 'Failed to delete promotion');
         } finally {
             setIsDeleting(false);
         }
@@ -128,6 +174,43 @@ export default function Promotions() {
     const handleEdit = (promo) => {
         setSelectedPromotionId(promo.id);
         setIsEditModalOpen(true);
+    };
+
+    // Handle status toggle (activate/deactivate)
+    const handleToggleStatus = (promo) => {
+        setPromotionToToggle(promo);
+        setShowStatusModal(true);
+    };
+
+    const confirmToggleStatus = async () => {
+        if (!promotionToToggle) return;
+
+        setIsToggling(true);
+        try {
+            const newStatus = promotionToToggle.status === 'active' ? 'inactive' : 'active';
+            const response = await axios.put(`/admin/promotions/${promotionToToggle.id}/status`, {
+                status: newStatus
+            });
+
+            if (response.status === 200 || response.data?.success) {
+                // Update the promotion in the local state
+                setPromotions(prevPromotions =>
+                    prevPromotions.map(promo =>
+                        promo.id === promotionToToggle.id
+                            ? { ...promo, status: newStatus }
+                            : promo
+                    )
+                );
+                setShowStatusModal(false);
+                setPromotionToToggle(null);
+                alert(`Promotion ${newStatus === 'active' ? 'activated' : 'deactivated'} successfully.`);
+            }
+        } catch (error) {
+            console.error('Failed to toggle promotion status:', error);
+            alert(error.response?.data?.message || 'Failed to update promotion status');
+        } finally {
+            setIsToggling(false);
+        }
     };
 
     const handlePageChange = (page) => {
@@ -164,6 +247,47 @@ export default function Promotions() {
         return preview.length < plainText.length ? preview + '...' : preview;
     };
 
+    // Get toggle button text and color based on current status
+    const getToggleButtonInfo = (status) => {
+        if (status === 'active') {
+            return {
+                text: 'Disable',
+                icon: (
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                    </svg>
+                ),
+                color: 'bg-orange-500 hover:bg-orange-600',
+                modalMessage: 'This promotion will no longer be visible on the website. You can activate it again later.'
+            };
+        } else {
+            return {
+                text: 'Activate',
+                icon: (
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                ),
+                color: 'bg-emerald-600 hover:bg-emerald-700',
+                modalMessage: 'This promotion will become visible on the website.'
+            };
+        }
+    };
+
+    // Show loading state while fetching permissions
+    if (loadingPermissions) {
+        return (
+            <AdminLayout title="Promotions">
+                <div className="bg-white p-8 text-center">
+                    <div className="inline-block">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+                    </div>
+                    <p className="mt-4 text-gray-600">Loading permissions...</p>
+                </div>
+            </AdminLayout>
+        );
+    }
+
     if (loading) {
         return (
             <AdminLayout title="Promotions">
@@ -189,16 +313,19 @@ export default function Promotions() {
                         Create, edit, and manage promotional content
                     </p>
                 </div>
-                <button
-                    type="button"
-                    onClick={() => setIsAddModalOpen(true)}
-                    className="mt-3 sm:mt-0 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg w-fit"
-                >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                    Create New Promotion
-                </button>
+                {/* Only show Create button if user has 'promotions' permission */}
+                {hasPermission('promotions') && (
+                    <button
+                        type="button"
+                        onClick={() => setIsAddModalOpen(true)}
+                        className="mt-3 sm:mt-0 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg w-fit"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                        Create New Promotion
+                    </button>
+                )}
             </div>
 
             {/* Search and Filters - Light Grey Background */}
@@ -295,60 +422,82 @@ export default function Promotions() {
                         </thead>
                         <tbody className="divide-y divide-gray-200">
                             {currentPromotions.length > 0 ? (
-                                currentPromotions.map((promo, index) => (
-                                    <tr 
-                                        key={promo.id} 
-                                        className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-300 transition-all duration-200 group`}
-                                    >
-                                        <td className="py-3 px-4 text-gray-500 text-xs font-medium border-r border-gray-200">
-                                            {String(startIndex + index + 1).padStart(2, '0')}
-                                        </td>
-                                        <td className="py-3 px-4 border-r border-gray-200">
-                                            <div>
-                                                <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer">
-                                                    {promo.title}
+                                currentPromotions.map((promo, index) => {
+                                    const toggleInfo = getToggleButtonInfo(promo.status);
+                                    return (
+                                        <tr 
+                                            key={promo.id} 
+                                            className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-300 transition-all duration-200 group`}
+                                        >
+                                            <td className="py-3 px-4 text-gray-500 text-xs font-medium border-r border-gray-200">
+                                                {String(startIndex + index + 1).padStart(2, '0')}
+                                            </td>
+                                            <td className="py-3 px-4 border-r border-gray-200">
+                                                <div>
+                                                    <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer">
+                                                        {promo.title}
+                                                    </span>
+                                                    <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
+                                                        {getContentPreview(promo.content)}
+                                                    </p>
+                                                </div>
+                                            </td>
+                                            <td className="py-3 px-4 border-r border-gray-200">
+                                                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${getStatusBadge(promo.status)}`}>
+                                                    {getStatusIcon(promo.status)}
+                                                    {promo.status}
                                                 </span>
-                                                <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
-                                                    {getContentPreview(promo.content)}
-                                                </p>
-                                            </div>
-                                        </td>
-                                        <td className="py-3 px-4 border-r border-gray-200">
-                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${getStatusBadge(promo.status)}`}>
-                                                {getStatusIcon(promo.status)}
-                                                {promo.status}
-                                            </span>
-                                        </td>
-                                        <td className="py-3 px-4 text-gray-500 text-sm border-r border-gray-200">
-                                            {promo.date}
-                                        </td>
-                                        <td className="py-3 px-4 text-gray-500 text-sm border-r border-gray-200">
-                                            {promo.expire}
-                                        </td>
-                                        <td className="py-3 px-4">
-                                            <div className="flex items-center justify-center gap-2">
-                                                <button
-                                                    onClick={() => handleEdit(promo)}
-                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-all shadow-sm hover:shadow"
-                                                >
-                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                    </svg>
-                                                    Edit
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(promo.id)}
-                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all shadow-sm hover:shadow"
-                                                >
-                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                    </svg>
-                                                    Delete
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))
+                                            </td>
+                                            {/* 🔥 FIXED: Format dates in the frontend */}
+                                            <td className="py-3 px-4 text-gray-500 text-sm border-r border-gray-200">
+                                                {formatDate(promo.date)}
+                                            </td>
+                                            <td className="py-3 px-4 text-gray-500 text-sm border-r border-gray-200">
+                                                {formatDate(promo.expire)}
+                                            </td>
+                                            <td className="py-3 px-4">
+                                                <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                                                    {/* Activate/Deactivate Button - Only show if user has 'promotions' permission */}
+                                                    {hasPermission('promotions') && (
+                                                        <button
+                                                            onClick={() => handleToggleStatus(promo)}
+                                                            className={`inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-white rounded-lg transition-all shadow-sm hover:shadow ${toggleInfo.color}`}
+                                                        >
+                                                            {toggleInfo.icon}
+                                                            {toggleInfo.text}
+                                                        </button>
+                                                    )}
+
+                                                    {/* Edit Button - Only show if user has 'promotions' permission */}
+                                                    {hasPermission('promotions') && (
+                                                        <button
+                                                            onClick={() => handleEdit(promo)}
+                                                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all shadow-sm hover:shadow"
+                                                        >
+                                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                            </svg>
+                                                            Edit
+                                                        </button>
+                                                    )}
+
+                                                    {/* Delete Button - Only show if user has 'user_management' permission */}
+                                                    {hasPermission('user_management') && (
+                                                        <button
+                                                            onClick={() => handleDelete(promo.id)}
+                                                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all shadow-sm hover:shadow"
+                                                        >
+                                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                            </svg>
+                                                            Delete
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })
                             ) : (
                                 <tr>
                                     <td colSpan="6" className="py-12 text-center bg-gray-50">
@@ -386,19 +535,21 @@ export default function Promotions() {
                             >
                                 Previous
                             </button>
+                            
                             {getPageNumbers().map(page => (
                                 <button
                                     key={page}
                                     onClick={() => handlePageChange(page)}
                                     className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
                                         currentPage === page
-                                            ? 'bg-emerald-600 text-white'
+                                            ? 'bg-gray-700 text-white hover:bg-gray-800'
                                             : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-100'
                                     }`}
                                 >
                                     {page}
                                 </button>
                             ))}
+                            
                             <button
                                 onClick={() => handlePageChange(currentPage + 1)}
                                 disabled={currentPage === totalPages}
@@ -427,6 +578,26 @@ export default function Promotions() {
                 }}
                 onUpdated={handlePromotionUpdated}
                 promotionId={selectedPromotionId}
+            />
+
+            {/* Status Toggle Confirmation Modal */}
+            <ConfirmModal
+                isOpen={showStatusModal}
+                onClose={() => {
+                    setShowStatusModal(false);
+                    setPromotionToToggle(null);
+                }}
+                onConfirm={confirmToggleStatus}
+                title={promotionToToggle?.status === 'active' ? "Deactivate Promotion" : "Activate Promotion"}
+                message={
+                    promotionToToggle?.status === 'active'
+                        ? `Are you sure you want to deactivate "${promotionToToggle?.title}"? This promotion will no longer be visible on the website. You can activate it again later.`
+                        : `Are you sure you want to activate "${promotionToToggle?.title}"? This promotion will become visible on the website.`
+                }
+                confirmText={promotionToToggle?.status === 'active' ? "Deactivate" : "Activate"}
+                cancelText="Cancel"
+                confirmColor={promotionToToggle?.status === 'active' ? "bg-orange-500 hover:bg-orange-600" : "bg-emerald-600 hover:bg-emerald-700"}
+                loading={isToggling}
             />
 
             {/* Delete Confirmation Modal */}

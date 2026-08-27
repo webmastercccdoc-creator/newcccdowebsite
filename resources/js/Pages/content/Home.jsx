@@ -2,12 +2,49 @@ import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import MainLayout from '../../layouts/MainLayout';
 import '../../../css/home.css';
 import { initLandingAnimations } from '../../home-animations';
+import sdgHomeImage from '../../assets/images/sdg-home.png';
 
 // Ranking Logos
 import homeLogo from '../../assets/logos/home-logo.png';
 
 // Import Video
 import bannerVideo from '../../assets/video/video-banner.mp4';
+
+// Import Student Image
+import studentsImage from '../../assets/images/students-home.png';
+
+// SDG Images for flipping effect
+import sdg1 from '../../assets/images/sdg1.png';
+import sdg2 from '../../assets/images/sdg2.jpg';
+import sdg3 from '../../assets/images/sdg3.png';
+import sdg4 from '../../assets/images/sdg4.png';
+import sdg5 from '../../assets/images/sdg5.jpg';
+import sdg6 from '../../assets/images/sdg6.png';
+import sdg7 from '../../assets/images/sdg7.png';
+import sdg8 from '../../assets/images/sdg8.png';
+import sdg9 from '../../assets/images/sdg9.png';
+import sdg10 from '../../assets/images/sdg10.png';
+import sdg11 from '../../assets/images/sdg11.png';
+import sdg12 from '../../assets/images/sdg12.jpg';
+import sdg13 from '../../assets/images/sdg13.png';
+import sdg14 from '../../assets/images/sdg14.png';
+import sdg15 from '../../assets/images/sdg15.png';
+import sdg16 from '../../assets/images/sdg16.png';
+import sdg17 from '../../assets/images/sdg17.png';
+import sdg from '../../assets/logos/sdg.png';
+import sdg_01 from '../../assets/images/sdg_01.jpg';
+import sdg_02 from '../../assets/images/sdg_02.jpg';
+import sdg_03 from '../../assets/images/sdg_03.jpg';
+import sdg_04 from '../../assets/images/sdg_04.jpg';
+import sdg_05 from '../../assets/images/sdg_05.jpg';
+import sdg_06 from '../../assets/images/sdg_06.jpg';
+import sdg_07 from '../../assets/images/sdg_07.jpg';
+import sdg_08 from '../../assets/images/sdg_08.jpg';
+import sdg_10 from '../../assets/images/sdg_10.jpg';
+import sdg_13 from '../../assets/images/sdg_13.jpg';
+import sdg_14 from '../../assets/images/sdg_14.jpg';
+import sdg_15 from '../../assets/images/sdg_15.jpg';
+import sdg_17 from '../../assets/images/sdg_17.jpg';
 
 const normalizeImagePath = (value) => {
     if (!value) return 'https://placehold.co/600x400/1e3a8a/ffffff?text=No+Image';
@@ -110,6 +147,27 @@ const DUMMY_ARTICLES = [
     },
 ];
 
+const SDG_IMAGES = [
+    { defaultImg: sdg1, hoverImg: sdg_01 },
+    { defaultImg: sdg2, hoverImg: sdg_02 },
+    { defaultImg: sdg3, hoverImg: sdg_03 },
+    { defaultImg: sdg4, hoverImg: sdg_04 },
+    { defaultImg: sdg5, hoverImg: sdg_05 },
+    { defaultImg: sdg6, hoverImg: sdg_06 },
+    { defaultImg: sdg7, hoverImg: sdg_07 },
+    { defaultImg: sdg8, hoverImg: sdg_08 },
+    { defaultImg: sdg9, hoverImg: null },
+    { defaultImg: sdg10, hoverImg: sdg_10 },
+    { defaultImg: sdg11, hoverImg: null },
+    { defaultImg: sdg12, hoverImg: null },
+    { defaultImg: sdg13, hoverImg: sdg_13 },
+    { defaultImg: sdg14, hoverImg: sdg_14 },
+    { defaultImg: sdg15, hoverImg: sdg_15 },
+    { defaultImg: sdg16, hoverImg: null },
+    { defaultImg: sdg17, hoverImg: sdg_17 },
+    { defaultImg: sdg, hoverImg: null },
+];
+
 export default function Home({ newsArticles = [], promotions = [] }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
@@ -121,6 +179,10 @@ export default function Home({ newsArticles = [], promotions = [] }) {
     const autoPlayRef = useRef(null);
     const videoRef = useRef(null);
     const isMounted = useRef(true);
+
+    // SDG Flipping Logic
+    const [autoFlippedIndices, setAutoFlippedIndices] = useState({});
+    const [activeHoverIndex, setActiveHoverIndex] = useState(null);
 
     // Banner data with fallback to dummy
     const bannerData = useMemo(() => {
@@ -192,6 +254,35 @@ export default function Home({ newsArticles = [], promotions = [] }) {
     }, [carouselItems]);
 
     const totalSlides = articles.length;
+
+    // SDG Auto-flip effect
+    useEffect(() => {
+        const triggerRandomFlip = () => {
+            const randomIndex = Math.floor(Math.random() * SDG_IMAGES.length);
+            const item = SDG_IMAGES[randomIndex];
+
+            if (item.hoverImg) {
+                setAutoFlippedIndices((prev) => ({
+                    ...prev,
+                    [randomIndex]: true,
+                }));
+
+                const flipBackDelay = 2000 + Math.random() * 2000;
+                setTimeout(() => {
+                    setAutoFlippedIndices((prev) => ({
+                        ...prev,
+                        [randomIndex]: false,
+                    }));
+                }, flipBackDelay);
+            }
+        };
+
+        const intervalId = setInterval(() => {
+            triggerRandomFlip();
+        }, 2000 + Math.random() * 3000);
+
+        return () => clearInterval(intervalId);
+    }, []);
 
     // Get slides per view based on screen width
     const getSlidesPerView = useCallback(() => {
@@ -316,13 +407,11 @@ export default function Home({ newsArticles = [], promotions = [] }) {
 
     // Auto-play - ONLY on desktop (not mobile)
     useEffect(() => {
-        // Clear any existing interval
         if (autoPlayRef.current) {
             clearInterval(autoPlayRef.current);
             autoPlayRef.current = null;
         }
 
-        // Only start auto-play if NOT mobile and video is hidden
         if (carouselSlides.length === 0 || totalSlides === 0 || showVideo || isMobile) {
             return;
         }
@@ -354,13 +443,11 @@ export default function Home({ newsArticles = [], promotions = [] }) {
         if (isMobile) return;
         if (carouselSlides.length === 0 || totalSlides === 0 || showVideo) return;
 
-        // Clear existing interval
         if (autoPlayRef.current) {
             clearInterval(autoPlayRef.current);
             autoPlayRef.current = null;
         }
 
-        // Start new interval
         autoPlayRef.current = setInterval(() => {
             if (isMounted.current && !showVideo && !isMobile) {
                 goToNextSlide();
@@ -628,22 +715,38 @@ export default function Home({ newsArticles = [], promotions = [] }) {
             {/* --- WHY CHOOSE CITY COLLEGE OF CDO --- */}
             <section className="features-section">
                 <div className="features-container">
-                    <div className="features-header reveal-on-scroll home-content-reveal">
-                        <span className="features-eyebrow">Our Difference</span>
-                        <h2 className="features-title">Why Choose City College of CDO?</h2>
-                        <div className="features-underline" aria-hidden="true"></div>
-                        <p className="features-subtitle">
-                            Discover an education grounded in excellence, opportunity, and service to the community.
-                        </p>
-                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4rem', maxWidth: '72rem', margin: '0 auto' }}>
+                        <div style={{ flex: 1 }}>
+                            <div className="features-header reveal-on-scroll home-content-reveal">
+                                <span className="features-eyebrow">Our Difference</span>
+                                <h2 className="features-title">Why Choose City College of CDO?</h2>
+                                <div className="features-underline" aria-hidden="true"></div>
+                                <p className="features-subtitle">
+                                    Discover an education grounded in excellence, opportunity, and service to the community.
+                                </p>
+                            </div>
 
-                    <p className="features-subtitle reveal-on-scroll home-content-reveal">
-                        City College of CDO provides quality education through relevant programs and dedicated instruction. Students gain practical experience, leadership opportunities, and a strong appreciation for culture and excellence while developing the skills to serve their community and build meaningful careers.
-                    </p>
+                            <p className="features-subtitle reveal-on-scroll home-content-reveal">
+                                City College of CDO provides quality education through relevant programs and dedicated instruction. Students gain practical experience, leadership opportunities, and a strong appreciation for culture and excellence while developing the skills to serve their community and build meaningful careers.
+                            </p>
+                        </div>
+                        
+                        <div 
+                            className="reveal-on-scroll home-content-reveal reveal-from-right"
+                            style={{ flex: '0 0 45%', overflow: 'hidden' }}
+                        >
+                            <img 
+                                src={studentsImage} 
+                                alt="City College of CDO Students" 
+                                style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+                                loading="lazy"
+                            />
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            {/* --- LATEST NEWS & UPDATES SECTION --- */}
+             {/* --- LATEST NEWS & UPDATES SECTION --- */}
             <section className="news-section">
                 <div className="news-container reveal-on-scroll home-content-reveal">
                     <div className="news-header">
@@ -735,6 +838,72 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                 </div>
             </section>
 
+
+           {/* --- NEW SECTION WITH TWO CONTAINERS --- */}
+<section className="new-features-section">
+    <div className="new-features-container">
+        <div className="new-features-header reveal-on-scroll home-content-reveal">
+            <span className="new-features-eyebrow">Sustainable Development Goals</span>
+            <h2 className="new-features-title">CCCDO's Commitment to SDG</h2>
+            <div className="new-features-underline" aria-hidden="true"></div>
+        </div>
+
+        <div className="new-features-grid">
+            {/* Container 1 - SDG Image */}
+            <div className="sdg-image-container reveal-on-scroll home-content-reveal">
+                <img 
+                    src={sdgHomeImage} 
+                    alt="City College of CDO Sustainable Development Goals" 
+                    className="sdg-home-image"
+                    loading="lazy"
+                />
+            </div>
+
+            {/* Container 2 - SDG Flipping Images */}
+            <div className="sdg-card-container reveal-on-scroll home-content-reveal">
+                <div className="sdg-grid-container">
+                    <div className="sdg-grid">
+                        {SDG_IMAGES.map((item, index) => {
+                            const isAutoFlipped = autoFlippedIndices[index];
+                            const isHovered = activeHoverIndex === index;
+                            
+                            const currentSrc = isHovered && item.hoverImg 
+                                ? item.hoverImg 
+                                : isAutoFlipped && item.hoverImg 
+                                ? item.hoverImg 
+                                : item.defaultImg;
+
+                            return (
+                                <div
+                                    key={index}
+                                    className="sdg-image-wrapper"
+                                    onMouseEnter={() => item.hoverImg && setActiveHoverIndex(index)}
+                                    onMouseLeave={() => setActiveHoverIndex(null)}
+                                >
+                                    <img
+                                        src={currentSrc}
+                                        alt={`SDG ${index + 1}`}
+                                        className="sdg-image"
+                                        loading="lazy"
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+                {/* View More Button */}
+                <div className="sdg-view-more-wrapper">
+                    <a href="/sdg" className="sdg-view-more-btn">
+                        View More
+                        <svg className="sdg-view-more-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
         </MainLayout>
     );
 }

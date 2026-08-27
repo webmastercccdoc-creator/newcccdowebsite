@@ -1642,3 +1642,476 @@ WHY CHOOSE CCCO / FEATURES
     margin-right: auto;
     text-align: center;
 }
+
+/* =============================================
+FEATURES WITH IMAGE - Minimal Addition
+============================================= */
+.features-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    max-width: 72rem;
+    margin: 0 auto;
+}
+
+.features-text {
+    flex: 1;
+}
+
+.features-image-wrapper {
+    flex: 0 0 45%;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.features-student-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    aspect-ratio: 4/3;
+}
+
+/* Responsive - Stack on mobile */
+@media (max-width: 992px) {
+    .features-wrapper {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .features-image-wrapper {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+}
+
+/* Make features section stack on mobile */
+@media (max-width: 992px) {
+    .features-section .features-container > div {
+        flex-direction: column !important;
+        gap: 2rem !important;
+    }
+    
+    .features-section .features-container > div > div:last-child {
+        flex: 0 0 auto !important;
+        width: 100% !important;
+        max-width: 500px !important;
+        margin: 0 auto !important;
+    }
+}
+
+/* =============================================
+NEW FEATURES SECTION - TWO CONTAINERS
+============================================= */
+.new-features-section {
+    width: 100%;
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    padding: 4rem 1rem;
+    box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+    .new-features-section {
+        padding: 5rem 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .new-features-section {
+        padding: 6rem 2rem;
+    }
+}
+
+.new-features-container {
+    max-width: 72rem;
+    margin: 0 auto;
+}
+
+.new-features-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.new-features-eyebrow {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #d4a843;
+    margin-bottom: 0.75rem;
+}
+
+.new-features-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+}
+
+@media (min-width: 768px) {
+    .new-features-title {
+        font-size: 2.5rem;
+    }
+}
+
+.new-features-underline {
+    margin: 1rem auto 0;
+    width: 4rem;
+    height: 3px;
+    background: linear-gradient(90deg, #d4a843, #f0d78c);
+    border-radius: 99px;
+}
+
+.new-features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+    .new-features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+.new-feature-card {
+    background: #ffffff;
+    padding: 2.5rem 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+}
+
+.new-feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.new-feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.new-feature-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.75rem;
+}
+
+.new-feature-description {
+    color: #475569;
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+/* =============================================
+NEW FEATURES SECTION - TWO CONTAINERS
+============================================= */
+.new-features-section {
+    width: 100%;
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    padding: 2.5rem 1rem; /* Reduced from 4rem */
+    box-sizing: border-box;
+}
+
+@media (min-width: 640px) {
+    .new-features-section {
+        padding: 3rem 1.5rem; /* Reduced from 5rem */
+    }
+}
+
+@media (min-width: 1024px) {
+    .new-features-section {
+        padding: 3.5rem 2rem; /* Reduced from 6rem */
+    }
+}
+
+.new-features-container {
+    max-width: 80rem;
+    margin: 0 auto;
+}
+
+.new-features-header {
+    text-align: center;
+    margin-bottom: 2rem; /* Reduced from 3rem */
+}
+
+.new-features-eyebrow {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #d4a843;
+    margin-bottom: 0.5rem; /* Reduced from 0.75rem */
+}
+
+.new-features-title {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+}
+
+@media (min-width: 768px) {
+    .new-features-title {
+        font-size: 2.5rem;
+    }
+}
+
+.new-features-underline {
+    margin: 0.75rem auto 0; /* Reduced from 1rem */
+    width: 4rem;
+    height: 3px;
+    background: linear-gradient(90deg, #d4a843, #f0d78c);
+    border-radius: 99px;
+}
+
+.new-features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 1.5rem; /* Reduced from 2rem */
+    margin-top: 1.5rem; /* Reduced from 2rem */
+    align-items: stretch;
+}
+
+@media (max-width: 992px) {
+    .new-features-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem; /* Reduced from 1.5rem */
+    }
+}
+
+@media (max-width: 768px) {
+    .new-features-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem; /* Reduced from 1.5rem */
+    }
+}
+
+/* SDG Image Container - Left Side */
+.sdg-image-container {
+    background: #ffffff;
+    padding: 1rem; /* Reduced from 1.5rem */
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.sdg-home-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    border-radius: 0.5rem;
+    max-height: 500px;
+}
+
+/* SDG Card - Right Side */
+.sdg-card-container {
+    background: transparent;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    grid-column: span 1;
+}
+
+@media (min-width: 993px) {
+    .sdg-card-container {
+        grid-column: span 1;
+    }
+}
+
+/* =============================================
+SDG FLIPPING IMAGES - INSIDE NEW SECTION
+============================================= */
+.sdg-grid-container {
+    width: 100%;
+    overflow: hidden;
+    padding: 0.25rem;
+}
+
+.sdg-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.25rem; /* Reduced from 0.3rem */
+    width: 100%;
+}
+
+.sdg-image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 2px; /* Reduced from 3px */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e8edf4;
+}
+
+.sdg-image-wrapper:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    border-color: #d4a843;
+}
+
+.sdg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: transparent;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: sdgSpinIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    border-radius: 5px;
+    padding: 1px;
+}
+
+@keyframes sdgSpinIn {
+    0% {
+        transform: rotateY(0deg) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: rotateY(180deg) scale(0.8);
+        opacity: 0.5;
+    }
+    100% {
+        transform: rotateY(360deg) scale(1);
+        opacity: 1;
+    }
+}
+
+/* =============================================
+SDG VIEW MORE BUTTON
+============================================= */
+.sdg-view-more-wrapper {
+    text-align: center;
+    margin-top: 1rem; /* Reduced from 1.5rem */
+}
+
+.sdg-view-more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem; /* Reduced from 0.5rem */
+    padding: 0.6rem 1.75rem; /* Reduced from 0.75rem 2rem */
+    background: #d4a843;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 14px rgba(212, 168, 67, 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    letter-spacing: 0.02em;
+}
+
+.sdg-view-more-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(212, 168, 67, 0.4);
+    background: #c49a3a;
+    gap: 0.6rem; /* Reduced from 0.75rem */
+}
+
+.sdg-view-more-btn:active {
+    transform: scale(0.96);
+}
+
+.sdg-view-more-icon {
+    width: 1rem; /* Reduced from 1.125rem */
+    height: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.sdg-view-more-btn:hover .sdg-view-more-icon {
+    transform: translateX(4px);
+}
+
+/* Responsive SDG Grid */
+@media (max-width: 1200px) {
+    .sdg-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 0.2rem; /* Reduced from 0.25rem */
+    }
+}
+
+@media (max-width: 992px) {
+    .sdg-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 0.2rem; /* Reduced from 0.25rem */
+    }
+}
+
+@media (max-width: 768px) {
+    .sdg-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.25rem;
+    }
+    
+    .sdg-card-container {
+        padding: 0;
+    }
+    
+    .sdg-image-container {
+        padding: 0.75rem; /* Reduced from 1rem */
+        max-height: 300px;
+    }
+    
+    .sdg-view-more-wrapper {
+        margin-top: 0.75rem; /* Reduced from 1rem */
+    }
+    
+    .sdg-view-more-btn {
+        padding: 0.5rem 1.25rem; /* Reduced from 0.625rem 1.5rem */
+        font-size: 0.8125rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .sdg-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.2rem; /* Reduced from 0.25rem */
+    }
+    
+    .sdg-image-container {
+        max-height: 200px;
+        padding: 0.5rem; /* Reduced from 0.75rem */
+    }
+    
+    .sdg-view-more-wrapper {
+        margin-top: 0.5rem; /* Reduced from 0.75rem */
+    }
+    
+    .sdg-view-more-btn {
+        padding: 0.4rem 1rem; /* Reduced from 0.5rem 1.25rem */
+        font-size: 0.75rem;
+        border-radius: 0.5rem;
+    }
+    
+    .sdg-view-more-icon {
+        width: 0.875rem; /* Reduced from 1rem */
+        height: 0.875rem;
+    }
+}

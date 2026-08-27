@@ -8,6 +8,9 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PromotionsController extends Controller
 {
@@ -24,6 +27,9 @@ class PromotionsController extends Controller
      */
     public function apiIndex(Request $request)
     {
+        // 🔥 First, update all promotion statuses based on date logic
+        $this->updatePromotionStatuses();
+
         $query = Promotion::query();
 
         // Filter by search query
@@ -48,9 +54,73 @@ class PromotionsController extends Controller
         }
 
         $promotions = $query->orderBy('date', 'desc')->get()
-            ->map(fn ($promotion) => $this->addImageUrls($promotion));
+            ->map(function ($promotion) {
+                // Add image URLs and format dates
+                $promotion = $this->addImageUrls($promotion);
+                
+                // Format dates
+                $promotion->date = $promotion->date ? Carbon::parse($promotion->date)->format('Y-m-d') : null;
+                $promotion->expire = $promotion->expire ? Carbon::parse($promotion->expire)->format('Y-m-d') : null;
+                
+                return $promotion;
+            });
 
         return response()->json($promotions);
+    }
+
+    /**
+     * 🔥 Update promotion statuses based on date logic
+     * 
+     * Logic:
+     * - If both start and expiry dates are null → status = 'active'
+     * - Else if current date is greater than expiry date → status = 'expired'
+     * - Else if start date is less than or equal to current date → status = 'active'
+     * - Else if start date is greater than current date → status = 'inactive'
+     */
+    private function updatePromotionStatuses()
+    {
+        $now = Carbon::now();
+        
+        // Get all promotions
+        $promotions = Promotion::all();
+        
+        foreach ($promotions as $promotion) {
+            $startDate = $promotion->date ? Carbon::parse($promotion->date) : null;
+            $expiryDate = $promotion->expire ? Carbon::parse($promotion->expire) : null;
+            
+            $newStatus = null;
+            
+            // 🔥 Rule 1: If both start and expiry dates are null → status = 'active'
+            if (!$startDate && !$expiryDate) {
+                $newStatus = 'active';
+            }
+            // 🔥 Rule 2: Check expiry date first - if expired, status = 'expired'
+            elseif ($expiryDate && $now->greaterThan($expiryDate)) {
+                $newStatus = 'expired';
+            } 
+            // 🔥 Rule 3: Check start date - if start date is today or in the past, status = 'active'
+            elseif ($startDate && $startDate->lessThanOrEqualTo($now)) {
+                $newStatus = 'active';
+            }
+            // 🔥 Rule 4: Start date is in the future - status = 'inactive'
+            elseif ($startDate && $startDate->greaterThan($now)) {
+                $newStatus = 'inactive';
+            }
+            // 🔥 Rule 5: Only expiry date exists and not expired - status = 'active'
+            elseif ($expiryDate && $now->lessThanOrEqualTo($expiryDate)) {
+                $newStatus = 'active';
+            }
+            // Default fallback
+            else {
+                $newStatus = 'inactive';
+            }
+            
+            // Update status if changed
+            if ($newStatus && $promotion->status !== $newStatus) {
+                $promotion->status = $newStatus;
+                $promotion->save();
+            }
+        }
     }
 
     /**
@@ -58,8 +128,17 @@ class PromotionsController extends Controller
      */
     public function apiShow($id)
     {
+        // 🔥 Update statuses before showing
+        $this->updatePromotionStatuses();
+        
         $promotion = Promotion::findOrFail($id);
-        return response()->json($this->addImageUrls($promotion));
+        $promotion = $this->addImageUrls($promotion);
+        
+        // Format dates
+        $promotion->date = $promotion->date ? Carbon::parse($promotion->date)->format('Y-m-d') : null;
+        $promotion->expire = $promotion->expire ? Carbon::parse($promotion->expire)->format('Y-m-d') : null;
+        
+        return response()->json($promotion);
     }
 
     /**
@@ -67,11 +146,19 @@ class PromotionsController extends Controller
      */
     public function store(Request $request)
     {
+        // Check if user has permission to create promotions
+        if (!$this->hasPermission('promotions')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized: You do not have permission to create promotions'
+            ], 403);
+        }
+
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'date' => 'nullable|date',
-            'expire' => 'nullable|date',
+            'expire' => 'nullable|date|after_or_equal:date',
             'status' => 'nullable|in:active,inactive,expired',
             'link' => 'nullable|url',
             'department' => 'nullable|string|max:255',
@@ -104,14 +191,8 @@ class PromotionsController extends Controller
             $date = $request->date ?: null;
             $expire = $request->expire ?: null;
 
-            // Validate date relationship only if both exist
-            if ($date && $expire && $expire < $date) {
-                return response()->json([
-                    'errors' => [
-                        'expire' => ['The expiry date must be after the start date.']
-                    ]
-                ], 422);
-            }
+            // 🔥 Calculate status based on dates
+            $status = $this->calculateStatus($date, $expire);
 
             $promotion = Promotion::create([
                 'title' => $request->title,
@@ -122,11 +203,15 @@ class PromotionsController extends Controller
                 'image_alt_text' => $imageAltText,
                 'date' => $date,
                 'expire' => $expire,
-                'status' => $request->status ?? 'active',
+                'status' => $status,
                 'link' => $request->link,
                 'department' => $request->department,
                 'created_by' => auth()->id(),
             ]);
+
+            // Format dates for response
+            $promotion->date = $promotion->date ? Carbon::parse($promotion->date)->format('Y-m-d') : null;
+            $promotion->expire = $promotion->expire ? Carbon::parse($promotion->expire)->format('Y-m-d') : null;
 
             return response()->json([
                 'message' => 'Promotion created successfully',
@@ -145,11 +230,19 @@ class PromotionsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Check if user has permission to edit promotions
+        if (!$this->hasPermission('promotions')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized: You do not have permission to edit promotions'
+            ], 403);
+        }
+
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'date' => 'nullable|date',
-            'expire' => 'nullable|date',
+            'expire' => 'nullable|date|after_or_equal:date',
             'status' => 'nullable|in:active,inactive,expired',
             'link' => 'nullable|url',
             'department' => 'nullable|string|max:255',
@@ -206,14 +299,8 @@ class PromotionsController extends Controller
             $date = $request->date ?: null;
             $expire = $request->expire ?: null;
 
-            // Validate date relationship only if both exist
-            if ($date && $expire && $expire < $date) {
-                return response()->json([
-                    'errors' => [
-                        'expire' => ['The expiry date must be after the start date.']
-                    ]
-                ], 422);
-            }
+            // 🔥 Calculate status based on dates
+            $status = $this->calculateStatus($date, $expire);
 
             $promotion->update([
                 'title' => $request->title,
@@ -224,11 +311,15 @@ class PromotionsController extends Controller
                 'image_alt_text' => $imageAltText,
                 'date' => $date,
                 'expire' => $expire,
-                'status' => $request->status ?? $promotion->status,
+                'status' => $status,
                 'link' => $request->link,
                 'department' => $request->department,
                 'updated_by' => auth()->id(),
             ]);
+
+            // Format dates for response
+            $promotion->date = $promotion->date ? Carbon::parse($promotion->date)->format('Y-m-d') : null;
+            $promotion->expire = $promotion->expire ? Carbon::parse($promotion->expire)->format('Y-m-d') : null;
 
             return response()->json([
                 'message' => 'Promotion updated successfully',
@@ -243,10 +334,71 @@ class PromotionsController extends Controller
     }
 
     /**
+     * 🔥 Calculate status based on date logic
+     * 
+     * Logic:
+     * 1. If both start and expiry dates are null → 'active'
+     * 2. Else if expiry date exists AND current date > expiry date → 'expired'
+     * 3. Else if start date exists AND start date <= current date → 'active'
+     * 4. Else if start date exists AND start date > current date → 'inactive'
+     * 5. Else if only expiry date exists AND not expired → 'active'
+     * 6. Default → 'inactive'
+     * 
+     * @param string|null $startDate
+     * @param string|null $expiryDate
+     * @return string
+     */
+    private function calculateStatus($startDate, $expiryDate)
+    {
+        $now = Carbon::now();
+        
+        $start = $startDate ? Carbon::parse($startDate) : null;
+        $expiry = $expiryDate ? Carbon::parse($expiryDate) : null;
+        
+        // 🔥 Rule 1: If both start and expiry dates are null → status = 'active'
+        if (!$start && !$expiry) {
+            return 'active';
+        }
+        
+        // 🔥 Rule 2: Check expiry date - if expired, status = 'expired'
+        if ($expiry && $now->greaterThan($expiry)) {
+            return 'expired';
+        }
+        
+        // 🔥 Rule 3 & 4: Check start date
+        if ($start) {
+            // Start date is today or in the past → Active
+            if ($start->lessThanOrEqualTo($now)) {
+                return 'active';
+            } 
+            // Start date is in the future → Inactive
+            else {
+                return 'inactive';
+            }
+        }
+        
+        // 🔥 Rule 5: Only expiry date exists and not expired → Active
+        if ($expiry && $now->lessThanOrEqualTo($expiry)) {
+            return 'active';
+        }
+        
+        // 🔥 Rule 6: Default fallback
+        return 'inactive';
+    }
+
+    /**
      * Remove the specified promotion from storage.
      */
     public function destroy($id)
     {
+        // Check if user has permission to delete promotions
+        if (!$this->hasPermission('user_management')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized: You do not have permission to delete promotions'
+            ], 403);
+        }
+
         try {
             $promotion = Promotion::findOrFail($id);
             
@@ -256,10 +408,12 @@ class PromotionsController extends Controller
             $promotion->delete();
 
             return response()->json([
+                'success' => true,
                 'message' => 'Promotion deleted successfully'
             ]);
         } catch (\Exception $e) {
             return response()->json([
+                'success' => false,
                 'message' => 'Failed to delete promotion',
                 'error' => $e->getMessage()
             ], 500);
@@ -271,6 +425,9 @@ class PromotionsController extends Controller
      */
     public function getStatusCounts()
     {
+        // 🔥 Update statuses before counting
+        $this->updatePromotionStatuses();
+        
         $active = Promotion::where('status', 'active')->count();
         $inactive = Promotion::where('status', 'inactive')->count();
         $expired = Promotion::where('status', 'expired')->count();
@@ -289,6 +446,9 @@ class PromotionsController extends Controller
      */
     public function getActivePromotions()
     {
+        // 🔥 Update statuses before fetching
+        $this->updatePromotionStatuses();
+        
         $promotions = Promotion::where('status', 'active')
             ->where(function($query) {
                 $query->whereNull('expire')
@@ -297,7 +457,12 @@ class PromotionsController extends Controller
             ->orderBy('date', 'desc')
             ->limit(6)
             ->get()
-            ->map(fn ($promotion) => $this->addImageUrls($promotion));
+            ->map(function ($promotion) {
+                $promotion = $this->addImageUrls($promotion);
+                $promotion->date = $promotion->date ? Carbon::parse($promotion->date)->format('Y-m-d') : null;
+                $promotion->expire = $promotion->expire ? Carbon::parse($promotion->expire)->format('Y-m-d') : null;
+                return $promotion;
+            });
 
         return response()->json($promotions);
     }
@@ -307,6 +472,14 @@ class PromotionsController extends Controller
      */
     public function bulkDelete(Request $request)
     {
+        // Check if user has permission to delete promotions
+        if (!$this->hasPermission('user_management')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized: You do not have permission to delete promotions'
+            ], 403);
+        }
+
         $validator = Validator::make($request->all(), [
             'ids' => 'required|array',
             'ids.*' => 'exists:promotions,id'
@@ -329,10 +502,12 @@ class PromotionsController extends Controller
             Promotion::whereIn('id', $request->ids)->delete();
 
             return response()->json([
+                'success' => true,
                 'message' => 'Promotions deleted successfully'
             ]);
         } catch (\Exception $e) {
             return response()->json([
+                'success' => false,
                 'message' => 'Failed to delete promotions',
                 'error' => $e->getMessage()
             ], 500);
@@ -340,17 +515,44 @@ class PromotionsController extends Controller
     }
 
     /**
-     * Toggle promotion status (activate/deactivate).
+     * Toggle promotion status (activate/deactivate) - Manual override.
      */
     public function toggleStatus(Request $request, $id)
     {
+        // Check if user has permission to manage promotions
+        if (!$this->hasPermission('promotions')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized: You do not have permission to change promotion status'
+            ], 403);
+        }
+
         try {
             $promotion = Promotion::findOrFail($id);
+            
+            // 🔥 Check if promotion is expired before allowing activation
+            $now = Carbon::now();
+            $expiryDate = $promotion->expire ? Carbon::parse($promotion->expire) : null;
+            
+            if ($expiryDate && $now->greaterThan($expiryDate)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot activate an expired promotion. Please update the expiry date first.'
+                ], 400);
+            }
             
             if ($promotion->status === 'active') {
                 $promotion->status = 'inactive';
                 $message = 'Promotion deactivated successfully';
             } else {
+                // Check if start date is in the future
+                $startDate = $promotion->date ? Carbon::parse($promotion->date) : null;
+                if ($startDate && $startDate->greaterThan($now)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Cannot activate a promotion with a future start date. Please update the start date first.'
+                    ], 400);
+                }
                 $promotion->status = 'active';
                 $message = 'Promotion activated successfully';
             }
@@ -359,11 +561,13 @@ class PromotionsController extends Controller
             $promotion->save();
 
             return response()->json([
+                'success' => true,
                 'message' => $message,
                 'promotion' => $promotion
             ]);
         } catch (\Exception $e) {
             return response()->json([
+                'success' => false,
                 'message' => 'Failed to update promotion status',
                 'error' => $e->getMessage()
             ], 500);
@@ -371,10 +575,18 @@ class PromotionsController extends Controller
     }
 
     /**
-     * Update promotion status specifically.
+     * Update promotion status specifically - Manual override.
      */
     public function updateStatus(Request $request, $id)
     {
+        // Check if user has permission to manage promotions
+        if (!$this->hasPermission('promotions')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized: You do not have permission to update promotion status'
+            ], 403);
+        }
+
         $validator = Validator::make($request->all(), [
             'status' => 'required|in:active,inactive,expired'
         ]);
@@ -387,16 +599,39 @@ class PromotionsController extends Controller
 
         try {
             $promotion = Promotion::findOrFail($id);
+            
+            // 🔥 Validate status change based on dates
+            $now = Carbon::now();
+            $startDate = $promotion->date ? Carbon::parse($promotion->date) : null;
+            $expiryDate = $promotion->expire ? Carbon::parse($promotion->expire) : null;
+            
+            if ($request->status === 'active') {
+                if ($expiryDate && $now->greaterThan($expiryDate)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Cannot activate an expired promotion. Please update the expiry date first.'
+                    ], 400);
+                }
+                if ($startDate && $startDate->greaterThan($now)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Cannot activate a promotion with a future start date. Please update the start date first.'
+                    ], 400);
+                }
+            }
+            
             $promotion->status = $request->status;
             $promotion->updated_by = auth()->id();
             $promotion->save();
 
             return response()->json([
+                'success' => true,
                 'message' => 'Promotion status updated successfully',
                 'promotion' => $promotion
             ]);
         } catch (\Exception $e) {
             return response()->json([
+                'success' => false,
                 'message' => 'Failed to update promotion status',
                 'error' => $e->getMessage()
             ], 500);
@@ -408,6 +643,9 @@ class PromotionsController extends Controller
      */
     public function getByDepartment($department)
     {
+        // 🔥 Update statuses before fetching
+        $this->updatePromotionStatuses();
+        
         $promotions = Promotion::where('department', $department)
             ->where('status', 'active')
             ->where(function($query) {
@@ -416,10 +654,52 @@ class PromotionsController extends Controller
             })
             ->orderBy('date', 'desc')
             ->get()
-            ->map(fn ($promotion) => $this->addImageUrls($promotion));
+            ->map(function ($promotion) {
+                $promotion = $this->addImageUrls($promotion);
+                $promotion->date = $promotion->date ? Carbon::parse($promotion->date)->format('Y-m-d') : null;
+                $promotion->expire = $promotion->expire ? Carbon::parse($promotion->expire)->format('Y-m-d') : null;
+                return $promotion;
+            });
 
         return response()->json($promotions);
     }
+
+    /**
+     * Get all departments that have promotions.
+     */
+    public function getDepartments()
+    {
+        $departments = Promotion::select('department')
+            ->whereNotNull('department')
+            ->distinct()
+            ->pluck('department');
+
+        return response()->json($departments);
+    }
+
+    /**
+     * Helper method to check if user has a specific permission
+     * 
+     * @param string $permission
+     * @return bool
+     */
+    private function hasPermission($permission)
+    {
+        $user = Auth::user();
+        
+        if (!$user) {
+            return false;
+        }
+
+        return DB::table('access_controls')
+            ->where('user_id', $user->id)
+            ->where('permission', $permission)
+            ->exists();
+    }
+
+    // ============================================
+    // PRIVATE HELPER METHODS
+    // ============================================
 
     private function storePromotionImage(Request $request, string $field): ?string
     {
@@ -450,18 +730,5 @@ class PromotionsController extends Controller
     {
         if (!$path) return null;
         return filter_var($path, FILTER_VALIDATE_URL) ? $path : asset('storage/' . $path);
-    }
-
-    /**
-     * Get all departments that have promotions.
-     */
-    public function getDepartments()
-    {
-        $departments = Promotion::select('department')
-            ->whereNotNull('department')
-            ->distinct()
-            ->pluck('department');
-
-        return response()->json($departments);
     }
 }

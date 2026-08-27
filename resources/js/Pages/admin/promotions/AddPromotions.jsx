@@ -12,6 +12,18 @@ const initialForm = {
     image_alt_text: '',
 };
 
+// Image validation constants
+const IMAGE_CONSTRAINTS = {
+    maxWidth: 2560,
+    minWidth: 1200,
+    maxHeight: 1440,
+    minHeight: 600,
+    maxFileSize: 5 * 1024 * 1024, // 5MB
+    allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+    recommendedAspectRatio: 16 / 9,
+    minAspectRatio: 2 / 1, // 2:1 minimum
+};
+
 export default function AddPromotions({
     isOpen,
     onClose,
@@ -25,6 +37,7 @@ export default function AddPromotions({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [previewImage, setPreviewImage] = useState(null);
     const [imageFile, setImageFile] = useState(null);
+    const [imageValidation, setImageValidation] = useState(null);
 
     useEffect(() => {
         if (!isEditing || !promotion) return;
@@ -42,6 +55,7 @@ export default function AddPromotions({
             promotion.banner_image_url || promotion.image_url || null,
         );
         setImageFile(null);
+        setImageValidation(null);
     }, [isEditing, promotion]);
 
     const updateField = (field, value) => {
@@ -50,47 +64,164 @@ export default function AddPromotions({
         setSubmitError('');
     };
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            // Validate file type
-            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-            if (!validTypes.includes(file.type)) {
-                setErrors((current) => ({
-                    ...current,
-                    image: 'Please upload a valid image file (JPEG, PNG, GIF, or WEBP)'
-                }));
-                return;
-            }
-
-            // Validate file size (max 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                setErrors((current) => ({
-                    ...current,
-                    image: 'Image size must be less than 5MB'
-                }));
-                return;
-            }
-
-            setImageFile(file);
-            setForm((current) => ({ ...current, image: file }));
+    const validateImageResolution = (file) => {
+        return new Promise((resolve) => {
+            const img = new Image();
+            const objectUrl = URL.createObjectURL(file);
             
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreviewImage(reader.result);
+            img.onload = () => {
+                const { width, height } = img;
+                const aspectRatio = width / height;
+                const aspectRatioStr = aspectRatio.toFixed(2);
+                
+                const validation = {
+                    isValid: true,
+                    errors: [],
+                    warnings: [],
+                    dimensions: { width, height },
+                    aspectRatio: aspectRatioStr,
+                };
+
+                // Check minimum dimensions
+                if (width < IMAGE_CONSTRAINTS.minWidth) {
+                    validation.isValid = false;
+                    validation.errors.push(
+                        `Image width (${width}px) is below the minimum required width of ${IMAGE_CONSTRAINTS.minWidth}px.`
+                    );
+                }
+
+                if (height < IMAGE_CONSTRAINTS.minHeight) {
+                    validation.isValid = false;
+                    validation.errors.push(
+                        `Image height (${height}px) is below the minimum required height of ${IMAGE_CONSTRAINTS.minHeight}px.`
+                    );
+                }
+
+                // Check maximum dimensions (warning only)
+                if (width > IMAGE_CONSTRAINTS.maxWidth) {
+                    validation.warnings.push(
+                        `Image width (${width}px) exceeds recommended maximum of ${IMAGE_CONSTRAINTS.maxWidth}px.`
+                    );
+                }
+
+                if (height > IMAGE_CONSTRAINTS.maxHeight) {
+                    validation.warnings.push(
+                        `Image height (${height}px) exceeds recommended maximum of ${IMAGE_CONSTRAINTS.maxHeight}px.`
+                    );
+                }
+
+                // Check aspect ratio
+                const minRatio = IMAGE_CONSTRAINTS.minAspectRatio;
+                const recommendedRatio = IMAGE_CONSTRAINTS.recommendedAspectRatio;
+                
+                if (aspectRatio < minRatio) {
+                    validation.isValid = false;
+                    validation.errors.push(
+                        `Image is too tall (${aspectRatioStr}:1). Recommended aspect ratio is ${recommendedRatio}:1 or wider (minimum ${minRatio}:1).`
+                    );
+                }
+
+                if (aspectRatio < recommendedRatio) {
+                    validation.warnings.push(
+                        `For best display, we recommend an aspect ratio of ${recommendedRatio}:1 or wider (current: ${aspectRatioStr}:1).`
+                    );
+                }
+
+                // Check file size
+                if (file.size > IMAGE_CONSTRAINTS.maxFileSize) {
+                    validation.isValid = false;
+                    validation.errors.push(
+                        `File size (${(file.size / (1024 * 1024)).toFixed(1)}MB) exceeds maximum of ${IMAGE_CONSTRAINTS.maxFileSize / (1024 * 1024)}MB.`
+                    );
+                }
+
+                setImageValidation(validation);
+                URL.revokeObjectURL(objectUrl);
+                resolve(validation);
             };
-            reader.readAsDataURL(file);
-            
-            // Clear image errors
-            setErrors((current) => ({ ...current, image: undefined }));
+
+            img.onerror = () => {
+                setImageValidation({
+                    isValid: false,
+                    errors: ['Failed to load image. Please try a different file.'],
+                    warnings: [],
+                    dimensions: null,
+                    aspectRatio: null,
+                });
+                URL.revokeObjectURL(objectUrl);
+                resolve(null);
+            };
+
+            img.src = objectUrl;
+        });
+    };
+
+    const handleImageChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Basic validation
+        const basicErrors = [];
+        if (!IMAGE_CONSTRAINTS.allowedTypes.includes(file.type)) {
+            basicErrors.push('Please upload a valid image file (JPEG, PNG, GIF, or WEBP)');
         }
+
+        if (file.size > IMAGE_CONSTRAINTS.maxFileSize) {
+            basicErrors.push(`Image size must be less than ${IMAGE_CONSTRAINTS.maxFileSize / (1024 * 1024)}MB`);
+        }
+
+        if (basicErrors.length > 0) {
+            setErrors((current) => ({
+                ...current,
+                image: basicErrors
+            }));
+            setImageFile(null);
+            setPreviewImage(null);
+            setImageValidation(null);
+            // Reset file input
+            const fileInput = document.getElementById('image-upload');
+            if (fileInput) {
+                fileInput.value = '';
+            }
+            return;
+        }
+
+        // Validate resolution
+        const validation = await validateImageResolution(file);
+        
+        if (!validation || !validation.isValid) {
+            const errorMessages = validation?.errors || ['Invalid image'];
+            setErrors((current) => ({
+                ...current,
+                image: errorMessages
+            }));
+            setImageFile(null);
+            setPreviewImage(null);
+            const fileInput = document.getElementById('image-upload');
+            if (fileInput) {
+                fileInput.value = '';
+            }
+            return;
+        }
+
+        // Image is valid
+        setImageFile(file);
+        setForm((current) => ({ ...current, image: file }));
+        
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setPreviewImage(reader.result);
+        };
+        reader.readAsDataURL(file);
+        
+        setErrors((current) => ({ ...current, image: undefined }));
     };
 
     const removeImage = () => {
         setPreviewImage(null);
         setImageFile(null);
+        setImageValidation(null);
         setForm((current) => ({ ...current, image: null }));
-        // Reset the file input
         const fileInput = document.getElementById('image-upload');
         if (fileInput) {
             fileInput.value = '';
@@ -104,6 +235,7 @@ export default function AddPromotions({
         setSubmitError('');
         setPreviewImage(null);
         setImageFile(null);
+        setImageValidation(null);
         onClose();
     };
 
@@ -127,7 +259,6 @@ export default function AddPromotions({
         }
 
         try {
-            // Create FormData for file upload
             const formData = new FormData();
             formData.append('title', form.title);
             formData.append('content', form.content);
@@ -151,6 +282,7 @@ export default function AddPromotions({
             setForm(initialForm);
             setPreviewImage(null);
             setImageFile(null);
+            setImageValidation(null);
             if (onCreated) {
                 onCreated(response.data.promotion);
             }
@@ -166,18 +298,51 @@ export default function AddPromotions({
         }
     };
 
-    // Get status options
     const statusOptions = [
         { value: 'active', label: 'Active' },
         { value: 'inactive', label: 'Inactive' },
         { value: 'expired', label: 'Expired' },
     ];
 
+    // Helper to format validation messages
+    const renderImageValidationInfo = () => {
+        if (!imageValidation) return null;
+        
+        return (
+            <div className="mt-2 space-y-1">
+                {imageValidation.dimensions && (
+                    <p className="text-xs text-gray-500">
+                        Dimensions: {imageValidation.dimensions.width} × {imageValidation.dimensions.height}px 
+                        (Aspect Ratio: {imageValidation.aspectRatio}:1)
+                        {imageValidation.aspectRatio >= IMAGE_CONSTRAINTS.recommendedAspectRatio.toFixed(2) ? (
+                            <span className="ml-2 text-emerald-600">✓ Optimal</span>
+                        ) : imageValidation.aspectRatio >= IMAGE_CONSTRAINTS.minAspectRatio ? (
+                            <span className="ml-2 text-yellow-600">⚠ Acceptable</span>
+                        ) : (
+                            <span className="ml-2 text-red-600">✗ Too tall</span>
+                        )}
+                    </p>
+                )}
+                {imageValidation.warnings.length > 0 && (
+                    <div className="text-xs text-yellow-600">
+                        {imageValidation.warnings.map((warning, idx) => (
+                            <p key={idx}>⚠ {warning}</p>
+                        ))}
+                    </div>
+                )}
+                <p className="text-xs text-red-600 font-medium">
+                    ⚠ Requirements: Minimum {IMAGE_CONSTRAINTS.minWidth}×{IMAGE_CONSTRAINTS.minHeight}px, 
+                    16:9 aspect ratio recommended, max {IMAGE_CONSTRAINTS.maxFileSize / (1024 * 1024)}MB
+                </p>
+            </div>
+        );
+    };
+
     return (
         <Modal
             isOpen={isOpen}
             onClose={handleClose}
-            title="Create New Promotion"
+            title={isEditing ? "Edit Promotion" : "Create New Promotion"}
             size="lg"
             closeOnOverlayClick={!isSubmitting}
         >
@@ -225,7 +390,7 @@ export default function AddPromotions({
                 {/* Image Upload */}
                 <div>
                     <label className="mb-1 block text-sm font-medium text-gray-700">
-                        Image (Optional)
+                        Banner Image <span className="text-gray-400 text-xs">(Optional but recommended)</span>
                     </label>
                     <div className="flex items-center justify-center w-full">
                         {previewImage ? (
@@ -254,7 +419,10 @@ export default function AddPromotions({
                                     <p className="mb-2 text-sm text-gray-500">
                                         <span className="font-semibold">Click to upload</span> or drag and drop
                                     </p>
-                                    <p className="text-xs text-gray-500">PNG, JPG, GIF, WEBP (Max 5MB)</p>
+                                    {/* RED requirements text */}
+                                    <p className="text-xs text-red-600 font-medium">
+                                        ⚠ Required: {IMAGE_CONSTRAINTS.minWidth}×{IMAGE_CONSTRAINTS.minHeight}px min, 16:9 ratio, {IMAGE_CONSTRAINTS.maxFileSize / (1024 * 1024)}MB max
+                                    </p>
                                 </div>
                                 <input
                                     id="image-upload"
@@ -266,7 +434,18 @@ export default function AddPromotions({
                             </label>
                         )}
                     </div>
-                    {errors.image && <p className="mt-1 text-sm text-red-600">{errors.image[0]}</p>}
+                    {errors.image && (
+                        <div className="mt-1">
+                            {Array.isArray(errors.image) ? (
+                                errors.image.map((error, idx) => (
+                                    <p key={idx} className="text-sm text-red-600">{error}</p>
+                                ))
+                            ) : (
+                                <p className="text-sm text-red-600">{errors.image}</p>
+                            )}
+                        </div>
+                    )}
+                    {renderImageValidationInfo()}
                     
                     {/* Image Alt Text */}
                     {previewImage && (
@@ -280,8 +459,11 @@ export default function AddPromotions({
                                 value={form.image_alt_text}
                                 onChange={(event) => updateField('image_alt_text', event.target.value)}
                                 className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                                placeholder="Describe the image for accessibility"
+                                placeholder="Describe the image for accessibility (e.g., 'City College of CDO campus banner')"
                             />
+                            <p className="mt-1 text-xs text-gray-400">
+                                This text helps visually impaired users understand the image and improves SEO.
+                            </p>
                         </div>
                     )}
                 </div>
@@ -363,12 +545,12 @@ export default function AddPromotions({
                             <>
                                 <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    <path className="opacity-75" fill=" currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
-                                Creating...
+                                {isEditing ? 'Updating...' : 'Creating...'}
                             </>
                         ) : (
-                            'Create Promotion'
+                            isEditing ? 'Update Promotion' : 'Create Promotion'
                         )}
                     </button>
                 </div>

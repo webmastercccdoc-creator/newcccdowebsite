@@ -209,7 +209,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/promotions', [PromotionsController::class, 'store'])->name('admin.promotions.store');                // Create new promotion
     Route::get('/admin/promotions/{id}', [PromotionsController::class, 'show'])->name('admin.promotions.show');              // View single promotion
     Route::put('/admin/promotions/{id}', [PromotionsController::class, 'update'])->name('admin.promotions.update');          // Update promotion
+    
+    // 🔥 FIXED: Status toggle route
+    Route::put('/admin/promotions/{id}/status', [PromotionsController::class, 'toggleStatus'])->name('admin.promotions.toggle-status'); // Toggle status
+    
     Route::delete('/admin/promotions/{id}', [PromotionsController::class, 'destroy'])->name('admin.promotions.destroy');      // Delete promotion
+    
+    // Bulk delete
+    Route::delete('/admin/promotions/bulk', [PromotionsController::class, 'bulkDelete'])->name('admin.promotions.bulk-delete'); // Bulk delete promotions
 
     // ============================================
     // USER MANAGEMENT ROUTES

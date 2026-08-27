@@ -8,12 +8,14 @@ import { ConfirmModal } from '@/components/admin/Modal';
 export default function Articles({ articles: initialArticles, departments = [] }) {
   const initialArticleList = Array.isArray(initialArticles) ? initialArticles : [];
 
-  // Use articles from controller or empty array as fallback
+  // State declarations
   const [articles, setArticles] = useState(initialArticleList);
   const [currentPage, setCurrentPage] = useState(1);
-  
-  // ✅ CHANGED: Show only 5 items per page
   const itemsPerPage = 5;
+
+  // 🆕 Add permissions state
+  const [userPermissions, setUserPermissions] = useState([]);
+  const [loadingPermissions, setLoadingPermissions] = useState(true);
 
   // Search and filter states
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,7 +28,30 @@ export default function Articles({ articles: initialArticles, departments = [] }
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [articleToDelete, setArticleToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showArchiveModal, setShowArchiveModal] = useState(false);
+  const [articleToArchive, setArticleToArchive] = useState(null);
+  const [isArchiving, setIsArchiving] = useState(false);
 
+  // 🆕 Fetch user permissions
+  useEffect(() => {
+    const fetchUserPermissions = async () => {
+      try {
+        const response = await axios.get('/user/permissions');
+        if (response.data?.user?.permissions) {
+          setUserPermissions(response.data.user.permissions);
+        }
+      } catch (error) {
+        console.error('Failed to fetch user permissions:', error);
+        setUserPermissions([]);
+      } finally {
+        setLoadingPermissions(false);
+      }
+    };
+
+    fetchUserPermissions();
+  }, []);
+
+  // Fetch user articles
   useEffect(() => {
     let isMounted = true;
 
@@ -53,19 +78,18 @@ export default function Articles({ articles: initialArticles, departments = [] }
     };
   }, []);
 
+  // 🆕 Permission check helper
+  const hasPermission = (permission) => {
+    return userPermissions.includes(permission);
+  };
+
   // Filter articles based on search and filters
   const filteredArticles = articles.filter(article => {
-    // Search filter
     const normalizedSearchQuery = searchQuery.toLowerCase();
     const matchesSearch = [article.title, article.department, article.created_by]
       .some(value => String(value ?? '').toLowerCase().includes(normalizedSearchQuery));
-    
-    // Status filter
     const matchesStatus = statusFilter === 'All' || article.status === statusFilter;
-    
-    // Department filter
     const matchesDepartment = departmentFilter === 'All' || article.department === departmentFilter;
-    
     return matchesSearch && matchesStatus && matchesDepartment;
   });
 
@@ -144,21 +168,31 @@ export default function Articles({ articles: initialArticles, departments = [] }
     setShowDeleteModal(true);
   };
 
-  const handleArchive = async (id) => {
+  const handleArchive = (id) => {
+    setArticleToArchive(id);
+    setShowArchiveModal(true);
+  };
+
+  const confirmArchive = async () => {
+    setIsArchiving(true);
     try {
-      const response = await axios.put(`/admin/articles/${id}/archive`, { status: 'pending' });
+      const response = await axios.put(`/admin/articles/${articleToArchive}/archive`, { status: 'pending' });
 
       if (response.status === 200 || response.data?.success) {
         setArticles(prevArticles =>
           prevArticles.map(article =>
-            article.id === id ? { ...article, status: 'Pending' } : article
+            article.id === articleToArchive ? { ...article, status: 'Pending' } : article
           )
         );
-        alert('Article moved back to pending status.');
+        setShowArchiveModal(false);
+        setArticleToArchive(null);
+        alert('Article moved back to pending status successfully.');
       }
     } catch (error) {
       console.error('Failed to archive article:', error);
       alert(error.response?.data?.message || 'Failed to archive article. Please try again.');
+    } finally {
+      setIsArchiving(false);
     }
   };
 
@@ -185,7 +219,6 @@ export default function Articles({ articles: initialArticles, departments = [] }
   };
 
   const handleSaveArticle = (articleData) => {
-    // Normalize status based on backend values
     let normalizedStatus = articleData.status;
     if (normalizedStatus === 'pending' || normalizedStatus === 'Draft') {
       normalizedStatus = 'Pending';
@@ -197,7 +230,6 @@ export default function Articles({ articles: initialArticles, departments = [] }
       normalizedStatus = 'Archived';
     }
 
-    // Format date if needed
     let formattedDate = articleData.date;
     if (formattedDate && formattedDate instanceof Date) {
       formattedDate = formattedDate.toISOString().split('T')[0];
@@ -215,12 +247,10 @@ export default function Articles({ articles: initialArticles, departments = [] }
     };
 
     if (editingArticle) {
-      // Update existing article
       setArticles(articles.map(a => 
         a.id === normalizedArticle.id ? normalizedArticle : a
       ));
     } else {
-      // Add new article - ensure it has an ID from the backend response
       if (normalizedArticle.id) {
         setArticles([normalizedArticle, ...articles]);
       }
@@ -235,13 +265,11 @@ export default function Articles({ articles: initialArticles, departments = [] }
     }
   };
 
-  // Reset to page 1 when filters change
   const handleFilterChange = (setter, value) => {
     setter(value);
     setCurrentPage(1);
   };
 
-  // Generate page numbers
   const getPageNumbers = () => {
     const pages = [];
     const maxVisible = 5;
@@ -258,18 +286,25 @@ export default function Articles({ articles: initialArticles, departments = [] }
     return pages;
   };
 
-  // Get unique departments for filter
   const uniqueDepartments = ['All', ...new Set(articles.map(a => a.department).filter(Boolean))];
 
-  // Helper function to get short content preview
   const getContentPreview = (content) => {
     if (!content) return 'No content available';
-    // Strip HTML tags if any
     const plainText = content.replace(/<[^>]*>/g, '');
-    // Get first 100 characters
     const preview = plainText.substring(0, 100);
     return preview.length < plainText.length ? preview + '...' : preview;
   };
+
+  // 🆕 Show loading state while fetching permissions
+  if (loadingPermissions) {
+    return (
+      <AdminLayout title="Articles">
+        <div className="flex justify-center items-center h-64">
+          <div className="text-gray-500">Loading permissions...</div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout title="Articles">
@@ -283,23 +318,24 @@ export default function Articles({ articles: initialArticles, departments = [] }
             Showing only approved articles assigned to your department(s)
           </p>
         </div>
-        <button 
-          onClick={handleAddNew}
-          className="mt-3 sm:mt-0 bg-gray-600 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-          Create New Article
-        </button>
+        
+        {/* 🆕 Only show Create button if user has 'articles' permission */}
+        {hasPermission('articles') && (
+          <button 
+            onClick={handleAddNew}
+            className="mt-3 sm:mt-0 bg-gray-600 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Create New Article
+          </button>
+        )}
       </div>
 
       {/* Search and Filters - Light Grey Background */}
       <div className="bg-gray-100 border border-gray-200 shadow-sm p-4 mb-6">
-        <div
-          className="flex flex-col md:flex-row gap-4"
-          autoComplete="off"
-        >
+        <div className="flex flex-col md:flex-row gap-4" autoComplete="off">
           {/* Search Input */}
           <div className="md:w-80 relative flex-shrink-0">
             <svg 
@@ -347,7 +383,6 @@ export default function Articles({ articles: initialArticles, departments = [] }
               <option value="Archived">Archived</option>
             </select>
 
-            {/* Department Filter */}
             <select
               value={departmentFilter}
               onChange={(e) => handleFilterChange(setDepartmentFilter, e.target.value)}
@@ -358,7 +393,6 @@ export default function Articles({ articles: initialArticles, departments = [] }
               ))}
             </select>
 
-            {/* Clear Filters Button */}
             {(searchQuery || statusFilter !== 'Approved' || departmentFilter !== 'All') && (
               <button
                 type="button"
@@ -379,7 +413,6 @@ export default function Articles({ articles: initialArticles, departments = [] }
           </div>
         </div>
 
-        {/* Filter results info */}
         <div className="mt-3 text-sm text-gray-600">
           {filteredArticles.length === 0 ? (
             <span>No articles found matching your criteria</span>
@@ -450,6 +483,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center justify-center gap-2">
+                        {/* View - Always visible */}
                         <button
                           type="button"
                           onClick={() => handleView(article.id)}
@@ -461,36 +495,48 @@ export default function Articles({ articles: initialArticles, departments = [] }
                           </svg>
                           View
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => handleEdit(article.id)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-all shadow-sm hover:shadow"
-                        >
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                          </svg>
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleArchive(article.id)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gray-600 hover:bg-gray-700 rounded-lg transition-all shadow-sm hover:shadow"
-                        >
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M7 8V6a1 1 0 011-1h8a1 1 0 011 1v2m-9 4h10l-1 8H7l-1-8z" />
-                          </svg>
-                          Archive
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(article.id)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all shadow-sm hover:shadow"
-                        >
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                          Delete
-                        </button>
+
+                        {/* 🆕 Edit - Only show if user has 'articles' permission */}
+                        {hasPermission('articles') && (
+                          <button
+                            type="button"
+                            onClick={() => handleEdit(article.id)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-all shadow-sm hover:shadow"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            Edit
+                          </button>
+                        )}
+
+                        {/* 🆕 Archive - Only show if user has 'articles' permission */}
+                        {hasPermission('articles') && (
+                          <button
+                            type="button"
+                            onClick={() => handleArchive(article.id)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gray-600 hover:bg-gray-700 rounded-lg transition-all shadow-sm hover:shadow"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M7 8V6a1 1 0 011-1h8a1 1 0 011 1v2m-9 4h10l-1 8H7l-1-8z" />
+                            </svg>
+                            Archive
+                          </button>
+                        )}
+
+                        {/* 🆕 Delete - Only show if user has 'user_management' permission */}
+                        {hasPermission('user_management') && (
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(article.id)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all shadow-sm hover:shadow"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Delete
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -589,6 +635,22 @@ export default function Articles({ articles: initialArticles, departments = [] }
         onSave={handleSaveArticle}
         article={editingArticle}
         departments={departments}
+      />
+
+      {/* Archive Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showArchiveModal}
+        onClose={() => {
+          setShowArchiveModal(false);
+          setArticleToArchive(null);
+        }}
+        onConfirm={confirmArchive}
+        title="Archive Article"
+        message="Are you sure you want to archive this article? It will be moved back to pending status and will not be visible on the website until it is approved again."
+        confirmText="Archive"
+        cancelText="Cancel"
+        confirmColor="bg-gray-600 hover:bg-gray-700"
+        loading={isArchiving}
       />
 
       {/* Delete Confirmation Modal */}

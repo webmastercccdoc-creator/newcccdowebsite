@@ -7,7 +7,9 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ArticlesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PromotionsController;
+use App\Http\Controllers\EventsController;
 use Illuminate\Foundation\Application;
+use App\Http\Controllers\EventParticipantController;
 use App\Http\Controllers\UserAccessController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -138,12 +140,24 @@ Route::get('/news/news-letters', function () {
     return Inertia::render('content/News/NewsLetters');
 })->name('news.news-letters');
 
+Route::get('/events/{id}', function ($id) {
+    return Inertia::render('content/News/ViewEvents', ['id' => $id]);
+})->name('events.view');
+
+
 // ============================================
-// PROMOTIONS PAGE (Public) - FIXED
+// PROMOTIONS PAGE (Public)
 // ============================================
 Route::get('/promotions', function () {
     return Inertia::render('admin/promotions/Promotions');
 })->name('promotions');
+
+// ============================================
+// EVENTS PAGE (Public)
+// ============================================
+Route::get('/events', function () {
+    return Inertia::render('admin/Events/Events');
+})->name('events');
 
 // ============================================
 // CONTACT PAGE
@@ -164,6 +178,14 @@ Route::get('/api/news/{id}', [NewsController::class, 'apiShow']);
 // ============================================
 Route::get('/api/promotions', [PromotionsController::class, 'apiIndex']);
 Route::get('/api/promotions/{id}', [PromotionsController::class, 'apiShow']);
+
+// ============================================
+// EVENTS API ROUTES (Public)
+// ============================================
+Route::get('/api/events', [EventsController::class, 'apiIndex']);
+Route::get('/api/events/{id}', [EventsController::class, 'apiShow']);
+Route::get('/api/events/active', [EventsController::class, 'getActiveEvents']);
+Route::get('/api/events/status-counts', [EventsController::class, 'getStatusCounts']);
 
 // ============================================
 // ADMIN ROUTES (Requires Authentication)
@@ -209,14 +231,38 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/promotions', [PromotionsController::class, 'store'])->name('admin.promotions.store');                // Create new promotion
     Route::get('/admin/promotions/{id}', [PromotionsController::class, 'show'])->name('admin.promotions.show');              // View single promotion
     Route::put('/admin/promotions/{id}', [PromotionsController::class, 'update'])->name('admin.promotions.update');          // Update promotion
-    
-    // 🔥 FIXED: Status toggle route
     Route::put('/admin/promotions/{id}/status', [PromotionsController::class, 'toggleStatus'])->name('admin.promotions.toggle-status'); // Toggle status
-    
     Route::delete('/admin/promotions/{id}', [PromotionsController::class, 'destroy'])->name('admin.promotions.destroy');      // Delete promotion
-    
-    // Bulk delete
     Route::delete('/admin/promotions/bulk', [PromotionsController::class, 'bulkDelete'])->name('admin.promotions.bulk-delete'); // Bulk delete promotions
+
+    // ============================================
+    // EVENTS MANAGEMENT ROUTES (Admin)
+    // ============================================
+    Route::get('/admin/events', [EventsController::class, 'index'])->name('admin.events');                                  // List all events
+    Route::post('/admin/events', [EventsController::class, 'store'])->name('admin.events.store');                           // Create new event
+    Route::get('/admin/events/{id}', [EventsController::class, 'show'])->name('admin.events.show');                         // View single event
+    Route::put('/admin/events/{id}', [EventsController::class, 'update'])->name('admin.events.update');                     // Update event
+    Route::put('/admin/events/{id}/status', [EventsController::class, 'toggleStatus'])->name('admin.events.toggle-status'); // Toggle status
+    Route::put('/admin/events/{id}/complete', [EventsController::class, 'complete'])->name('admin.events.complete');
+    Route::delete('/admin/events/{id}', [EventsController::class, 'destroy'])->name('admin.events.destroy');                // Delete event
+    Route::delete('/admin/events/bulk', [EventsController::class, 'bulkDelete'])->name('admin.events.bulk-delete');         // Bulk delete events
+
+// ============================================
+// EVENT PARTICIPANTS ROUTES
+// ============================================
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('admin/events/{eventId}/participants')->group(function () {
+        Route::get('/', [EventParticipantController::class, 'index'])->name('admin.events.participants.index');
+        Route::post('/', [EventParticipantController::class, 'store'])->name('admin.events.participants.store');
+        Route::get('/{participantId}', [EventParticipantController::class, 'show'])->name('admin.events.participants.show');
+        Route::put('/{participantId}', [EventParticipantController::class, 'update'])->name('admin.events.participants.update');
+        Route::put('/{participantId}/status', [EventParticipantController::class, 'updateStatus'])->name('admin.events.participants.update-status');
+        Route::delete('/{participantId}', [EventParticipantController::class, 'destroy'])->name('admin.events.participants.destroy');
+        Route::post('/bulk', [EventParticipantController::class, 'bulkStore'])->name('admin.events.participants.bulk-store');
+        Route::get('/stats', [EventParticipantController::class, 'getStats'])->name('admin.events.participants.stats');
+        Route::get('/export', [EventParticipantController::class, 'export'])->name('admin.events.participants.export');
+    });
+});
 
     // ============================================
     // USER MANAGEMENT ROUTES

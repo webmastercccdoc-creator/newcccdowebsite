@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from '@/components/admin/Modal';
 
 const initialForm = {
     title: '',
-    content: '',
+    description: '',
+    location: '',
     date: '',
-    expire: '',
+    time: '',
     status: 'active',
+    department: '',
     image: null,
     image_alt_text: '',
 };
@@ -21,15 +23,15 @@ const IMAGE_CONSTRAINTS = {
     maxFileSize: 5 * 1024 * 1024, // 5MB
     allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
     recommendedAspectRatio: 16 / 9,
-    minAspectRatio: 2 / 1, // 2:1 minimum
+    minAspectRatio: 2 / 1,
 };
 
-export default function AddPromotions({
+export default function AddEvent({
     isOpen,
     onClose,
     onCreated,
     isEditing = false,
-    promotion = null,
+    event = null,
 }) {
     const [form, setForm] = useState(initialForm);
     const [errors, setErrors] = useState({});
@@ -40,8 +42,7 @@ export default function AddPromotions({
     const [imageValidation, setImageValidation] = useState(null);
 
     useEffect(() => {
-        if (!isEditing || !promotion) {
-            // Reset form when not editing
+        if (!isEditing || !event) {
             if (!isOpen) return;
             setForm(initialForm);
             setPreviewImage(null);
@@ -51,20 +52,20 @@ export default function AddPromotions({
         }
 
         setForm({
-            title: promotion.title || '',
-            content: promotion.content || '',
-            date: promotion.date || '',
-            expire: promotion.expire || '',
-            status: promotion.status || 'active',
+            title: event.title || '',
+            description: event.description || '',
+            location: event.location || '',
+            date: event.date || '',
+            time: event.time || '',
+            status: event.status || 'active',
+            department: event.department || '',
             image: null,
-            image_alt_text: promotion.image_alt_text || '',
+            image_alt_text: event.image_alt_text || '',
         });
-        setPreviewImage(
-            promotion.banner_image_url || promotion.image_url || null,
-        );
+        setPreviewImage(event.banner_image_url || null);
         setImageFile(null);
         setImageValidation(null);
-    }, [isEditing, promotion, isOpen]);
+    }, [isEditing, event, isOpen]);
 
     const updateField = (field, value) => {
         setForm((current) => ({ ...current, [field]: value }));
@@ -72,7 +73,6 @@ export default function AddPromotions({
         setSubmitError('');
     };
 
-    // Clear all form fields
     const clearForm = () => {
         setForm(initialForm);
         setErrors({});
@@ -104,7 +104,6 @@ export default function AddPromotions({
                     aspectRatio: aspectRatioStr,
                 };
 
-                // Check minimum dimensions
                 if (width < IMAGE_CONSTRAINTS.minWidth) {
                     validation.isValid = false;
                     validation.errors.push(
@@ -119,7 +118,6 @@ export default function AddPromotions({
                     );
                 }
 
-                // Check maximum dimensions (warning only)
                 if (width > IMAGE_CONSTRAINTS.maxWidth) {
                     validation.warnings.push(
                         `Image width (${width}px) exceeds recommended maximum of ${IMAGE_CONSTRAINTS.maxWidth}px.`
@@ -132,7 +130,6 @@ export default function AddPromotions({
                     );
                 }
 
-                // Check aspect ratio
                 const minRatio = IMAGE_CONSTRAINTS.minAspectRatio;
                 const recommendedRatio = IMAGE_CONSTRAINTS.recommendedAspectRatio;
                 
@@ -149,7 +146,6 @@ export default function AddPromotions({
                     );
                 }
 
-                // Check file size
                 if (file.size > IMAGE_CONSTRAINTS.maxFileSize) {
                     validation.isValid = false;
                     validation.errors.push(
@@ -182,7 +178,6 @@ export default function AddPromotions({
         const file = e.target.files[0];
         if (!file) return;
 
-        // Basic validation
         const basicErrors = [];
         if (!IMAGE_CONSTRAINTS.allowedTypes.includes(file.type)) {
             basicErrors.push('Please upload a valid image file (JPEG, PNG, GIF, or WEBP)');
@@ -200,7 +195,6 @@ export default function AddPromotions({
             setImageFile(null);
             setPreviewImage(null);
             setImageValidation(null);
-            // Reset file input
             const fileInput = document.getElementById('image-upload');
             if (fileInput) {
                 fileInput.value = '';
@@ -208,7 +202,6 @@ export default function AddPromotions({
             return;
         }
 
-        // Validate resolution
         const validation = await validateImageResolution(file);
         
         if (!validation || !validation.isValid) {
@@ -226,7 +219,6 @@ export default function AddPromotions({
             return;
         }
 
-        // Image is valid
         setImageFile(file);
         setForm((current) => ({ ...current, image: file }));
         
@@ -269,10 +261,8 @@ export default function AddPromotions({
 
         const validationErrors = {};
         if (!form.title.trim()) validationErrors.title = ['Title is required'];
-        if (!form.content.trim()) validationErrors.content = ['Content is required'];
-        if (form.date && form.expire && form.expire < form.date) {
-            validationErrors.expire = ['The expiry date must be after the start date.'];
-        }
+        if (!form.description.trim()) validationErrors.description = ['Description is required'];
+        if (!form.date.trim()) validationErrors.date = ['Date is required'];
 
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
@@ -283,11 +273,12 @@ export default function AddPromotions({
         try {
             const formData = new FormData();
             formData.append('title', form.title);
-            formData.append('content', form.content);
-            
+            formData.append('description', form.description);
+            if (form.location) formData.append('location', form.location);
             if (form.date) formData.append('date', form.date);
-            if (form.expire) formData.append('expire', form.expire);
+            if (form.time) formData.append('time', form.time);
             formData.append('status', form.status);
+            if (form.department) formData.append('department', form.department);
             formData.append('image_alt_text', form.image_alt_text || form.title);
             
             if (imageFile) {
@@ -295,8 +286,8 @@ export default function AddPromotions({
             }
 
             const endpoint = isEditing
-                ? `/admin/promotions/${promotion.id}`
-                : '/admin/promotions';
+                ? `/admin/events/${event.id}`
+                : '/admin/events';
             if (isEditing) formData.append('_method', 'PUT');
 
             const response = await axios.post(endpoint, formData);
@@ -306,14 +297,14 @@ export default function AddPromotions({
             setImageFile(null);
             setImageValidation(null);
             if (onCreated) {
-                onCreated(response.data.promotion);
+                onCreated(response.data.event);
             }
             onClose();
         } catch (error) {
             if (error.response?.status === 422) {
                 setErrors(error.response.data.errors || {});
             } else {
-                setSubmitError(error.response?.data?.message || `Failed to ${isEditing ? 'update' : 'create'} promotion. Please try again.`);
+                setSubmitError(error.response?.data?.message || `Failed to ${isEditing ? 'update' : 'create'} event. Please try again.`);
             }
         } finally {
             setIsSubmitting(false);
@@ -322,11 +313,11 @@ export default function AddPromotions({
 
     const statusOptions = [
         { value: 'active', label: 'Active' },
-        { value: 'inactive', label: 'Inactive' },
-        { value: 'expired', label: 'Expired' },
+        { value: 'upcoming', label: 'Upcoming' },
+        { value: 'completed', label: 'Completed' },
+        { value: 'cancelled', label: 'Cancelled' },
     ];
 
-    // Helper to format validation messages
     const renderImageValidationInfo = () => {
         if (!imageValidation) return null;
         
@@ -364,7 +355,7 @@ export default function AddPromotions({
         <Modal
             isOpen={isOpen}
             onClose={handleClose}
-            title={isEditing ? "Edit Promotion" : "Create New Promotion"}
+            title={isEditing ? "Edit Event" : "Create New Event"}
             size="lg"
             closeOnOverlayClick={!isSubmitting}
         >
@@ -377,36 +368,81 @@ export default function AddPromotions({
 
                 {/* Title */}
                 <div>
-                    <label htmlFor="promotion-title" className="mb-1 block text-sm font-medium text-gray-700">
+                    <label htmlFor="event-title" className="mb-1 block text-sm font-medium text-gray-700">
                         Title <span className="text-red-500">*</span>
                     </label>
                     <input
-                        id="promotion-title"
+                        id="event-title"
                         type="text"
                         value={form.title}
                         onChange={(event) => updateField('title', event.target.value)}
                         className={`w-full rounded-lg border ${errors.title ? 'border-red-500' : 'border-gray-300'} px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500`}
                         required
-                        placeholder="Enter promotion title"
+                        placeholder="Enter event title"
                     />
                     {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title[0]}</p>}
                 </div>
 
-                {/* Content */}
+                {/* Description */}
                 <div>
-                    <label htmlFor="promotion-content" className="mb-1 block text-sm font-medium text-gray-700">
-                        Content <span className="text-red-500">*</span>
+                    <label htmlFor="event-description" className="mb-1 block text-sm font-medium text-gray-700">
+                        Description <span className="text-red-500">*</span>
                     </label>
                     <textarea
-                        id="promotion-content"
+                        id="event-description"
                         rows="4"
-                        value={form.content}
-                        onChange={(event) => updateField('content', event.target.value)}
-                        className={`w-full rounded-lg border ${errors.content ? 'border-red-500' : 'border-gray-300'} px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500`}
+                        value={form.description}
+                        onChange={(event) => updateField('description', event.target.value)}
+                        className={`w-full rounded-lg border ${errors.description ? 'border-red-500' : 'border-gray-300'} px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500`}
                         required
-                        placeholder="Enter promotion content"
+                        placeholder="Enter event description"
                     />
-                    {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content[0]}</p>}
+                    {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description[0]}</p>}
+                </div>
+
+                {/* Location */}
+                <div>
+                    <label htmlFor="event-location" className="mb-1 block text-sm font-medium text-gray-700">
+                        Location
+                    </label>
+                    <input
+                        id="event-location"
+                        type="text"
+                        value={form.location}
+                        onChange={(event) => updateField('location', event.target.value)}
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        placeholder="Enter event location"
+                    />
+                </div>
+
+                {/* Date and Time */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label htmlFor="event-date" className="mb-1 block text-sm font-medium text-gray-700">
+                            Date <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            id="event-date"
+                            type="date"
+                            value={form.date}
+                            onChange={(event) => updateField('date', event.target.value)}
+                            className={`w-full rounded-lg border ${errors.date ? 'border-red-500' : 'border-gray-300'} px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500`}
+                            required
+                        />
+                        {errors.date && <p className="mt-1 text-sm text-red-600">{errors.date[0]}</p>}
+                    </div>
+                    <div>
+                        <label htmlFor="event-time" className="mb-1 block text-sm font-medium text-gray-700">
+                            Time
+                        </label>
+                        <input
+                            id="event-time"
+                            type="time"
+                            value={form.time}
+                            onChange={(event) => updateField('time', event.target.value)}
+                            className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        />
+                    </div>
                 </div>
 
                 {/* Image Upload */}
@@ -468,7 +504,6 @@ export default function AddPromotions({
                     )}
                     {renderImageValidationInfo()}
                     
-                    {/* Image Alt Text */}
                     {previewImage && (
                         <div className="mt-2">
                             <label htmlFor="image-alt-text" className="mb-1 block text-sm font-medium text-gray-700">
@@ -480,7 +515,7 @@ export default function AddPromotions({
                                 value={form.image_alt_text}
                                 onChange={(event) => updateField('image_alt_text', event.target.value)}
                                 className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                                placeholder="Describe the image for accessibility (e.g., 'City College of CDO campus banner')"
+                                placeholder="Describe the image for accessibility"
                             />
                             <p className="mt-1 text-xs text-gray-400">
                                 This text helps visually impaired users understand the image and improves SEO.
@@ -489,51 +524,13 @@ export default function AddPromotions({
                     )}
                 </div>
 
-                {/* Date Range */}
-                <div>
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <div>
-                            <label htmlFor="promotion-date" className="mb-1 block text-sm font-medium text-gray-700">
-                                Start Date <span className="text-gray-400 text-xs">(Optional)</span>
-                            </label>
-                            <input
-                                id="promotion-date"
-                                type="date"
-                                value={form.date}
-                                onChange={(event) => updateField('date', event.target.value)}
-                                className={`w-full rounded-lg border ${errors.date ? 'border-red-500' : 'border-gray-300'} px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500`}
-                            />
-                            {errors.date && <p className="mt-1 text-sm text-red-600">{errors.date[0]}</p>}
-                        </div>
-                        <div>
-                            <label htmlFor="promotion-expire" className="mb-1 block text-sm font-medium text-gray-700">
-                                Expiry Date <span className="text-gray-400 text-xs">(Optional)</span>
-                            </label>
-                            <input
-                                id="promotion-expire"
-                                type="date"
-                                value={form.expire}
-                                onChange={(event) => updateField('expire', event.target.value)}
-                                className={`w-full rounded-lg border ${errors.expire ? 'border-red-500' : 'border-gray-300'} px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500`}
-                            />
-                            {errors.expire && <p className="mt-1 text-sm text-red-600">{errors.expire[0]}</p>}
-                        </div>
-                    </div>
-                    <p className="mt-2 text-sm text-gray-500 italic">
-                        <svg className="inline-block w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Leave both dates blank to keep this promotion active indefinitely.
-                    </p>
-                </div>
-
                 {/* Status */}
                 <div>
-                    <label htmlFor="promotion-status" className="mb-1 block text-sm font-medium text-gray-700">
+                    <label htmlFor="event-status" className="mb-1 block text-sm font-medium text-gray-700">
                         Status
                     </label>
                     <select
-                        id="promotion-status"
+                        id="event-status"
                         value={form.status}
                         onChange={(event) => updateField('status', event.target.value)}
                         className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
@@ -544,10 +541,9 @@ export default function AddPromotions({
                             </option>
                         ))}
                     </select>
-                    {errors.status && <p className="mt-1 text-sm text-red-600">{errors.status[0]}</p>}
                 </div>
 
-                {/* 🔥 Buttons - Expanded to use full width */}
+                {/* Buttons */}
                 <div className="flex gap-3 border-t border-gray-200 pt-4">
                     <button
                         type="button"
@@ -579,7 +575,7 @@ export default function AddPromotions({
                                 {isEditing ? 'Updating...' : 'Creating...'}
                             </>
                         ) : (
-                            isEditing ? 'Update Promotion' : 'Create Promotion'
+                            isEditing ? 'Update Event' : 'Create Event'
                         )}
                     </button>
                 </div>

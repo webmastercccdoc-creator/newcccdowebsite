@@ -211,6 +211,7 @@ const TABS = [
     ...OFFICES.map((o) => ({ id: o.id, label: o.label, icon: o.icon })),
 ];
 
+/* Scroll Reveal Hook */
 function useRevealOnScroll(threshold = 0.15) {
     const ref = useRef(null);
     const [visible, setVisible] = useState(false);
@@ -238,27 +239,42 @@ function useRevealOnScroll(threshold = 0.15) {
     return [ref, visible];
 }
 
+/* Reusable Reveal Wrapper */
+function Reveal({ children, delay = 0, className = '' }) {
+    const [ref, visible] = useRevealOnScroll(0.1);
+    return (
+        <div
+            ref={ref}
+            className={`transition-all duration-700 ease-out ${className} ${
+                visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+            style={{ transitionDelay: `${delay}ms` }}
+        >
+            {children}
+        </div>
+    );
+}
+
 function OfficeOrgChart({ levels }) {
     return (
         <div className="flex flex-col items-center">
             {levels.map((level, levelIndex) => (
-                <div key={level.title} className="w-full flex flex-col items-center">
+                <div key={level.title} className="w-full flex flex-col items-center relative">
                     {levelIndex > 0 && (
-                        <div className="flex flex-col items-center" aria-hidden="true">
-                            <div className="w-px h-4 bg-green-300" />
-                            <div className="w-1.5 h-1.5 rounded-full bg-green-600" />
-                            <div className="w-px h-4 bg-green-300" />
+                        <div className="flex flex-col items-center mb-4" aria-hidden="true">
+                            <div className="w-px h-8 bg-gray-300" />
                         </div>
                     )}
-                    <p className="text-[10px] font-bold tracking-[0.2em] text-green-700/70 uppercase mb-2.5 font-sans">
+                    <p className="text-[11px] font-bold tracking-[0.2em] text-amber-700 uppercase mb-4 font-sans">
                         {level.title}
                     </p>
-                    <div className="flex flex-wrap justify-center gap-3 w-full mb-1">
+                    <div className="flex flex-wrap justify-center gap-4 w-full mb-8">
                         {level.nodes.map((node) => (
                             <div
                                 key={node}
-                                className="min-w-[150px] px-4 py-3 bg-white border border-gray-200 rounded-lg shadow-sm text-center hover:border-green-700 hover:shadow-md transition-all duration-200"
+                                className="min-w-[180px] px-6 py-4 bg-white border border-gray-200 rounded-lg shadow-sm text-center hover:border-green-700 hover:shadow-md transition-all duration-300 relative group"
                             >
+                                <div className="absolute top-0 left-0 w-full h-1 bg-green-700 rounded-t-lg transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
                                 <span className="text-sm font-semibold text-gray-800">{node}</span>
                             </div>
                         ))}
@@ -284,30 +300,7 @@ function AnimatedPanel({ children }) {
     );
 }
 
-/* Small reusable "letterhead" section eyebrow — a double rule with a label,
-   echoing the look of an official academic letterhead or diploma. */
-function SectionEyebrow({ children }) {
-    return (
-        <div className="flex items-center gap-3 mb-2" aria-hidden="false">
-            <span className="text-[10.5px] font-bold tracking-[0.25em] text-amber-600 uppercase font-sans">
-                {children}
-            </span>
-        </div>
-    );
-}
-
-function SectionRule() {
-    return (
-        <div className="mt-2 mb-6 flex items-center gap-1.5" aria-hidden="true">
-            <span className="h-[3px] w-10 bg-green-700 rounded-full" />
-            <span className="h-[3px] w-2.5 bg-amber-500 rounded-full" />
-        </div>
-    );
-}
-
-/* ============================================================================
-   TIDMAC Team Carousel Component (Drag to scroll)
-   ============================================================================ */
+/* TIDMAC Team Carousel Component (Drag to scroll) */
 function TidmacTeamCarousel() {
     const trackRef = useRef(null);
     const mouseDownAt = useRef(0);
@@ -332,7 +325,6 @@ function TidmacTeamCarousel() {
 
             const movePercentage = (mouseDelta / maxDelta) * -100;
             const nextPercentageUnconstrained = prevPercentage.current + movePercentage;
-            // Tighter bounds for a smaller track
             const nextPercentage = Math.max(Math.min(nextPercentageUnconstrained, -20), -80);
 
             percentage.current = nextPercentage;
@@ -362,7 +354,6 @@ function TidmacTeamCarousel() {
         mouseDownAt.current = e.clientX;
     };
 
-    // Reordered array to match requested arrangement: ceb, ana, notal, topson, jerax
     const teamMembers = [
         { name: 'Jocynt', img: cebImg },
         { name: 'Zy', img: anaImg },
@@ -372,7 +363,7 @@ function TidmacTeamCarousel() {
     ];
 
     return (
-        <div className="mt-10">
+        <Reveal className="mt-12">
             <p className="text-xs font-bold tracking-widest text-green-800/60 uppercase mb-6 font-sans">
                 Meet the Team
             </p>
@@ -394,7 +385,7 @@ function TidmacTeamCarousel() {
                     ))}
                 </div>
             </div>
-        </div>
+        </Reveal>
     );
 }
 
@@ -426,9 +417,6 @@ export default function VPAdminFinance() {
         ? BIONOTE_PARAGRAPHS
         : BIONOTE_PARAGRAPHS.slice(0, BIONOTE_PREVIEW_COUNT);
 
-    const [profileRef, profileVisible] = useRevealOnScroll();
-    const [contentRef, contentVisible] = useRevealOnScroll();
-
     return (
         <MainLayout
             maxWidth="full"
@@ -456,31 +444,16 @@ export default function VPAdminFinance() {
 
                 .vp-bio-lead::first-letter {
                     font-family: 'Fraunces', ui-serif, Georgia, serif;
-                    font-size: 2.9rem;
+                    font-size: 3.2rem;
                     font-weight: 600;
                     float: left;
                     line-height: 0.8;
-                    padding-right: 0.35rem;
+                    padding-right: 0.5rem;
                     padding-top: 0.3rem;
                     color: var(--vp-green-800);
                 }
 
-                @keyframes borderRotate {
-                    0% { transform: translate(-50%, -50%) rotate(0deg); }
-                    100% { transform: translate(-50%, -50%) rotate(360deg); }
-                }
-
-                @keyframes vpFadeUp {
-                    from { opacity: 0; transform: translateY(14px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                .vp-stagger { animation: vpFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
-
-                @media (prefers-reduced-motion: reduce) {
-                    .vp-stagger { animation: none; }
-                }
-
-                /* TIDMAC Carousel - Sized down to fit container cleanly */
+                /* TIDMAC Carousel */
                 .tidmac-carousel {
                     position: relative;
                     width: 100%;
@@ -517,7 +490,7 @@ export default function VPAdminFinance() {
                     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
                 }
                 .tidmac-frame:hover {
-                    width: 26vmin; /* Smaller expanded width */
+                    width: 26vmin; 
                     filter: brightness(100%);
                 }
                 .tidmac-image {
@@ -597,7 +570,7 @@ export default function VPAdminFinance() {
                 />
             </div>
 
-            {/* ===================== Hero Banner with Image — UNCHANGED ===================== */}
+            {/* ===================== Hero Banner (UNCHANGED) ===================== */}
             <div
                 className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
                 style={{ backgroundImage: `url(${vpAdminFinanceBanner})` }}
@@ -621,320 +594,327 @@ export default function VPAdminFinance() {
                 <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full blur-3xl opacity-40 pointer-events-none" style={{ background: 'var(--vp-sage)' }} aria-hidden="true" />
 
                 <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-11 text-center">
-                    <div className="flex items-center justify-center gap-3 mb-4" aria-hidden="true">
-                        <span className="h-px w-10" style={{ background: 'var(--vp-gold)' }} />
-                        <span className="text-[11px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-green-700)' }}>Office of the</span>
-                        <span className="h-px w-10" style={{ background: 'var(--vp-gold)' }} />
-                    </div>
-                    <h2 className="vp-serif text-3xl md:text-[2.75rem] font-semibold tracking-tight" style={{ color: 'var(--vp-green-950)' }}>
-                        Vice President for Administration and Finance
-                    </h2>
-                    <p className="mt-3 text-sm tracking-wide text-gray-500">
-                        Administrative Leadership &nbsp;&middot;&nbsp; Institutional Services &nbsp;&middot;&nbsp; Operational Excellence
-                    </p>
-                    <div className="mt-5 flex items-center justify-center gap-1.5" aria-hidden="true">
-                        <span className="h-[3px] w-14 rounded-full" style={{ background: 'var(--vp-green-700)' }} />
-                        <span className="h-[3px] w-3 rounded-full" style={{ background: 'var(--vp-gold)' }} />
-                    </div>
+                    <Reveal>
+                        <div className="flex items-center justify-center gap-3 mb-4" aria-hidden="true">
+                            <span className="h-px w-10" style={{ background: 'var(--vp-gold)' }} />
+                            <span className="text-[11px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-green-700)' }}>Office of the</span>
+                            <span className="h-px w-10" style={{ background: 'var(--vp-gold)' }} />
+                        </div>
+                        <h2 className="vp-serif text-3xl md:text-[2.75rem] font-semibold tracking-tight" style={{ color: 'var(--vp-green-950)' }}>
+                            Vice President for Administration and Finance
+                        </h2>
+                        <p className="mt-3 text-sm tracking-wide text-gray-500">
+                            Administrative Leadership &nbsp;&middot;&nbsp; Institutional Services &nbsp;&middot;&nbsp; Operational Excellence
+                        </p>
+                        <div className="mt-5 flex items-center justify-center gap-1.5" aria-hidden="true">
+                            <span className="h-[3px] w-14 rounded-full" style={{ background: 'var(--vp-green-700)' }} />
+                            <span className="h-[3px] w-3 rounded-full" style={{ background: 'var(--vp-gold)' }} />
+                        </div>
+                    </Reveal>
                 </div>
             </section>
 
             {/* ===================== Profile + Tabs ===================== */}
-            <section className="vp-sans" style={{ background: 'var(--vp-paper)' }}>
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 md:py-16">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-10">
+            <section className="vp-sans relative" style={{ background: 'var(--vp-paper)' }}>
+                {/* Subtle Background Pattern */}
+                <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#145A32 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+
+                <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 md:py-20">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
 
                         {/* Left: Profile Card */}
-                        <div
-                            ref={profileRef}
-                            className={`lg:col-span-4 transition-all duration-700 ease-out ${
-                                profileVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                            }`}
-                        >
-                            <div className="lg:sticky lg:top-8 space-y-5">
-                                <div className="bg-white rounded-2xl shadow-[0_1px_2px_rgba(11,61,31,0.06),0_12px_28px_-14px_rgba(11,61,31,0.25)] border border-gray-200/80 p-5">
-                                    {/* Photo with animated sweeping light border */}
-                                    <div className="relative pb-7">
-                                        <div
-                                            className="absolute -inset-[3px] rounded-[17px] z-0 overflow-hidden"
-                                            style={{ background: 'var(--vp-green-800)', boxShadow: '0 0 24px rgba(199,154,62,0.25)' }}
-                                        >
-                                            <div
-                                                className="absolute left-1/2 top-1/2 w-[200%] h-[200%]"
-                                                style={{
-                                                    background: 'conic-gradient(from 0deg, transparent 0deg, rgba(199,154,62,0.95) 40deg, transparent 80deg, transparent 360deg)',
-                                                    animation: 'borderRotate 5s linear infinite',
-                                                    transform: 'translate(-50%, -50%)'
-                                                }}
-                                            ></div>
-                                        </div>
+                        <div className="lg:col-span-4">
+                            <div className="lg:sticky lg:top-8 space-y-6">
+                                <Reveal>
+                                    <div className="bg-white rounded-2xl shadow-[0_1px_2px_rgba(11,61,31,0.06),0_12px_28px_-14px_rgba(11,61,31,0.25)] border border-gray-200/80 p-6">
+                                        {/* Formal Frame Image */}
+                                        <div className="relative pb-8">
+                                            <div className="relative z-10 rounded-xl p-2 bg-white border border-gray-100">
+                                                <div className="overflow-hidden rounded-lg">
+                                                    <img
+                                                        src={kurtCandilasImage}
+                                                        alt="Dr. Kurt S. Candilas"
+                                                        className="w-full aspect-[4/5] object-cover"
+                                                    />
+                                                </div>
+                                            </div>
 
-                                        <div className="relative z-10 rounded-xl p-1.5 bg-white">
-                                            <div className="overflow-hidden rounded-lg">
+                                            {/* Gold border accent */}
+                                            <div className="absolute inset-0 z-0 rounded-2xl translate-x-2 translate-y-2 border-2" style={{ borderColor: 'var(--vp-gold)' }}></div>
+
+                                            <div
+                                                className="absolute left-1/2 bottom-0 -translate-x-1/2 z-20 w-20 h-20 rounded-full bg-white shadow-md flex items-center justify-center p-2 transition-transform duration-300 hover:scale-105"
+                                                style={{ border: '2px solid var(--vp-green-700)' }}
+                                            >
                                                 <img
-                                                    src={kurtCandilasImage}
-                                                    alt="Dr. Kurt S. Candilas"
-                                                    className="w-full aspect-[4/5] object-cover"
+                                                    src={ccdologo}
+                                                    alt="City College of Cagayan de Oro Logo"
+                                                    className="w-full h-full object-contain"
                                                 />
                                             </div>
                                         </div>
 
-                                        <div
-                                            className="absolute left-1/2 bottom-0 -translate-x-1/2 z-20 w-16 h-16 rounded-full bg-white shadow-sm flex items-center justify-center p-1.5"
-                                            style={{ border: '2px solid var(--vp-gold)' }}
-                                        >
-                                            <img
-                                                src={ccdologo}
-                                                alt="City College of Cagayan de Oro Logo"
-                                                className="w-full h-full object-contain"
-                                            />
+                                        <div className="text-center pt-2">
+                                            <h3 className="vp-serif text-2xl font-semibold tracking-tight" style={{ color: 'var(--vp-ink)' }}>
+                                                Dr. Kurt S. Candilas
+                                            </h3>
+                                            <p className="mt-2 text-[12px] font-bold tracking-wider uppercase" style={{ color: 'var(--vp-green-700)' }}>
+                                                Vice President for Administration and Finance
+                                            </p>
+                                            <div className="mt-5 pt-4 flex items-center justify-center gap-2 text-xs text-gray-500" style={{ borderTop: '1px solid #ECE7DA' }}>
+                                                <svg className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--vp-gold-dark)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                                                </svg>
+                                                <span>City College of Cagayan de Oro</span>
+                                            </div>
                                         </div>
                                     </div>
+                                </Reveal>
 
-                                    <div className="text-center pt-1">
-                                        <h3 className="vp-serif text-xl font-semibold tracking-tight" style={{ color: 'var(--vp-ink)' }}>
-                                            Dr. Kurt S. Candilas
-                                        </h3>
-                                        <p className="mt-1.5 text-[13px] font-bold tracking-wide uppercase" style={{ color: 'var(--vp-green-700)' }}>
-                                            Vice President for Administration and Finance
-                                        </p>
-                                        <div className="mt-4 pt-4 flex items-center justify-center gap-2 text-xs text-gray-500" style={{ borderTop: '1px solid #ECE7DA' }}>
-                                            <svg className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--vp-gold-dark)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z" />
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                                            </svg>
-                                            <span>City College of Cagayan de Oro</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div
-                                    className="relative rounded-2xl p-5 overflow-hidden"
-                                    style={{ background: 'var(--vp-green-950)' }}
-                                >
-                                    <span
-                                        className="vp-serif absolute -top-3 left-4 text-6xl leading-none select-none"
-                                        style={{ color: 'rgba(199,154,62,0.35)' }}
-                                        aria-hidden="true"
+                                <Reveal delay={150}>
+                                    <div
+                                        className="relative rounded-2xl p-6 overflow-hidden"
+                                        style={{ background: 'var(--vp-green-950)' }}
                                     >
-                                        &ldquo;
-                                    </span>
-                                    <p className="relative vp-serif text-[15px] italic leading-relaxed text-white/90 pt-3">
-                                        {PROFILE_QUOTE}
-                                    </p>
-                                    <div className="mt-4 h-0.5 w-8 rounded-full" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
-                                </div>
+                                        <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl opacity-20" style={{ background: 'var(--vp-gold)' }}></div>
+                                        <span
+                                            className="vp-serif absolute -top-3 left-4 text-7xl leading-none select-none"
+                                            style={{ color: 'rgba(199,154,62,0.35)' }}
+                                            aria-hidden="true"
+                                        >
+                                            &ldquo;
+                                        </span>
+                                        <p className="relative vp-serif text-base italic leading-relaxed text-white/90 pt-4">
+                                            {PROFILE_QUOTE}
+                                        </p>
+                                        <div className="mt-4 h-0.5 w-12 rounded-full" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
+                                    </div>
+                                </Reveal>
                             </div>
                         </div>
 
                         {/* Right: Tabs + Content */}
-                        <div
-                            ref={contentRef}
-                            className={`lg:col-span-8 min-w-0 transition-all duration-700 ease-out delay-100 ${
-                                contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                            }`}
-                        >
-                            <div className="bg-white rounded-2xl border border-gray-200/80 shadow-[0_1px_2px_rgba(11,61,31,0.06),0_12px_28px_-14px_rgba(11,61,31,0.2)] overflow-hidden">
-                                {/* Tab navigation */}
-                                <div className="flex overflow-x-auto" style={{ background: 'var(--vp-sage)', borderBottom: '1px solid #DEE6DB' }}>
-                                    {TABS.map((tab) => {
-                                        const isActive = tab.id === activeTab;
-                                        return (
-                                            <button
-                                                key={tab.id}
-                                                type="button"
-                                                onClick={() => setActiveTab(tab.id)}
-                                                aria-pressed={isActive}
-                                                className={[
-                                                    'group relative flex-shrink-0 inline-flex items-center gap-2 px-5 py-4 text-sm font-semibold whitespace-nowrap',
-                                                    'transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px]',
-                                                    isActive ? 'text-white' : 'hover:text-green-800',
-                                                ].join(' ')}
-                                                style={{
-                                                    color: isActive ? '#ffffff' : 'var(--vp-ink)',
-                                                    background: isActive ? 'var(--vp-green-800)' : 'transparent',
-                                                    outlineColor: 'var(--vp-gold)',
-                                                }}
-                                            >
-                                                <svg
-                                                    className="w-4 h-4 flex-shrink-0"
-                                                    style={{ color: isActive ? 'var(--vp-gold)' : '#8A9A8D' }}
-                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        <div className="lg:col-span-8 min-w-0">
+                            <Reveal delay={200}>
+                                <div className="bg-white rounded-2xl border border-gray-200/80 shadow-[0_1px_2px_rgba(11,61,31,0.06),0_12px_28px_-14px_rgba(11,61,31,0.2)] overflow-hidden">
+                                    {/* Tab navigation */}
+                                    <div className="flex overflow-x-auto" style={{ background: 'var(--vp-sage)', borderBottom: '2px solid #DEE6DB' }}>
+                                        {TABS.map((tab) => {
+                                            const isActive = tab.id === activeTab;
+                                            return (
+                                                <button
+                                                    key={tab.id}
+                                                    type="button"
+                                                    onClick={() => setActiveTab(tab.id)}
+                                                    aria-pressed={isActive}
+                                                    className={[
+                                                        'group relative flex-shrink-0 inline-flex items-center gap-2 px-6 py-5 text-sm font-semibold whitespace-nowrap',
+                                                        'transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px]',
+                                                        isActive ? 'text-white' : 'hover:text-green-800',
+                                                    ].join(' ')}
+                                                    style={{
+                                                        color: isActive ? '#ffffff' : 'var(--vp-ink)',
+                                                        background: isActive ? 'var(--vp-green-800)' : 'transparent',
+                                                        outlineColor: 'var(--vp-gold)',
+                                                    }}
                                                 >
-                                                    {tab.icon}
-                                                </svg>
-                                                {tab.label}
-                                                {isActive && (
-                                                    <span
-                                                        className="absolute left-0 right-0 bottom-0 h-[3px]"
-                                                        style={{ background: 'var(--vp-gold)' }}
-                                                        aria-hidden="true"
-                                                    />
-                                                )}
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-
-                                <div className="p-6 md:p-8">
-                                    {/* Bionote panel */}
-                                    {activeTab === 'bionote' && (
-                                        <AnimatedPanel key="bionote">
-                                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                                                <div className="lg:col-span-2 min-w-0">
-                                                    <SectionEyebrow>Vice President for Administration and Finance</SectionEyebrow>
-                                                    <h3 className="vp-serif text-2xl font-semibold tracking-tight" style={{ color: 'var(--vp-green-950)' }}>Bionote</h3>
-                                                    <SectionRule />
-
-                                                    <div className="space-y-4 text-[14.5px] leading-7 text-gray-700 vp-bio">
-                                                        {visibleParagraphs.map((paragraph, index) => (
-                                                            <p key={index} className={index === 0 ? 'vp-bio-lead' : ''}>{paragraph}</p>
-                                                        ))}
-                                                    </div>
-
-                                                    {BIONOTE_PARAGRAPHS.length > BIONOTE_PREVIEW_COUNT && (
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => setBioExpanded((v) => !v)}
-                                                            className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-colors duration-200"
-                                                            style={{ border: '1.5px solid var(--vp-green-700)', color: 'var(--vp-green-700)' }}
-                                                            onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--vp-green-700)'; e.currentTarget.style.color = '#fff'; }}
-                                                            onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--vp-green-700)'; }}
-                                                        >
-                                                            {bioExpanded ? 'Show Less' : 'View Full Bionote'}
-                                                            <svg
-                                                                className={`w-3.5 h-3.5 transition-transform duration-200 ${bioExpanded ? '-rotate-90' : 'rotate-0'}`}
-                                                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                            >
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 17L17 7M17 7H9m8 0v8" />
-                                                            </svg>
-                                                        </button>
+                                                    <svg
+                                                        className="w-4 h-4 flex-shrink-0"
+                                                        style={{ color: isActive ? 'var(--vp-gold)' : '#8A9A8D' }}
+                                                        fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                    >
+                                                        {tab.icon}
+                                                    </svg>
+                                                    {tab.label}
+                                                    {isActive && (
+                                                        <span
+                                                            className="absolute left-0 right-0 bottom-0 h-[3px]"
+                                                            style={{ background: 'var(--vp-gold)' }}
+                                                            aria-hidden="true"
+                                                        />
                                                     )}
-                                                </div>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
 
-                                                <div className="lg:col-span-1">
-                                                    <div className="rounded-xl p-4 divide-y" style={{ background: 'var(--vp-sage)', border: '1px solid #DEE6DB', borderColor: '#DEE6DB' }}>
-                                                        {CREDENTIALS.map((item, i) => (
-                                                            <div
-                                                                key={item.title}
-                                                                className="flex items-start gap-3 py-3 first:pt-0 last:pb-0 vp-stagger"
-                                                                style={{ borderColor: '#DEE6DB', animationDelay: `${i * 90}ms` }}
+                                    <div className="p-6 md:p-10">
+                                        {/* Bionote panel */}
+                                        {activeTab === 'bionote' && (
+                                            <AnimatedPanel key="bionote">
+                                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                                                    <div className="lg:col-span-2 min-w-0">
+                                                        <span className="text-[11px] font-bold tracking-[0.25em] text-amber-600 uppercase font-sans block mb-2">
+                                                            Vice President for Administration and Finance
+                                                        </span>
+                                                        <h3 className="vp-serif text-3xl font-semibold tracking-tight" style={{ color: 'var(--vp-green-950)' }}>Bionote</h3>
+                                                        <div className="mt-2 mb-6 flex items-center gap-1.5" aria-hidden="true">
+                                                            <span className="h-[3px] w-12 bg-green-700 rounded-full" />
+                                                            <span className="h-[3px] w-3 bg-amber-500 rounded-full" />
+                                                        </div>
+
+                                                        <div className="space-y-5 text-[15px] leading-8 text-gray-700 vp-bio">
+                                                            {visibleParagraphs.map((paragraph, index) => (
+                                                                <p key={index} className={index === 0 ? 'vp-bio-lead' : ''}>{paragraph}</p>
+                                                            ))}
+                                                        </div>
+
+                                                        {BIONOTE_PARAGRAPHS.length > BIONOTE_PREVIEW_COUNT && (
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => setBioExpanded((v) => !v)}
+                                                                className="mt-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300"
+                                                                style={{ border: '1.5px solid var(--vp-green-700)', color: 'var(--vp-green-700)' }}
+                                                                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--vp-green-700)'; e.currentTarget.style.color = '#fff'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                                                                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--vp-green-700)'; e.currentTarget.style.transform = 'translateY(0)'; }}
                                                             >
-                                                                <div
-                                                                    className="w-9 h-9 rounded-full bg-white shadow-sm flex items-center justify-center flex-shrink-0"
-                                                                    style={{ border: '1px solid #DEE6DB' }}
+                                                                {bioExpanded ? 'Show Less' : 'View Full Bionote'}
+                                                                <svg
+                                                                    className={`w-3.5 h-3.5 transition-transform duration-200 ${bioExpanded ? '-rotate-90' : 'rotate-0'}`}
+                                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                                                 >
-                                                                    <svg className="w-4 h-4" style={{ color: 'var(--vp-green-700)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                        {item.icon}
-                                                                    </svg>
-                                                                </div>
-                                                                <div className="min-w-0">
-                                                                    <p className="text-sm font-bold" style={{ color: 'var(--vp-green-950)' }}>{item.title}</p>
-                                                                    {item.lines.map((line) => (
-                                                                        <p key={line} className="text-xs text-gray-500 leading-snug">{line}</p>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </AnimatedPanel>
-                                    )}
-
-                                    {/* Office panels */}
-                                    {activeOffice && (
-                                        <AnimatedPanel key={activeOffice.id}>
-                                            <div>
-                                                <SectionEyebrow>Office Overview &mdash; Sample Content</SectionEyebrow>
-                                                <h3 className="vp-serif text-xl font-semibold tracking-tight" style={{ color: 'var(--vp-green-950)' }}>
-                                                    {activeOffice.name}
-                                                </h3>
-                                                <SectionRule />
-                                                <p
-                                                    className="text-sm text-gray-600 leading-relaxed max-w-[68ch] pl-4 py-1"
-                                                    style={{ borderLeft: '3px solid var(--vp-gold)' }}
-                                                >
-                                                    {activeOffice.description}
-                                                </p>
-
-                                                <div className="mt-9">
-                                                    <p className="text-xs font-bold tracking-widest uppercase mb-4" style={{ color: '#8A9A8D' }}>
-                                                        Core Functions
-                                                    </p>
-                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                        {activeOffice.functions.map((fn, i) => (
-                                                            <div
-                                                                key={fn}
-                                                                className="flex items-start gap-2.5 px-4 py-3 rounded-lg vp-stagger hover:shadow-sm transition-shadow duration-200"
-                                                                style={{ background: 'var(--vp-sage)', border: '1px solid #DEE6DB', animationDelay: `${i * 60}ms` }}
-                                                            >
-                                                                <svg className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: 'var(--vp-green-700)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 17L17 7M17 7H9m8 0v8" />
                                                                 </svg>
-                                                                <span className="text-sm text-gray-700">{fn}</span>
-                                                            </div>
-                                                        ))}
+                                                            </button>
+                                                        )}
                                                     </div>
-                                                </div>
 
-                                                <div className="mt-10">
-                                                    <p className="text-xs font-bold tracking-widest uppercase mb-6" style={{ color: '#8A9A8D' }}>
-                                                        Organizational Structure &mdash; Sample
-                                                    </p>
-                                                    <div className="rounded-xl p-6 overflow-x-auto" style={{ background: 'var(--vp-sage)', border: '1px solid #DEE6DB' }}>
-                                                        <div className="min-w-[280px]">
-                                                            <OfficeOrgChart levels={activeOffice.orgChart} />
+                                                    <div className="lg:col-span-1">
+                                                        <div className="rounded-xl p-5 divide-y" style={{ background: 'var(--vp-sage)', border: '1px solid #DEE6DB' }}>
+                                                            <h4 className="text-xs font-bold tracking-widest uppercase text-gray-500 pb-3">Credentials</h4>
+                                                            {CREDENTIALS.map((item, i) => (
+                                                                <div
+                                                                    key={item.title}
+                                                                    className="flex items-start gap-4 py-4 first:pt-0 last:pb-0 transition-transform duration-300 hover:translate-x-1"
+                                                                    style={{ borderColor: '#DEE6DB' }}
+                                                                >
+                                                                    <div
+                                                                        className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center flex-shrink-0"
+                                                                        style={{ border: '1px solid #DEE6DB' }}
+                                                                    >
+                                                                        <svg className="w-4 h-4" style={{ color: 'var(--vp-green-700)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            {item.icon}
+                                                                        </svg>
+                                                                    </div>
+                                                                    <div className="min-w-0">
+                                                                        <p className="text-sm font-bold mb-1" style={{ color: 'var(--vp-green-950)' }}>{item.title}</p>
+                                                                        {item.lines.map((line) => (
+                                                                            <p key={line} className="text-xs text-gray-500 leading-snug">{line}</p>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            ))}
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </AnimatedPanel>
+                                        )}
 
-                                                {/* TIDMAC Team Carousel */}
-                                                {activeOffice.id === 'tidmac' && (
-                                                    <TidmacTeamCarousel />
-                                                )}
-                                            </div>
-                                        </AnimatedPanel>
-                                    )}
+                                        {/* Office panels */}
+                                        {activeOffice && (
+                                            <AnimatedPanel key={activeOffice.id}>
+                                                <div>
+                                                    <span className="text-[11px] font-bold tracking-[0.25em] text-amber-600 uppercase font-sans block mb-2">
+                                                        Office Overview &mdash; Sample Content
+                                                    </span>
+                                                    <h3 className="vp-serif text-2xl font-semibold tracking-tight" style={{ color: 'var(--vp-green-950)' }}>
+                                                        {activeOffice.name}
+                                                    </h3>
+                                                    <div className="mt-2 mb-6 flex items-center gap-1.5" aria-hidden="true">
+                                                        <span className="h-[3px] w-12 bg-green-700 rounded-full" />
+                                                        <span className="h-[3px] w-3 bg-amber-500 rounded-full" />
+                                                    </div>
+                                                    <p
+                                                        className="text-sm text-gray-600 leading-relaxed max-w-[68ch] pl-5 py-2"
+                                                        style={{ borderLeft: '4px solid var(--vp-gold)', background: 'rgba(238, 242, 236, 0.5)' }}
+                                                    >
+                                                        {activeOffice.description}
+                                                    </p>
+
+                                                    <div className="mt-10">
+                                                        <p className="text-xs font-bold tracking-widest uppercase mb-4 text-gray-500">
+                                                            Core Functions
+                                                        </p>
+                                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                            {activeOffice.functions.map((fn, i) => (
+                                                                <div
+                                                                    key={fn}
+                                                                    className="flex items-start gap-3 px-5 py-4 rounded-lg transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 bg-white border border-gray-200"
+                                                                >
+                                                                    <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
+                                                                        <svg className="w-4 h-4" style={{ color: 'var(--vp-green-700)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                                        </svg>
+                                                                    </div>
+                                                                    <span className="text-sm text-gray-700 font-medium pt-1">{fn}</span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="mt-12">
+                                                        <p className="text-xs font-bold tracking-widest uppercase mb-6 text-gray-500">
+                                                            Organizational Structure &mdash; Sample
+                                                        </p>
+                                                        <div className="rounded-xl p-8 overflow-x-auto bg-gray-50 border border-gray-200">
+                                                            <div className="min-w-[280px]">
+                                                                <OfficeOrgChart levels={activeOffice.orgChart} />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* TIDMAC Team Carousel */}
+                                                    {activeOffice.id === 'tidmac' && (
+                                                        <TidmacTeamCarousel />
+                                                    )}
+                                                </div>
+                                            </AnimatedPanel>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
+                            </Reveal>
                         </div>
                     </div>
 
                     {/* ===================== Institutional Stats Bar ===================== */}
-                    <div
-                        className="mt-10 rounded-2xl overflow-hidden relative"
-                        style={{ background: 'linear-gradient(120deg, var(--vp-green-950), var(--vp-green-800))' }}
-                    >
+                    <Reveal className="mt-14">
                         <div
-                            className="absolute inset-0 opacity-[0.08] pointer-events-none"
-                            style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0)', backgroundSize: '18px 18px' }}
-                            aria-hidden="true"
-                        />
-                        <div className="relative grid grid-cols-2 sm:grid-cols-4 sm:divide-x sm:divide-white/10">
-                            {STATS.map((stat, i) => (
-                                <div
-                                    key={stat.label}
-                                    className="flex items-center gap-3 px-5 py-6 sm:px-6 vp-stagger"
-                                    style={{ animationDelay: `${i * 80}ms` }}
-                                >
+                            className="rounded-2xl overflow-hidden relative shadow-lg"
+                            style={{ background: 'linear-gradient(120deg, var(--vp-green-950), var(--vp-green-800))' }}
+                        >
+                            <div
+                                className="absolute inset-0 opacity-[0.08] pointer-events-none"
+                                style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0)', backgroundSize: '18px 18px' }}
+                                aria-hidden="true"
+                            />
+                            {/* Top Border Accent */}
+                            <div className="absolute top-0 left-0 w-full h-1" style={{ background: 'var(--vp-gold)' }}></div>
+                            
+                            <div className="relative grid grid-cols-2 sm:grid-cols-4 sm:divide-x sm:divide-white/10">
+                                {STATS.map((stat, i) => (
                                     <div
-                                        className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
-                                        style={{ background: 'rgba(199,154,62,0.16)', border: '1px solid rgba(199,154,62,0.4)' }}
+                                        key={stat.label}
+                                        className="flex items-center gap-4 px-6 py-8 sm:px-8"
                                     >
-                                        <svg className="w-5 h-5" style={{ color: 'var(--vp-gold)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            {stat.icon}
-                                        </svg>
+                                        <div
+                                            className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-transform duration-300 hover:scale-110"
+                                            style={{ background: 'rgba(199,154,62,0.16)', border: '1px solid rgba(199,154,62,0.4)' }}
+                                        >
+                                            <svg className="w-5 h-5" style={{ color: 'var(--vp-gold)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                {stat.icon}
+                                            </svg>
+                                        </div>
+                                        <div className="min-w-0">
+                                            <p className="text-[11px] text-white/60 uppercase tracking-wider leading-none mb-2">{stat.label}</p>
+                                            <p className="vp-serif text-xl font-semibold text-white leading-tight">{stat.value}</p>
+                                            <p className="text-[11px] text-white/60 leading-snug mt-1">{stat.caption}</p>
+                                        </div>
                                     </div>
-                                    <div className="min-w-0">
-                                        <p className="text-[11px] text-white/60 uppercase tracking-wide leading-none">{stat.label}</p>
-                                        <p className="vp-serif text-lg font-semibold text-white leading-tight mt-1">{stat.value}</p>
-                                        <p className="text-[11px] text-white/60 leading-snug">{stat.caption}</p>
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    </Reveal>
                 </div>
             </section>
         </MainLayout>

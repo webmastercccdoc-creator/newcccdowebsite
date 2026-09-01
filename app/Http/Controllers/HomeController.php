@@ -56,7 +56,7 @@ class HomeController extends Controller
                 return $promotion;
             });
 
-        return Inertia::render('content/Home', [
+        return Inertia::render('content/Home/Home', [
             'canLogin' => \Route::has('login'),
             'canRegister' => \Route::has('register'),
             'laravelVersion' => Application::VERSION,

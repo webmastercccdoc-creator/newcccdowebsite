@@ -1,51 +1,51 @@
 import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
-import MainLayout from '../../layouts/MainLayout';
-import '../../../css/home.css';
-import { initLandingAnimations } from '../../home-animations';
-import ArticlesCoverflow from '../../components/ArticlesCoverflow';
-import sdgHomeImage from '../../assets/images/sdg-home.png';
+import MainLayout from '../../../layouts/MainLayout';
+import '../../../../css/home.css';
+import { initLandingAnimations } from '../../../home-animations';
+import ArticlesCoverflow from './ArticlesCoverflow';
+import sdgHomeImage from '../../../assets/images/sdg-home.png';
 
 // Ranking Logos
-import homeLogo from '../../assets/logos/home-logo.png';
+import homeLogo from '../../../assets/logos/home-logo.png';
 
 // Import Video
-import bannerVideo from '../../assets/video/video-banner.mp4';
+import bannerVideo from '../../../assets/video/video-banner.mp4';
 
 // Import Student Image
-import studentsImage from '../../assets/images/students-home.png';
+import studentsImage from '../../../assets/images/students-home.png';
 
 // SDG Images for flipping effect
-import sdg1 from '../../assets/images/sdg1.png';
-import sdg2 from '../../assets/images/sdg2.jpg';
-import sdg3 from '../../assets/images/sdg3.png';
-import sdg4 from '../../assets/images/sdg4.png';
-import sdg5 from '../../assets/images/sdg5.jpg';
-import sdg6 from '../../assets/images/sdg6.png';
-import sdg7 from '../../assets/images/sdg7.png';
-import sdg8 from '../../assets/images/sdg8.png';
-import sdg9 from '../../assets/images/sdg9.png';
-import sdg10 from '../../assets/images/sdg10.png';
-import sdg11 from '../../assets/images/sdg11.png';
-import sdg12 from '../../assets/images/sdg12.jpg';
-import sdg13 from '../../assets/images/sdg13.png';
-import sdg14 from '../../assets/images/sdg14.png';
-import sdg15 from '../../assets/images/sdg15.png';
-import sdg16 from '../../assets/images/sdg16.png';
-import sdg17 from '../../assets/images/sdg17.png';
-import sdg from '../../assets/logos/sdg.png';
-import sdg_01 from '../../assets/images/sdg_01.jpg';
-import sdg_02 from '../../assets/images/sdg_02.jpg';
-import sdg_03 from '../../assets/images/sdg_03.jpg';
-import sdg_04 from '../../assets/images/sdg_04.jpg';
-import sdg_05 from '../../assets/images/sdg_05.jpg';
-import sdg_06 from '../../assets/images/sdg_06.jpg';
-import sdg_07 from '../../assets/images/sdg_07.jpg';
-import sdg_08 from '../../assets/images/sdg_08.jpg';
-import sdg_10 from '../../assets/images/sdg_10.jpg';
-import sdg_13 from '../../assets/images/sdg_13.jpg';
-import sdg_14 from '../../assets/images/sdg_14.jpg';
-import sdg_15 from '../../assets/images/sdg_15.jpg';
-import sdg_17 from '../../assets/images/sdg_17.jpg';
+import sdg1 from '../../../assets/images/sdg1.png';
+import sdg2 from '../../../assets/images/sdg2.jpg';
+import sdg3 from '../../../assets/images/sdg3.png';
+import sdg4 from '../../../assets/images/sdg4.png';
+import sdg5 from '../../../assets/images/sdg5.jpg';
+import sdg6 from '../../../assets/images/sdg6.png';
+import sdg7 from '../../../assets/images/sdg7.png';
+import sdg8 from '../../../assets/images/sdg8.png';
+import sdg9 from '../../../assets/images/sdg9.png';
+import sdg10 from '../../../assets/images/sdg10.png';
+import sdg11 from '../../../assets/images/sdg11.png';
+import sdg12 from '../../../assets/images/sdg12.jpg';
+import sdg13 from '../../../assets/images/sdg13.png';
+import sdg14 from '../../../assets/images/sdg14.png';
+import sdg15 from '../../../assets/images/sdg15.png';
+import sdg16 from '../../../assets/images/sdg16.png';
+import sdg17 from '../../../assets/images/sdg17.png';
+import sdg from '../../../assets/logos/sdg.png';
+import sdg_01 from '../../../assets/images/sdg_01.jpg';
+import sdg_02 from '../../../assets/images/sdg_02.jpg';
+import sdg_03 from '../../../assets/images/sdg_03.jpg';
+import sdg_04 from '../../../assets/images/sdg_04.jpg';
+import sdg_05 from '../../../assets/images/sdg_05.jpg';
+import sdg_06 from '../../../assets/images/sdg_06.jpg';
+import sdg_07 from '../../../assets/images/sdg_07.jpg';
+import sdg_08 from '../../../assets/images/sdg_08.jpg';
+import sdg_10 from '../../../assets/images/sdg_10.jpg';
+import sdg_13 from '../../../assets/images/sdg_13.jpg';
+import sdg_14 from '../../../assets/images/sdg_14.jpg';
+import sdg_15 from '../../../assets/images/sdg_15.jpg';
+import sdg_17 from '../../../assets/images/sdg_17.jpg';
 
 const normalizeImagePath = (value) => {
     if (!value) return 'https://placehold.co/600x400/1e3a8a/ffffff?text=No+Image';

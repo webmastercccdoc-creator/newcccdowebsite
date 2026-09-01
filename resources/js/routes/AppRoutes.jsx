@@ -1,4 +1,4 @@
-import Home from '../pages/content/Home';
+import Home from '../Pages/content/Home/Home';
 import About from '../pages/content/About';
 
 export const appRoutes = [

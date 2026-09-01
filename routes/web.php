@@ -18,7 +18,7 @@ use Inertia\Inertia;
 // PUBLIC ROUTES (No Authentication Required)
 // ============================================
 
-// Homepage
+// Homepage`
 Route::get('/', [HomeController::class, 'index']);
 
 // Login page (public)

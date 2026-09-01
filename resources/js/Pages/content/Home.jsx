@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import MainLayout from '../../layouts/MainLayout';
 import '../../../css/home.css';
 import { initLandingAnimations } from '../../home-animations';
+import ArticlesCoverflow from '../../components/ArticlesCoverflow';
 import sdgHomeImage from '../../assets/images/sdg-home.png';
 
 // Ranking Logos
@@ -340,17 +341,42 @@ export default function Home({ newsArticles = [], promotions = [] }) {
         }
     }, [showVideo]);
 
-    // Reset to middle position when initializing (only when video is hidden)
+    // Reset to middle position when initializing (Desktop) or start position (Mobile)
     useEffect(() => {
         if (!showVideo && totalSlides > 0) {
-            setCurrentIndex(totalSlides);
+            // Mobile: start at first slide (index 0)
+            if (isMobile) {
+                setCurrentIndex(0);
+            } else {
+                // Desktop: start at middle position for infinite scroll
+                setCurrentIndex(totalSlides);
+            }
         }
-    }, [showVideo, totalSlides]);
+    }, [showVideo, totalSlides, isMobile]);
+
+    // Get current slide index for indicators (before callbacks that use it)
+    const getCurrentSlideIndex = () => {
+        if (totalSlides === 0) return 0;
+        if (currentIndex >= totalSlides * 2) {
+            return currentIndex - totalSlides * 2;
+        }
+        if (currentIndex >= totalSlides) {
+            return currentIndex - totalSlides;
+        }
+        return currentIndex;
+    };
 
     const goToSlide = useCallback((index) => {
         if (isTransitioning || totalSlides === 0) return;
+        
+        // Clamp the index to valid range
+        const maxIndex = totalSlides * 3 - 1;
+        const clampedIndex = Math.max(0, Math.min(index, maxIndex));
+        
         setIsTransitioning(true);
-        setCurrentIndex(index);
+        setCurrentIndex(clampedIndex);
+        
+        // Reset transition state after animation completes
         setTimeout(() => {
             if (isMounted.current) {
                 setIsTransitioning(false);
@@ -360,34 +386,87 @@ export default function Home({ newsArticles = [], promotions = [] }) {
 
     const goToNextSlide = useCallback(() => {
         if (isTransitioning || totalSlides === 0 || showVideo) return;
-        const nextIndex = currentIndex + 1;
+        
+        // On mobile: no infinite scroll, stop at the end
+        if (isMobile) {
+            const visibleIndex = getCurrentSlideIndex();
+            if (visibleIndex >= articles.length - 1) return; // Stop at last slide
+            goToSlide(currentIndex + 1);
+            return;
+        }
+        
+        // Desktop: infinite scroll
+        let nextIndex = currentIndex + 1;
+        
+        // If we're at the end of the slides, wrap around to the middle set
+        if (nextIndex >= totalSlides * 2) {
+            // Jump to the first slide of the middle set
+            setIsTransitioning(true);
+            setCurrentIndex(totalSlides);
+            setTimeout(() => {
+                if (isMounted.current) {
+                    setIsTransitioning(false);
+                }
+            }, 50);
+            return;
+        }
+        
         goToSlide(nextIndex);
-    }, [currentIndex, isTransitioning, goToSlide, totalSlides, showVideo]);
+    }, [currentIndex, isTransitioning, goToSlide, totalSlides, showVideo, isMobile, articles.length]);
 
     const goToPrevSlide = useCallback(() => {
         if (isTransitioning || totalSlides === 0 || showVideo) return;
-        const prevIndex = currentIndex - 1;
+        
+        // On mobile: no infinite scroll, stop at the beginning
+        if (isMobile) {
+            const visibleIndex = getCurrentSlideIndex();
+            if (visibleIndex <= 0) return; // Stop at first slide
+            goToSlide(currentIndex - 1);
+            return;
+        }
+        
+        // Desktop: infinite scroll
+        let prevIndex = currentIndex - 1;
+        
+        // If we're at the beginning, wrap around to the end of the middle set
+        if (prevIndex < totalSlides) {
+            // Jump to the last slide of the middle set
+            setIsTransitioning(true);
+            setCurrentIndex(totalSlides * 2 - 1);
+            setTimeout(() => {
+                if (isMounted.current) {
+                    setIsTransitioning(false);
+                }
+            }, 50);
+            return;
+        }
+        
         goToSlide(prevIndex);
-    }, [currentIndex, isTransitioning, goToSlide, totalSlides, showVideo]);
+    }, [currentIndex, isTransitioning, goToSlide, totalSlides, showVideo, isMobile, articles.length]);
 
-    // Handle infinite scroll - reset position when reaching boundaries
+    // Handle infinite scroll - reset position when reaching boundaries (Desktop only)
     useEffect(() => {
-        if (carouselSlides.length === 0 || totalSlides === 0 || showVideo) return;
+        if (carouselSlides.length === 0 || totalSlides === 0 || showVideo || isMobile) return;
 
         const handleTransitionEnd = () => {
             if (!isMounted.current) return;
             
+            // If we've scrolled past the second set (end of middle set)
             if (currentIndex >= totalSlides * 2) {
                 setIsTransitioning(true);
+                // Jump back to the start of the middle set without animation
                 setCurrentIndex(totalSlides);
                 setTimeout(() => {
                     if (isMounted.current) {
                         setIsTransitioning(false);
                     }
                 }, 50);
-            } else if (currentIndex < totalSlides) {
+            } 
+            // If we've scrolled before the first set (beginning)
+            else if (currentIndex < totalSlides) {
                 setIsTransitioning(true);
-                setCurrentIndex(totalSlides);
+                // Jump to the end of the middle set without animation
+                setCurrentIndex(totalSlides * 2 - 1);
                 setTimeout(() => {
                     if (isMounted.current) {
                         setIsTransitioning(false);
@@ -403,7 +482,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                 carousel.removeEventListener('transitionend', handleTransitionEnd);
             };
         }
-    }, [currentIndex, totalSlides, carouselSlides.length, showVideo]);
+    }, [currentIndex, totalSlides, carouselSlides.length, showVideo, isMobile]);
 
     // Auto-play - ONLY on desktop (not mobile)
     useEffect(() => {
@@ -494,18 +573,6 @@ export default function Home({ newsArticles = [], promotions = [] }) {
 
         return () => observer.disconnect();
     }, []);
-
-    // Get current slide index for indicators (mobile only)
-    const getCurrentSlideIndex = () => {
-        if (totalSlides === 0) return 0;
-        if (currentIndex >= totalSlides * 2) {
-            return currentIndex - totalSlides * 2;
-        }
-        if (currentIndex >= totalSlides) {
-            return currentIndex - totalSlides;
-        }
-        return currentIndex;
-    };
 
     // Render news card
     const renderNewsCard = (news, index) => (
@@ -715,11 +782,13 @@ export default function Home({ newsArticles = [], promotions = [] }) {
             {/* --- WHY CHOOSE CITY COLLEGE OF CDO --- */}
             <section className="features-section">
                 <div className="features-container">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '4rem', maxWidth: '72rem', margin: '0 auto' }}>
-                        <div style={{ flex: 1 }}>
+                    <div className="features-flex-container">
+                        <div className="features-text">
                             <div className="features-header reveal-on-scroll home-content-reveal">
                                 <span className="features-eyebrow">Our Difference</span>
-                                <h2 className="features-title">Why Choose City College of CDO?</h2>
+                                <h2 className="features-title">
+                                    Why Choose City College of <span className="highlight">Cagayan de Oro</span>
+                                </h2>
                                 <div className="features-underline" aria-hidden="true"></div>
                                 <p className="features-subtitle">
                                     Discover an education grounded in excellence, opportunity, and service to the community.
@@ -731,14 +800,11 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                             </p>
                         </div>
                         
-                        <div 
-                            className="reveal-on-scroll home-content-reveal reveal-from-right"
-                            style={{ flex: '0 0 45%', overflow: 'hidden' }}
-                        >
+                        <div className="features-image-container reveal-on-scroll home-content-reveal reveal-from-right">
                             <img 
                                 src={studentsImage} 
                                 alt="City College of CDO Students" 
-                                style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
+                                className="features-image"
                                 loading="lazy"
                             />
                         </div>
@@ -746,84 +812,37 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                 </div>
             </section>
 
-             {/* --- LATEST NEWS & UPDATES SECTION --- */}
+            {/* --- LATEST NEWS & UPDATES SECTION --- */}
             <section className="news-section">
                 <div className="news-container reveal-on-scroll home-content-reveal">
                     <div className="news-header">
+                        <span className="features-eyebrow">Stay Informed</span>
                         <h2 className="news-title">
-                           News & Updates
+                            Latest <span className="green">News</span> & <span className="green">Updates</span>
                         </h2>
                         <div className="news-title-underline"></div>
                     </div>
 
                     {articles.length > 0 ? (
                         <>
-                            {/* Carousel Container */}
-                            <div 
-                                className="news-carousel-wrapper"
-                                onMouseEnter={handleMouseEnter}
-                                onMouseLeave={handleMouseLeave}
-                            >
-                                <div 
-                                    ref={carouselRef}
-                                    className="news-carousel-track"
-                                    style={{
-                                        transform: `translateX(-${currentIndex * (100 / slidesPerView)}%)`,
-                                        transition: isTransitioning ? 'transform 0.5s ease-in-out' : 'none',
-                                    }}
-                                >
-                                    {carouselSlides.map((news, index) => (
-                                        <div 
-                                            key={`carousel-${news._uniqueKey || news.id}-${index}`}
-                                            className="news-carousel-slide"
-                                            style={{
-                                                flex: `0 0 ${100 / slidesPerView}%`,
-                                                padding: '0 0.875rem',
-                                            }}
-                                        >
-                                            {renderNewsCard(news, index)}
-                                        </div>
-                                    ))}
-                                </div>
+                            {/* 3D Coverflow Carousel */}
+                            <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+                                <ArticlesCoverflow 
+                                    articles={articles}
+                                    cardWidth={280}
+                                    cardHeight={420}
+                                    radius={0}
+                                    tilt={8}
+                                    sideTilt={6}
+                                    gap={12}
+                                    opacity={50}
+                                    autoplay={true}
+                                    showTitle={true}
+                                    titleColor="#ffffff"
+                                />
                             </div>
 
-                            {/* Mobile Controls - Only visible on mobile */}
-                            {isMobile && (
-                                <div className="news-mobile-controls">
-                                    <button 
-                                        className="mobile-prev-btn"
-                                        onClick={goToPrevSlide}
-                                        aria-label="Previous news"
-                                    >
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M15 18l-6-6 6-6" />
-                                        </svg>
-                                    </button>
-
-                                    <div className="mobile-indicators">
-                                        {articles.map((_, index) => (
-                                            <button
-                                                key={`mobile-indicator-${index}`}
-                                                className={`mobile-dot ${index === getCurrentSlideIndex() % articles.length ? 'active' : ''}`}
-                                                onClick={() => goToSlide(index + totalSlides)}
-                                                aria-label={`Go to slide ${index + 1}`}
-                                            />
-                                        ))}
-                                    </div>
-
-                                    <button 
-                                        className="mobile-next-btn"
-                                        onClick={goToNextSlide}
-                                        aria-label="Next news"
-                                    >
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M9 18l6-6-6-6" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            )}
-
-                            {/* View All News Button */}
+                            {/* View All Button */}
                             <div className="news-view-all-wrapper">
                                 <a href="/news/latest" className="news-view-all-btn">
                                     View All News
@@ -838,72 +857,74 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                 </div>
             </section>
 
+            {/* --- NEW SECTION WITH TWO CONTAINERS --- */}
+            <section className="new-features-section">
+                <div className="new-features-container">
+                    {/* Updated header with green styling */}
+                    <div className="new-features-header reveal-on-scroll home-content-reveal">
+                        <span className="new-features-eyebrow">Sustainable Development Goals</span>
+                        <h2 className="new-features-title">
+                            CCCDO's Commitment to <span className="highlight">SDG</span>
+                        </h2>
+                        <div className="new-features-underline" aria-hidden="true"></div>
+                    </div>
 
-           {/* --- NEW SECTION WITH TWO CONTAINERS --- */}
-<section className="new-features-section">
-    <div className="new-features-container">
-        <div className="new-features-header reveal-on-scroll home-content-reveal">
-            <span className="new-features-eyebrow">Sustainable Development Goals</span>
-            <h2 className="new-features-title">CCCDO's Commitment to SDG</h2>
-            <div className="new-features-underline" aria-hidden="true"></div>
-        </div>
+                    <div className="new-features-grid">
+                        {/* Container 1 - SDG Image */}
+                        <div className="sdg-image-container reveal-on-scroll home-content-reveal">
+                            <img 
+                                src={sdgHomeImage} 
+                                alt="City College of CDO Sustainable Development Goals" 
+                                className="sdg-home-image"
+                                loading="lazy"
+                            />
+                        </div>
 
-        <div className="new-features-grid">
-            {/* Container 1 - SDG Image */}
-            <div className="sdg-image-container reveal-on-scroll home-content-reveal">
-                <img 
-                    src={sdgHomeImage} 
-                    alt="City College of CDO Sustainable Development Goals" 
-                    className="sdg-home-image"
-                    loading="lazy"
-                />
-            </div>
+                        {/* Container 2 - SDG Flipping Images */}
+                        <div className="sdg-card-container reveal-on-scroll home-content-reveal">
+                            <div className="sdg-grid-container">
+                                <div className="sdg-grid">
+                                    {SDG_IMAGES.map((item, index) => {
+                                        const isAutoFlipped = autoFlippedIndices[index];
+                                        const isHovered = activeHoverIndex === index;
+                                        
+                                        const currentSrc = isHovered && item.hoverImg 
+                                            ? item.hoverImg 
+                                            : isAutoFlipped && item.hoverImg 
+                                            ? item.hoverImg 
+                                            : item.defaultImg;
 
-            {/* Container 2 - SDG Flipping Images */}
-            <div className="sdg-card-container reveal-on-scroll home-content-reveal">
-                <div className="sdg-grid-container">
-                    <div className="sdg-grid">
-                        {SDG_IMAGES.map((item, index) => {
-                            const isAutoFlipped = autoFlippedIndices[index];
-                            const isHovered = activeHoverIndex === index;
-                            
-                            const currentSrc = isHovered && item.hoverImg 
-                                ? item.hoverImg 
-                                : isAutoFlipped && item.hoverImg 
-                                ? item.hoverImg 
-                                : item.defaultImg;
-
-                            return (
-                                <div
-                                    key={index}
-                                    className="sdg-image-wrapper"
-                                    onMouseEnter={() => item.hoverImg && setActiveHoverIndex(index)}
-                                    onMouseLeave={() => setActiveHoverIndex(null)}
-                                >
-                                    <img
-                                        src={currentSrc}
-                                        alt={`SDG ${index + 1}`}
-                                        className="sdg-image"
-                                        loading="lazy"
-                                    />
+                                        return (
+                                            <div
+                                                key={index}
+                                                className="sdg-image-wrapper"
+                                                onMouseEnter={() => item.hoverImg && setActiveHoverIndex(index)}
+                                                onMouseLeave={() => setActiveHoverIndex(null)}
+                                            >
+                                                <img
+                                                    src={currentSrc}
+                                                    alt={`SDG ${index + 1}`}
+                                                    className="sdg-image"
+                                                    loading="lazy"
+                                                />
+                                            </div>
+                                        );
+                                    })}
                                 </div>
-                            );
-                        })}
+                            </div>
+                            {/* View More Button - Updated to green */}
+                            <div className="sdg-view-more-wrapper">
+                                <a href="/sdg" className="sdg-view-more-btn">
+                                    View More
+                                    <svg className="sdg-view-more-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                {/* View More Button */}
-                <div className="sdg-view-more-wrapper">
-                    <a href="/sdg" className="sdg-view-more-btn">
-                        View More
-                        <svg className="sdg-view-more-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+            </section>
         </MainLayout>
     );
 }

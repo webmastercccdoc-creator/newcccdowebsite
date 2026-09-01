@@ -18,12 +18,10 @@ export default function Promotions() {
 
     // Permissions state
     const [userPermissions, setUserPermissions] = useState([]);
-    const [loadingPermissions, setLoadingPermissions] = useState(true);
 
     // Search and filter states
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
-    const [loading, setLoading] = useState(true);
 
     // Status toggle states
     const [showStatusModal, setShowStatusModal] = useState(false);
@@ -41,8 +39,6 @@ export default function Promotions() {
             } catch (error) {
                 console.error('Failed to fetch user permissions:', error);
                 setUserPermissions([]);
-            } finally {
-                setLoadingPermissions(false);
             }
         };
 
@@ -66,8 +62,6 @@ export default function Promotions() {
         } catch (error) {
             console.error('Error fetching promotions:', error);
             setPromotions([]);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -83,13 +77,13 @@ export default function Promotions() {
         setSelectedPromotionId(null);
     };
 
-    // 🔥 Helper function to format dates
+    // Helper function to format dates
     const formatDate = (dateString) => {
         if (!dateString) return '';
         try {
             const date = new Date(dateString);
             if (isNaN(date.getTime())) return dateString;
-            return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD
+            return date.toISOString().split('T')[0];
         } catch {
             return dateString;
         }
@@ -97,13 +91,11 @@ export default function Promotions() {
 
     // Filter promotions based on search and filters
     const filteredPromotions = promotions.filter(promo => {
-        // Search filter
         const matchesSearch = 
             promo.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             promo.content?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             promo.date?.includes(searchQuery);
         
-        // Status filter
         let matchesStatus = true;
         if (statusFilter !== 'all') {
             matchesStatus = promo.status === statusFilter;
@@ -176,7 +168,6 @@ export default function Promotions() {
         setIsEditModalOpen(true);
     };
 
-    // Handle status toggle (activate/deactivate)
     const handleToggleStatus = (promo) => {
         setPromotionToToggle(promo);
         setShowStatusModal(true);
@@ -193,7 +184,6 @@ export default function Promotions() {
             });
 
             if (response.status === 200 || response.data?.success) {
-                // Update the promotion in the local state
                 setPromotions(prevPromotions =>
                     prevPromotions.map(promo =>
                         promo.id === promotionToToggle.id
@@ -247,7 +237,6 @@ export default function Promotions() {
         return preview.length < plainText.length ? preview + '...' : preview;
     };
 
-    // Get toggle button text and color based on current status
     const getToggleButtonInfo = (status) => {
         if (status === 'active') {
             return {
@@ -274,33 +263,6 @@ export default function Promotions() {
         }
     };
 
-    // Show loading state while fetching permissions
-    if (loadingPermissions) {
-        return (
-            <AdminLayout title="Promotions">
-                <div className="bg-white p-8 text-center">
-                    <div className="inline-block">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-                    </div>
-                    <p className="mt-4 text-gray-600">Loading permissions...</p>
-                </div>
-            </AdminLayout>
-        );
-    }
-
-    if (loading) {
-        return (
-            <AdminLayout title="Promotions">
-                <div className="bg-white p-8 text-center">
-                    <div className="inline-block">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-                    </div>
-                    <p className="mt-4 text-gray-600">Loading promotions...</p>
-                </div>
-            </AdminLayout>
-        );
-    }
-
     return (
         <AdminLayout title="Promotions">
             {/* Header with Add Promotion Button */}
@@ -313,7 +275,6 @@ export default function Promotions() {
                         Create, edit, and manage promotional content
                     </p>
                 </div>
-                {/* Only show Create button if user has 'promotions' permission */}
                 {hasPermission('promotions') && (
                     <button
                         type="button"
@@ -328,10 +289,9 @@ export default function Promotions() {
                 )}
             </div>
 
-            {/* Search and Filters - Light Grey Background */}
+            {/* Search and Filters */}
             <div className="bg-gray-100 border border-gray-200 shadow-sm p-4 mb-6">
                 <div className="flex flex-col md:flex-row gap-4">
-                    {/* Search Input */}
                     <div className="md:w-80 relative flex-shrink-0">
                         <svg 
                             className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
@@ -360,7 +320,6 @@ export default function Promotions() {
                         )}
                     </div>
 
-                    {/* Filters */}
                     <div className="flex-1 flex flex-wrap gap-4">
                         <select
                             value={statusFilter}
@@ -373,7 +332,6 @@ export default function Promotions() {
                             <option value="expired">Expired</option>
                         </select>
 
-                        {/* Clear Filters Button */}
                         {(searchQuery || statusFilter !== 'all') && (
                             <button
                                 onClick={() => {
@@ -392,7 +350,6 @@ export default function Promotions() {
                     </div>
                 </div>
 
-                {/* Filter results info */}
                 <div className="mt-3 text-sm text-gray-600">
                     {filteredPromotions.length === 0 ? (
                         <span>No promotions found matching your criteria</span>
@@ -448,7 +405,6 @@ export default function Promotions() {
                                                     {promo.status}
                                                 </span>
                                             </td>
-                                            {/* 🔥 FIXED: Format dates in the frontend */}
                                             <td className="py-3 px-4 text-gray-500 text-sm border-r border-gray-200">
                                                 {formatDate(promo.date)}
                                             </td>
@@ -457,7 +413,6 @@ export default function Promotions() {
                                             </td>
                                             <td className="py-3 px-4">
                                                 <div className="flex items-center justify-center gap-1.5 flex-wrap">
-                                                    {/* Activate/Deactivate Button - Only show if user has 'promotions' permission */}
                                                     {hasPermission('promotions') && (
                                                         <button
                                                             onClick={() => handleToggleStatus(promo)}
@@ -468,7 +423,6 @@ export default function Promotions() {
                                                         </button>
                                                     )}
 
-                                                    {/* Edit Button - Only show if user has 'promotions' permission */}
                                                     {hasPermission('promotions') && (
                                                         <button
                                                             onClick={() => handleEdit(promo)}
@@ -481,18 +435,15 @@ export default function Promotions() {
                                                         </button>
                                                     )}
 
-                                                    {/* Delete Button - Only show if user has 'user_management' permission */}
-                                                    {hasPermission('user_management') && (
-                                                        <button
-                                                            onClick={() => handleDelete(promo.id)}
-                                                            className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all shadow-sm hover:shadow"
-                                                        >
-                                                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                            </svg>
-                                                            Delete
-                                                        </button>
-                                                    )}
+                                                    <button
+                                                        onClick={() => handleDelete(promo.id)}
+                                                        className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all shadow-sm hover:shadow"
+                                                    >
+                                                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                        Delete
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -519,7 +470,6 @@ export default function Promotions() {
                     </table>
                 </div>
 
-                {/* Pagination */}
                 {filteredPromotions.length > 0 && (
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 border-t border-gray-200 bg-gray-50">
                         <p className="text-sm text-gray-600">
@@ -562,14 +512,12 @@ export default function Promotions() {
                 )}
             </div>
 
-            {/* Add Promotions Modal */}
             <AddPromotions
                 isOpen={isAddModalOpen}
                 onClose={() => setIsAddModalOpen(false)}
                 onCreated={handlePromotionCreated}
             />
 
-            {/* Edit Promotions Modal */}
             <EditPromotions
                 isOpen={isEditModalOpen}
                 onClose={() => {
@@ -580,7 +528,6 @@ export default function Promotions() {
                 promotionId={selectedPromotionId}
             />
 
-            {/* Status Toggle Confirmation Modal */}
             <ConfirmModal
                 isOpen={showStatusModal}
                 onClose={() => {
@@ -600,7 +547,6 @@ export default function Promotions() {
                 loading={isToggling}
             />
 
-            {/* Delete Confirmation Modal */}
             <ConfirmModal
                 isOpen={showDeleteModal}
                 onClose={() => {

@@ -14,6 +14,10 @@ import catherinePhoto from '../../../assets/images/Catherine_Uayan.jpg';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
+// --- Background tokens for the Curriculum section (carried over from the newer pass) ---
+const PANEL = '#F3EFE4';
+const HAIRLINE = '#D8D2C4';
+
 // --- Premium Sub-components ---
 const MaskedText = ({ text, className }) => (
     <span className={`relative inline-block overflow-hidden ${className}`}>
@@ -27,6 +31,15 @@ const MaskedText = ({ text, className }) => (
             {text}
         </motion.span>
     </span>
+);
+
+// --- Section kicker: thin rule + italic serif label, replacing the tracked all-caps eyebrow ---
+const Kicker = ({ children, textClass = "text-emerald-600", ruleClass = "bg-emerald-600", align = "left" }) => (
+    <div className={`flex items-center gap-3 mb-3 ${align === "center" ? "justify-center" : ""}`}>
+        <span className={`w-8 h-px ${ruleClass}`} />
+        <span className={`text-[13px] italic font-serif ${textClass}`}>{children}</span>
+        {align === "center" && <span className={`w-8 h-px ${ruleClass}`} />}
+    </div>
 );
 
 // --- Main Component ---
@@ -237,8 +250,8 @@ export default function CollegeBusinessManagement() {
 
                         {/* Right: Biography / Bionote */}
                         <div className="md:col-span-7 md:pt-4">
-                            <span className="text-xs font-bold tracking-[0.2em] text-emerald-600 uppercase">Leadership & Excellence</span>
-                            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-2 vp-serif mb-6">
+                            <Kicker textClass="text-emerald-600" ruleClass="bg-emerald-600">Leadership & Excellence</Kicker>
+                            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif mb-6">
                                 <MaskedText text="Bionote" />
                             </h2>
 
@@ -278,30 +291,28 @@ export default function CollegeBusinessManagement() {
                     </div>
                 </section>
 
-                {/* === VISION & MISSION (Centered, Compact) === */}
-                <section className="relative py-16 md:py-24 bg-slate-900 text-white overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-slate-50 to-transparent"></div>
-                    <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-slate-50 to-transparent"></div>
-                    <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-emerald-500/10 rounded-full blur-[120px]"></div>
+                {/* === VISION & MISSION (Centered, Compact, Deep Emerald + Gold Theme) === */}
+                <section className="relative py-16 md:py-24 bg-emerald-800 text-white overflow-hidden">
+                    <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-amber-400/10 rounded-full blur-[120px]"></div>
                     
                     <div className="relative max-w-3xl mx-auto px-6 text-center">
-                        <div className="inline-flex p-1 bg-white/5 border border-white/10 rounded-full backdrop-blur-sm mb-8">
+                        <div className="inline-flex p-1 bg-white/10 border border-white/20 rounded-full backdrop-blur-sm mb-8">
                             <button
                                 onClick={() => setActiveVMO('vision')}
-                                className={`relative px-6 py-2 text-sm font-semibold rounded-full transition-colors duration-300 ${activeVMO === 'vision' ? 'text-white' : 'text-white/70 hover:text-white'}`}
+                                className={`relative px-6 py-2 text-sm font-semibold rounded-full transition-colors duration-300 ${activeVMO === 'vision' ? 'text-slate-900' : 'text-white/80 hover:text-white'}`}
                             >
                                 {activeVMO === 'vision' && (
-                                    <motion.span layoutId="vmoPill" className="absolute inset-0 bg-emerald-600 rounded-full -z-0"></motion.span>
+                                    <motion.span layoutId="vmoPill" className="absolute inset-0 bg-amber-400 rounded-full -z-0"></motion.span>
                                 )}
                                 <span className="relative z-10">Vision</span>
                             </button>
                             <button
                                 onClick={() => setActiveVMO('mission')}
-                                className={`relative px-6 py-2 text-sm font-semibold rounded-full transition-colors duration-300 ${activeVMO === 'mission' ? 'text-white' : 'text-white/70 hover:text-white'}`}
+                                className={`relative px-6 py-2 text-sm font-semibold rounded-full transition-colors duration-300 ${activeVMO === 'mission' ? 'text-slate-900' : 'text-white/80 hover:text-white'}`}
                             >
                                 {activeVMO === 'mission' && (
-                                    <motion.span layoutId="vmoPill" className="absolute inset-0 bg-emerald-600 rounded-full -z-0"></motion.span>
+                                    <motion.span layoutId="vmoPill" className="absolute inset-0 bg-amber-400 rounded-full -z-0"></motion.span>
                                 )}
                                 <span className="relative z-10">Mission</span>
                             </button>
@@ -315,10 +326,10 @@ export default function CollegeBusinessManagement() {
                                 transition={{ duration: 0.5, ease: "easeInOut" }}
                                 className="relative"
                             >
-                                <svg className="w-10 h-10 mx-auto text-emerald-400/50 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-10 h-10 mx-auto text-amber-300 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8.689c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062A1.125 1.125 0 013 16.81V8.69zM12.336 8.689c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062a1.125 1.125 0 01-1.683-.977V8.69z" />
                                 </svg>
-                                <p className="text-xl md:text-2xl text-slate-200 leading-relaxed vp-serif font-medium">
+                                <p className="text-xl md:text-2xl text-white/95 leading-relaxed vp-serif font-medium">
                                     {activeVMO === 'vision' ? (
                                         "The College of Business and Management aims to produce globally competitive entrepreneurs and office professionals who drive innovation, ethical leadership, and sustainable economic growth through technology and industry collaboration by 2033."
                                     ) : (
@@ -330,47 +341,48 @@ export default function CollegeBusinessManagement() {
                     </div>
                 </section>
 
-                {/* === FACULTY SECTION === */}
-                <section className="relative max-w-7xl mx-auto px-6 py-20 md:py-28">
-                    <div className="flex flex-col sm:flex-row justify-between sm:items-end mb-16 gap-4">
-                        <div>
-                            <span className="text-xs font-bold tracking-[0.2em] text-blue-600 uppercase">Our Educators</span>
-                            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-2 vp-serif">
-                                <MaskedText text="Faculty & Staff" />
-                            </h2>
+                {/* === FACULTY SECTION (background matched to Curriculum's parchment panel) === */}
+                <section
+                    className="relative overflow-hidden py-20 md:py-28"
+                    style={{ backgroundColor: PANEL, borderTop: `1px solid ${HAIRLINE}`, borderBottom: `1px solid ${HAIRLINE}` }}
+                >
+                    <div className="relative max-w-7xl mx-auto px-6">
+                        <div className="flex flex-col sm:flex-row justify-between sm:items-end mb-16 gap-4">
+                            <div>
+                                <Kicker textClass="text-blue-600" ruleClass="bg-blue-600">Our Educators</Kicker>
+                                <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif">
+                                    <MaskedText text="Faculty & Staff" />
+                                </h2>
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Chairpersons (Top 2) */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-20 max-w-3xl mx-auto">
-                        {chairpersons.map((member, idx) => (
-                            <FacultyCard key={idx} member={member} idx={idx} />
-                        ))}
-                    </div>
+                        {/* Chairpersons (Top 2) */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-20 max-w-3xl mx-auto">
+                            {chairpersons.map((member, idx) => (
+                                <FacultyCard key={idx} member={member} idx={idx} />
+                            ))}
+                        </div>
 
-                    {/* Faculty (Bottom 4) */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {facultyMembers.map((member, idx) => (
-                            <FacultyCard key={idx} member={member} idx={idx} />
-                        ))}
+                        {/* Faculty (Bottom 4) */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {facultyMembers.map((member, idx) => (
+                                <FacultyCard key={idx} member={member} idx={idx} />
+                            ))}
+                        </div>
                     </div>
                 </section>
 
-                {/* === CURRICULUM / COURSES OFFERED (Subtle Gray Section) === */}
-                <section className="relative py-24 md:py-32 overflow-hidden bg-slate-100/80 border-y border-slate-200/50">
-                    {/* Low opacity black/gray grid overlay */}
-                    <div className="absolute inset-0 bg-black/[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#0B3D1F 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
-                    
+                {/* === CURRICULUM / COURSES OFFERED (background swapped to the new design's parchment panel) === */}
+                <section
+                    className="relative py-24 md:py-32 overflow-hidden"
+                    style={{ backgroundColor: PANEL, borderTop: `1px solid ${HAIRLINE}`, borderBottom: `1px solid ${HAIRLINE}` }}
+                >
                     <div className="relative max-w-7xl mx-auto px-6">
                         <div className="text-center mb-16">
-                            <span className="text-xs font-bold tracking-[0.2em] text-amber-500 uppercase">Curriculum</span>
-                            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-2 vp-serif">
+                            <Kicker textClass="text-amber-600" ruleClass="bg-amber-500" align="center">Curriculum</Kicker>
+                            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif">
                                 <MaskedText text="Courses Offered" />
                             </h2>
-                            <div className="mt-5 flex items-center justify-center gap-1.5" aria-hidden="true">
-                                <span className="h-[3px] w-14 rounded-full bg-emerald-600" />
-                                <span className="h-[3px] w-3 rounded-full bg-amber-500" />
-                            </div>
                         </div>
 
                         <div className="grid md:grid-cols-12 gap-8 md:gap-12 items-center">
@@ -473,14 +485,10 @@ export default function CollegeBusinessManagement() {
                 {/* === CORE VALUES (Bottom) === */}
                 <section className="relative max-w-7xl mx-auto px-6 py-24 md:py-32">
                     <div className="text-center mb-16">
-                        <span className="text-xs font-bold tracking-[0.2em] text-amber-600 uppercase">Guiding Principles</span>
-                        <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-2 vp-serif">
+                        <Kicker textClass="text-amber-600" ruleClass="bg-amber-600" align="center">Guiding Principles</Kicker>
+                        <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif">
                             <MaskedText text="Core Values" />
                         </h2>
-                        <div className="mt-5 flex items-center justify-center gap-1.5" aria-hidden="true">
-                            <span className="h-[3px] w-14 rounded-full bg-emerald-600" />
-                            <span className="h-[3px] w-3 rounded-full bg-amber-500" />
-                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">

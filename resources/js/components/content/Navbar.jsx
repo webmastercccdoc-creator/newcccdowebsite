@@ -146,7 +146,7 @@ const Navbar = () => {
             ]
         },
         { 
-            name: 'Offices', 
+            name: 'Clusters', 
             href: '/Offices',
             dropdown: [
                 { name: 'Office of the President',  href:'/offices/president', description:'Executive leadership and overall institutional direction' },
@@ -156,7 +156,7 @@ const Navbar = () => {
             ]
         },
         { 
-        name: 'Programs', 
+        name: 'Academic Programs', 
         href: '/Programs',
         dropdown: [
             { name: 'College of Education', href: '/programs/college-of-education', description: 'Teacher education and development programs' },
@@ -173,8 +173,9 @@ const Navbar = () => {
             name: 'Extension', 
             href: '/extension',
             dropdown: [
-                { name: 'Extension Programs', href: '/extension/programs', description: 'Community engagement and outreach initiatives' },
-                { name: 'Partners & Linkages', href: '/extension/partners', description: 'Collaborations with institutions and organizations' },
+                { name: 'Community Extension', href: '/extension/community', description: 'Community extension programs' },
+                { name: 'Outreach and Volunteerism', href: '/extension/outreach', description: 'Outreach and volunteer opportunities' },
+                { name: 'Advocacy-Based Centers', href: '/extension/advocacy', description: 'Advocacy and community-based initiatives' },
             ]
         },
         { 
@@ -188,7 +189,7 @@ const Navbar = () => {
             ]
         },
         { 
-            name: 'News', 
+            name: 'News & Events', 
             href: '/news',
             dropdown: [
                 { name: 'Latest News', href: '/news/latest', description: 'Recent updates and stories' },

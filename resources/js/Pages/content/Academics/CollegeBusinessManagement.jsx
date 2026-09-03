@@ -1,20 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
 import cedBanner from '../../../assets/banner/cbm-banner.png';
 import deanPhoto from '../../../assets/images/Dr_Rowena_Orbeta.jpg';
 import ccdologo from '../../../assets/logos/ccdologo.png';
 
-// --- Faculty Photo Imports ---
+// --- Faculty Photo & Background Imports ---
 import joyPhoto from '../../../assets/images/Dr_Joy_Teodosio.jpg';
 import josephPhoto from '../../../assets/images/Joseph_Barillo.jpg';
 import jessaPhoto from '../../../assets/images/Jessa_Cortez.jpg';
 import hernaPhoto from '../../../assets/images/Herna_Tano.jpg';
 import reginePhoto from '../../../assets/images/Regine_Barbacina.jpg';
 import catherinePhoto from '../../../assets/images/Catherine_Uayan.jpg';
+import acad_bg from '../../../assets/images/prog_bg.png';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
-// --- Background tokens for the Curriculum section (carried over from the newer pass) ---
+// --- Background tokens for the Curriculum section ---
 const PANEL = '#F3EFE4';
 const HAIRLINE = '#D8D2C4';
 
@@ -33,7 +34,6 @@ const MaskedText = ({ text, className }) => (
     </span>
 );
 
-// --- Section kicker: thin rule + italic serif label, replacing the tracked all-caps eyebrow ---
 const Kicker = ({ children, textClass = "text-emerald-600", ruleClass = "bg-emerald-600", align = "left" }) => (
     <div className={`flex items-center gap-3 mb-3 ${align === "center" ? "justify-center" : ""}`}>
         <span className={`w-8 h-px ${ruleClass}`} />
@@ -46,11 +46,218 @@ const Kicker = ({ children, textClass = "text-emerald-600", ruleClass = "bg-emer
 export default function CollegeBusinessManagement() {
     const [imageError, setImageError] = useState(false);
     const [activeVMO, setActiveVMO] = useState('vision');
-    const [activeProg, setActiveProg] = useState(0); // 0 = Entrep, 1 = Office
+    const [activeProg, setActiveProg] = useState(0); 
+    const [cbmNews, setCbmNews] = useState([]);
+    const [isLoadingNews, setIsLoadingNews] = useState(true);
+    const [isNewsVisible, setIsNewsVisible] = useState(false);
+
+    // Refs for 3D Carousel
+    const dragRef = useRef(null);
+    const spinRef = useRef(null);
+    const groundRef = useRef(null);
+    const newsSectionRef = useRef(null);
+    
+    // Animation Frame & State Refs
+    const rafRef = useRef(null);
+    const rotationRef = useRef(0);
+    const isPausedRef = useRef(false);
+    const isTweeningRef = useRef(false);
+    const resumeTimerRef = useRef(null);
+    const tweenStateRef = useRef({ start: 0, from: 0, to: 0, duration: 600, callback: null });
+
+    const stripHtml = (html = '') => html.replace(/<[^>]*>/g, '').trim();
+    const normalizeImagePath = (value) => {
+        if (!value) return 'https://placehold.co/600x400/1e3a8a/ffffff?text=No+Image';
+        if (/^https?:\/\//i.test(value) || value.startsWith('data:')) return value;
+        return '/' + value.replace(/^\/+/, '');
+    };
+    const formatDate = (value) => {
+        if (!value) return 'Recently';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return value;
+        return new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(date);
+    };
 
     useEffect(() => {
         document.title = "College of Business Management - City College of Cagayan de Oro";
+
+        let isMounted = true;
+        fetch('/api/news?department=cbm')
+            .then((response) => {
+                if (!response.ok) throw new Error('Failed to fetch CBM news');
+                return response.json();
+            })
+            .then((data) => {
+                if (isMounted) {
+                    setCbmNews(Array.isArray(data) ? data : []);
+                }
+            })
+            .catch(() => {
+                if (isMounted) setCbmNews([]);
+            })
+            .finally(() => {
+                if (isMounted) setIsLoadingNews(false);
+            });
+
+        return () => { isMounted = false; };
     }, []);
+
+    useEffect(() => {
+        const el = newsSectionRef.current;
+        if (!el) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsNewsVisible(entry.isIntersecting || entry.intersectionRatio > 0);
+            },
+            { threshold: 0.2, rootMargin: '0px 0px -10% 0px' }
+        );
+
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, []);
+
+    // --- News Items (with SDGs) ---
+    const newsItems = Array.isArray(cbmNews) && cbmNews.length > 0 ? cbmNews.slice(0, 6).map((item, index) => ({
+        id: item.id || `cbm-article-${index}`,
+        date: formatDate(item.date),
+        title: item.title || 'CBM News',
+        excerpt: stripHtml(item.content || 'The latest update from the College of Business Management.'),
+        category: item.category || 'Business Management',
+        department: item.department || 'CBM',
+        image: normalizeImagePath(item.image_path || item.image || item.image_url),
+        alt: item.title || 'CBM News',
+        link: `/news/${item.id}`,
+        sdgNumbers: Array.isArray(item.sdg_numbers) ? item.sdg_numbers : (item.sdg_numbers ? String(item.sdg_numbers).split(',').map(Number).filter(n => !isNaN(n)) : []),
+    })) : [
+        { id: 'cbm-1', date: 'March 18, 2025', title: 'CBM Dean Honored with Outstanding Pilgrimian Award for 2025', excerpt: 'Dr. Rowena R. Orbeta has been recognized with the prestigious Outstanding Pilgrimian (TOP) Award, celebrating her exceptional contributions to academic leadership.', category: 'Academic Excellence', image: 'https://placehold.co/600x400/1a237e/ffffff?text=CBM+Award', link: '#', sdgNumbers: [4, 8] },
+        { id: 'cbm-2', date: 'March 10, 2025', title: 'College Signs MOA with Leading Financial Institution', excerpt: 'A new partnership opens doors for BSOA and BSE students to gain real-world experience in top financial firms.', category: 'Industry Partnership', image: 'https://placehold.co/600x400/0d47a1/ffffff?text=CBM+MOA', link: '#', sdgNumbers: [17] },
+        { id: 'cbm-3', date: 'February 28, 2025', title: 'Entrepreneurship Students Win Regional Business Plan Competition', excerpt: 'A team of BSE students secured first place at the Northern Mindanao Business Plan tilt.', category: 'Student Achievement', image: 'https://placehold.co/600x400/1565c0/ffffff?text=Student+Win', link: '#', sdgNumbers: [4, 9] },
+        { id: 'cbm-4', date: 'February 15, 2025', title: 'Faculty Complete International Training on Industry 4.0', excerpt: 'Three CBM faculty members completed an intensive program at Nanyang Technological University in Singapore.', category: 'Faculty Development', image: 'https://placehold.co/600x400/1a237e/ffffff?text=Faculty+Training', link: '#', sdgNumbers: [4] },
+        { id: 'cbm-5', date: 'January 30, 2025', title: 'CBM Launches Livelihood Program for Local Entrepreneurs', excerpt: 'The college extends its expertise through a series of community entrepreneurship workshops.', category: 'Community Engagement', image: 'https://placehold.co/600x400/0d47a1/ffffff?text=Community+Program', link: '#', sdgNumbers: [1, 8] }
+    ];
+
+    // 3D Carousel Auto-Spin + Next/Prev Logic
+    useEffect(() => {
+        if (!isNewsVisible || isLoadingNews || newsItems.length === 0) return;
+
+        const odrag = dragRef.current;
+        const ospin = spinRef.current;
+        const ground = groundRef.current;
+        if (!odrag || !ospin || !ground) return;
+
+        // Settings
+        const radius = 280; 
+        const imgWidth = 220; 
+        const imgHeight = 320; 
+
+        const aEle = Array.from(ospin.children);
+        ospin.style.width = imgWidth + "px";
+        ospin.style.height = imgHeight + "px";
+        ground.style.width = radius * 3 + "px";
+        ground.style.height = radius * 3 + "px";
+
+        // Position items in 3D space
+        for (let i = 0; i < aEle.length; i++) {
+            aEle[i].style.transform = `rotateY(${i * (360 / aEle.length)}deg) translateZ(${radius}px)`;
+            aEle[i].style.transition = "transform 1s";
+            aEle[i].style.transitionDelay = ((aEle.length - i) / 4) + "s";
+        }
+
+        // Set static viewing angle
+        odrag.style.transform = "rotateX(-10deg)";
+
+        const animate = (now) => {
+            if (isTweeningRef.current) {
+                let { start, from, to, duration, callback } = tweenStateRef.current;
+                let elapsed = now - start;
+                let t = Math.min(elapsed / duration, 1);
+                // EaseInOutCubic
+                t = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2;
+                
+                rotationRef.current = from + (to - from) * t;
+                
+                if (elapsed >= duration) {
+                    isTweeningRef.current = false;
+                    if (callback) callback();
+                }
+            } else if (!isPausedRef.current) {
+                rotationRef.current -= 0.15; // Continuous spin speed
+            }
+            
+            if (spinRef.current) {
+                spinRef.current.style.transform = `rotateY(${rotationRef.current}deg)`;
+            }
+            rafRef.current = requestAnimationFrame(animate);
+        };
+        
+        rafRef.current = requestAnimationFrame(animate);
+
+        return () => {
+            cancelAnimationFrame(rafRef.current);
+            if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+        };
+    }, [isLoadingNews, isNewsVisible, newsItems]);
+
+    const startTween = (to, duration, callback) => {
+        isTweeningRef.current = true;
+        tweenStateRef.current = {
+            start: performance.now(),
+            from: rotationRef.current,
+            to: to,
+            duration: duration,
+            callback: callback
+        };
+    };
+
+    const handleNext = () => {
+        if (isTweeningRef.current || newsItems.length === 0) return;
+        if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+        isPausedRef.current = true;
+        
+        const anglePerItem = 360 / newsItems.length;
+        let currentFrontIndex = Math.round(-rotationRef.current / anglePerItem);
+        let targetIndex = currentFrontIndex + 1;
+        let targetRot = -targetIndex * anglePerItem;
+        
+        startTween(targetRot, 600, () => {
+            resumeTimerRef.current = setTimeout(() => { isPausedRef.current = false; }, 2500);
+        });
+    };
+
+    const handlePrev = () => {
+        if (isTweeningRef.current || newsItems.length === 0) return;
+        if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+        isPausedRef.current = true;
+        
+        const anglePerItem = 360 / newsItems.length;
+        let currentFrontIndex = Math.round(-rotationRef.current / anglePerItem);
+        let targetIndex = currentFrontIndex - 1;
+        let targetRot = -targetIndex * anglePerItem;
+        
+        startTween(targetRot, 600, () => {
+            resumeTimerRef.current = setTimeout(() => { isPausedRef.current = false; }, 2500);
+        });
+    };
+
+    const getCurrentFrontIndex = () => {
+        if (!newsItems.length) return 0;
+        const anglePerItem = 360 / newsItems.length;
+        const normalized = ((-rotationRef.current % 360) + 360) % 360;
+        return Math.round(normalized / anglePerItem) % newsItems.length;
+    };
+
+    const handleCardMouseEnter = (index) => {
+        if (index !== getCurrentFrontIndex()) return;
+        isPausedRef.current = true;
+        if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    };
+
+    const handleCardMouseLeave = () => {
+        if (!isTweeningRef.current) {
+            isPausedRef.current = false;
+        }
+    };
 
     const coreValues = [
         { title: "Innovation", desc: "Proactive seeking of creative solutions and embracing 'Industry 4.0' breakthroughs.", icon: "M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" },
@@ -91,7 +298,6 @@ export default function CollegeBusinessManagement() {
         { name: "Ms. Catherine P. Uayan, LPT, MBM", role: "Faculty Member", photo: catherinePhoto },
     ];
 
-    // --- Premium Faculty Card Design ---
     const FacultyCard = ({ member, idx }) => (
         <motion.div 
             key={idx}
@@ -101,10 +307,8 @@ export default function CollegeBusinessManagement() {
             transition={{ delay: idx * 0.1, duration: 0.6 }}
             className="group flex flex-col items-center w-full max-w-[260px] mx-auto"
         >
-            {/* Matted Frame Design */}
             <div className="relative w-full">
                 <div className="relative z-10 rounded-lg p-2 bg-white border border-slate-100 shadow-md transition-all duration-500 group-hover:shadow-xl">
-                    {/* Inner Dark Institutional Border */}
                     <div className="overflow-hidden rounded-md w-full aspect-[4/5] bg-slate-200 border-[3px] border-slate-900/90">
                         <img 
                             src={member.photo} 
@@ -114,15 +318,12 @@ export default function CollegeBusinessManagement() {
                     </div>
                 </div>
 
-                {/* Emerald Offset Shadow Border */}
                 <div className="absolute inset-0 z-0 rounded-lg translate-x-2.5 translate-y-2.5 border-2 border-emerald-700/50 transition-all duration-500 group-hover:translate-x-1.5 group-hover:translate-y-1.5"></div>
                 
-                {/* Premium Gold Corner Accents */}
                 <div className="absolute top-1 left-1 w-5 h-5 border-t-2 border-l-2 border-amber-500/80 z-20 rounded-tl-md transition-all duration-500 group-hover:top-0.5 group-hover:left-0.5"></div>
                 <div className="absolute bottom-1 right-1 w-5 h-5 border-b-2 border-r-2 border-amber-500/80 z-20 rounded-br-md transition-all duration-500 group-hover:bottom-0.5 group-hover:right-0.5"></div>
             </div>
 
-            {/* Text Area (Name below frame) */}
             <div className="mt-8 text-center px-2">
                 <h3 className="text-base font-serif font-bold text-slate-800 tracking-tight leading-tight">{member.name}</h3>
                 <p className="text-[11px] text-emerald-600 font-semibold uppercase tracking-[0.1em] mt-2">{member.role}</p>
@@ -138,19 +339,97 @@ export default function CollegeBusinessManagement() {
             mainClassName="py-0" 
             className="overflow-x-hidden pb-0 bg-slate-50"
         >
-            {/* Premium Font Imports & Global Styles */}
             <style>{`
                 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap');
                 body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background-color: #F8FAFC; }
                 .vp-serif { font-family: 'Fraunces', ui-serif, Georgia, serif; }
+                
+                /* 3D Carousel Spin Styles */
+                #drag-container, #spin-container {
+                  position: relative;
+                  display: flex;
+                  margin: auto;
+                  transform-style: preserve-3d;
+                  transform: rotateX(-10deg);
+                }
+                #drag-container .cbm-3d-card {
+                  transform-style: preserve-3d;
+                  position: absolute;
+                  left: 0;
+                  top: 0;
+                  width: 100%;
+                  height: 100%;
+                  border-radius: 12px;
+                  overflow: hidden;
+                  box-shadow: 0 0 15px rgba(255,255,255,0.2);
+                  -webkit-box-reflect: below 10px linear-gradient(transparent, transparent, #0005);
+                  background: #111;
+                  text-decoration: none;
+                }
+                #drag-container .cbm-3d-card img {
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                  transition: transform 0.5s ease;
+                }
+                .cbm-3d-overlay {
+                  position: absolute;
+                  bottom: 0;
+                  left: 0;
+                  right: 0;
+                  padding: 24px 20px 20px;
+                  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 50%, transparent 100%);
+                  color: white;
+                  pointer-events: none;
+                  text-align: left;
+                }
+                .cbm-3d-date { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #34d399; font-weight: 700; display: block; margin-bottom: 8px; }
+                .cbm-3d-title {
+                  font-size: 18px;
+                  font-weight: 700;
+                  margin: 0 0 8px;
+                  line-height: 1.2;
+                  min-height: 2.4em;
+                  display: -webkit-box;
+                  -webkit-line-clamp: 2;
+                  -webkit-box-orient: vertical;
+                  overflow: hidden;
+                  font-family: 'Fraunces', serif;
+                }
+                .cbm-3d-excerpt {
+                  font-size: 13px;
+                  opacity: 0.85;
+                  line-height: 1.4;
+                  min-height: 4.2em;
+                  display: -webkit-box;
+                  -webkit-line-clamp: 3;
+                  -webkit-box-orient: vertical;
+                  overflow: hidden;
+                  margin-bottom: 12px;
+                }
+                
+                .cbm-3d-sdg-container { display: flex; flex-wrap: wrap; gap: 6px; pointer-events: none; }
+                .cbm-3d-sdg { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+                
+                #ground {
+                  width: 900px;
+                  height: 900px;
+                  position: absolute;
+                  top: 100%;
+                  left: 50%;
+                  transform: translate(-50%,-50%) rotateX(90deg);
+                  background: -webkit-radial-gradient(center center, farthest-side , #9993, transparent);
+                }
             `}</style>
 
-            {/* === HERO BANNER (UNTOUCHED) === */}
+            {/* === HERO BANNER === */}
             <div 
                 className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
                 style={{
                     backgroundImage: imageError ? 'none' : `url(${cedBanner})`,
                     backgroundColor: imageError ? '#1a365d' : 'transparent',
+                    backgroundPosition: 'center 18%',
+                    backgroundSize: 'cover',
                 }}
             >
                 {imageError && (
@@ -191,11 +470,10 @@ export default function CollegeBusinessManagement() {
             {/* === MAIN CONTENT BODY === */}
             <div className="relative bg-slate-50 overflow-hidden">
                 
-                {/* === DEAN SECTION (Top Priority) === */}
+                {/* === DEAN SECTION === */}
                 <section className="relative max-w-7xl mx-auto px-6 py-20 md:py-28">
                     <div className="grid md:grid-cols-12 gap-8 md:gap-12 items-start">
                         
-                        {/* Left: Profile Card (Exact Frame Match) */}
                         <motion.div 
                             className="md:col-span-5 relative flex flex-col items-center"
                             initial={{ opacity: 0, scale: 0.95 }}
@@ -205,7 +483,7 @@ export default function CollegeBusinessManagement() {
                         >
                             <div className="relative w-full max-w-sm mx-auto pb-8">
                                 <div className="relative z-10 rounded-xl p-2 bg-white border border-slate-100 shadow-2xl">
-                                    <div className="overflow-hidden rounded-lg w-full aspect-[4/5] bg-slate-100">
+                                    <div className="overflow-hidden rounded-lg w-full aspect-[4/5] bg-slate-101">
                                         <img 
                                             src={deanPhoto} 
                                             alt="Dr. Rowena R. Orbeta" 
@@ -214,10 +492,8 @@ export default function CollegeBusinessManagement() {
                                     </div>
                                 </div>
 
-                                {/* Gold border accent */}
                                 <div className="absolute inset-0 z-0 rounded-2xl translate-x-2 translate-y-2 border-2 border-amber-400"></div>
 
-                                {/* City College Logo at bottom */}
                                 <div 
                                     className="absolute left-1/2 bottom-0 -translate-x-1/2 z-20 w-20 h-20 rounded-full bg-white shadow-md flex items-center justify-center p-2 transition-transform duration-300 hover:scale-105 border-2 border-emerald-700"
                                 >
@@ -229,7 +505,6 @@ export default function CollegeBusinessManagement() {
                                 </div>
                             </div>
 
-                            {/* Text Below */}
                             <div className="text-center mt-8 w-full max-w-xs mx-auto">
                                 <h3 className="text-2xl vp-serif font-semibold tracking-tight text-slate-800">
                                     Dr. Rowena R. Orbeta
@@ -248,7 +523,6 @@ export default function CollegeBusinessManagement() {
                             </div>
                         </motion.div>
 
-                        {/* Right: Biography / Bionote */}
                         <div className="md:col-span-7 md:pt-4">
                             <Kicker textClass="text-emerald-600" ruleClass="bg-emerald-600">Leadership & Excellence</Kicker>
                             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif mb-6">
@@ -273,7 +547,6 @@ export default function CollegeBusinessManagement() {
                                 </p>
                             </motion.div>
 
-                            {/* Credential Tags */}
                             <motion.div 
                                 className="mt-6 flex flex-wrap gap-2"
                                 initial={{ opacity: 0 }}
@@ -291,7 +564,7 @@ export default function CollegeBusinessManagement() {
                     </div>
                 </section>
 
-                {/* === VISION & MISSION (Centered, Compact, Deep Emerald + Gold Theme) === */}
+                {/* === VISION & MISSION === */}
                 <section className="relative py-16 md:py-24 bg-emerald-800 text-white overflow-hidden">
                     <div className="absolute inset-0 opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-amber-400/10 rounded-full blur-[120px]"></div>
@@ -341,7 +614,7 @@ export default function CollegeBusinessManagement() {
                     </div>
                 </section>
 
-                {/* === FACULTY SECTION (background matched to Curriculum's parchment panel) === */}
+                {/* === FACULTY SECTION === */}
                 <section
                     className="relative overflow-hidden py-20 md:py-28"
                     style={{ backgroundColor: PANEL, borderTop: `1px solid ${HAIRLINE}`, borderBottom: `1px solid ${HAIRLINE}` }}
@@ -356,14 +629,12 @@ export default function CollegeBusinessManagement() {
                             </div>
                         </div>
 
-                        {/* Chairpersons (Top 2) */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-20 max-w-3xl mx-auto">
                             {chairpersons.map((member, idx) => (
                                 <FacultyCard key={idx} member={member} idx={idx} />
                             ))}
                         </div>
 
-                        {/* Faculty (Bottom 4) */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                             {facultyMembers.map((member, idx) => (
                                 <FacultyCard key={idx} member={member} idx={idx} />
@@ -372,31 +643,36 @@ export default function CollegeBusinessManagement() {
                     </div>
                 </section>
 
-                {/* === CURRICULUM / COURSES OFFERED (background swapped to the new design's parchment panel) === */}
+                {/* === CURRICULUM === */}
                 <section
-                    className="relative py-24 md:py-32 overflow-hidden"
-                    style={{ backgroundColor: PANEL, borderTop: `1px solid ${HAIRLINE}`, borderBottom: `1px solid ${HAIRLINE}` }}
+                    className="relative py-24 md:py-32 overflow-hidden bg-cover bg-no-repeat"
+                    style={{ 
+                        backgroundImage: `url(${acad_bg})`, 
+                        backgroundColor: PANEL, 
+                        borderTop: `1px solid ${HAIRLINE}`, 
+                        borderBottom: `1px solid ${HAIRLINE}`,
+                        backgroundPosition: 'center 1%',
+                    }}
                 >
-                    <div className="relative max-w-7xl mx-auto px-6">
+                    <div className="relative max-w-7xl mx-auto px-6 z-10">
                         <div className="text-center mb-16">
                             <Kicker textClass="text-amber-600" ruleClass="bg-amber-500" align="center">Curriculum</Kicker>
-                            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif">
+                            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif drop-shadow-[0_2px_5px_rgba(255,255,255,0.8)]">
                                 <MaskedText text="Courses Offered" />
                             </h2>
                         </div>
 
                         <div className="grid md:grid-cols-12 gap-8 md:gap-12 items-center">
                             
-                            {/* Left: Program Selection */}
-                            <div className="md:col-span-5 space-y-4">
+                            <div className="md:col-span-5 space-y-4 relative p-4 md:p-6 rounded-2xl bg-white/40 backdrop-blur-md border border-white/60 shadow-lg">
                                 {programs.map((prog, idx) => (
                                     <motion.button 
                                         key={idx}
                                         onClick={() => setActiveProg(idx)}
-                                        className={`w-full text-left p-6 rounded-2xl border transition-all duration-300 relative overflow-hidden group ${
+                                        className={`w-full text-left p-6 rounded-2xl border-[1px] transition-[background-color,border-color,color,box-shadow] duration-200 relative overflow-hidden group ${
                                             activeProg === idx 
-                                                ? 'bg-emerald-700 text-white border-amber-400 shadow-2xl shadow-emerald-500/20' 
-                                                : 'bg-white text-slate-800 border-slate-100 hover:border-emerald-200 hover:shadow-md'
+                                                ? 'bg-emerald-700 text-white border-amber-400 shadow-md shadow-emerald-500/10' 
+                                                : 'bg-white text-slate-800 border-slate-100 hover:border-emerald-200 hover:shadow-sm'
                                         }`}
                                     >
                                         <div className="flex items-center gap-6 relative z-10">
@@ -412,7 +688,6 @@ export default function CollegeBusinessManagement() {
                                                 </h3>
                                             </div>
                                         </div>
-                                        {/* Animated Active Indicator */}
                                         {activeProg === idx && (
                                             <motion.div 
                                                 layoutId="progHighlight" 
@@ -423,7 +698,6 @@ export default function CollegeBusinessManagement() {
                                 ))}
                             </div>
 
-                            {/* Right: Dynamic Program Details */}
                             <div className="md:col-span-7 relative min-h-[400px]">
                                 <AnimatePresence mode="wait">
                                     <motion.div
@@ -434,7 +708,6 @@ export default function CollegeBusinessManagement() {
                                         transition={{ duration: 0.5, ease: "easeInOut" }}
                                         className="relative p-8 md:p-10 bg-white rounded-[2rem] border border-emerald-100 shadow-2xl shadow-emerald-500/10 overflow-hidden"
                                     >
-                                        {/* Giant Ghost Number */}
                                         <span className="absolute -top-10 -right-10 text-[12rem] font-bold vp-serif text-emerald-50 select-none pointer-events-none">
                                             {programs[activeProg].num}
                                         </span>
@@ -448,7 +721,6 @@ export default function CollegeBusinessManagement() {
                                                 {programs[activeProg].desc}
                                             </p>
 
-                                            {/* Curriculum Focus Tags */}
                                             <div className="mb-8">
                                                 <p className="text-xs uppercase tracking-wider text-slate-400 mb-3 font-semibold">Curriculum Focus</p>
                                                 <div className="flex flex-wrap gap-2">
@@ -460,7 +732,6 @@ export default function CollegeBusinessManagement() {
                                                 </div>
                                             </div>
 
-                                            {/* Career Paths Matrix */}
                                             <div className="pt-6 border-t border-slate-100">
                                                 <p className="text-xs uppercase tracking-wider text-slate-400 mb-4 font-semibold">Career Paths</p>
                                                 <div className="grid grid-cols-2 gap-4">
@@ -482,7 +753,7 @@ export default function CollegeBusinessManagement() {
                     </div>
                 </section>
 
-                {/* === CORE VALUES (Bottom) === */}
+                {/* === CORE VALUES === */}
                 <section className="relative max-w-7xl mx-auto px-6 py-24 md:py-32">
                     <div className="text-center mb-16">
                         <Kicker textClass="text-amber-600" ruleClass="bg-amber-600" align="center">Guiding Principles</Kicker>
@@ -502,7 +773,6 @@ export default function CollegeBusinessManagement() {
                                 whileHover={{ y: -8, transition: { duration: 0.2 } }}
                                 className="relative p-8 rounded-2xl bg-white border border-slate-100 shadow-md flex flex-col items-center text-center overflow-hidden group cursor-default min-h-[280px]"
                             >
-                                {/* Decorative top corner pattern */}
                                 <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-[3rem] group-hover:bg-emerald-100 transition-colors duration-500"></div>
                                 
                                 <div className="relative z-10 flex flex-col items-center">
@@ -517,6 +787,101 @@ export default function CollegeBusinessManagement() {
                                 </div>
                             </motion.div>
                         ))}
+                    </div>
+                </section>
+
+                {/* =================================================== */}
+                {/* === NEWS & ANNOUNCEMENTS (3D Auto-Spin Carousel) === */}
+                {/* =================================================== */}
+                <section ref={newsSectionRef} className="news-section bg-slate-900 pt-12 pb-16 overflow-hidden">
+                    <div className="news-container max-w-7xl mx-auto px-6">
+                        <div className="news-header text-center mb-12">
+                            <span className="features-eyebrow text-emerald-400">Stay Informed</span>
+                            <h2 className="news-title text-4xl font-bold text-white mt-2 vp-serif">
+                                Latest <span className="text-emerald-400">News</span> & <span className="text-emerald-400">Updates</span>
+                            </h2>
+                            <div className="news-title-underline mx-auto mt-4 h-1 w-20 bg-amber-400 rounded-full"></div>
+                        </div>
+
+                        {isLoadingNews ? (
+                            <div className="news-empty-message text-center text-slate-400 py-20">
+                                Loading CBM news...
+                            </div>
+                        ) : newsItems.length > 0 ? (
+                            <div className="flex flex-col items-center justify-center">
+                                <motion.div
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, amount: 0.3 }}
+                                    transition={{ duration: 0.7, ease: 'easeOut' }}
+                                    className="relative w-full"
+                                    style={{ height: '620px', perspective: '1000px', marginBottom: '40px', paddingTop: '24px' }}
+                                >
+                                    <div id="drag-container" ref={dragRef} style={{ position: 'relative', height: '100%', transformStyle: 'preserve-3d', top: '10px' }}>
+                                        <div id="spin-container" ref={spinRef} style={{ margin: '0 auto', width: '220px', height: '320px', position: 'relative', transformStyle: 'preserve-3d', top: '8px' }}>
+                                            {newsItems.map((item, index) => (
+                                                <a 
+                                                    href={item.link} 
+                                                    key={item.id} 
+                                                    className="cbm-3d-card"
+                                                    style={{ textDecoration: 'none', width: '100%', height: '100%', position: 'absolute' }}
+                                                    onMouseEnter={() => handleCardMouseEnter(index)}
+                                                    onMouseLeave={handleCardMouseLeave}
+                                                >
+                                                    <img src={item.image} alt={item.alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                    <div className="cbm-3d-overlay">
+                                                        <span className="cbm-3d-date">{item.date} • {item.category}</span>
+                                                        <h3 className="cbm-3d-title">{item.title}</h3>
+                                                        <p className="cbm-3d-excerpt">
+                                                            {item.excerpt.length > 90 ? item.excerpt.substring(0, 90) + '...' : item.excerpt}
+                                                        </p>
+                                                        {item.sdgNumbers && item.sdgNumbers.length > 0 && (
+                                                            <div className="cbm-3d-sdg-container">
+                                                                {item.sdgNumbers.map(num => (
+                                                                    <span key={num} className="cbm-3d-sdg">SDG {num}</span>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </a>
+                                            ))}
+                                        </div>
+                                        <div id="ground" ref={groundRef} style={{ position: 'absolute', top: '100%', left: '50%', width: '900px', height: '900px', transform: 'translate(-50%,-50%) rotateX(90deg)', background: '-webkit-radial-gradient(center center, farthest-side , #9993, transparent)' }}></div>
+                                    </div>
+
+                                    <button 
+                                        onClick={handlePrev}
+                                        className="absolute left-4 md:left-12 top-40 z-50 w-12 h-12 rounded-full bg-white/10 hover:bg-emerald-500 border border-white/30 backdrop-blur-md flex items-center justify-center text-white transition-all duration-300 group"
+                                        aria-label="Previous News"
+                                    >
+                                        <svg className="w-5 h-5 group-hover:scale-125 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                        </svg>
+                                    </button>
+
+                                    <button 
+                                        onClick={handleNext}
+                                        className="absolute right-4 md:right-12 top-40 z-50 w-12 h-12 rounded-full bg-white/10 hover:bg-emerald-500 border border-white/30 backdrop-blur-md flex items-center justify-center text-white transition-all duration-300 group"
+                                        aria-label="Next News"
+                                    >
+                                        <svg className="w-5 h-5 group-hover:scale-125 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </button>
+                                </motion.div>
+
+                                <div className="w-full pt-2 text-center">
+                                    <a href="/news/latest" className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-emerald-600 text-white font-semibold hover:bg-emerald-500 transition-colors duration-300 shadow-lg shadow-emerald-500/20">
+                                        View All News
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                                    </a>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="news-empty-message text-center text-slate-400 py-20">
+                                No news articles are available at this time.
+                            </div>
+                        )}
                     </div>
                 </section>
 

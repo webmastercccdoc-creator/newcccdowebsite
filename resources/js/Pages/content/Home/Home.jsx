@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import { router } from '@inertiajs/react';
 import MainLayout from '../../../layouts/MainLayout';
 import '../../../../css/home.css';
 import { initLandingAnimations } from '../../../home-animations';
@@ -169,6 +171,11 @@ const SDG_IMAGES = [
     { defaultImg: sdg, hoverImg: null },
 ];
 
+const revealVariant = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0 },
+};
+
 export default function Home({ newsArticles = [], promotions = [] }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
@@ -176,6 +183,8 @@ export default function Home({ newsArticles = [], promotions = [] }) {
     const [isFading, setIsFading] = useState(false);
     const [slidesPerView, setSlidesPerView] = useState(4);
     const [isMobile, setIsMobile] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [submittedSearch, setSubmittedSearch] = useState('');
     const carouselRef = useRef(null);
     const autoPlayRef = useRef(null);
     const videoRef = useRef(null);
@@ -255,6 +264,19 @@ export default function Home({ newsArticles = [], promotions = [] }) {
     }, [carouselItems]);
 
     const totalSlides = articles.length;
+
+    // Filter articles based on submitted search query
+    const filteredArticles = useMemo(() => {
+        if (!submittedSearch.trim()) return articles;
+        
+        const query = submittedSearch.toLowerCase();
+        return articles.filter((article) => 
+            article.title.toLowerCase().includes(query) ||
+            article.excerpt.toLowerCase().includes(query) ||
+            article.department.toLowerCase().includes(query) ||
+            article.category.toLowerCase().includes(query)
+        );
+    }, [articles, submittedSearch]);
 
     // SDG Auto-flip effect
     useEffect(() => {
@@ -553,27 +575,6 @@ export default function Home({ newsArticles = [], promotions = [] }) {
         };
     }, [bannerData]);
 
-    useEffect(() => {
-        const revealElements = document.querySelectorAll('.home-content-reveal');
-        if (!revealElements.length) return;
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('revealed');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            },
-            { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
-        );
-
-        revealElements.forEach((element) => observer.observe(element));
-
-        return () => observer.disconnect();
-    }, []);
-
     // Render news card
     const renderNewsCard = (news, index) => (
         <article
@@ -784,30 +785,50 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                 <div className="features-container">
                     <div className="features-flex-container">
                         <div className="features-text">
-                            <div className="features-header reveal-on-scroll home-content-reveal">
+                            <motion.div
+                                className="features-header reveal-on-scroll home-content-reveal"
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true, amount: 0.2 }}
+                                variants={revealVariant}
+                                transition={{ duration: 0.6, ease: 'easeOut' }}
+                            >
                                 <span className="features-eyebrow">Our Difference</span>
                                 <h2 className="features-title">
                                     Why Choose City College of <span className="highlight">Cagayan de Oro</span>
                                 </h2>
                                 <div className="features-underline" aria-hidden="true"></div>
-                                <p className="features-subtitle">
+                                <p className="text-base sm:text-xl text-gray-600 leading-relaxed mt-2">
                                     Discover an education grounded in excellence, opportunity, and service to the community.
                                 </p>
-                            </div>
+                            </motion.div>
 
-                            <p className="features-subtitle reveal-on-scroll home-content-reveal">
+                            <motion.p
+                                className="text-base sm:text-xl text-gray-600 leading-relaxed mt-6 reveal-on-scroll home-content-reveal"
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true, amount: 0.2 }}
+                                variants={revealVariant}
+                                transition={{ duration: 0.7, ease: 'easeOut', delay: 0.1 }}
+                            >
                                 City College of CDO provides quality education through relevant programs and dedicated instruction. Students gain practical experience, leadership opportunities, and a strong appreciation for culture and excellence while developing the skills to serve their community and build meaningful careers.
-                            </p>
+                            </motion.p>
                         </div>
                         
-                        <div className="features-image-container reveal-on-scroll home-content-reveal reveal-from-right">
+                        <motion.div
+                            className="features-image-container reveal-on-scroll home-content-reveal reveal-from-right"
+                            initial={{ opacity: 0, x: 40 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, amount: 0.2 }}
+                            transition={{ duration: 0.7, ease: 'easeOut', delay: 0.15 }}
+                        >
                             <img 
                                 src={studentsImage} 
                                 alt="City College of CDO Students" 
                                 className="features-image"
                                 loading="lazy"
                             />
-                        </div>
+                        </motion.div>
                     </div>
                 </div>
             </section>
@@ -823,12 +844,43 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                         <div className="news-title-underline"></div>
                     </div>
 
-                    {articles.length > 0 ? (
+                    {/* Search Bar */}
+                    <div className="mb-8 mt-6">
+                        <div className="relative max-w-2xl mx-auto">
+                            <input
+                                type="text"
+                                placeholder="Search news and articles..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyPress={(e) => {
+                                    if (e.key === 'Enter' && searchQuery.trim()) {
+                                        router.visit(`/news/latest?search=${encodeURIComponent(searchQuery)}`);
+                                    }
+                                }}
+                                className="w-full pl-6 pr-16 py-3 rounded-full border-0 focus:outline-none transition duration-200 text-base shadow-lg"
+                            />
+                            <button
+                                onClick={() => {
+                                    if (searchQuery.trim()) {
+                                        router.visit(`/news/latest?search=${encodeURIComponent(searchQuery)}`);
+                                    }
+                                }}
+                                className="absolute right-1 top-1/2 transform -translate-y-1/2 w-11 h-11 rounded-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 transition duration-200 font-semibold flex items-center justify-center"
+                                title="Search articles"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    {filteredArticles.length > 0 ? (
                         <>
                             {/* 3D Coverflow Carousel */}
                             <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
                                 <ArticlesCoverflow 
-                                    articles={articles}
+                                    articles={filteredArticles}
                                     cardWidth={280}
                                     cardHeight={420}
                                     radius={0}
@@ -851,7 +903,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                         </>
                     ) : (
                         <div className="news-empty-message">
-                            No news articles are available at this time.
+                            {searchQuery ? `No articles found matching "${searchQuery}". Try a different search term.` : 'No news articles are available at this time.'}
                         </div>
                     )}
                 </div>

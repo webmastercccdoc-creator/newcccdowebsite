@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useRef, CSSProperties } from 'react';
 
 const PERSPECTIVE = 1800;
-const SCALE_STEP = 0.12;
-const MAX_VISIBLE = 5;
-const DEPTH = 200;
+const SCALE_STEP = 0.06;
+const MAX_VISIBLE = 12;
+const DEPTH = 80;
 
 // SDG Colors mapping
 const SDG_COLORS = {
@@ -39,13 +39,13 @@ const stripHtmlAndTruncate = (html, maxLength = 80) => {
 
 export default function ArticlesCoverflow({ 
     articles = [],
-    cardWidth = 320,
-    cardHeight = 420,
-    radius = 12,
-    tilt = 7,
-    sideTilt = 7,
-    gap = 12,
-    opacity = 50,
+    cardWidth = 260,
+    cardHeight = 360,
+    radius = 10,
+    tilt = 0,
+    sideTilt = 0,
+    gap = 0,
+    opacity = 20,
     autoplay = true,
     showTitle = true,
     titleColor = '#ffffff',
@@ -121,7 +121,7 @@ export default function ArticlesCoverflow({
         position: 'relative',
         width: '100%',
         height: '100%',
-        minHeight: 500,
+        minHeight: 450,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -130,7 +130,7 @@ export default function ArticlesCoverflow({
         outline: 'none',
         background: 'transparent',
         borderRadius: 0,
-        padding: 0,
+        padding: '10px 0',
     };
 
     if (n === 0) {
@@ -166,11 +166,26 @@ export default function ArticlesCoverflow({
                     const ax = Math.abs(rel);
                     const visible = ax <= MAX_VISIBLE;
                     const isActive = rel === 0;
-                    const sc = Math.max(0.56, 1 - ax * SCALE_STEP);
-                    const tx = rel * (cardWidth * 0.58 + gap * 10);
+                    
+                    // Scale: cards get smaller as they go further
+                    const sc = Math.max(0.5, 1 - ax * SCALE_STEP);
+                    
+                    // Dynamic overlap for 12 cards
+                    const maxVisible = Math.min(n, MAX_VISIBLE);
+                    const overlapPercentage = 0.52; // 52% overlap for tighter spacing
+                    const overlapOffset = cardWidth * overlapPercentage;
+                    
+                    // Reduce overlap for cards further away
+                    const distanceFactor = Math.max(0.7, 1 - (ax / maxVisible) * 0.3);
+                    const tx = rel * overlapOffset * distanceFactor;
+                    
+                    // Depth: cards go further back as they move away
                     const tz = -ax * DEPTH;
-                    const ry = -rel * (tilt + 2);
-                    const rz = rel * (sideTilt + 1.5);
+                    
+                    // No rotation - straight cards
+                    const ry = 0;
+                    const rz = 0;
+                    
                     const src = article.image || article.image_path || '';
 
                     const cardStyle = {
@@ -189,7 +204,11 @@ export default function ArticlesCoverflow({
                         cursor: autoplay || isActive ? 'default' : 'pointer',
                         pointerEvents: visible && !isStatic && !autoplay ? 'auto' : 'none',
                         backgroundColor: '#ffffff',
-                        boxShadow: isActive ? '0 20px 60px rgba(0, 0, 0, 0.12)' : 'none',
+                        boxShadow: isActive 
+                            ? '0 20px 60px rgba(0, 0, 0, 0.3)' 
+                            : '0 8px 20px rgba(0, 0, 0, 0.1)',
+                        zIndex: isActive ? 100 : (visible ? 100 - ax * 7 : 0),
+                        border: isActive ? '3px solid rgba(212, 175, 55, 0.6)' : '1px solid rgba(0,0,0,0.05)',
                     };
 
                     return (
@@ -206,7 +225,7 @@ export default function ArticlesCoverflow({
                                     style={{
                                         position: 'absolute',
                                         inset: '0 0 auto 0',
-                                        height: '70%',
+                                        height: '65%',
                                         overflow: 'hidden',
                                         backgroundColor: '#0f172a',
                                     }}
@@ -244,8 +263,8 @@ export default function ArticlesCoverflow({
                                     display: 'flex',
                                     flexDirection: 'column',
                                     justifyContent: 'space-between',
-                                    padding: '16px',
-                                    paddingTop: src ? '12px' : '16px',
+                                    padding: '12px',
+                                    paddingTop: src ? '10px' : '12px',
                                     pointerEvents: 'auto',
                                 }}
                             >
@@ -255,18 +274,18 @@ export default function ArticlesCoverflow({
                                         style={{
                                             display: 'flex',
                                             flexWrap: 'wrap',
-                                            gap: '6px',
+                                            gap: '4px',
                                         }}
                                     >
-                                        {article.sdgNumbers.slice(0, 3).map((sdg) => {
+                                        {article.sdgNumbers.slice(0, 2).map((sdg) => {
                                             const color = SDG_COLORS[sdg] || { bg: '#e2e8f0', text: '#0f172a', border: '#cbd5e1' };
                                             return (
                                                 <span
                                                     key={`sdg-${article.id}-${sdg}`}
                                                     style={{
-                                                        borderRadius: '4px',
-                                                        padding: '4px 8px',
-                                                        fontSize: '9px',
+                                                        borderRadius: '3px',
+                                                        padding: '2px 6px',
+                                                        fontSize: '7px',
                                                         fontWeight: '700',
                                                         textTransform: 'uppercase',
                                                         letterSpacing: '0.12em',
@@ -287,18 +306,18 @@ export default function ArticlesCoverflow({
                                     style={{
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        gap: '8px',
+                                        gap: '4px',
                                     }}
                                 >
                                     {/* Title */}
                                     <div
                                         style={{
                                             color: titleColor,
-                                            fontSize: '16px',
+                                            fontSize: isActive ? '15px' : '13px',
                                             fontWeight: '700',
-                                            lineHeight: '1.3',
+                                            lineHeight: '1.2',
                                             display: '-webkit-box',
-                                            WebkitLineClamp: 2,
+                                            WebkitLineClamp: isActive ? 2 : 1,
                                             WebkitBoxOrient: 'vertical',
                                             overflow: 'hidden',
                                             textShadow: '0 2px 10px rgba(0,0,0,0.4)',
@@ -307,30 +326,32 @@ export default function ArticlesCoverflow({
                                         {article.title}
                                     </div>
 
-                                    {/* Excerpt */}
-                                    <div
-                                        style={{
-                                            color: 'rgba(255, 255, 255, 0.85)',
-                                            fontSize: '11px',
-                                            fontWeight: '400',
-                                            lineHeight: '1.4',
-                                            display: '-webkit-box',
-                                            WebkitLineClamp: 2,
-                                            WebkitBoxOrient: 'vertical',
-                                            overflow: 'hidden',
-                                            textShadow: '0 1px 4px rgba(0,0,0,0.3)',
-                                        }}
-                                    >
-                                        {stripHtmlAndTruncate(article.excerpt || article.content, 100)}
-                                    </div>
+                                    {/* Excerpt - only show on active or closer cards */}
+                                    {ax <= 1 && (
+                                        <div
+                                            style={{
+                                                color: 'rgba(255, 255, 255, 0.85)',
+                                                fontSize: '9px',
+                                                fontWeight: '400',
+                                                lineHeight: '1.3',
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 2,
+                                                WebkitBoxOrient: 'vertical',
+                                                overflow: 'hidden',
+                                                textShadow: '0 1px 4px rgba(0,0,0,0.3)',
+                                            }}
+                                        >
+                                            {stripHtmlAndTruncate(article.excerpt || article.content, 70)}
+                                        </div>
+                                    )}
 
                                     <div
                                         style={{
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'space-between',
-                                            gap: '8px',
-                                            marginTop: '4px',
+                                            gap: '4px',
+                                            marginTop: '2px',
                                         }}
                                     >
                                         <div
@@ -342,8 +363,8 @@ export default function ArticlesCoverflow({
                                                 border: '1px solid rgba(255, 255, 255, 0.18)',
                                                 borderRadius: '999px',
                                                 color: '#f8fafc',
-                                                padding: '5px 9px',
-                                                fontSize: '9px',
+                                                padding: '3px 6px',
+                                                fontSize: '7px',
                                                 fontWeight: '700',
                                                 letterSpacing: '0.08em',
                                                 textTransform: 'uppercase',
@@ -354,39 +375,41 @@ export default function ArticlesCoverflow({
                                             {article.department || article.category || 'News'}
                                         </div>
 
-                                        <a
-                                            href={article.link || `/news/${article.id}`}
-                                            style={{
-                                                display: 'inline-flex',
-                                                alignItems: 'center',
-                                                gap: '6px',
-                                                backgroundColor: '#059669',
-                                                color: '#ffffff',
-                                                padding: '6px 12px',
-                                                borderRadius: '4px',
-                                                fontSize: '11px',
-                                                fontWeight: '600',
-                                                textDecoration: 'none',
-                                                transition: 'all 0.3s ease',
-                                                border: 'none',
-                                                cursor: 'pointer',
-                                                pointerEvents: 'auto',
-                                                width: 'fit-content',
-                                            }}
-                                            onMouseOver={(e) => {
-                                                e.target.style.backgroundColor = '#047857';
-                                                e.target.style.transform = 'translateY(-2px)';
-                                            }}
-                                            onMouseOut={(e) => {
-                                                e.target.style.backgroundColor = '#059669';
-                                                e.target.style.transform = 'translateY(0)';
-                                            }}
-                                        >
-                                            Read Article
-                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                            </svg>
-                                        </a>
+                                        {isActive && (
+                                            <a
+                                                href={article.link || `/news/${article.id}`}
+                                                style={{
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '4px',
+                                                    backgroundColor: '#059669',
+                                                    color: '#ffffff',
+                                                    padding: '4px 8px',
+                                                    borderRadius: '3px',
+                                                    fontSize: '9px',
+                                                    fontWeight: '600',
+                                                    textDecoration: 'none',
+                                                    transition: 'all 0.3s ease',
+                                                    border: 'none',
+                                                    cursor: 'pointer',
+                                                    pointerEvents: 'auto',
+                                                    width: 'fit-content',
+                                                }}
+                                                onMouseOver={(e) => {
+                                                    e.target.style.backgroundColor = '#047857';
+                                                    e.target.style.transform = 'translateY(-1px)';
+                                                }}
+                                                onMouseOut={(e) => {
+                                                    e.target.style.backgroundColor = '#059669';
+                                                    e.target.style.transform = 'translateY(0)';
+                                                }}
+                                            >
+                                                Read
+                                                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                    <path d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                </svg>
+                                            </a>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -397,7 +420,7 @@ export default function ArticlesCoverflow({
                                     position: 'absolute',
                                     inset: 0,
                                     background: '#000000',
-                                    opacity: isActive ? 0 : dim,
+                                    opacity: isActive ? 0 : dim * (1 - ax * 0.02),
                                     transition: `opacity ${dur}s ${ease}`,
                                     pointerEvents: 'none',
                                 }}
@@ -412,11 +435,11 @@ export default function ArticlesCoverflow({
                 onClick={() => step(-1)}
                 style={{
                     position: 'absolute',
-                    left: '10px',
+                    left: '5px',
                     top: '50%',
                     transform: 'translateY(-50%)',
-                    backgroundColor: 'transparent',
-                    border: '2px solid rgba(212, 175, 55, 0.7)',
+                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                    border: '2px solid rgba(212, 175, 55, 0.8)',
                     borderRadius: '9999px',
                     cursor: 'pointer',
                     display: 'flex',
@@ -426,19 +449,21 @@ export default function ArticlesCoverflow({
                     fontSize: '18px',
                     fontWeight: '600',
                     color: '#ffffff',
-                    zIndex: 100,
-                    width: '44px',
-                    height: '44px',
+                    zIndex: 200,
+                    width: '40px',
+                    height: '40px',
                     padding: 0,
-                    backdropFilter: 'blur(2px)',
+                    backdropFilter: 'blur(4px)',
                 }}
                 onMouseOver={(e) => {
-                    e.target.style.backgroundColor = 'rgba(212, 175, 55, 0.12)';
+                    e.target.style.backgroundColor = 'rgba(212, 175, 55, 0.3)';
                     e.target.style.borderColor = '#d4af37';
+                    e.target.style.transform = 'translateY(-50%) scale(1.1)';
                 }}
                 onMouseOut={(e) => {
-                    e.target.style.backgroundColor = 'transparent';
-                    e.target.style.borderColor = 'rgba(212, 175, 55, 0.7)';
+                    e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+                    e.target.style.borderColor = 'rgba(212, 175, 55, 0.8)';
+                    e.target.style.transform = 'translateY(-50%) scale(1)';
                 }}
                 aria-label="Previous article"
             >
@@ -449,11 +474,11 @@ export default function ArticlesCoverflow({
                 onClick={() => step(1)}
                 style={{
                     position: 'absolute',
-                    right: '10px',
+                    right: '5px',
                     top: '50%',
                     transform: 'translateY(-50%)',
-                    backgroundColor: 'transparent',
-                    border: '2px solid rgba(212, 175, 55, 0.7)',
+                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                    border: '2px solid rgba(212, 175, 55, 0.8)',
                     borderRadius: '9999px',
                     cursor: 'pointer',
                     display: 'flex',
@@ -463,24 +488,66 @@ export default function ArticlesCoverflow({
                     fontSize: '18px',
                     fontWeight: '600',
                     color: '#ffffff',
-                    zIndex: 100,
-                    width: '44px',
-                    height: '44px',
+                    zIndex: 200,
+                    width: '40px',
+                    height: '40px',
                     padding: 0,
-                    backdropFilter: 'blur(2px)',
+                    backdropFilter: 'blur(4px)',
                 }}
                 onMouseOver={(e) => {
-                    e.target.style.backgroundColor = 'rgba(212, 175, 55, 0.12)';
+                    e.target.style.backgroundColor = 'rgba(212, 175, 55, 0.3)';
                     e.target.style.borderColor = '#d4af37';
+                    e.target.style.transform = 'translateY(-50%) scale(1.1)';
                 }}
                 onMouseOut={(e) => {
-                    e.target.style.backgroundColor = 'transparent';
-                    e.target.style.borderColor = 'rgba(212, 175, 55, 0.7)';
+                    e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+                    e.target.style.borderColor = 'rgba(212, 175, 55, 0.8)';
+                    e.target.style.transform = 'translateY(-50%) scale(1)';
                 }}
                 aria-label="Next article"
             >
                 →
             </button>
+
+            {/* Dot Indicators */}
+            {n > 1 && (
+                <div
+                    style={{
+                        position: 'absolute',
+                        bottom: '5px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        display: 'flex',
+                        gap: '6px',
+                        zIndex: 200,
+                        flexWrap: 'wrap',
+                        justifyContent: 'center',
+                        maxWidth: '80%',
+                    }}
+                >
+                    {list.map((_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => {
+                                const diff = i - active;
+                                if (diff > 0) step(1);
+                                else if (diff < 0) step(-1);
+                            }}
+                            style={{
+                                width: i === active ? '20px' : '6px',
+                                height: '6px',
+                                borderRadius: '3px',
+                                border: 'none',
+                                backgroundColor: i === active ? '#d4af37' : 'rgba(255, 255, 255, 0.4)',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                padding: 0,
+                            }}
+                            aria-label={`Go to article ${i + 1}`}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

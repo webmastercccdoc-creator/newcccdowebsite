@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "@inertiajs/react"; // Use Inertia's Link instead
+import { Link } from "@inertiajs/react";
 import MainLayout from "../../../layouts/MainLayout";
 import { motion, AnimatePresence } from "framer-motion";
 import UpcomingEventsBanner from "../../../assets/banner/upcoming-events.jpg";
@@ -52,6 +52,7 @@ export default function UpcomingEvents() {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
 
     // Fetch events from API
     useEffect(() => {
@@ -87,16 +88,27 @@ export default function UpcomingEvents() {
         }
     };
 
-    // Filter events based on status
+    // Filter events based on status and search query
     const filteredEvents = events.filter((event) => {
         // For "upcoming" tab: show ONLY upcoming events
         if (filter === "upcoming") {
-            return event.status === "upcoming";
+            if (event.status !== "upcoming") return false;
         }
         // For "past" tab: show completed events only
         if (filter === "past") {
-            return event.status === "completed";
+            if (event.status !== "completed") return false;
         }
+
+        // Search filter
+        if (searchQuery.trim()) {
+            const query = searchQuery.toLowerCase().trim();
+            const titleMatch = event.title?.toLowerCase().includes(query) || false;
+            const descMatch = event.description?.toLowerCase().includes(query) || false;
+            const locationMatch = event.location?.toLowerCase().includes(query) || false;
+            const departmentMatch = event.department?.toLowerCase().includes(query) || false;
+            return titleMatch || descMatch || locationMatch || departmentMatch;
+        }
+
         return true;
     });
 
@@ -207,8 +219,64 @@ export default function UpcomingEvents() {
 
             {/* MAIN CONTENT AREA */}
             <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+                {/* Welcome Text and Search Bar */}
+                <div className="mb-12">
+                    <div className="text-center mb-8">
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-3">
+                            Discover <span className="text-[#0f5132]">Events</span> at City College of Cagayan de Oro
+                        </h2>
+                        <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                            Explore upcoming and past events, workshops, and activities 
+                            happening at City College of Cagayan de Oro.
+                        </p>
+                        <div className="w-24 h-1 bg-gradient-to-r from-[#0f5132] to-[#1a7a4a] rounded-full mx-auto mt-4"></div>
+                    </div>
+
+                    {/* Search Input */}
+                    <div className="relative max-w-2xl mx-auto">
+                        <input
+                            type="text"
+                            placeholder="Search events by title, description, location, or department..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-6 pr-16 py-3 rounded-full border-0 focus:outline-none transition duration-200 text-base shadow-lg"
+                        />
+                        <button
+                            onClick={() => {
+                                // Search trigger - already handled by onChange
+                            }}
+                            className="absolute right-1 top-1/2 transform -translate-y-1/2 w-11 h-11 rounded-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 transition duration-200 font-semibold flex items-center justify-center shadow-md"
+                            title="Search events"
+                            aria-label="Search"
+                        >
+                            <svg 
+                                className="w-5 h-5" 
+                                fill="none" 
+                                stroke="currentColor" 
+                                viewBox="0 0 24 24"
+                                strokeWidth="2.5"
+                            >
+                                <path 
+                                    strokeLinecap="round" 
+                                    strokeLinejoin="round" 
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
+                                />
+                            </svg>
+                        </button>
+                    </div>
+
+                    {/* Search results count */}
+                    {!loading && !error && searchQuery && (
+                        <div className="text-center mt-3 text-sm text-gray-500">
+                            Found {sortedEvents.length} event{sortedEvents.length !== 1 ? 's' : ''}
+                            {filter === 'upcoming' ? ' upcoming' : ' past'} 
+                            {searchQuery && ` matching "${searchQuery}"`}
+                        </div>
+                    )}
+                </div>
+
                 {/* Filter Tabs */}
-                <div className="flex justify-start gap-4 mb-12">
+                <div className="flex flex-wrap justify-start gap-4 mb-12">
                     <button
                         onClick={() => setFilter("upcoming")}
                         className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${
@@ -229,6 +297,14 @@ export default function UpcomingEvents() {
                     >
                         Past Events
                     </button>
+                    {searchQuery && (
+                        <button
+                            onClick={() => setSearchQuery("")}
+                            className="px-6 py-2.5 rounded-full text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-all duration-300"
+                        >
+                            Clear Search ✕
+                        </button>
+                    )}
                 </div>
 
                 {/* Loading State */}
@@ -264,7 +340,7 @@ export default function UpcomingEvents() {
                                 variants={containerVariants}
                                 initial="hidden"
                                 animate="visible"
-                                key={filter}
+                                key={filter + searchQuery}
                             >
                                 <AnimatePresence mode="wait">
                                     {sortedEvents.map((event) => {
@@ -427,13 +503,23 @@ export default function UpcomingEvents() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
                                 <p className="text-xl font-medium mb-2">
-                                    No {filter} events found
+                                    {searchQuery ? 'No events found matching your search' : `No ${filter} events found`}
                                 </p>
                                 <p className="text-base">
-                                    {filter === 'upcoming' 
-                                        ? 'Check back later for upcoming events.' 
-                                        : 'No completed events to display.'}
+                                    {searchQuery 
+                                        ? `Try adjusting your search terms or clear the search to see all ${filter} events.`
+                                        : filter === 'upcoming' 
+                                            ? 'Check back later for upcoming events.' 
+                                            : 'No completed events to display.'}
                                 </p>
+                                {searchQuery && (
+                                    <button
+                                        onClick={() => setSearchQuery("")}
+                                        className="mt-4 px-6 py-2 bg-[#0f5132] text-white rounded-lg hover:bg-[#0a3b24] transition-colors"
+                                    >
+                                        Clear Search
+                                    </button>
+                                )}
                             </div>
                         )}
                     </>

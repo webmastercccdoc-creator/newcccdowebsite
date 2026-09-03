@@ -11,6 +11,7 @@ use App\Http\Controllers\EventsController;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\EventParticipantController;
 use App\Http\Controllers\UserAccessController;
+use App\Http\Controllers\UrlShortenerController; // Add this
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -18,13 +19,24 @@ use Inertia\Inertia;
 // PUBLIC ROUTES (No Authentication Required)
 // ============================================
 
-// Homepage`
+// Homepage
 Route::get('/', [HomeController::class, 'index']);
 
 // Login page (public)
 Route::get('/login-page', function () {
     return Inertia::render('Auth/Login');
 })->name('login.page');
+
+// ============================================
+// URL SHORTENER ROUTES (Public)
+// ============================================
+Route::get('/url-shortener', function () {
+    return Inertia::render('content/Quicklinks/UrlShortener');
+})->name('url.shortener');
+
+// API endpoints for URL Shortener
+Route::post('/shorten-url', [UrlShortenerController::class, 'shorten'])->name('url.shorten');
+Route::post('/lookup-url', [UrlShortenerController::class, 'lookup'])->name('url.lookup');
 
 // ============================================
 // ABOUT PAGES
@@ -144,7 +156,6 @@ Route::get('/events/{id}', function ($id) {
     return Inertia::render('content/News/ViewEvents', ['id' => $id]);
 })->name('events.view');
 
-
 // ============================================
 // PROMOTIONS PAGE (Public)
 // ============================================
@@ -165,6 +176,13 @@ Route::get('/events', function () {
 Route::get('/contact-us', function () {
     return Inertia::render('content/Contact');
 })->name('contact-us');
+
+// ============================================
+// ENROLL NOW PAGE
+// ============================================
+Route::get('/apply', function () {
+    return Inertia::render('content/Enroll/EnrollNow');
+})->name('apply');
 
 // ============================================
 // NEWS API ROUTES (Public)
@@ -212,45 +230,44 @@ Route::middleware(['auth'])->group(function () {
     // ============================================
     // ARTICLES MANAGEMENT ROUTES
     // ============================================
-    Route::get('/admin/articles', [ArticlesController::class, 'index'])->name('admin.articles');                              // List all articles
-    Route::get('/admin/approve-articles', [ArticlesController::class, 'approve'])->name('admin.approve-articles');          // Approve articles page
+    Route::get('/admin/articles', [ArticlesController::class, 'index'])->name('admin.articles');
+    Route::get('/admin/approve-articles', [ArticlesController::class, 'approve'])->name('admin.approve-articles');
     Route::post('/admin/articles/suggest-sdgs', [ArticlesController::class, 'suggestSdgs'])->name('admin.articles.suggest-sdgs');
-    Route::post('/admin/articles', [ArticlesController::class, 'store'])->name('admin.articles.store');                     // Create new article
-    Route::get('/admin/articles/status-counts', [ArticlesController::class, 'articleStatusCounts'])->name('admin.articles.status-counts'); // Get article counts
-    Route::get('/admin/articles/{article}', [ArticlesController::class, 'show'])->name('admin.articles.show');               // View single article
-    Route::put('/admin/articles/{article}', [ArticlesController::class, 'update'])->name('admin.articles.update');           // Update article
-    Route::delete('/admin/articles/{article}', [ArticlesController::class, 'destroy'])->name('admin.articles.destroy');       // Delete article
-    Route::put('/admin/articles/{article}/approve', [ArticlesController::class, 'approveArticle'])->name('admin.articles.approve'); // Approve article
-    Route::put('/admin/articles/{article}/reject', [ArticlesController::class, 'rejectArticle'])->name('admin.articles.reject');     // Reject article
-    Route::put('/admin/articles/{article}/archive', [ArticlesController::class, 'archiveArticle'])->name('admin.articles.archive');   // Archive article
+    Route::post('/admin/articles', [ArticlesController::class, 'store'])->name('admin.articles.store');
+    Route::get('/admin/articles/status-counts', [ArticlesController::class, 'articleStatusCounts'])->name('admin.articles.status-counts');
+    Route::get('/admin/articles/{article}', [ArticlesController::class, 'show'])->name('admin.articles.show');
+    Route::put('/admin/articles/{article}', [ArticlesController::class, 'update'])->name('admin.articles.update');
+    Route::delete('/admin/articles/{article}', [ArticlesController::class, 'destroy'])->name('admin.articles.destroy');
+    Route::put('/admin/articles/{article}/approve', [ArticlesController::class, 'approveArticle'])->name('admin.articles.approve');
+    Route::put('/admin/articles/{article}/reject', [ArticlesController::class, 'rejectArticle'])->name('admin.articles.reject');
+    Route::put('/admin/articles/{article}/archive', [ArticlesController::class, 'archiveArticle'])->name('admin.articles.archive');
 
     // ============================================
     // PROMOTIONS MANAGEMENT ROUTES (Admin)
     // ============================================
-    Route::get('/admin/promotions', [PromotionsController::class, 'index'])->name('admin.promotions');                       // List all promotions
-    Route::post('/admin/promotions', [PromotionsController::class, 'store'])->name('admin.promotions.store');                // Create new promotion
-    Route::get('/admin/promotions/{id}', [PromotionsController::class, 'show'])->name('admin.promotions.show');              // View single promotion
-    Route::put('/admin/promotions/{id}', [PromotionsController::class, 'update'])->name('admin.promotions.update');          // Update promotion
-    Route::put('/admin/promotions/{id}/status', [PromotionsController::class, 'toggleStatus'])->name('admin.promotions.toggle-status'); // Toggle status
-    Route::delete('/admin/promotions/{id}', [PromotionsController::class, 'destroy'])->name('admin.promotions.destroy');      // Delete promotion
-    Route::delete('/admin/promotions/bulk', [PromotionsController::class, 'bulkDelete'])->name('admin.promotions.bulk-delete'); // Bulk delete promotions
+    Route::get('/admin/promotions', [PromotionsController::class, 'index'])->name('admin.promotions');
+    Route::post('/admin/promotions', [PromotionsController::class, 'store'])->name('admin.promotions.store');
+    Route::get('/admin/promotions/{id}', [PromotionsController::class, 'show'])->name('admin.promotions.show');
+    Route::put('/admin/promotions/{id}', [PromotionsController::class, 'update'])->name('admin.promotions.update');
+    Route::put('/admin/promotions/{id}/status', [PromotionsController::class, 'toggleStatus'])->name('admin.promotions.toggle-status');
+    Route::delete('/admin/promotions/{id}', [PromotionsController::class, 'destroy'])->name('admin.promotions.destroy');
+    Route::delete('/admin/promotions/bulk', [PromotionsController::class, 'bulkDelete'])->name('admin.promotions.bulk-delete');
 
     // ============================================
     // EVENTS MANAGEMENT ROUTES (Admin)
     // ============================================
-    Route::get('/admin/events', [EventsController::class, 'index'])->name('admin.events');                                  // List all events
-    Route::post('/admin/events', [EventsController::class, 'store'])->name('admin.events.store');                           // Create new event
-    Route::get('/admin/events/{id}', [EventsController::class, 'show'])->name('admin.events.show');                         // View single event
-    Route::put('/admin/events/{id}', [EventsController::class, 'update'])->name('admin.events.update');                     // Update event
-    Route::put('/admin/events/{id}/status', [EventsController::class, 'toggleStatus'])->name('admin.events.toggle-status'); // Toggle status
+    Route::get('/admin/events', [EventsController::class, 'index'])->name('admin.events');
+    Route::post('/admin/events', [EventsController::class, 'store'])->name('admin.events.store');
+    Route::get('/admin/events/{id}', [EventsController::class, 'show'])->name('admin.events.show');
+    Route::put('/admin/events/{id}', [EventsController::class, 'update'])->name('admin.events.update');
+    Route::put('/admin/events/{id}/status', [EventsController::class, 'toggleStatus'])->name('admin.events.toggle-status');
     Route::put('/admin/events/{id}/complete', [EventsController::class, 'complete'])->name('admin.events.complete');
-    Route::delete('/admin/events/{id}', [EventsController::class, 'destroy'])->name('admin.events.destroy');                // Delete event
-    Route::delete('/admin/events/bulk', [EventsController::class, 'bulkDelete'])->name('admin.events.bulk-delete');         // Bulk delete events
+    Route::delete('/admin/events/{id}', [EventsController::class, 'destroy'])->name('admin.events.destroy');
+    Route::delete('/admin/events/bulk', [EventsController::class, 'bulkDelete'])->name('admin.events.bulk-delete');
 
-// ============================================
-// EVENT PARTICIPANTS ROUTES
-// ============================================
-Route::middleware(['auth'])->group(function () {
+    // ============================================
+    // EVENT PARTICIPANTS ROUTES
+    // ============================================
     Route::prefix('admin/events/{eventId}/participants')->group(function () {
         Route::get('/', [EventParticipantController::class, 'index'])->name('admin.events.participants.index');
         Route::post('/', [EventParticipantController::class, 'store'])->name('admin.events.participants.store');
@@ -262,23 +279,21 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/stats', [EventParticipantController::class, 'getStats'])->name('admin.events.participants.stats');
         Route::get('/export', [EventParticipantController::class, 'export'])->name('admin.events.participants.export');
     });
-});
 
     // ============================================
     // USER MANAGEMENT ROUTES
     // ============================================
-    Route::get('/admin/usersmanagement', [AdminController::class, 'users'])->name('admin.usersmanagement');                  // User list page
+    Route::get('/admin/usersmanagement', [AdminController::class, 'users'])->name('admin.usersmanagement');
     
     // User CRUD Operations
-    Route::post('/admin/users', [AdminController::class, 'store'])->name('admin.users.store');                               // Create user
-    Route::put('/admin/users/{id}', [AdminController::class, 'update'])->name('admin.users.update');                         // Update user
-    Route::delete('/admin/users/{id}', [AdminController::class, 'destroy'])->name('admin.users.destroy');                     // Delete user
-    Route::get('/admin/users/{id}', [AdminController::class, 'show'])->name('admin.users.show');                             // View single user
+    Route::post('/admin/users', [AdminController::class, 'store'])->name('admin.users.store');
+    Route::put('/admin/users/{id}', [AdminController::class, 'update'])->name('admin.users.update');
+    Route::delete('/admin/users/{id}', [AdminController::class, 'destroy'])->name('admin.users.destroy');
+    Route::get('/admin/users/{id}', [AdminController::class, 'show'])->name('admin.users.show');
 
     // ============================================
     // DEPARTMENT ROUTES
     // ============================================
-    // For Admin - Shows ALL departments (full list)
     Route::get('/admin/departments', [AdminController::class, 'getDepartments'])->name('admin.departments');
     
     // User Roles (if needed)
@@ -286,17 +301,15 @@ Route::middleware(['auth'])->group(function () {
 
     // ============================================
     // USER ACCESS CONTROL ROUTES
-    // Gets the current authenticated user's data
     // ============================================
-    Route::get('/user/departments', [UserAccessController::class, 'getUserAccessibleDepartments']);   // Get user's assigned departments
-    Route::get('/user/articles', [UserAccessController::class, 'getUserArticles']);                   // Get approved articles allowed for current user
-    Route::get('/user/permissions', [UserAccessController::class, 'getUserPermissions']);             // Get user's permissions & menus
-    Route::get('/user/profile', [UserAccessController::class, 'getUserProfile']);                     // Get current user's profile data
-    Route::get('/user/check-menu/{menuId}', [UserAccessController::class, 'checkMenuAccess']);        // Check if user can access a menu
-    Route::get('/user/has-permission/{permission}', [UserAccessController::class, 'hasPermission']);  // Check if user has a permission
-    Route::post('/user/has-any-permission', [UserAccessController::class, 'hasAnyPermission']);       // Check if user has any of the permissions
-    Route::get('/user/all-departments/{userId?}', [UserAccessController::class, 'getAllDepartmentsWithAccess']); // Get all departments with access info
-
+    Route::get('/user/departments', [UserAccessController::class, 'getUserAccessibleDepartments']);
+    Route::get('/user/articles', [UserAccessController::class, 'getUserArticles']);
+    Route::get('/user/permissions', [UserAccessController::class, 'getUserPermissions']);
+    Route::get('/user/profile', [UserAccessController::class, 'getUserProfile']);
+    Route::get('/user/check-menu/{menuId}', [UserAccessController::class, 'checkMenuAccess']);
+    Route::get('/user/has-permission/{permission}', [UserAccessController::class, 'hasPermission']);
+    Route::post('/user/has-any-permission', [UserAccessController::class, 'hasAnyPermission']);
+    Route::get('/user/all-departments/{userId?}', [UserAccessController::class, 'getAllDepartmentsWithAccess']);
 });
 
 // ============================================

@@ -222,8 +222,11 @@ export default function UpcomingEvents() {
                 {/* Welcome Text and Search Bar */}
                 <div className="mb-12">
                     <div className="text-center mb-8">
-                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-3">
-                            Discover <span className="text-[#0f5132]">Events</span> at City College of Cagayan de Oro
+                        {/* Title with Bricolage font, bold, and green colored words */}
+                        <h2 className="font-bricolage text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-800 mb-3">
+                            Discover <span className="text-[#0f5132]">Events</span> at{' '}
+                            <span className="text-[#0f5132]">City College</span> of{' '}
+                            <span className="text-[#0f5132]">Cagayan de Oro</span>
                         </h2>
                         <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
                             Explore upcoming and past events, workshops, and activities 
@@ -307,6 +310,9 @@ export default function UpcomingEvents() {
                     )}
                 </div>
 
+                {/* Green Rectangle Line under Tabs */}
+                <div className="w-full h-1 bg-[#0f5132] mb-12"></div>
+
                 {/* Loading State */}
                 {loading && (
                     <div className="flex justify-center items-center py-20">
@@ -382,7 +388,7 @@ export default function UpcomingEvents() {
 
                                                 {/* Card Content */}
                                                 <div className="p-6 flex flex-col flex-1">
-                                                    <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 leading-tight group-hover:text-[#0f5132] transition-colors">
+                                                    <h3 className="font-bricolage text-xl font-bold text-gray-900 mb-2 line-clamp-2 leading-tight group-hover:text-[#0f5132] transition-colors">
                                                         {event.title || 'Untitled Event'}
                                                     </h3>
 

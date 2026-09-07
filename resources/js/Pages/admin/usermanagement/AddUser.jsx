@@ -28,17 +28,20 @@ export default function AddUser({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Access Control Options - Updated with Content and Research
-  const accessControlOptions = [
-    { id: 'articles', label: 'Articles' },
-    { id: 'approve_articles', label: 'Approve Articles' },
-    { id: 'promotions', label: 'Promotions' },
-    { id: 'research', label: 'Research' },
-    { id: 'content', label: 'Content' },
-    { id: 'user_management', label: 'User Management' },
-    { id: 'events', label: 'Events' },
-    { id: 'settings', label: 'Settings' }
-  ];
+// Access Control Options - Updated with Content and Research
+const accessControlOptions = [
+  { id: 'articles', label: 'Articles' },
+  { id: 'approve_articles', label: 'Approve Articles' },
+  { id: 'promotions', label: 'Promotions' },
+  { id: 'research', label: 'Research' },
+  { id: 'content', label: 'Content' },
+  { id: 'user_management', label: 'User Management' },
+  { id: 'events', label: 'Events' },
+  { id: 'settings', label: 'Settings' },
+  { id: 'shorten_url', label: 'Shorten URL' }
+];
+
+const validAccessControlIds = new Set(accessControlOptions.map(option => option.id));
 
   // Populate form when editing
   useEffect(() => {
@@ -52,7 +55,8 @@ export default function AddUser({
         status: user.status || 'active',
         password: '',
         password_confirmation: '',
-        access_controls: user.access_controls || user.permissions || []
+        access_controls: (user.access_controls || user.permissions || [])
+          .filter(permission => validAccessControlIds.has(permission))
       });
     } else if (isOpen && !isEditing) {
       // Reset form for new user

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Url;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 class UrlShortenerController extends Controller
 {
@@ -14,7 +15,40 @@ class UrlShortenerController extends Controller
      */
     public function index()
     {
-        return Inertia::render('content/Quicklinks/UrlShortener');
+        return Inertia::render('admin/Url/Url');
+    }
+
+    /**
+     * List shortened URLs for the admin page.
+     */
+    public function list()
+    {
+        $domain = rtrim(config('app.url'), '/');
+
+        return response()->json([
+            'urls' => Url::latest()->get()->map(function ($url) use ($domain) {
+                return [
+                    'id' => $url->id,
+                    'short_code' => $url->short_code,
+                    'short_url' => $domain . '/' . $url->short_code,
+                    'original_url' => $url->long_url,
+                    'clicks' => $url->clicks,
+                    'status' => $url->status,
+                    'created_at' => $url->created_at,
+                ];
+            }),
+        ]);
+    }
+
+    /**
+     * Delete a shortened URL from the admin page.
+     */
+    public function destroy($id)
+    {
+        $url = Url::findOrFail($id);
+        $url->delete();
+
+        return response()->json(['success' => true]);
     }
 
     /**
@@ -24,7 +58,8 @@ class UrlShortenerController extends Controller
     {
         // Validate the request
         $validator = Validator::make($request->all(), [
-            'long_url' => 'required|url|max:2048',
+            'long_url' => 'required_without:original_url|nullable|url|max:2048',
+            'original_url' => 'required_without:long_url|nullable|url|max:2048',
             'path' => 'nullable|alpha_dash|max:100|min:3',
         ]);
 
@@ -36,13 +71,26 @@ class UrlShortenerController extends Controller
             ], 422);
         }
 
-        $longUrl = $this->normalizeUrl($request->input('long_url'));
+        $longUrl = $this->normalizeUrl($request->input('long_url') ?? $request->input('original_url'));
         $customPath = $request->input('path');
 
         // Check if URL already exists
         $existingUrl = Url::where('long_url', $longUrl)->first();
 
         if ($existingUrl) {
+            if ($customPath) {
+                $customShortCode = $this->validateCustomPath($customPath, $existingUrl->id);
+
+                if (!$customShortCode) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'That custom code is already in use. Please choose another one.',
+                    ], 422);
+                }
+
+                $existingUrl->update(['short_code' => $customShortCode]);
+            }
+
             return $this->formatSuccessResponse($existingUrl, 'URL already shortened. Here is your existing link.');
         }
 
@@ -63,6 +111,7 @@ class UrlShortenerController extends Controller
             'long_url' => $longUrl,
             'short_code' => $shortCode,
             'clicks' => 0,
+            'status' => 'pending',
         ]);
 
         return $this->formatSuccessResponse($url, 'Your shortened URL is ready!');
@@ -121,6 +170,13 @@ class UrlShortenerController extends Controller
             ], 404);
         }
 
+        if ($url->status !== 'approved') {
+            return response()->json([
+                'status' => 'pending',
+                'message' => 'This shortened URL is not available until it is approved.',
+            ], 403);
+        }
+
         // Increment click count
         $url->increment('clicks');
 
@@ -137,9 +193,32 @@ class UrlShortenerController extends Controller
         if (!$url) {
             abort(404, 'URL not found');
         }
+
+        if ($url->status !== 'approved') {
+            abort(403, 'This shortened URL is not available until it is approved.');
+        }
         
         $url->increment('clicks');
         return redirect($url->long_url, 302);
+    }
+
+    /**
+     * Approve or reject a shortened URL.
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:approved,rejected',
+        ]);
+
+        $url = Url::findOrFail($id);
+        $url->update(['status' => $validated['status']]);
+
+        return response()->json([
+            'success' => true,
+            'status' => $url->status,
+            'message' => 'URL status updated successfully.',
+        ]);
     }
 
     /**
@@ -168,12 +247,17 @@ class UrlShortenerController extends Controller
     /**
      * Validate and return custom path
      */
-    private function validateCustomPath($path)
+    private function validateCustomPath($path, $ignoreId = null)
     {
         $path = trim($path, '/');
         $path = preg_replace('/[^a-zA-Z0-9_-]/', '', $path);
-        
-        if (empty($path) || Url::where('short_code', $path)->exists()) {
+
+        $existingCodeQuery = Url::where('short_code', $path);
+        if ($ignoreId !== null) {
+            $existingCodeQuery->where('id', '!=', $ignoreId);
+        }
+
+        if (empty($path) || $existingCodeQuery->exists()) {
             return null;
         }
         
@@ -185,15 +269,19 @@ class UrlShortenerController extends Controller
      */
     private function formatSuccessResponse($url, $message)
     {
-        $domain = config('app.url');
+        $domain = rtrim(config('app.url'), '/');
+        $shortUrl = $domain . '/' . $url->short_code;
         
         return response()->json([
             'status' => 'success',
             'message' => $message,
-            'short_url' => $domain . '/' . $url->short_code,
+            'success' => true,
+            'short_url' => $shortUrl,
+            'shortened_url' => $shortUrl,
             'short_code' => $url->short_code,
             'long_url' => $url->long_url,
-            'qr_code' => $this->generateQrCode($url->short_code, $domain),
+            'url_status' => $url->status,
+            'qr_code' => $this->generateQrCode($shortUrl),
             'clicks' => $url->clicks,
             'created_at' => $url->created_at->toDateTimeString(),
         ]);
@@ -202,18 +290,18 @@ class UrlShortenerController extends Controller
     /**
      * Generate QR code
      */
-    private function generateQrCode($shortCode, $domain)
+    private function generateQrCode($shortUrl)
     {
         try {
             // Using QR Server API (free)
-            $url = urlencode($domain . '/' . $shortCode);
+            $url = urlencode($shortUrl);
             return "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={$url}";
         } catch (\Exception $e) {
             return 'data:image/svg+xml;base64,' . base64_encode(
                 '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
                     <rect width="200" height="200" fill="#fff"/>
                     <text x="100" y="100" text-anchor="middle" font-family="Arial" font-size="14" fill="#333">QR Code</text>
-                    <text x="100" y="120" text-anchor="middle" font-family="Arial" font-size="10" fill="#666">' . $shortCode . '</text>
+                    <text x="100" y="120" text-anchor="middle" font-family="Arial" font-size="10" fill="#666">' . $shortUrl . '</text>
                 </svg>'
             );
         }

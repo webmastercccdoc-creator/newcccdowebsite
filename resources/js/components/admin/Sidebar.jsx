@@ -151,6 +151,7 @@ export default function Sidebar() {
   const getActiveItem = () => {
     if (url.startsWith('/admin/articles')) return '/admin/articles';
     if (url.startsWith('/admin/approve-articles')) return '/admin/approve-articles';
+    if (url.startsWith('/admin/shorten-url')) return '/admin/shorten-url';
     if (url.startsWith('/admin/promotions')) return '/admin/promotions';
     if (url.startsWith('/admin/events')) return '/admin/events';
     if (url.startsWith('/admin/research')) return '/admin/research';
@@ -189,6 +190,15 @@ export default function Sidebar() {
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      )
+    },
+    shorten_url: {
+      name: 'Shorten URL',
+      href: '/admin/shorten-url',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
         </svg>
       )
     },
@@ -246,7 +256,7 @@ export default function Sidebar() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
       )
-    }
+    },
   };
 
   // Build nav items from menus
@@ -312,8 +322,11 @@ export default function Sidebar() {
       <nav className={`flex-1 px-3 py-4 ${isCollapsed ? 'overflow-hidden' : 'overflow-y-auto'}`} aria-label="Main navigation">
         <ul className="space-y-1">
           {navItems.map((item) => (
-            <li key={item.href} className="relative">
-              <Link
+            <li key={item.id} className="relative">
+              {(() => {
+                const NavItem = Link;
+
+                return <NavItem
                 href={item.href}
                 onClick={(event) => {
                   event.preventDefault();
@@ -385,7 +398,8 @@ export default function Sidebar() {
                     {effectivePendingCount > 99 ? '99+' : effectivePendingCount}
                   </span>
                 )}
-              </Link>
+              </NavItem>;
+              })()}
             </li>
           ))}
         </ul>

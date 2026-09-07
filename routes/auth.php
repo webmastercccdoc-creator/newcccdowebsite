@@ -10,6 +10,12 @@ Route::middleware('guest')->group(function () {
     
     Route::post('login', [AuthenticatedSessionController::class, 'store'])
         ->name('login.store');
+
+    Route::post('login/verify-otp', [AuthenticatedSessionController::class, 'verifyOtp'])
+        ->name('login.verify-otp');
+
+    Route::post('login/resend-otp', [AuthenticatedSessionController::class, 'resendOtp'])
+        ->name('login.resend-otp');
 });
 
 Route::middleware('auth')->group(function () {

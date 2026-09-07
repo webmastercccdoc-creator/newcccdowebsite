@@ -10,6 +10,7 @@ class Url extends Model
         'long_url',
         'short_code',
         'clicks',
+        'status',
     ];
 
     protected $casts = [

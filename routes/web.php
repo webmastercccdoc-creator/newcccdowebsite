@@ -11,7 +11,9 @@ use App\Http\Controllers\EventsController;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\EventParticipantController;
 use App\Http\Controllers\UserAccessController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UrlShortenerController; // Add this
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -24,7 +26,7 @@ Route::get('/', [HomeController::class, 'index']);
 
 // Login page (public)
 Route::get('/login-page', function () {
-    return Inertia::render('Auth/Login');
+    return app(AuthenticatedSessionController::class)->create();
 })->name('login.page');
 
 // ============================================
@@ -216,6 +218,12 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard View (Inertia)
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
     Route::get('/admin/dashboard', [DashboardController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/settings', [SettingsController::class, 'index'])->name('admin.settings');
+    Route::get('/admin/shorten-url', [UrlShortenerController::class, 'index'])->name('admin.shorten-url');
+    Route::get('/admin/shorten-url/list', [UrlShortenerController::class, 'list'])->name('admin.shorten-url.list');
+    Route::post('/admin/shorten-url', [UrlShortenerController::class, 'shorten'])->name('admin.shorten-url.store');
+    Route::put('/admin/shorten-url/{id}/status', [UrlShortenerController::class, 'updateStatus'])->name('admin.shorten-url.status');
+    Route::delete('/admin/shorten-url/{id}', [UrlShortenerController::class, 'destroy'])->name('admin.shorten-url.destroy');
     
     // Dashboard API Endpoints
     Route::get('/api/dashboard/stats', [DashboardController::class, 'getStats']);
@@ -316,3 +324,12 @@ Route::middleware(['auth'])->group(function () {
 // AUTHENTICATION ROUTES
 // ============================================
 require __DIR__.'/auth.php';
+
+// Public short URL redirect. Keep this after auth routes so /login is not captured as a short code.
+Route::get('/s/{shortCode}', [UrlShortenerController::class, 'redirect'])
+    ->where('shortCode', '[A-Za-z0-9_-]+')
+    ->name('url.redirect.short');
+
+Route::get('/{shortCode}', [UrlShortenerController::class, 'redirect'])
+    ->where('shortCode', '[A-Za-z0-9_-]+')
+    ->name('url.redirect');

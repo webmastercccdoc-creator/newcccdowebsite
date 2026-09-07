@@ -11,7 +11,7 @@ import notailImg from '../../../assets/images/notail.png';
 import jeraxImg from '../../../assets/images/jerax.png';
 
 /* ============================================================================
-   BIONOTE — existing biography content, unchanged.
+   DATA CONTENT
    ============================================================================ */
 const BIONOTE_PARAGRAPHS = [
     <>Dr. Kurt S. Candilas is the Vice President for Administration at the City College of Cagayan de Oro, Philippines, and former College Dean of Lourdes College, Inc. In his current capacity, he provides administrative and financial leadership and oversees key institutional offices and services, including Human Resources, the Technology Innovation and Data Management Center, and Physical Plant Services. He earned his Bachelor of Arts in English from Bukidnon State University, his Master&apos;s in Education majoring in Teaching English Communication Arts from Lourdes College, and his Doctor of Philosophy in English majoring in Literature from the University of San Jose&ndash;Recoletos, Cebu City. He also holds an advanced TESOL certification from the American TESOL Institute of the Philippines.</>,
@@ -27,7 +27,7 @@ const CREDENTIALS = [
         title: 'Academic Background',
         lines: ['PhD in English Literature', 'MA in Education | BA in English'],
         icon: (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75"
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
                 d="M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
         ),
     },
@@ -35,7 +35,7 @@ const CREDENTIALS = [
         title: 'Professional Certification',
         lines: ['Advanced TESOL Certification', 'American TESOL Institute'],
         icon: (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75"
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         ),
     },
@@ -43,7 +43,7 @@ const CREDENTIALS = [
         title: 'Regional CHED Trainer',
         lines: ['Purposive Communication', 'General Education Subject'],
         icon: (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75"
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
                 d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m5-2.13a4 4 0 100-8 4 4 0 000 8z" />
         ),
     },
@@ -51,50 +51,8 @@ const CREDENTIALS = [
         title: 'Published Author',
         lines: ['Purposive Communication with', 'SDG Integration (2025)'],
         icon: (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75"
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
                 d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-        ),
-    },
-];
-
-const PROFILE_QUOTE =
-    'Committed to excellence in administration, innovation in services, and integrity in leadership.';
-
-const STATS = [
-    {
-        label: 'Oversees',
-        value: '4',
-        caption: 'Key Offices',
-        icon: (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75"
-                d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" />
-        ),
-    },
-    {
-        label: 'Leads',
-        value: '100+',
-        caption: 'Personnel',
-        icon: (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75"
-                d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m5-2.13a4 4 0 100-8 4 4 0 000 8zm6 1a4 4 0 10-1-7.87" />
-        ),
-    },
-    {
-        label: 'Ensures',
-        value: 'Efficient',
-        caption: 'Institutional Operations',
-        icon: (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75"
-                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        ),
-    },
-    {
-        label: 'Driven by',
-        value: 'Integrity',
-        caption: 'Service and Excellence',
-        icon: (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75"
-                d="M12 21a9 9 0 100-18 9 9 0 000 18zM12 16a4 4 0 100-8 4 4 0 000 8zM12 13a1 1 0 100-2 1 1 0 000 2z" />
         ),
     },
 ];
@@ -105,22 +63,26 @@ const OFFICES = [
         label: 'Human Resources',
         name: 'Human Resources Office',
         description:
-            'Sample placeholder text: the Human Resources Office manages personnel administration, employee services, recruitment, development, records, and related institutional functions.',
+            'The Human Resources Office manages personnel administration, employee services, recruitment, development, records, and related institutional functions.',
         functions: [
-            'Recruitment and Selection',
-            'Personnel Records Management',
-            'Employee Relations',
-            'Training and Development',
-            'Performance Management',
-            'Employee Welfare',
+            'Recruitment and Selection', 'Personnel Records Management', 'Employee Relations',
+            'Training and Development', 'Performance Management', 'Employee Welfare',
         ],
+        // Updated Org Chart Structure based on Text Tree
         orgChart: [
-            { title: 'Vice President', nodes: ['VP for Administration and Finance'] },
-            { title: 'Office Head', nodes: ['Director / Head of Human Resources'] },
-            { title: 'Staff', nodes: ['HR Officers / Staff'] },
+            { title: 'Executive Level', nodes: ['Office of the Vice President for Administration and Finance'], emphasize: true },
+            { title: 'Office Head', nodes: ['Director, Human Resource Management and Development Office'], emphasize: true },
+            {
+                title: 'Unit Heads',
+                nodes: [
+                    'Head, Human Resource Development',
+                    'Head, Human Resource and Management',
+                ],
+                branch: true,
+            },
         ],
         icon: (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75"
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
                 d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m5-2.13a4 4 0 100-8 4 4 0 000 8zm6 1a4 4 0 10-1-7.87" />
         ),
     },
@@ -129,22 +91,29 @@ const OFFICES = [
         label: 'Finance',
         name: 'Finance Office',
         description:
-            'Sample placeholder text: the Finance Office description will be provided later.',
+            'The Finance Office handles budget management, financial planning, accounting services, disbursements, financial reporting, and institutional records.',
         functions: [
-            'Budget Management',
-            'Financial Planning',
-            'Accounting Services',
-            'Disbursement',
-            'Financial Reporting',
-            'Records and Documentation',
+            'Budget Management', 'Financial Planning', 'Accounting Services',
+            'Disbursement', 'Financial Reporting', 'Records and Documentation',
         ],
+        // Updated Org Chart Structure based on Text Tree
         orgChart: [
-            { title: 'Vice President', nodes: ['VP for Administration and Finance'] },
-            { title: 'Office Head', nodes: ['Finance Director / Head'] },
-            { title: 'Staff', nodes: ['Accounting', 'Budget', 'Cashier', 'Finance Staff'] },
+            { title: 'Executive Level', nodes: ['Office of the Vice President for Administration and Finance'], emphasize: true },
+            { title: 'Office Head', nodes: ['Director, Finance'], emphasize: true },
+            {
+                title: 'Unit Heads',
+                nodes: [
+                    'Head, Budget Management Division',
+                    'Head, Payroll Management Division',
+                    'Head, Procurement Services Division',
+                    'Head, Local Economic Enterprise',
+                    'In Charge, Assessment Center',
+                ],
+                branch: true,
+            },
         ],
         icon: (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75"
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
                 d="M9 17V9m3 8V5m3 12v-5M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
         ),
     },
@@ -153,66 +122,66 @@ const OFFICES = [
         label: 'PPS',
         name: 'Physical Plant and Services',
         description:
-            'Sample placeholder text related to facilities, maintenance, campus infrastructure, utilities, safety, and physical plant operations.',
+            'PPS oversees facilities, maintenance, campus infrastructure, utilities, safety, and physical plant operations to ensure a conducive learning environment.',
         functions: [
-            'Facilities Management',
-            'Building Maintenance',
-            'Electrical and Plumbing Services',
-            'Campus Grounds and Landscaping',
-            'Utilities Management',
-            'Equipment and Facility Maintenance',
-            'General Physical Plant Services',
+            'Facilities Management', 'Building Maintenance', 'Electrical and Plumbing',
+            'Campus Grounds', 'Utilities Management', 'General Physical Plant Services',
         ],
+        // Updated Org Chart Structure based on Text Tree
         orgChart: [
-            { title: 'Vice President', nodes: ['VP for Administration and Finance'] },
-            { title: 'Office Head', nodes: ['PPS Head / Director'] },
-            { title: 'Staff', nodes: ['Maintenance', 'Facilities', 'Utility', 'Support Personnel'] },
+            { title: 'Executive Level', nodes: ['Office of the Vice President for Administration and Finance'], emphasize: true },
+            { title: 'Office Head', nodes: ['Director, Physical Plant Services'], emphasize: true },
+            {
+                title: 'Unit Heads',
+                nodes: [
+                    'Head, Campus Infrastructure and Maintenance',
+                    'Head, General Maintenance',
+                    'Head, Events and Mobility',
+                    'Head, Campus Security',
+                ],
+                branch: true,
+            },
         ],
         icon: (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75"
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
                 d="M3 21h18M5 21V10l7-6 7 6v11M9 21v-6h6v6" />
         ),
     },
     {
         id: 'tidmac',
         label: 'TIDMAC',
-        name: 'Technology Innovation and Data Management Center',
+        name: 'Technology Innovation & Data Management Center',
         description:
-            'Sample placeholder text covering institutional technology, information systems, data management, digital services, technical support, and technology innovation.',
+            'TIDMAC covers institutional technology, information systems, data management, digital services, technical support, and institutional technology innovation.',
         functions: [
-            'Information Systems Management',
-            'Data Management',
-            'IT Technical Support',
-            'Website and Web Systems',
-            'Digital Transformation',
-            'Network and Infrastructure Support',
-            'Technology Innovation',
-            'Institutional Data Services',
+            'Information Systems', 'Data Management', 'IT Technical Support',
+            'Website and Web Systems', 'Digital Transformation', 'Network Infrastructure',
+            'Technology Innovation', 'Institutional Data Services',
         ],
+        // Updated Org Chart Structure based on Text Tree
         orgChart: [
-            { title: 'Vice President', nodes: ['VP for Administration and Finance'] },
-            { title: 'Office Head', nodes: ['TIDMAC Director / Head'] },
-            { title: 'Staff', nodes: ['Systems', 'Network', 'Data', 'Technical Support', 'Development Staff'] },
+            { title: 'Executive Level', nodes: ['Office of the Vice President for Administration and Finance'], emphasize: true },
+            { title: 'Office Head', nodes: ['Director, Technology Innovation and Data Management Center'], emphasize: true },
+            {
+                title: 'Unit Heads',
+                nodes: [
+                    'Head, System Network and Infrastructure',
+                    'Head, System Management and Development',
+                    'Head, Digital System and Innovation',
+                    'Head, System Planning and Quality Assurance',
+                ],
+                branch: true,
+            },
         ],
         icon: (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75"
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
                 d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
         ),
     },
 ];
 
-const BIONOTE_ICON = (
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75"
-        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-);
-
-const TABS = [
-    { id: 'bionote', label: 'Bionote', icon: BIONOTE_ICON },
-    ...OFFICES.map((o) => ({ id: o.id, label: o.label, icon: o.icon })),
-];
-
-/* Scroll Reveal Hook */
-function useRevealOnScroll(threshold = 0.15) {
+/* Premium Scroll Reveal Hook */
+function useReveal() {
     const ref = useRef(null);
     const [visible, setVisible] = useState(false);
 
@@ -230,61 +199,36 @@ function useRevealOnScroll(threshold = 0.15) {
                     observer.disconnect();
                 }
             },
-            { threshold }
+            { threshold: 0.1 }
         );
         observer.observe(node);
         return () => observer.disconnect();
-    }, [threshold]);
+    }, []);
 
     return [ref, visible];
 }
 
-/* Reusable Reveal Wrapper */
+/* Premium Reveal Wrapper with Stagger Support */
 function Reveal({ children, delay = 0, className = '' }) {
-    const [ref, visible] = useRevealOnScroll(0.1);
+    const [ref, visible] = useReveal();
     return (
         <div
             ref={ref}
-            className={`transition-all duration-700 ease-out ${className} ${
-                visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            className={`transition-all ${className} ${
+                visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
             }`}
-            style={{ transitionDelay: `${delay}ms` }}
+            style={{ 
+                transitionDelay: `${delay}ms`, 
+                transitionDuration: '1.2s', 
+                transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' 
+            }}
         >
             {children}
         </div>
     );
 }
 
-function OfficeOrgChart({ levels }) {
-    return (
-        <div className="flex flex-col items-center">
-            {levels.map((level, levelIndex) => (
-                <div key={level.title} className="w-full flex flex-col items-center relative">
-                    {levelIndex > 0 && (
-                        <div className="flex flex-col items-center mb-4" aria-hidden="true">
-                            <div className="w-px h-8 bg-gray-300" />
-                        </div>
-                    )}
-                    <p className="text-[11px] font-bold tracking-[0.2em] text-amber-700 uppercase mb-4 font-sans">
-                        {level.title}
-                    </p>
-                    <div className="flex flex-wrap justify-center gap-4 w-full mb-8">
-                        {level.nodes.map((node) => (
-                            <div
-                                key={node}
-                                className="min-w-[180px] px-6 py-4 bg-white border border-gray-200 rounded-lg shadow-sm text-center hover:border-green-700 hover:shadow-md transition-all duration-300 relative group"
-                            >
-                                <div className="absolute top-0 left-0 w-full h-1 bg-green-700 rounded-t-lg transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
-                                <span className="text-sm font-semibold text-gray-800">{node}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
-}
-
+/* Premium Animated Panel */
 function AnimatedPanel({ children }) {
     const [show, setShow] = useState(false);
 
@@ -294,13 +238,113 @@ function AnimatedPanel({ children }) {
     }, []);
 
     return (
-        <div className={`transition-all duration-500 ease-out ${show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'}`}>
+        <div 
+            className={`transition-all duration-700 ease-out-expo ${show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
+        >
             {children}
         </div>
     );
 }
 
-/* TIDMAC Team Carousel Component (Drag to scroll) */
+/* Office Org Chart Component — Tree-style with branch connectors */
+function OfficeOrgChart({ levels }) {
+    const isLastLevel = (idx) => idx === levels.length - 1;
+
+    return (
+        <div className="flex flex-col items-center w-full">
+            {levels.map((level, levelIndex) => {
+                const isMulti = level.nodes.length > 1;
+                const showBranchConnector = level.branch && levelIndex > 0;
+
+                return (
+                    <div key={level.title} className="w-full flex flex-col items-center">
+                        {/* Vertical connector from previous level */}
+                        {levelIndex > 0 && !showBranchConnector && (
+                            <div className="flex flex-col items-center mb-4" aria-hidden="true">
+                                <div className="w-px h-10 bg-gradient-to-b from-transparent to-[#145A32]/30" />
+                            </div>
+                        )}
+                        {levelIndex > 0 && showBranchConnector && (
+                            <div className="flex flex-col items-center mb-2" aria-hidden="true">
+                                <div className="w-px h-8 bg-gradient-to-b from-transparent to-[#145A32]/30" />
+                            </div>
+                        )}
+
+                        {/* Level Label */}
+                        <p className="text-[10px] font-bold tracking-[0.3em] text-[#A97F2E] uppercase mb-4 font-sans text-center">
+                            {level.title}
+                        </p>
+
+                        {/* Branch row with tree connectors */}
+                        {showBranchConnector ? (
+                            <div className="relative w-full max-w-5xl mx-auto">
+                                {/* Top horizontal connector line that spans across nodes */}
+                                <div className="relative flex justify-center items-start gap-4 flex-wrap">
+                                    {level.nodes.map((node, nodeIdx) => {
+                                        const isFirstChild = nodeIdx === 0;
+                                        const isLastChild = nodeIdx === level.nodes.length - 1;
+                                        return (
+                                            <div key={node} className="relative flex flex-col items-center min-w-[180px]">
+                                                {/* Vertical drop line from horizontal connector */}
+                                                <div
+                                                    className="w-px h-6 bg-[#145A32]/30 mb-0"
+                                                    aria-hidden="true"
+                                                />
+                                                <div
+                                                    className={`min-w-[180px] px-5 py-4 bg-white border rounded-xl shadow-sm text-center transition-all duration-500 ease-out-expo relative group hover:-translate-y-1 ${
+                                                        level.emphasize
+                                                            ? 'border-[#C79A3E] shadow-md'
+                                                            : 'border-[#E7E2D6] hover:border-[#145A32] hover:shadow-xl'
+                                                    }`}
+                                                >
+                                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#145A32] to-[#C79A3E] rounded-t-lg transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                                                    <span className="text-[13px] font-semibold text-gray-800 leading-snug">{node}</span>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                                {/* Horizontal line connecting all branch nodes */}
+                                <div
+                                    className="absolute top-0 left-1/2 -translate-x-1/2 h-px bg-[#145A32]/30"
+                                    style={{
+                                        width: `calc(100% - 180px)`,
+                                        maxWidth: '700px',
+                                    }}
+                                    aria-hidden="true"
+                                />
+                            </div>
+                        ) : (
+                            /* Single (or emphasized) level row */
+                            <div className="flex flex-wrap justify-center gap-4 w-full mb-8">
+                                {level.nodes.map((node) => (
+                                    <div
+                                        key={node}
+                                        className={`min-w-[220px] px-6 py-4 bg-white border rounded-xl shadow-sm text-center hover:-translate-y-1 transition-all duration-500 ease-out-expo relative group ${
+                                            level.emphasize
+                                                ? 'border-[#C79A3E] shadow-md hover:shadow-xl'
+                                                : 'border-[#E7E2D6] hover:border-[#145A32] hover:shadow-xl'
+                                        }`}
+                                    >
+                                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#145A32] to-[#C79A3E] rounded-t-lg transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                                        <span className="text-sm font-semibold text-gray-800">{node}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Trailing space for non-final branch levels */}
+                        {showBranchConnector && !isLastLevel(levelIndex) && (
+                            <div className="h-8" aria-hidden="true" />
+                        )}
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
+
+/* TIDMAC Team Carousel Component */
 function TidmacTeamCarousel() {
     const trackRef = useRef(null);
     const mouseDownAt = useRef(0);
@@ -363,10 +407,8 @@ function TidmacTeamCarousel() {
     ];
 
     return (
-        <Reveal className="mt-12">
-            <p className="text-xs font-bold tracking-widest text-green-800/60 uppercase mb-6 font-sans">
-                Meet the Team
-            </p>
+        <div className="mt-12 sm:mt-16 border-t border-white/10 pt-8 sm:pt-12">
+            <h4 className="text-xs font-bold tracking-[0.3em] uppercase text-[#D4AF37] mb-6 text-center">Meet the Team</h4>
             <div className="tidmac-carousel">
                 <div
                     ref={trackRef}
@@ -385,13 +427,13 @@ function TidmacTeamCarousel() {
                     ))}
                 </div>
             </div>
-        </Reveal>
+        </div>
     );
 }
 
 export default function VPAdminFinance() {
     const [scrollProgress, setScrollProgress] = useState(0);
-    const [activeTab, setActiveTab] = useState('bionote');
+    const [activeOffice, setActiveOffice] = useState('hr');
     const [bioExpanded, setBioExpanded] = useState(false);
 
     useEffect(() => {
@@ -408,9 +450,9 @@ export default function VPAdminFinance() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const activeOffice = useMemo(
-        () => OFFICES.find((office) => office.id === activeTab),
-        [activeTab]
+    const activeOfficeData = useMemo(
+        () => OFFICES.find((office) => office.id === activeOffice),
+        [activeOffice]
     );
 
     const visibleParagraphs = bioExpanded
@@ -422,48 +464,68 @@ export default function VPAdminFinance() {
             maxWidth="full"
             containerClassName="px-0"
             mainClassName="py-0"
-            className="overflow-hidden pb-0"
+            className="overflow-x-hidden pb-0"
         >
-            {/* Local keyframes, type import, and carousel CSS */}
             <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap');
+                @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
                 :root {
                     --vp-ink: #1E2A22;
+                    --vp-green-dark: #0A2E18;
                     --vp-green-950: #0B3D1F;
-                    --vp-green-800: #145A32;
+                    --vp-green-mid: #145A32;
                     --vp-green-700: #1B6B3D;
-                    --vp-gold: #C79A3E;
+                    --vp-gold: #D4AF37;
+                    --vp-gold-light: #E5C68A;
+                    --vp-cream: #F9F7F2;
+                    --vp-gray: #8C9A92;
+                    
+                    /* Variables requested by the provided snippet */
+                    --vp-paper: #FBFAF6;
+                    --vp-sage: #EFF3ED;
                     --vp-gold-dark: #A97F2E;
-                    --vp-paper: #FBF9F4;
-                    --vp-sage: #EEF2EC;
+                    --vp-line: #E5E0D3;
                 }
 
                 .vp-serif { font-family: 'Fraunces', ui-serif, Georgia, serif; }
                 .vp-sans { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
-
+                .ease-out-expo { transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important; }
+                
+                /* Responsive Drop Cap */
                 .vp-bio-lead::first-letter {
                     font-family: 'Fraunces', ui-serif, Georgia, serif;
-                    font-size: 3.2rem;
-                    font-weight: 600;
+                    font-size: clamp(3rem, 12vw, 5rem);
+                    font-weight: 500;
                     float: left;
-                    line-height: 0.8;
-                    padding-right: 0.5rem;
-                    padding-top: 0.3rem;
-                    color: var(--vp-green-800);
+                    line-height: 0.85;
+                    padding-right: 0.75rem;
+                    padding-top: 0.5rem;
+                    color: var(--vp-green-mid);
                 }
 
-                /* TIDMAC Carousel */
+                @keyframes fadeInPanel {
+                    from { opacity: 0; transform: translateY(20px); filter: blur(4px); }
+                    to { opacity: 1; transform: translateY(0); filter: blur(0); }
+                }
+                .animate-panel {
+                    animation: fadeInPanel 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                }
+
+                /* Hide Scrollbar utility */
+                .no-scrollbar::-webkit-scrollbar { display: none; }
+                .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+                /* TIDMAC Carousel Dark Premium Skin */
                 .tidmac-carousel {
                     position: relative;
                     width: 100%;
-                    height: 300px; 
+                    height: 320px; 
                     overflow: hidden;
                     user-select: none;
                     -webkit-user-select: none;
                 }
                 @media (min-width: 768px) {
-                    .tidmac-carousel { height: 360px; }
+                    .tidmac-carousel { height: 400px; }
                 }
                 .tidmac-track {
                     display: flex;
@@ -476,22 +538,26 @@ export default function VPAdminFinance() {
                 }
                 .tidmac-track:active { cursor: grabbing; }
                 .tidmac-frame {
-                    width: 14vmin;
-                    height: 36vmin;
+                    width: 18vmin;
+                    height: 40vmin;
                     max-height: 280px;
-                    transition: all 1s ease;
-                    filter: brightness(45%);
+                    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+                    filter: brightness(50%) saturate(0.8);
                     user-select: none;
                     display: grid;
                     grid-template-rows: auto 20%;
                     overflow: hidden;
                     position: relative;
-                    border-radius: 10px;
-                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                    border-radius: 12px;
+                    border: 1px solid rgba(255,255,255,0.1);
+                    box-shadow: 0 10px 30px -5px rgba(0,0,0,0.5);
+                }
+                @media (min-width: 768px) {
+                    .tidmac-frame { width: 16vmin; max-height: 320px; }
                 }
                 .tidmac-frame:hover {
-                    width: 26vmin; 
-                    filter: brightness(100%);
+                    width: 32vmin; 
+                    filter: brightness(100%) saturate(1);
                 }
                 .tidmac-image {
                     width: 100%;
@@ -506,11 +572,11 @@ export default function VPAdminFinance() {
                 }
                 .tidmac-header {
                     font-family: 'Inter', sans-serif;
-                    font-size: 2vmin;
+                    font-size: clamp(1rem, 2.5vw, 1.5rem);
                     position: relative;
                     left: 10vmin;
                     top: 2vmin;
-                    transition: all 1s ease;
+                    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
                     grid-row-start: 1;
                     grid-row-end: 2;
                     grid-column-start: 1;
@@ -527,7 +593,7 @@ export default function VPAdminFinance() {
                 }
                 .tidmac-textbox {
                     background-color: transparent;
-                    transition: all 1s ease;
+                    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
                     grid-row-start: 2;
                     grid-row-end: 3;
                     grid-column-start: 1;
@@ -543,21 +609,22 @@ export default function VPAdminFinance() {
                     align-self: end;
                 }
                 .tidmac-frame:hover .tidmac-textbox {
-                    background-color: rgba(11, 61, 31, 0.8);
+                    background-color: rgba(10, 46, 24, 0.9);
+                    backdrop-filter: blur(4px);
                 }
                 .tidmac-subheader {
                     font-family: 'Inter', sans-serif;
-                    font-size: 1.2vmin;
+                    font-size: clamp(0.6rem, 1.4vw, 0.8rem);
                     position: relative;
                     left: 10vmin;
-                    transition: all 1s ease;
+                    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
                     color: transparent;
                     white-space: nowrap;
                     align-self: end;
                 }
                 .tidmac-frame:hover .tidmac-subheader {
                     left: 1.5vmin;
-                    color: #ffffff;
+                    color: #D4AF37;
                     text-shadow: 0 0 1rem #000, 0 0 1rem #000, 0 0 1rem #000;
                 }
             `}</style>
@@ -566,7 +633,7 @@ export default function VPAdminFinance() {
             <div className="fixed top-0 left-0 w-full h-1 z-[1000] bg-transparent">
                 <div
                     className="h-full transition-[width] duration-100 ease-out"
-                    style={{ width: `${scrollProgress}%`, background: 'linear-gradient(90deg, var(--vp-green-700), var(--vp-gold))' }}
+                    style={{ width: `${scrollProgress}%`, background: 'linear-gradient(90deg, var(--vp-green-mid), var(--vp-gold))' }}
                 />
             </div>
 
@@ -582,341 +649,360 @@ export default function VPAdminFinance() {
                 />
             </div>
 
-            {/* ===================== Page Header ===================== */}
-            <section className="relative overflow-hidden vp-sans" style={{ background: 'var(--vp-paper)', borderBottom: '1px solid #E7E2D6' }}>
-                <svg
-                    className="hidden md:block absolute -right-10 top-1/2 -translate-y-1/2 w-[420px] h-[420px] opacity-[0.06] pointer-events-none"
-                    style={{ color: 'var(--vp-green-800)' }}
-                    viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.5" aria-hidden="true"
-                >
-                    <path d="M4 21V8l8-5 8 5v13M4 21h16M8 21V11h3v10M13 21V11h3v10M9 14h1M9 17h1M14 14h1M14 17h1" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full blur-3xl opacity-40 pointer-events-none" style={{ background: 'var(--vp-sage)' }} aria-hidden="true" />
+            {/* ===================== 1. Executive Spotlight (Dark Premium) ===================== */}
+            <section className="relative bg-[#0A2E18] text-white py-16 sm:py-20 md:py-28 lg:py-32 overflow-hidden vp-sans">
+                {/* Background Pattern & Accents */}
+                <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#D4AF37 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
+                <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-[#145A32]/20 to-transparent pointer-events-none"></div>
 
-                <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-11 text-center">
-                    <Reveal>
-                        <div className="flex items-center justify-center gap-3 mb-4" aria-hidden="true">
-                            <span className="h-px w-10" style={{ background: 'var(--vp-gold)' }} />
-                            <span className="text-[11px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-green-700)' }}>Office of the</span>
-                            <span className="h-px w-10" style={{ background: 'var(--vp-gold)' }} />
-                        </div>
-                        <h2 className="vp-serif text-3xl md:text-[2.75rem] font-semibold tracking-tight" style={{ color: 'var(--vp-green-950)' }}>
-                            Vice President for Administration and Finance
-                        </h2>
-                        <p className="mt-3 text-sm tracking-wide text-gray-500">
-                            Administrative Leadership &nbsp;&middot;&nbsp; Institutional Services &nbsp;&middot;&nbsp; Operational Excellence
-                        </p>
-                        <div className="mt-5 flex items-center justify-center gap-1.5" aria-hidden="true">
-                            <span className="h-[3px] w-14 rounded-full" style={{ background: 'var(--vp-green-700)' }} />
-                            <span className="h-[3px] w-3 rounded-full" style={{ background: 'var(--vp-gold)' }} />
-                        </div>
-                    </Reveal>
-                </div>
-            </section>
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 items-center">
+                    {/* Left: Profile Text & Credentials */}
+                    <div className="lg:col-span-7 order-2 lg:order-1">
+                        <Reveal>
+                            <span className="inline-block px-3 py-1.5 text-[10px] sm:text-[11px] tracking-[0.25em] sm:tracking-[0.3em] uppercase border border-[#D4AF37]/30 text-[#D4AF37] rounded-full mb-6 sm:mb-8">
+                                Office of the Vice President
+                            </span>
+                        </Reveal>
+                        <Reveal delay={150}>
+                            <h1 className="vp-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium leading-[1.05] tracking-tight mb-4 sm:mb-6">
+                                Dr. Kurt S. <br/>Candilas
+                            </h1>
+                        </Reveal>
+                        <Reveal delay={300}>
+                            <p className="text-base sm:text-lg md:text-xl text-white/60 max-w-xl mb-8 sm:mb-12">
+                                Vice President for Administration & Finance at the City College of Cagayan de Oro.
+                            </p>
+                        </Reveal>
 
-            {/* ===================== Profile + Tabs ===================== */}
-            <section className="vp-sans relative" style={{ background: 'var(--vp-paper)' }}>
-                {/* Subtle Background Pattern */}
-                <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#145A32 1px, transparent 1px)', backgroundSize: '24px 24px' }}></div>
-
-                <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 md:py-20">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
-
-                        {/* Left: Profile Card */}
-                        <div className="lg:col-span-4">
-                            <div className="lg:sticky lg:top-8 space-y-6">
-                                <Reveal>
-                                    <div className="bg-white rounded-2xl shadow-[0_1px_2px_rgba(11,61,31,0.06),0_12px_28px_-14px_rgba(11,61,31,0.25)] border border-gray-200/80 p-6">
-                                        {/* Formal Frame Image */}
-                                        <div className="relative pb-8">
-                                            <div className="relative z-10 rounded-xl p-2 bg-white border border-gray-100">
-                                                <div className="overflow-hidden rounded-lg">
-                                                    <img
-                                                        src={kurtCandilasImage}
-                                                        alt="Dr. Kurt S. Candilas"
-                                                        className="w-full aspect-[4/5] object-cover"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            {/* Gold border accent */}
-                                            <div className="absolute inset-0 z-0 rounded-2xl translate-x-2 translate-y-2 border-2" style={{ borderColor: 'var(--vp-gold)' }}></div>
-
-                                            <div
-                                                className="absolute left-1/2 bottom-0 -translate-x-1/2 z-20 w-20 h-20 rounded-full bg-white shadow-md flex items-center justify-center p-2 transition-transform duration-300 hover:scale-105"
-                                                style={{ border: '2px solid var(--vp-green-700)' }}
-                                            >
-                                                <img
-                                                    src={ccdologo}
-                                                    alt="City College of Cagayan de Oro Logo"
-                                                    className="w-full h-full object-contain"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="text-center pt-2">
-                                            <h3 className="vp-serif text-2xl font-semibold tracking-tight" style={{ color: 'var(--vp-ink)' }}>
-                                                Dr. Kurt S. Candilas
-                                            </h3>
-                                            <p className="mt-2 text-[12px] font-bold tracking-wider uppercase" style={{ color: 'var(--vp-green-700)' }}>
-                                                Vice President for Administration and Finance
-                                            </p>
-                                            <div className="mt-5 pt-4 flex items-center justify-center gap-2 text-xs text-gray-500" style={{ borderTop: '1px solid #ECE7DA' }}>
-                                                <svg className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--vp-gold-dark)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z" />
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                                                </svg>
-                                                <span>City College of Cagayan de Oro</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Reveal>
-
-                                <Reveal delay={150}>
-                                    <div
-                                        className="relative rounded-2xl p-6 overflow-hidden"
-                                        style={{ background: 'var(--vp-green-950)' }}
-                                    >
-                                        <div className="absolute top-0 right-0 w-32 h-32 rounded-full blur-2xl opacity-20" style={{ background: 'var(--vp-gold)' }}></div>
-                                        <span
-                                            className="vp-serif absolute -top-3 left-4 text-7xl leading-none select-none"
-                                            style={{ color: 'rgba(199,154,62,0.35)' }}
-                                            aria-hidden="true"
-                                        >
-                                            &ldquo;
-                                        </span>
-                                        <p className="relative vp-serif text-base italic leading-relaxed text-white/90 pt-4">
-                                            {PROFILE_QUOTE}
-                                        </p>
-                                        <div className="mt-4 h-0.5 w-12 rounded-full" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
-                                    </div>
-                                </Reveal>
-                            </div>
-                        </div>
-
-                        {/* Right: Tabs + Content */}
-                        <div className="lg:col-span-8 min-w-0">
-                            <Reveal delay={200}>
-                                <div className="bg-white rounded-2xl border border-gray-200/80 shadow-[0_1px_2px_rgba(11,61,31,0.06),0_12px_28px_-14px_rgba(11,61,31,0.2)] overflow-hidden">
-                                    {/* Tab navigation */}
-                                    <div className="flex overflow-x-auto" style={{ background: 'var(--vp-sage)', borderBottom: '2px solid #DEE6DB' }}>
-                                        {TABS.map((tab) => {
-                                            const isActive = tab.id === activeTab;
-                                            return (
-                                                <button
-                                                    key={tab.id}
-                                                    type="button"
-                                                    onClick={() => setActiveTab(tab.id)}
-                                                    aria-pressed={isActive}
-                                                    className={[
-                                                        'group relative flex-shrink-0 inline-flex items-center gap-2 px-6 py-5 text-sm font-semibold whitespace-nowrap',
-                                                        'transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px]',
-                                                        isActive ? 'text-white' : 'hover:text-green-800',
-                                                    ].join(' ')}
-                                                    style={{
-                                                        color: isActive ? '#ffffff' : 'var(--vp-ink)',
-                                                        background: isActive ? 'var(--vp-green-800)' : 'transparent',
-                                                        outlineColor: 'var(--vp-gold)',
-                                                    }}
-                                                >
-                                                    <svg
-                                                        className="w-4 h-4 flex-shrink-0"
-                                                        style={{ color: isActive ? 'var(--vp-gold)' : '#8A9A8D' }}
-                                                        fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                    >
-                                                        {tab.icon}
-                                                    </svg>
-                                                    {tab.label}
-                                                    {isActive && (
-                                                        <span
-                                                            className="absolute left-0 right-0 bottom-0 h-[3px]"
-                                                            style={{ background: 'var(--vp-gold)' }}
-                                                            aria-hidden="true"
-                                                        />
-                                                    )}
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-
-                                    <div className="p-6 md:p-10">
-                                        {/* Bionote panel */}
-                                        {activeTab === 'bionote' && (
-                                            <AnimatedPanel key="bionote">
-                                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                                                    <div className="lg:col-span-2 min-w-0">
-                                                        <span className="text-[11px] font-bold tracking-[0.25em] text-amber-600 uppercase font-sans block mb-2">
-                                                            Vice President for Administration and Finance
-                                                        </span>
-                                                        <h3 className="vp-serif text-3xl font-semibold tracking-tight" style={{ color: 'var(--vp-green-950)' }}>Bionote</h3>
-                                                        <div className="mt-2 mb-6 flex items-center gap-1.5" aria-hidden="true">
-                                                            <span className="h-[3px] w-12 bg-green-700 rounded-full" />
-                                                            <span className="h-[3px] w-3 bg-amber-500 rounded-full" />
-                                                        </div>
-
-                                                        <div className="space-y-5 text-[15px] leading-8 text-gray-700 vp-bio">
-                                                            {visibleParagraphs.map((paragraph, index) => (
-                                                                <p key={index} className={index === 0 ? 'vp-bio-lead' : ''}>{paragraph}</p>
-                                                            ))}
-                                                        </div>
-
-                                                        {BIONOTE_PARAGRAPHS.length > BIONOTE_PREVIEW_COUNT && (
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => setBioExpanded((v) => !v)}
-                                                                className="mt-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300"
-                                                                style={{ border: '1.5px solid var(--vp-green-700)', color: 'var(--vp-green-700)' }}
-                                                                onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--vp-green-700)'; e.currentTarget.style.color = '#fff'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                                                                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--vp-green-700)'; e.currentTarget.style.transform = 'translateY(0)'; }}
-                                                            >
-                                                                {bioExpanded ? 'Show Less' : 'View Full Bionote'}
-                                                                <svg
-                                                                    className={`w-3.5 h-3.5 transition-transform duration-200 ${bioExpanded ? '-rotate-90' : 'rotate-0'}`}
-                                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                                >
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 17L17 7M17 7H9m8 0v8" />
-                                                                </svg>
-                                                            </button>
-                                                        )}
-                                                    </div>
-
-                                                    <div className="lg:col-span-1">
-                                                        <div className="rounded-xl p-5 divide-y" style={{ background: 'var(--vp-sage)', border: '1px solid #DEE6DB' }}>
-                                                            <h4 className="text-xs font-bold tracking-widest uppercase text-gray-500 pb-3">Credentials</h4>
-                                                            {CREDENTIALS.map((item, i) => (
-                                                                <div
-                                                                    key={item.title}
-                                                                    className="flex items-start gap-4 py-4 first:pt-0 last:pb-0 transition-transform duration-300 hover:translate-x-1"
-                                                                    style={{ borderColor: '#DEE6DB' }}
-                                                                >
-                                                                    <div
-                                                                        className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center flex-shrink-0"
-                                                                        style={{ border: '1px solid #DEE6DB' }}
-                                                                    >
-                                                                        <svg className="w-4 h-4" style={{ color: 'var(--vp-green-700)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                            {item.icon}
-                                                                        </svg>
-                                                                    </div>
-                                                                    <div className="min-w-0">
-                                                                        <p className="text-sm font-bold mb-1" style={{ color: 'var(--vp-green-950)' }}>{item.title}</p>
-                                                                        {item.lines.map((line) => (
-                                                                            <p key={line} className="text-xs text-gray-500 leading-snug">{line}</p>
-                                                                        ))}
-                                                                    </div>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </AnimatedPanel>
-                                        )}
-
-                                        {/* Office panels */}
-                                        {activeOffice && (
-                                            <AnimatedPanel key={activeOffice.id}>
-                                                <div>
-                                                    <span className="text-[11px] font-bold tracking-[0.25em] text-amber-600 uppercase font-sans block mb-2">
-                                                        Office Overview &mdash; Sample Content
-                                                    </span>
-                                                    <h3 className="vp-serif text-2xl font-semibold tracking-tight" style={{ color: 'var(--vp-green-950)' }}>
-                                                        {activeOffice.name}
-                                                    </h3>
-                                                    <div className="mt-2 mb-6 flex items-center gap-1.5" aria-hidden="true">
-                                                        <span className="h-[3px] w-12 bg-green-700 rounded-full" />
-                                                        <span className="h-[3px] w-3 bg-amber-500 rounded-full" />
-                                                    </div>
-                                                    <p
-                                                        className="text-sm text-gray-600 leading-relaxed max-w-[68ch] pl-5 py-2"
-                                                        style={{ borderLeft: '4px solid var(--vp-gold)', background: 'rgba(238, 242, 236, 0.5)' }}
-                                                    >
-                                                        {activeOffice.description}
-                                                    </p>
-
-                                                    <div className="mt-10">
-                                                        <p className="text-xs font-bold tracking-widest uppercase mb-4 text-gray-500">
-                                                            Core Functions
-                                                        </p>
-                                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                            {activeOffice.functions.map((fn, i) => (
-                                                                <div
-                                                                    key={fn}
-                                                                    className="flex items-start gap-3 px-5 py-4 rounded-lg transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 bg-white border border-gray-200"
-                                                                >
-                                                                    <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
-                                                                        <svg className="w-4 h-4" style={{ color: 'var(--vp-green-700)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                                        </svg>
-                                                                    </div>
-                                                                    <span className="text-sm text-gray-700 font-medium pt-1">{fn}</span>
-                                                                </div>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="mt-12">
-                                                        <p className="text-xs font-bold tracking-widest uppercase mb-6 text-gray-500">
-                                                            Organizational Structure &mdash; Sample
-                                                        </p>
-                                                        <div className="rounded-xl p-8 overflow-x-auto bg-gray-50 border border-gray-200">
-                                                            <div className="min-w-[280px]">
-                                                                <OfficeOrgChart levels={activeOffice.orgChart} />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* TIDMAC Team Carousel */}
-                                                    {activeOffice.id === 'tidmac' && (
-                                                        <TidmacTeamCarousel />
-                                                    )}
-                                                </div>
-                                            </AnimatedPanel>
-                                        )}
-                                    </div>
-                                </div>
-                            </Reveal>
-                        </div>
-                    </div>
-
-                    {/* ===================== Institutional Stats Bar ===================== */}
-                    <Reveal className="mt-14">
-                        <div
-                            className="rounded-2xl overflow-hidden relative shadow-lg"
-                            style={{ background: 'linear-gradient(120deg, var(--vp-green-950), var(--vp-green-800))' }}
-                        >
-                            <div
-                                className="absolute inset-0 opacity-[0.08] pointer-events-none"
-                                style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0)', backgroundSize: '18px 18px' }}
-                                aria-hidden="true"
-                            />
-                            {/* Top Border Accent */}
-                            <div className="absolute top-0 left-0 w-full h-1" style={{ background: 'var(--vp-gold)' }}></div>
-                            
-                            <div className="relative grid grid-cols-2 sm:grid-cols-4 sm:divide-x sm:divide-white/10">
-                                {STATS.map((stat, i) => (
-                                    <div
-                                        key={stat.label}
-                                        className="flex items-center gap-4 px-6 py-8 sm:px-8"
-                                    >
-                                        <div
-                                            className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-transform duration-300 hover:scale-110"
-                                            style={{ background: 'rgba(199,154,62,0.16)', border: '1px solid rgba(199,154,62,0.4)' }}
-                                        >
-                                            <svg className="w-5 h-5" style={{ color: 'var(--vp-gold)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                {stat.icon}
+                        {/* Glassmorphism Credentials Grid */}
+                        <Reveal delay={450}>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-w-2xl">
+                                {CREDENTIALS.map(c => (
+                                    <div key={c.title} className="bg-white/5 backdrop-blur-md border border-white/10 p-4 sm:p-5 rounded-xl hover:border-[#D4AF37]/40 hover:bg-white/10 transition-all duration-500 ease-out-expo group cursor-default">
+                                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-center mb-3 sm:mb-4 group-hover:bg-[#D4AF37] transition-all duration-300">
+                                            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37] group-hover:text-[#0A2E18] transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                {c.icon}
                                             </svg>
                                         </div>
-                                        <div className="min-w-0">
-                                            <p className="text-[11px] text-white/60 uppercase tracking-wider leading-none mb-2">{stat.label}</p>
-                                            <p className="vp-serif text-xl font-semibold text-white leading-tight">{stat.value}</p>
-                                            <p className="text-[11px] text-white/60 leading-snug mt-1">{stat.caption}</p>
-                                        </div>
+                                        <h4 className="text-sm font-semibold text-white mb-1 sm:mb-2">{c.title}</h4>
+                                        {c.lines.map(l => <p key={l} className="text-[11px] sm:text-xs text-white/50 leading-snug">{l}</p>)}
                                     </div>
                                 ))}
                             </div>
-                        </div>
-                    </Reveal>
+                        </Reveal>
+                    </div>
+
+                    {/* Right: High-End Image Frame */}
+                    <div className="lg:col-span-5 order-1 lg:order-2 mb-8 lg:mb-0">
+                        <Reveal delay={300} className="relative max-w-sm mx-auto lg:max-w-none">
+                            {/* Floating Gold Border Frame */}
+                            <div className="absolute inset-0 border border-[#D4AF37]/30 rounded-2xl transform translate-x-3 translate-y-3 sm:translate-x-6 sm:translate-y-6 transition-transform duration-700 ease-out-expo hover:translate-x-2 hover:translate-y-2 sm:hover:translate-x-3 sm:hover:translate-y-3"></div>
+                            
+                            <div className="relative rounded-2xl overflow-hidden shadow-2xl group border border-white/10">
+                                <img 
+                                    src={kurtCandilasImage} 
+                                    alt="Dr. Kurt S. Candilas" 
+                                    className="w-full aspect-[4/5] object-cover transition-transform duration-[1.5s] ease-out-expo group-hover:scale-105"
+                                />
+                                {/* Gradient Overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#0A2E18] via-[#0A2E18]/20 to-transparent opacity-80"></div>
+                                
+                                {/* Floating CCDO Seal & Label */}
+                                <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 flex items-center gap-3 sm:gap-4">
+                                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white p-1.5 sm:p-2 shadow-xl border border-[#D4AF37]/50 flex-shrink-0">
+                                        <img src={ccdologo} alt="CCDO Logo" className="w-full h-full object-contain" />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] sm:text-xs text-[#D4AF37] tracking-widest uppercase">City College of Cagayan de Oro</p>
+                                        <p className="text-xs sm:text-sm font-semibold text-white">Dr. Kurt S. Candilas</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </Reveal>
+                    </div>
                 </div>
             </section>
+
+            {/* ===================== 2. Editorial Bionote (Light & Clean) ===================== */}
+            <section className="bg-[#F9F7F2] py-16 sm:py-20 md:py-28 lg:py-32 vp-sans relative overflow-hidden">
+                {/* Subtle top accent */}
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#145A32] to-transparent opacity-10"></div>
+                
+                <div className="max-w-3xl mx-auto px-4 sm:px-6">
+                    <Reveal className="text-center mb-10 sm:mb-16">
+                        <div className="inline-flex items-center gap-4 mb-4">
+                            <span className="h-px w-8 sm:w-12 bg-[#145A32]"></span>
+                            <span className="text-[10px] sm:text-[11px] font-bold tracking-[0.25sm] sm:tracking-[0.3em] uppercase text-[#145A32]">Biography</span>
+                            <span className="h-px w-8 sm:w-12 bg-[#145A32]"></span>
+                        </div>
+                        <h2 className="vp-serif text-3xl sm:text-4xl md:text-5xl font-medium text-[#0A2E18] tracking-tight">
+                            Professional Bionote
+                        </h2>
+                    </Reveal>
+
+                    <div className="text-[15px] sm:text-[16px] md:text-[17px] leading-[1.8] sm:leading-[1.9] text-gray-700 space-y-5 sm:space-y-6 vp-bio">
+                        {visibleParagraphs.map((p, i) => (
+                            <p key={i} className={i === 0 ? 'vp-bio-lead' : ''}>{p}</p>
+                        ))}
+                    </div>
+
+                    <div className="mt-10 sm:mt-12 text-center">
+                        <button
+                            onClick={() => setBioExpanded(!bioExpanded)}
+                            className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-3.5 bg-[#0A2E18] text-white rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase hover:bg-[#145A32] transition-all duration-300 hover:-translate-y-1 shadow-lg shadow-green-950/20"
+                        >
+                            {bioExpanded ? 'Collapse Biography' : 'Read Full Biography'}
+                            <svg className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-300 ${bioExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            {/* ===================== 04 — Administration & Finance Cluster ===================== */}
+            <section
+                className="relative vp-sans overflow-hidden"
+                style={{ background: 'var(--vp-paper)' }}
+                aria-label="Administration and Finance Cluster"
+            >
+                <div
+                    className="absolute inset-0 opacity-[0.02] pointer-events-none"
+                    style={{ backgroundImage: 'radial-gradient(#145A32 1px, transparent 1px)', backgroundSize: '32px 32px' }}
+                    aria-hidden="true"
+                />
+
+                <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+                    <Reveal>
+                        <div className="flex items-center gap-3 mb-4">
+                            <p className="vp-serif text-3xl md:text-4xl font-semibold" style={{ color: 'var(--vp-gold)' }}>03</p>
+                            <span className="text-[11px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-green-700)' }}>
+                                Cluster Offices
+                            </span>
+                        </div>
+                        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                            <h2 className="vp-serif text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight" style={{ color: 'var(--vp-green-950)' }}>
+                                Administration &amp; Finance Cluster
+                            </h2>
+                            <p className="text-sm text-gray-500 max-w-md leading-relaxed">
+                                Four institutional offices operating under the leadership of the Vice President for Administration and Finance.
+                            </p>
+                        </div>
+                    </Reveal>
+
+                    <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {OFFICES.map((office, i) => {
+                            const isActive = activeOffice === office.id;
+                            return (
+                                <Reveal key={office.id} delay={i * 100}>
+                                    <button
+                                        type="button"
+                                        onClick={() => setActiveOffice(office.id)}
+                                        aria-pressed={isActive}
+                                        aria-label={`View ${office.name} details`}
+                                        className="group w-full text-left h-full rounded-xl p-7 transition-all duration-500 relative overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                                        style={{
+                                            background: isActive ? 'var(--vp-green-950)' : '#fff',
+                                            border: `1px solid ${isActive ? 'var(--vp-gold)' : '#E7E2D6'}`,
+                                            transform: isActive ? 'translateY(-6px)' : 'translateY(0)',
+                                            boxShadow: isActive
+                                                ? '0 24px 48px -16px rgba(11,61,31,0.35)'
+                                                : '0 1px 3px rgba(11,61,31,0.06)',
+                                            outlineColor: 'var(--vp-gold)',
+                                        }}
+                                    >
+                                        {/* Subtle inner corner accent */}
+                                        <div
+                                            className="absolute top-0 right-0 w-20 h-20 opacity-10 pointer-events-none transition-opacity duration-500 group-hover:opacity-20"
+                                            style={{
+                                                background: `radial-gradient(circle at top right, ${isActive ? 'var(--vp-gold)' : 'var(--vp-green-700)'}, transparent 70%)`
+                                            }}
+                                            aria-hidden="true"
+                                        />
+                                        {/* Number */}
+                                        <div className="flex items-start justify-between mb-6 relative">
+                                            <span
+                                                className="vp-serif text-5xl font-semibold leading-none"
+                                                style={{ color: isActive ? 'var(--vp-gold)' : 'var(--vp-green-700)' }}
+                                            >
+                                                0{i + 1}
+                                            </span>
+                                            <div
+                                                className="w-12 h-12 rounded-full flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
+                                                style={{
+                                                    background: isActive ? 'rgba(199,154,62,0.15)' : 'var(--vp-sage)',
+                                                    border: `1px solid ${isActive ? 'rgba(199,154,62,0.3)' : '#DEE6DB'}`,
+                                                }}
+                                            >
+                                                <svg
+                                                    className="w-5 h-5"
+                                                    style={{ color: isActive ? 'var(--vp-gold)' : 'var(--vp-green-700)' }}
+                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                    aria-hidden="true"
+                                                >
+                                                    {office.icon}
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        {/* Abbreviation label */}
+                                        <p
+                                            className="text-[10px] font-bold tracking-[0.25em] uppercase mb-2"
+                                            style={{ color: isActive ? 'var(--vp-gold)' : 'var(--vp-gold-dark)' }}
+                                        >
+                                            {office.label}
+                                        </p>
+                                        {/* Office name */}
+                                        <h3
+                                            className="vp-serif text-lg font-semibold mb-4 leading-snug min-h-[3.5rem]"
+                                            style={{ color: isActive ? '#fff' : 'var(--vp-green-950)' }}
+                                        >
+                                            {office.name}
+                                        </h3>
+                                        {/* Gold accent line — animates on hover */}
+                                        <div
+                                            className="h-0.5 w-0 group-hover:w-full transition-all duration-500"
+                                            style={{ background: 'var(--vp-gold)' }}
+                                            aria-hidden="true"
+                                        />
+                                        {/* Explore indicator */}
+                                        <div
+                                            className="mt-5 flex items-center gap-2 text-xs font-semibold"
+                                            style={{ color: isActive ? 'var(--vp-gold)' : 'var(--vp-green-700)' }}
+                                        >
+                                            <span>{isActive ? 'Currently Viewing' : 'Explore Office'}</span>
+                                            <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                            </svg>
+                                        </div>
+                                    </button>
+                                </Reveal>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+
+            {/* ===================== 05 — Office Detail Panel ===================== */}
+            <section
+                className="relative vp-sans overflow-hidden"
+                style={{ background: 'var(--vp-sage)' }}
+                aria-label="Office Details"
+            >
+                <div className="absolute top-0 left-0 w-full h-0.5" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
+
+                <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+                    {activeOfficeData && (
+                        <AnimatedPanel key={activeOffice}>
+                            {/* Office Header */}
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-12">
+                                <div className="lg:col-span-8 min-w-0">
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <span className="h-px w-8" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
+                                        <span className="text-[10px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-gold-dark)' }}>
+                                            {activeOfficeData.label} · Office Overview
+                                        </span>
+                                    </div>
+                                    <h3 className="vp-serif text-2xl md:text-3xl lg:text-[2.25rem] font-semibold tracking-tight mb-5 leading-tight" style={{ color: 'var(--vp-green-950)' }}>
+                                        {activeOfficeData.name}
+                                    </h3>
+                                    <p className="text-base leading-relaxed text-gray-700 max-w-[65ch]">
+                                        {activeOfficeData.description}
+                                    </p>
+                                </div>
+                                <div className="lg:col-span-4">
+                                    <div
+                                        className="rounded-xl p-6 h-full relative overflow-hidden"
+                                        style={{ background: 'var(--vp-green-950)' }}
+                                    >
+                                        <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-20" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
+                                        <div className="relative">
+                                            <div
+                                                className="w-14 h-14 rounded-full flex items-center justify-center mb-5"
+                                                style={{ background: 'rgba(199,154,62,0.15)', border: '1px solid rgba(199,154,62,0.3)' }}
+                                            >
+                                                <svg className="w-6 h-6" style={{ color: 'var(--vp-gold)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                    {activeOfficeData.icon}
+                                                </svg>
+                                            </div>
+                                            <p className="text-[10px] font-bold tracking-[0.25em] uppercase mb-2" style={{ color: 'var(--vp-gold)' }}>
+                                                Cluster Office
+                                            </p>
+                                            <p className="vp-serif text-lg font-semibold text-white leading-snug mb-3">
+                                                {activeOfficeData.label}
+                                            </p>
+                                            <p className="text-xs text-white/60 leading-relaxed">
+                                                Under the Vice President for Administration and Finance.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Core Functions */}
+                            <div className="mb-16">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <span className="h-px w-8" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
+                                    <p className="text-[10px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-gold-dark)' }}>
+                                        Core Functions
+                                    </p>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                    {activeOfficeData.functions.map((fn, i) => (
+                                        <div
+                                            key={fn}
+                                            className="group flex items-start gap-4 px-5 py-4 rounded-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg bg-white relative overflow-hidden"
+                                            style={{ border: '1px solid #E7E2D6' }}
+                                        >
+                                            {/* Left gold accent bar */}
+                                            <div
+                                                className="absolute left-0 top-0 h-full w-0.5 transition-all duration-300 group-hover:w-1"
+                                                style={{ background: 'var(--vp-gold)' }}
+                                                aria-hidden="true"
+                                            />
+                                            <span
+                                                className="vp-serif text-lg font-semibold flex-shrink-0 leading-none pt-1"
+                                                style={{ color: 'var(--vp-green-700)' }}
+                                            >
+                                                {String(i + 1).padStart(2, '0')}
+                                            </span>
+                                            <span className="text-sm text-gray-700 font-medium pt-0.5">{fn}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Organizational Structure */}
+                            <div>
+                                <div className="flex items-center gap-3 mb-8">
+                                    <span className="h-px w-8" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
+                                    <p className="text-[10px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-gold-dark)' }}>
+                                        Organizational Structure
+                                    </p>
+                                </div>
+                                <div
+                                    className="rounded-xl p-6 md:p-10 overflow-x-auto relative"
+                                    style={{
+                                        background: 'linear-gradient(180deg, rgba(238,242,236,0.6), rgba(251,249,244,0.4))',
+                                        border: '1px solid rgba(199,154,62,0.15)',
+                                    }}
+                                >
+                                    <div className="min-w-[320px]">
+                                        <OfficeOrgChart levels={activeOfficeData.orgChart} />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* TIDMAC Team Carousel */}
+                            {activeOffice === 'tidmac' && (
+                                <TidmacTeamCarousel />
+                            )}
+                        </AnimatedPanel>
+                    )}
+                </div>
+            </section>
+
+            {/* ===================== Footer spacing ===================== */}
+            <div className="h-4" style={{ background: 'var(--vp-paper)' }} aria-hidden="true" />
         </MainLayout>
     );
 }

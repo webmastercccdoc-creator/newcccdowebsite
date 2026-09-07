@@ -350,6 +350,12 @@ class UserAccessController extends Controller
                 'route' => 'admin.approve-articles'
             ],
             [
+                'id' => 'shorten_url',
+                'name' => 'Shorten URL',
+                'required_permission' => 'shorten_url',
+                'route' => 'admin.shorten-url'
+            ],
+            [
                 'id' => 'promotions',
                 'name' => 'Promotions',
                 'required_permission' => 'promotions',
@@ -417,6 +423,7 @@ class UserAccessController extends Controller
             'dashboard' => null,
             'articles' => 'articles',
             'approve_articles' => 'approve_articles',
+            'shorten_url' => 'shorten_url',
             'promotions' => 'promotions',
             'events' => 'events',
             'research' => 'research',

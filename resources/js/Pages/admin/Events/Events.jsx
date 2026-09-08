@@ -27,11 +27,6 @@ export default function Events() {
     const [eventToToggle, setEventToToggle] = useState(null);
     const [isToggling, setIsToggling] = useState(false);
 
-    // Complete event states
-    const [showCompleteModal, setShowCompleteModal] = useState(false);
-    const [eventToComplete, setEventToComplete] = useState(null);
-    const [isCompleting, setIsCompleting] = useState(false);
-
     // Participants modal states
     const [showParticipantsModal, setShowParticipantsModal] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
@@ -306,38 +301,6 @@ export default function Events() {
         }
     };
 
-    const handleComplete = (event) => {
-        setEventToComplete(event);
-        setShowCompleteModal(true);
-    };
-
-    const confirmComplete = async () => {
-        if (!eventToComplete) return;
-
-        setIsCompleting(true);
-        try {
-            const response = await axios.put(`/admin/events/${eventToComplete.id}/complete`);
-
-            if (response.status === 200 && response.data?.success) {
-                setEvents(prevEvents =>
-                    prevEvents.map(event =>
-                        event.id === eventToComplete.id
-                            ? { ...event, status: 'completed' }
-                            : event
-                    )
-                );
-                setShowCompleteModal(false);
-                setEventToComplete(null);
-                alert(response.data?.message || 'Event marked as completed successfully.');
-            }
-        } catch (error) {
-            console.error('Failed to complete event:', error);
-            alert(error.response?.data?.message || 'Failed to mark event as completed');
-        } finally {
-            setIsCompleting(false);
-        }
-    };
-
     const handleEventCreated = () => {
         setCurrentPage(1);
         fetchEvents();
@@ -549,7 +512,7 @@ export default function Events() {
                                 <th className="text-left py-3 px-3 font-semibold text-xs uppercase tracking-wider border-r border-gray-600 w-[110px]">Date</th>
                                 <th className="text-left py-3 px-3 font-semibold text-xs uppercase tracking-wider border-r border-gray-600 w-[90px]">Time</th>
                                 <th className="text-left py-3 px-3 font-semibold text-xs uppercase tracking-wider border-r border-gray-600 w-[100px]">Status</th>
-                                <th className="text-center py-3 px-2 font-semibold text-xs uppercase tracking-wider w-[280px]">Actions</th>
+                                <th className="text-center py-3 px-2 font-semibold text-xs uppercase tracking-wider w-[220px]">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
@@ -602,20 +565,6 @@ export default function Events() {
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                                             </svg>
                                                             <span className="text-[10px]">Part.</span>
-                                                        </button>
-                                                    )}
-
-                                                    {/* Complete Button */}
-                                                    {hasPermission('events') && 
-                                                     (event.status === 'active' || event.status === 'upcoming') && (
-                                                        <button
-                                                            onClick={() => handleComplete(event)}
-                                                            className="inline-flex items-center gap-0.5 px-2 py-1.5 text-xs font-medium text-white bg-purple-600 hover:bg-purple-700 rounded-lg transition-all shadow-sm hover:shadow whitespace-nowrap"
-                                                        >
-                                                            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                            </svg>
-                                                            <span className="text-[10px]">Complete</span>
                                                         </button>
                                                     )}
 
@@ -768,22 +717,6 @@ export default function Events() {
                 cancelText="Cancel"
                 confirmColor={eventToToggle?.status === 'active' ? "bg-orange-500 hover:bg-orange-600" : "bg-emerald-600 hover:bg-emerald-700"}
                 loading={isToggling}
-            />
-
-            {/* Complete Confirmation Modal */}
-            <ConfirmModal
-                isOpen={showCompleteModal}
-                onClose={() => {
-                    setShowCompleteModal(false);
-                    setEventToComplete(null);
-                }}
-                onConfirm={confirmComplete}
-                title="Complete Event"
-                message={`Are you sure you want to mark "${eventToComplete?.title}" as completed? This event will be moved to the completed status.`}
-                confirmText="Complete"
-                cancelText="Cancel"
-                confirmColor="bg-purple-600 hover:bg-purple-700"
-                loading={isCompleting}
             />
 
             {/* Delete Confirmation Modal */}

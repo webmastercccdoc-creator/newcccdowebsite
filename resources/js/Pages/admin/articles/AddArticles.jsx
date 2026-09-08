@@ -127,6 +127,19 @@ export default function AddArticles({
     }
   ];
 
+  const htmlToText = (html = '') => {
+  const document = new DOMParser().parseFromString(html, 'text/html');
+
+  document.querySelectorAll('br').forEach((element) => {
+    element.replaceWith('\n');
+  });
+
+  return document.body.textContent
+    .replace(/\u00a0/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+};
+
   // ============================================
   // FETCH USER'S DEPARTMENTS
   // ============================================
@@ -219,7 +232,7 @@ export default function AddArticles({
       setFormData({
         title: article.title || '',
         department: article.department || '',
-        content: article.content || '',
+        content: htmlToText(article.content || ''),
         date: article.date || new Date().toISOString().split('T')[0],
         sdg: formattedSdg,
         images: [],
@@ -264,7 +277,7 @@ export default function AddArticles({
   };
 
   // ============================================
-  // SDG HANDLERS
+  // SDG HANDLERS - UPDATED VERSION
   // ============================================
   const handleSDGChange = (e) => {
     const { value, checked } = e.target;
@@ -280,20 +293,31 @@ export default function AddArticles({
     const title = formData.title || '';
     const content = formData.content || '';
 
+    if (!title && !content) {
+      setErrors(prev => ({
+        ...prev,
+        sdg: 'Please add a title or content first for auto-detection'
+      }));
+      return;
+    }
+
     setIsAutoSelecting(true);
+    setErrors(prev => ({ ...prev, sdg: '' }));
 
     const applySuggestions = (matchedSDGs) => {
-      if (matchedSDGs.length === 0) {
+      if (!matchedSDGs || matchedSDGs.length === 0) {
         setFormData(prev => ({ ...prev, sdg: [] }));
         setErrors(prev => ({
           ...prev,
           sdg: 'No confident SDGs detected. Please select manually.'
         }));
+        setIsAutoSelecting(false);
         return;
       }
 
       setFormData(prev => ({ ...prev, sdg: matchedSDGs }));
       setErrors(prev => ({ ...prev, sdg: '' }));
+      setIsAutoSelecting(false);
     };
 
     const useLocalFallback = () => {
@@ -326,15 +350,76 @@ export default function AddArticles({
       applySuggestions(matchedSDGs);
     };
 
+    // Call the updated endpoint
     axios.post('/admin/articles/suggest-sdgs', { title, content })
       .then(response => {
-        const matchedSDGs = (response.data?.sdgs || [])
-          .filter(sdg => Number(sdg.confidence) >= 0.75)
+        const data = response.data;
+        
+        // Check if the request was successful
+        if (!data.success) {
+          console.warn('SDG detection failed:', data.message);
+          // Try fallback if the API fails
+          useLocalFallback();
+          return;
+        }
+
+        // Extract SDGs from the response
+        const sdgs = data.sdgs || [];
+        
+        if (sdgs.length === 0) {
+          // No SDGs detected
+          setFormData(prev => ({ ...prev, sdg: [] }));
+          setErrors(prev => ({
+            ...prev,
+            sdg: data.message || 'No confident SDGs detected. Please select manually.'
+          }));
+          setIsAutoSelecting(false);
+          return;
+        }
+
+        // Format SDGs for the form (add 'sdg' prefix)
+        const matchedSDGs = sdgs
+          .filter(sdg => Number(sdg.confidence) >= 0.6) // Use 0.6 threshold from controller
           .map(sdg => `sdg${Number(sdg.number)}`);
 
-        applySuggestions([...new Set(matchedSDGs)]);
+        // Remove duplicates
+        const uniqueSDGs = [...new Set(matchedSDGs)];
+
+        if (uniqueSDGs.length === 0) {
+          setFormData(prev => ({ ...prev, sdg: [] }));
+          setErrors(prev => ({
+            ...prev,
+            sdg: 'No SDGs met the confidence threshold. Please select manually.'
+          }));
+          setIsAutoSelecting(false);
+          return;
+        }
+
+        // Apply the suggestions
+        applySuggestions(uniqueSDGs);
+        
+        // Optional: Show a success message with count
+        if (data.count > 0) {
+          console.log(`✅ ${data.count} SDGs detected successfully`);
+        }
       })
-      .catch(() => {
+      .catch(error => {
+        console.error('SDG detection error:', error);
+        
+        // Check if we have a response with error details
+        if (error.response?.data?.message) {
+          setErrors(prev => ({
+            ...prev,
+            sdg: error.response.data.message
+          }));
+        } else {
+          setErrors(prev => ({
+            ...prev,
+            sdg: 'Failed to detect SDGs. Please select manually.'
+          }));
+        }
+        
+        // Fallback to local detection
         useLocalFallback();
       })
       .finally(() => {

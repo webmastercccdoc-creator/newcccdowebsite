@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MainLayout from '../../layouts/MainLayout';
 import AnimatedBannerText from '../../components/content/AnimatedBannerText';
@@ -7,6 +7,25 @@ export default function Contact() {
     useEffect(() => {
         document.title = "Contact Us - City College of Cagayan de Oro";
     }, []);
+
+    // Form state
+    const [formData, setFormData] = useState({
+        name: '',
+        company: '',
+        phone: '',
+        email: '',
+        subject: '',
+        message: ''
+    });
+
+    const [formStatus, setFormStatus] = useState({
+        isSubmitting: false,
+        isSubmitted: false,
+        error: null,
+        success: false
+    });
+
+    const [errors, setErrors] = useState({});
 
     const offices = [
         {
@@ -59,6 +78,133 @@ export default function Contact() {
             phone: "+63 917 6771 881"
         }
     ];
+
+    // Validation function
+    const validateForm = () => {
+        const newErrors = {};
+        
+        if (!formData.name.trim()) {
+            newErrors.name = 'Name is required';
+        }
+        if (!formData.email.trim()) {
+            newErrors.email = 'Email is required';
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            newErrors.email = 'Email is invalid';
+        }
+        if (!formData.phone.trim()) {
+            newErrors.phone = 'Phone number is required';
+        }
+        if (!formData.message.trim()) {
+            newErrors.message = 'Message is required';
+        }
+        if (!formData.subject.trim()) {
+            newErrors.subject = 'Subject is required';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    // Handle input changes
+    const handleInputChange = (e) => {
+        const { id, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [id]: value
+        }));
+        // Clear error for this field when user types
+        if (errors[id]) {
+            setErrors(prev => ({
+                ...prev,
+                [id]: undefined
+            }));
+        }
+    };
+
+    // Handle form submission
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        // Validate form
+        if (!validateForm()) {
+            return;
+        }
+
+        setFormStatus({
+            ...formStatus,
+            isSubmitting: true,
+            error: null
+        });
+
+        try {
+            // Prepare email content
+            const emailBody = `
+                Name: ${formData.name}
+                Company: ${formData.company || 'Not provided'}
+                Phone: ${formData.phone}
+                Email: ${formData.email}
+                Subject: ${formData.subject}
+                Message: ${formData.message}
+            `;
+
+            // Option 1: Using mailto (opens default email client)
+            // Uncomment this if you want to use mailto
+            // window.location.href = `mailto:registrar.citycollegeofcdo@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(emailBody)}`;
+
+            // Option 2: Using a backend API (recommended for production)
+            // Replace with your actual API endpoint
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document
+                        .querySelector('meta[name="csrf-token"]')
+                        ?.getAttribute('content'),
+                    Accept: 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to send message');
+            }
+
+            // Success
+            setFormStatus({
+                isSubmitting: false,
+                isSubmitted: true,
+                error: null,
+                success: true
+            });
+
+            // Reset form
+            setFormData({
+                name: '',
+                company: '',
+                phone: '',
+                email: '',
+                subject: '',
+                message: ''
+            });
+
+            // Auto-hide success message after 5 seconds
+            setTimeout(() => {
+                setFormStatus(prev => ({
+                    ...prev,
+                    isSubmitted: false,
+                    success: false
+                }));
+            }, 5000);
+
+        } catch (error) {
+            setFormStatus({
+                isSubmitting: false,
+                isSubmitted: false,
+                error: error.message || 'Failed to send message. Please try again.',
+                success: false
+            });
+        }
+    };
 
     // Animation Variants
     const containerVariants = {
@@ -182,6 +328,23 @@ export default function Contact() {
         }
     };
 
+    // Success message animation
+    const successVariants = {
+        hidden: { opacity: 0, y: -20, scale: 0.95 },
+        visible: { 
+            opacity: 1, 
+            y: 0, 
+            scale: 1,
+            transition: { duration: 0.3 }
+        },
+        exit: { 
+            opacity: 0, 
+            y: -20, 
+            scale: 0.95,
+            transition: { duration: 0.3 }
+        }
+    };
+
     return (
         <MainLayout 
             maxWidth="full" 
@@ -296,22 +459,64 @@ export default function Contact() {
                                 Send us a <span className="text-[#059669]">message</span>
                             </motion.h3>
                             
-                            <form className="space-y-4">
+                            {/* Success Message */}
+                            <AnimatePresence>
+                                {formStatus.success && (
+                                    <motion.div
+                                        className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700"
+                                        variants={successVariants}
+                                        initial="hidden"
+                                        animate="visible"
+                                        exit="exit"
+                                    >
+                                        <div className="flex items-center">
+                                            <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                            </svg>
+                                            <span>Your message has been sent successfully!</span>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+
+                            {/* Error Message */}
+                            {formStatus.error && (
+                                <motion.div
+                                    className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                >
+                                    <div className="flex items-center">
+                                        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                        </svg>
+                                        <span>{formStatus.error}</span>
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                                 <motion.div variants={inputVariants}>
                                     <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Name
+                                        Name <span className="text-red-500">*</span>
                                     </label>
                                     <motion.input
                                         type="text"
                                         id="name"
-                                        className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#059669] focus:border-transparent outline-none transition"
+                                        value={formData.name}
+                                        onChange={handleInputChange}
+                                        className={`w-full px-4 py-2 border-2 ${errors.name ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:ring-2 focus:ring-[#059669] focus:border-transparent outline-none transition`}
                                         placeholder="Enter your name"
                                         whileFocus="focus"
                                         variants={inputVariants}
                                         initial="hidden"
                                         animate="visible"
                                         transition={{ delay: 0.1 }}
+                                        disabled={formStatus.isSubmitting}
                                     />
+                                    {errors.name && (
+                                        <p className="mt-1 text-sm text-red-500">{errors.name}</p>
+                                    )}
                                 </motion.div>
 
                                 <motion.div variants={inputVariants}>
@@ -321,6 +526,8 @@ export default function Contact() {
                                     <motion.input
                                         type="text"
                                         id="company"
+                                        value={formData.company}
+                                        onChange={handleInputChange}
                                         className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#059669] focus:border-transparent outline-none transition"
                                         placeholder="Enter your company"
                                         whileFocus="focus"
@@ -328,86 +535,122 @@ export default function Contact() {
                                         initial="hidden"
                                         animate="visible"
                                         transition={{ delay: 0.2 }}
+                                        disabled={formStatus.isSubmitting}
                                     />
                                 </motion.div>
 
                                 <motion.div variants={inputVariants}>
                                     <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Phone
+                                        Phone <span className="text-red-500">*</span>
                                     </label>
                                     <motion.input
                                         type="tel"
                                         id="phone"
-                                        className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#059669] focus:border-transparent outline-none transition"
+                                        value={formData.phone}
+                                        onChange={handleInputChange}
+                                        className={`w-full px-4 py-2 border-2 ${errors.phone ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:ring-2 focus:ring-[#059669] focus:border-transparent outline-none transition`}
                                         placeholder="Enter your phone number"
                                         whileFocus="focus"
                                         variants={inputVariants}
                                         initial="hidden"
                                         animate="visible"
                                         transition={{ delay: 0.3 }}
+                                        disabled={formStatus.isSubmitting}
                                     />
+                                    {errors.phone && (
+                                        <p className="mt-1 text-sm text-red-500">{errors.phone}</p>
+                                    )}
                                 </motion.div>
 
                                 <motion.div variants={inputVariants}>
                                     <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Email
+                                        Email <span className="text-red-500">*</span>
                                     </label>
                                     <motion.input
                                         type="email"
                                         id="email"
-                                        className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#059669] focus:border-transparent outline-none transition"
+                                        value={formData.email}
+                                        onChange={handleInputChange}
+                                        className={`w-full px-4 py-2 border-2 ${errors.email ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:ring-2 focus:ring-[#059669] focus:border-transparent outline-none transition`}
                                         placeholder="Enter your email"
                                         whileFocus="focus"
                                         variants={inputVariants}
                                         initial="hidden"
                                         animate="visible"
                                         transition={{ delay: 0.4 }}
+                                        disabled={formStatus.isSubmitting}
                                     />
+                                    {errors.email && (
+                                        <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                                    )}
                                 </motion.div>
 
                                 <motion.div variants={inputVariants}>
                                     <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Subject
+                                        Subject <span className="text-red-500">*</span>
                                     </label>
                                     <motion.input
                                         type="text"
                                         id="subject"
-                                        className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#059669] focus:border-transparent outline-none transition"
+                                        value={formData.subject}
+                                        onChange={handleInputChange}
+                                        className={`w-full px-4 py-2 border-2 ${errors.subject ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:ring-2 focus:ring-[#059669] focus:border-transparent outline-none transition`}
                                         placeholder="Enter subject"
                                         whileFocus="focus"
                                         variants={inputVariants}
                                         initial="hidden"
                                         animate="visible"
                                         transition={{ delay: 0.5 }}
+                                        disabled={formStatus.isSubmitting}
                                     />
+                                    {errors.subject && (
+                                        <p className="mt-1 text-sm text-red-500">{errors.subject}</p>
+                                    )}
                                 </motion.div>
 
                                 <motion.div variants={inputVariants}>
                                     <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-                                        Message
+                                        Message <span className="text-red-500">*</span>
                                     </label>
                                     <motion.textarea
                                         id="message"
                                         rows="4"
-                                        className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-[#059669] focus:border-transparent outline-none transition resize-none"
+                                        value={formData.message}
+                                        onChange={handleInputChange}
+                                        className={`w-full px-4 py-2 border-2 ${errors.message ? 'border-red-500' : 'border-gray-200'} rounded-lg focus:ring-2 focus:ring-[#059669] focus:border-transparent outline-none transition resize-none`}
                                         placeholder="Enter your message"
                                         whileFocus="focus"
                                         variants={inputVariants}
                                         initial="hidden"
                                         animate="visible"
                                         transition={{ delay: 0.6 }}
+                                        disabled={formStatus.isSubmitting}
                                     ></motion.textarea>
+                                    {errors.message && (
+                                        <p className="mt-1 text-sm text-red-500">{errors.message}</p>
+                                    )}
                                 </motion.div>
 
                                 <motion.button
                                     type="submit"
-                                    className="w-full bg-gradient-to-r from-[#059669] to-[#047857] text-white py-3 px-6 rounded-lg font-semibold hover:from-[#047857] hover:to-[#065f46] transition duration-200 shadow-md hover:shadow-lg"
+                                    className={`w-full bg-gradient-to-r from-[#059669] to-[#047857] text-white py-3 px-6 rounded-lg font-semibold hover:from-[#047857] hover:to-[#065f46] transition duration-200 shadow-md hover:shadow-lg ${formStatus.isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
                                     variants={buttonVariants}
                                     initial="idle"
-                                    whileHover="hover"
-                                    whileTap="tap"
+                                    whileHover={!formStatus.isSubmitting ? "hover" : undefined}
+                                    whileTap={!formStatus.isSubmitting ? "tap" : undefined}
+                                    disabled={formStatus.isSubmitting}
                                 >
-                                    Send Message
+                                    {formStatus.isSubmitting ? (
+                                        <span className="flex items-center justify-center">
+                                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            Sending...
+                                        </span>
+                                    ) : (
+                                        'Send Message'
+                                    )}
                                 </motion.button>
                             </form>
                         </motion.div>

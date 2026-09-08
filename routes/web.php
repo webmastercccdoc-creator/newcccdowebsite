@@ -8,13 +8,15 @@ use App\Http\Controllers\ArticlesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PromotionsController;
 use App\Http\Controllers\EventsController;
+use App\Http\Controllers\SDGController; // Add this import
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\EventParticipantController;
 use App\Http\Controllers\UserAccessController;
 use App\Http\Controllers\SettingsController;
-use App\Http\Controllers\UrlShortenerController; // Add this
+use App\Http\Controllers\UrlShortenerController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -242,7 +244,11 @@ Route::middleware(['auth'])->group(function () {
     // ============================================
     Route::get('/admin/articles', [ArticlesController::class, 'index'])->name('admin.articles');
     Route::get('/admin/approve-articles', [ArticlesController::class, 'approve'])->name('admin.approve-articles');
-    Route::post('/admin/articles/suggest-sdgs', [ArticlesController::class, 'suggestSdgs'])->name('admin.articles.suggest-sdgs');
+    
+    // SDG Suggestion Route - Now using SDGController
+    Route::post('/admin/articles/suggest-sdgs', [SDGController::class, 'suggestSDGs'])->name('admin.articles.suggest-sdgs');
+    
+    // Article CRUD Routes
     Route::post('/admin/articles', [ArticlesController::class, 'store'])->name('admin.articles.store');
     Route::get('/admin/articles/status-counts', [ArticlesController::class, 'articleStatusCounts'])->name('admin.articles.status-counts');
     Route::get('/admin/articles/{article}', [ArticlesController::class, 'show'])->name('admin.articles.show');
@@ -327,6 +333,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/all-departments/{userId?}', [UserAccessController::class, 'getAllDepartmentsWithAccess']);
 });
 
+Route::post('/api/contact', [ContactController::class, 'send'])
+    ->name('contact.send');
+    
 // ============================================
 // AUTHENTICATION ROUTES
 // ============================================

@@ -367,10 +367,13 @@ export default function Login() {
                             {/* Logo */}
                             <div className="flex justify-center mb-4">
                                 <div className="w-24 h-24 flex items-center justify-center overflow-hidden">
-                                    <img src={ccdologo} alt="City College of Cagayan de Oro logo" className="w-full h-full object-contain" />
+                                    <img 
+                                        src={ccdologo} 
+                                        alt="City College of Cagayan de Oro logo" 
+                                        className="w-full h-full object-contain"
+                                    />
                                 </div>
                             </div>
-
                             {/* Header Text - Below Logo */}
                             <div className="text-center">
                                 <h1 className="text-xl md:text-2xl font-extrabold text-green-700 whitespace-nowrap font-sans tracking-wide">

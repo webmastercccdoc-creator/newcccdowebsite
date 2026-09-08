@@ -153,7 +153,7 @@ class AdminController extends Controller
             
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create user: ' . $e->getMessage()
+                'message' => 'Failed to create user.'
             ], 500);
         }
     }
@@ -243,7 +243,7 @@ class AdminController extends Controller
             
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update user: ' . $e->getMessage()
+                'message' => 'Failed to update user.'
             ], 500);
         }
     }
@@ -267,7 +267,7 @@ class AdminController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete user: ' . $e->getMessage()
+                'message' => 'Failed to delete user.'
             ], 500);
         }
     }

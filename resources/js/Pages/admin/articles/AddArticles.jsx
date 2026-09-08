@@ -601,6 +601,13 @@ export default function AddArticles({
         });
       }
       
+      // Show success alert based on action
+      if (effectiveIsEditing) {
+        alert('Article updated successfully!');
+      } else {
+        alert('Article created successfully!');
+      }
+      
       handleClear();
       onClose();
     } catch (error) {
@@ -623,22 +630,28 @@ export default function AddArticles({
           ...prev,
           submit: `Validation error: ${errorDetails}`
         }));
+        alert(`Validation error:\n${errorDetails}`);
       } else if (error.response?.status === 404) {
+        const errorMsg = 'Article not found. Please refresh and try again.';
         setErrors(prev => ({
           ...prev,
-          submit: 'Article not found. Please refresh and try again.'
+          submit: errorMsg
         }));
+        alert(errorMsg);
       } else if (error.response?.status === 422) {
         const errorMsg = error.response?.data?.message || 'Validation failed. Check the console for details.';
         setErrors(prev => ({
           ...prev,
           submit: errorMsg
         }));
+        alert(errorMsg);
       } else {
+        const errorMsg = error.response?.data?.message || 'Unable to save article. Please try again.';
         setErrors(prev => ({
           ...prev,
-          submit: error.response?.data?.message || 'Unable to save article. Please try again.'
+          submit: errorMsg
         }));
+        alert(errorMsg);
       }
     } finally {
       setIsSubmitting(false);

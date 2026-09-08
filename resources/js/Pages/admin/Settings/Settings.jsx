@@ -1,17 +1,13 @@
 import { useState } from 'react';
 import AdminLayout from '../../../layouts/AdminLayout';
 import Banner from './Banner';
-import ContactUs from './ContactUs';
 import Department from './Department';
-import EnrollNow from './EnrollNow';
 
 export default function Settings() {
     const [activeTab, setActiveTab] = useState('department');
 
     const tabs = [
         { id: 'department', label: 'Department' },
-        { id: 'contactus', label: 'Contact Us' },
-        { id: 'enrollnow', label: 'Enroll Now' },
         { id: 'banner', label: 'Banner' },
     ];
 
@@ -19,10 +15,6 @@ export default function Settings() {
         switch (activeTab) {
             case 'department':
                 return <Department />;
-            case 'contactus':
-                return <ContactUs />;
-            case 'enrollnow':
-                return <EnrollNow />;
             case 'banner':
                 return <Banner />;
             default:

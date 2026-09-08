@@ -9,22 +9,21 @@ class Department extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'slug',
-        'description',
+        'description'
     ];
 
-    /**
-     * Get the users associated with the department.
-     */
-    public function users()
+    protected $table = 'departments';
+
+    public function articles()
     {
-        return $this->belongsToMany(User::class, 'user_departments', 'department_id', 'user_id');
+        return $this->hasMany(Article::class);
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 }

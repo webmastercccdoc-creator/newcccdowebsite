@@ -98,4 +98,9 @@ class User extends Authenticatable
     {
         return $this->accessControls()->whereIn('permission', $permissions)->exists();
     }
+
+    public function hasRole(string $role): bool
+    {
+        return strtolower((string) $this->role) === strtolower($role);
+    }
 }

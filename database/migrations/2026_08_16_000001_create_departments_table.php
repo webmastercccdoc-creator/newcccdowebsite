@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('departments', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-            $table->string('slug')->unique();
-            $table->text('description')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('departments')) {
+            Schema::create('departments', function (Blueprint $table) {
+                $table->id();
+                $table->string('name')->unique();
+                $table->string('slug')->unique();
+                $table->text('description')->nullable();
+                $table->timestamps();
+            });
+        }
 
         // Add department and role columns to users table if they don't exist
         if (!Schema::hasColumn('users', 'department')) {

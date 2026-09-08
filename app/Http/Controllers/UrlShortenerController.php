@@ -52,6 +52,46 @@ class UrlShortenerController extends Controller
     }
 
     /**
+     * Update a shortened URL from the admin page.
+     */
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'original_url' => 'required|url|max:2048',
+            'path' => 'nullable|alpha_dash|max:100|min:3',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors(),
+                'message' => 'Validation failed.',
+            ], 422);
+        }
+
+        $url = Url::findOrFail($id);
+        $shortCode = $url->short_code;
+
+        if ($request->filled('path')) {
+            $shortCode = $this->validateCustomPath($request->input('path'), $url->id);
+
+            if (!$shortCode) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'That custom code is already in use. Please choose another one.',
+                ], 422);
+            }
+        }
+
+        $url->update([
+            'long_url' => $this->normalizeUrl($request->input('original_url')),
+            'short_code' => $shortCode,
+        ]);
+
+        return $this->formatSuccessResponse($url, 'Shortened URL updated successfully.');
+    }
+
+    /**
      * Shorten a URL
      */
     public function shorten(Request $request)

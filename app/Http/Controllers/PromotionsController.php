@@ -220,7 +220,7 @@ class PromotionsController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to create promotion',
-                'error' => $e->getMessage()
+                'error' => 'Unable to complete promotion request.'
             ], 500);
         }
     }
@@ -328,7 +328,7 @@ class PromotionsController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to update promotion',
-                'error' => $e->getMessage()
+                'error' => 'Unable to update promotion.'
             ], 500);
         }
     }
@@ -415,7 +415,7 @@ class PromotionsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to delete promotion',
-                'error' => $e->getMessage()
+                'error' => 'Unable to delete promotion.'
             ], 500);
         }
     }
@@ -509,7 +509,7 @@ class PromotionsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to delete promotions',
-                'error' => $e->getMessage()
+                'error' => 'Unable to delete promotions.'
             ], 500);
         }
     }
@@ -569,7 +569,7 @@ class PromotionsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update promotion status',
-                'error' => $e->getMessage()
+                'error' => 'Unable to update promotion status.'
             ], 500);
         }
     }
@@ -633,7 +633,7 @@ class PromotionsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update promotion status',
-                'error' => $e->getMessage()
+                'error' => 'Unable to update promotion status.'
             ], 500);
         }
     }

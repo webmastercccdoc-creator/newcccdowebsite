@@ -3,13 +3,13 @@ import { usePage } from '@inertiajs/react';
 import axios from 'axios';
 import AdminLayout from '../../../layouts/AdminLayout';
 import Modal, { ConfirmModal } from '../../../components/admin/Modal';
+import CreateShortenUrl from './CreateShortenUrl';
+import EditShortenUrl from './EditShortenUrl';
 
 export default function Url() {
   const { auth } = usePage();
   const { user } = auth || {};
 
-  const [originalUrl, setOriginalUrl] = useState('');
-  const [shortCode, setShortCode] = useState('');
   const [shortenedUrl, setShortenedUrl] = useState('');
   const [qrCode, setQrCode] = useState('');
   const [urls, setUrls] = useState([]);
@@ -18,9 +18,9 @@ export default function Url() {
   const [error, setError] = useState('');
   const [copySuccess, setCopySuccess] = useState('');
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-  const [alertModal, setAlertModal] = useState(null);
   const [confirmation, setConfirmation] = useState(null);
   const [isConfirmationLoading, setIsConfirmationLoading] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   
   // Search and Filter states
   const [searchTerm, setSearchTerm] = useState('');
@@ -31,9 +31,10 @@ export default function Url() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(3);
 
-  // Edit states
-  const [editingId, setEditingId] = useState(null);
-  const [editOriginalUrl, setEditOriginalUrl] = useState('');
+  // Edit states - Updated for Modal
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingUrl, setEditingUrl] = useState(null);
+  const [isEditLoading, setIsEditLoading] = useState(false);
 
   // Tab counts
   const [tabCounts, setTabCounts] = useState({
@@ -41,10 +42,6 @@ export default function Url() {
     pending: 0,
     rejected: 0
   });
-
-  const showAlert = (icon, title, text) => {
-    setAlertModal({ icon, title, text });
-  };
 
   // Fetch all shortened URLs
   useEffect(() => {
@@ -132,6 +129,7 @@ export default function Url() {
   const clearSearch = () => {
     setSearchTerm('');
     setFilterType('all');
+    setCurrentPage(1);
   };
 
   // Pagination calculations
@@ -153,70 +151,6 @@ export default function Url() {
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setShortenedUrl('');
-    setIsLoading(true);
-
-    // Validate URL
-    if (!originalUrl) {
-      await showAlert('warning', 'URL required', 'Please enter a URL.');
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      // Add http:// if no protocol is specified
-      let urlToShorten = originalUrl;
-      if (!/^https?:\/\//i.test(urlToShorten)) {
-        urlToShorten = 'https://' + urlToShorten;
-      }
-
-      const payload = {
-        original_url: urlToShorten,
-      };
-
-      // Add custom short code if provided
-      if (shortCode.trim()) {
-        payload.path = shortCode.trim();
-      }
-
-      const response = await axios.post('/admin/shorten-url', payload);
-
-      if (response.data.success) {
-        const generatedUrl = response.data.shortened_url || response.data.short_url;
-        if (!generatedUrl) {
-          throw new Error('The server did not return a shortened URL.');
-        }
-
-        setShortenedUrl(generatedUrl);
-        setQrCode(response.data.qr_code || '');
-        setOriginalUrl('');
-        setShortCode('');
-        setIsSuccessModalOpen(true);
-
-        // Refresh the table without replacing a successful create with a refresh error.
-        fetchUrls().catch((refreshError) => {
-          console.error('URL created, but the list could not be refreshed:', refreshError);
-        });
-      } else {
-        await showAlert('error', 'Unable to shorten URL', response.data.message || 'Failed to shorten URL.');
-      }
-    } catch (error) {
-      console.error('Error shortening URL:', error);
-      let errorMessage = 'Failed to shorten URL. Please try again.';
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.response?.data?.errors) {
-        errorMessage = Object.values(error.response.data.errors).flat().join(', ');
-      }
-      await showAlert('error', 'Unable to shorten URL', errorMessage);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -246,7 +180,7 @@ export default function Url() {
         setCopySuccess('Copied!');
         setTimeout(() => setCopySuccess(''), 2000);
       } catch (e) {
-        showAlert('error', 'Copy failed', 'Failed to copy URL.');
+        alert('Failed to copy URL. Please try again.');
       } finally {
         document.body.removeChild(textArea);
       }
@@ -274,59 +208,41 @@ export default function Url() {
     try {
       await axios.delete(`/admin/shorten-url/${confirmation.id}`);
       setConfirmation(null);
-      fetchUrls();
-      await showAlert('success', 'URL deleted', 'The shortened URL was deleted successfully.');
+      await fetchUrls();
+      alert('The shortened URL was deleted successfully.');
     } catch (error) {
       console.error('Failed to delete URL:', error);
-      await showAlert('error', 'Delete failed', 'Failed to delete URL.');
+      alert('Failed to delete URL.');
     } finally {
       setIsConfirmationLoading(false);
     }
   };
 
   const handleEdit = (url) => {
-    setEditingId(url.id);
-    setEditOriginalUrl(url.original_url);
+    setEditingUrl(url);
+    setIsEditModalOpen(true);
   };
 
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    setEditOriginalUrl('');
-    setError('');
-  };
-
-  const handleUpdateUrl = async (id) => {
-    if (!editOriginalUrl) {
-      await showAlert('warning', 'URL required', 'Please enter a URL.');
-      return;
-    }
-
-    setIsLoading(true);
-    setError('');
-
+  const handleEditSave = async (updatedData) => {
+    setIsEditLoading(true);
     try {
-      let urlToUpdate = editOriginalUrl;
-      if (!/^https?:\/\//i.test(urlToUpdate)) {
-        urlToUpdate = 'https://' + urlToUpdate;
-      }
-
-      const response = await axios.put(`/admin/shorten-url/${id}`, {
-        original_url: urlToUpdate,
-      });
-
-      if (response.data.success) {
-        fetchUrls();
-        handleCancelEdit();
-        await showAlert('success', 'URL updated', 'The URL was updated successfully.');
-      } else {
-        await showAlert('error', 'Update failed', response.data.message || 'Failed to update URL.');
-      }
+      // The update is already handled in the EditShortenUrl component
+      // Just refresh the list
+      await fetchUrls();
+      setIsEditModalOpen(false);
+      setEditingUrl(null);
+      alert('The URL was updated successfully.');
     } catch (error) {
-      console.error('Error updating URL:', error);
-      await showAlert('error', 'Update failed', error.response?.data?.message || 'Failed to update URL. Please try again.');
+      console.error('Error refreshing URLs:', error);
+      alert('Failed to update URL.');
     } finally {
-      setIsLoading(false);
+      setIsEditLoading(false);
     }
+  };
+
+  const handleEditClose = () => {
+    setIsEditModalOpen(false);
+    setEditingUrl(null);
   };
 
   const handleApprove = async (id) => {
@@ -340,12 +256,12 @@ export default function Url() {
       const response = await axios.put(`/admin/shorten-url/${confirmation.id}/status`, { status: 'approved' });
       if (response.data.success) {
         setConfirmation(null);
-        fetchUrls();
-        await showAlert('success', 'URL approved', 'The URL has been approved successfully.');
+        await fetchUrls();
+        alert('The URL has been approved successfully.');
       }
     } catch (error) {
       console.error('Failed to approve URL:', error);
-      await showAlert('error', 'Approval failed', 'Failed to approve URL.');
+      alert('Failed to approve URL.');
     } finally {
       setIsConfirmationLoading(false);
     }
@@ -362,12 +278,12 @@ export default function Url() {
       const response = await axios.put(`/admin/shorten-url/${confirmation.id}/status`, { status: 'rejected' });
       if (response.data.success) {
         setConfirmation(null);
-        fetchUrls();
-        await showAlert('success', 'URL rejected', 'The URL has been rejected.');
+        await fetchUrls();
+        alert('The URL has been rejected.');
       }
     } catch (error) {
       console.error('Failed to reject URL:', error);
-      await showAlert('error', 'Rejection failed', 'Failed to reject URL.');
+      alert('Failed to reject URL.');
     } finally {
       setIsConfirmationLoading(false);
     }
@@ -393,69 +309,49 @@ export default function Url() {
     return null;
   };
 
+  const openCreateModal = () => {
+    setIsCreateModalOpen(true);
+  };
+
+  const closeCreateModal = () => {
+    setIsCreateModalOpen(false);
+  };
+
+  const handleCreateSuccess = ({ shortenedUrl: newShortenedUrl, qrCode: newQrCode }) => {
+    setShortenedUrl(newShortenedUrl);
+    setQrCode(newQrCode);
+    setIsSuccessModalOpen(true);
+    
+    // Refresh the URL list
+    fetchUrls().catch((refreshError) => {
+      console.error('URL created, but the list could not be refreshed:', refreshError);
+    });
+  };
+
+  const handleCloseSuccessModal = () => {
+    setIsSuccessModalOpen(false);
+    setCopySuccess('');
+    setQrCode('');
+  };
+
   return (
     <AdminLayout title="Shorten URL" activePage="shorten-url">
       <div className="space-y-6">
-        <p className="text-gray-600">Create short, memorable links for your content</p>
-
-        {/* Create Short URL Form - Horizontal */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Create Short URL</h2>
-          
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex flex-col lg:flex-row gap-3">
-              {/* Original URL */}
-              <div className="flex-1">
-                <label htmlFor="originalUrl" className="block text-sm font-medium text-gray-700 mb-1">
-                  Original URL <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="url"
-                  id="originalUrl"
-                  value={originalUrl}
-                  onChange={(e) => setOriginalUrl(e.target.value)}
-                  placeholder="https://example.com/very-long-url"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors"
-                  disabled={isLoading}
-                />
-              </div>
-
-              {/* Custom Short Code */}
-              <div className="lg:w-64">
-                <label htmlFor="shortCode" className="block text-sm font-medium text-gray-700 mb-1">
-                  Custom Code <span className="text-xs font-normal text-gray-500">(Optional)</span>
-                </label>
-                <input
-                  type="text"
-                  id="shortCode"
-                  value={shortCode}
-                  onChange={(e) => setShortCode(e.target.value.replace(/[^a-zA-Z0-9_-]/g, ''))}
-                  placeholder="custom-code"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors"
-                  disabled={isLoading}
-                  maxLength={20}
-                />
-              </div>
-
-              {/* Submit Button */}
-              <div className="lg:w-auto flex items-end">
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full lg:w-auto px-8 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                >
-                  {isLoading ? 'Shortening...' : 'Shorten URL'}
-                </button>
-              </div>
-            </div>
-
-            {error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                {error}
-              </div>
-            )}
-
-          </form>
+        {/* Header action */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm text-gray-600">Create short, memorable links for your content</p>
+            <p className="text-xs text-gray-500 mt-1">Manage and monitor all shortened URLs</p>
+          </div>
+          <button
+            onClick={openCreateModal}
+            className="mt-3 sm:mt-0 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg w-fit"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            Create New URL
+          </button>
         </div>
 
         {/* URL List with Tabs, Search and Filter */}
@@ -472,7 +368,7 @@ export default function Url() {
                 }`}
               >
                 All URLs
-                <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-gray-200 text-gray-700">
+                <span className="ml-2 px-2 py-0.5 text-xs rounded-full text-gray-700">
                   {tabCounts.all}
                 </span>
               </button>
@@ -485,7 +381,7 @@ export default function Url() {
                 }`}
               >
                 Pending
-                <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-yellow-100 text-yellow-700">
+                <span className="ml-2 px-2 py-0.5 text-xs rounded-full text-yellow-700">
                   {tabCounts.pending}
                 </span>
               </button>
@@ -498,89 +394,96 @@ export default function Url() {
                 }`}
               >
                 Rejected
-                <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-red-100 text-red-700">
+                <span className="ml-2 px-2 py-0.5 text-xs rounded-full text-red-700">
                   {tabCounts.rejected}
                 </span>
               </button>
             </nav>
           </div>
 
-          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <h2 className="text-lg font-semibold text-gray-800">
-                {activeTab === 'all' && 'Approved URLs'}
-                {activeTab === 'pending' && 'Pending URLs'}
-                {activeTab === 'rejected' && 'Rejected URLs'}
-              </h2>
-              <span className="text-sm text-gray-500">
-                Showing: {filteredUrls.length} URL{filteredUrls.length !== 1 ? 's' : ''}
-              </span>
-            </div>
-            
-            {/* Search and Filter Bar */}
-            <div className="mt-4 flex flex-col sm:flex-row gap-3">
-              <div className="flex-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
+          {/* Search and Filters */}
+          <div className="bg-gray-100 border-b border-gray-200 shadow-sm p-4">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="md:w-80 relative flex-shrink-0">
+                <svg 
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
                 <input
                   type="text"
+                  placeholder="Search URLs by short URL or original URL..."
                   value={searchTerm}
                   onChange={handleSearchChange}
-                  placeholder="Search URLs..."
-                  className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none text-sm bg-white"
                 />
                 {searchTerm && (
                   <button
                     onClick={clearSearch}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
                 )}
               </div>
-              
-              <div className="flex gap-2">
+
+              <div className="flex-1 flex flex-wrap gap-4">
                 <select
                   value={filterType}
                   onChange={handleFilterChange}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-colors bg-white min-w-[140px]"
+                  className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none text-sm bg-white min-w-[130px]"
                 >
                   <option value="all">All Fields</option>
                   <option value="short_url">Short URL</option>
                   <option value="original_url">Original URL</option>
                 </select>
-                
-                {searchTerm && (
+
+                {(searchTerm || filterType !== 'all') && (
                   <button
                     onClick={clearSearch}
-                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200 whitespace-nowrap"
+                    className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg transition-colors flex items-center gap-2 border border-gray-200 bg-white"
                   >
-                    Clear Filters
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Clear
                   </button>
                 )}
               </div>
+            </div>
+
+            <div className="mt-3 text-sm text-gray-600">
+              {filteredUrls.length === 0 ? (
+                <span>No URLs found matching your criteria</span>
+              ) : (
+                <span>
+                  Found <span className="font-medium text-gray-800">{filteredUrls.length}</span> URL{filteredUrls.length !== 1 ? 's' : ''}
+                  {searchTerm && <span> matching "<span className="font-medium text-gray-800">{searchTerm}</span>"</span>}
+                  {filterType !== 'all' && <span> in <span className="font-medium text-gray-800">{filterType.replace('_', ' ')}</span></span>}
+                </span>
+              )}
             </div>
           </div>
 
           {filteredUrls.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
-              <svg className="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               {searchTerm ? (
                 <>
-                  <p>No results found for "{searchTerm}"</p>
-                  <p className="text-sm mt-1">Try adjusting your search or filter</p>
+                  <p className="text-gray-500 font-medium">No results found for "{searchTerm}"</p>
+                  <p className="text-gray-400 text-sm mt-1">Try adjusting your search or filter</p>
                 </>
               ) : (
                 <>
-                  <p>No {activeTab !== 'all' ? activeTab : 'approved'} URLs found</p>
-                  <p className="text-sm mt-1">
+                  <p className="text-gray-500 font-medium">No {activeTab !== 'all' ? activeTab : 'approved'} URLs found</p>
+                  <p className="text-gray-400 text-sm mt-1">
                     {activeTab === 'all' && 'Create your first short URL using the form above'}
                     {activeTab === 'pending' && 'There are no pending URLs awaiting approval'}
                     {activeTab === 'rejected' && 'There are no rejected URLs'}
@@ -590,37 +493,38 @@ export default function Url() {
             </div>
           ) : (
             <>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gray-50 border-b border-gray-200">
+              <div className="w-full overflow-hidden">
+                <table className="w-full table-fixed">
+                  <thead className="bg-gray-700 text-white">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Short URL</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Original URL</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                      <th className="w-[25%] px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Short URL</th>
+                      <th className="w-[40%] px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Original URL</th>
+                      <th className="w-[10%] px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Status</th>
+                      <th className="w-[25%] px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {currentUrls.map((url) => {
                       const fullShortUrl = getFullShortUrl(url.short_code, url.short_url);
-                      const isCurrentlyEditing = editingId === url.id;
                       const status = url.status || 'approved';
                       
                       return (
                         <tr key={url.id} className="hover:bg-gray-50 transition-colors">
                           <td className="px-6 py-4">
-                            <div className="flex items-center gap-2">
-                              <a
-                                href={fullShortUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 hover:text-blue-800 hover:underline font-medium text-sm"
-                              >
-                                {fullShortUrl}
-                              </a>
+                            <div className="flex items-center justify-center gap-2">
+                              <div className="flex-1 min-w-0">
+                                <a
+                                  href={fullShortUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-600 hover:text-blue-800 hover:underline font-medium text-sm truncate block text-center"
+                                >
+                                  {fullShortUrl}
+                                </a>
+                              </div>
                               <button
                                 onClick={() => handleCopy(fullShortUrl)}
-                                className="text-gray-400 hover:text-gray-600 transition-colors"
+                                className="text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0"
                                 title="Copy"
                               >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -630,82 +534,76 @@ export default function Url() {
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            {isCurrentlyEditing ? (
-                              <div className="flex items-center gap-2">
-                                <input
-                                  type="url"
-                                  value={editOriginalUrl}
-                                  onChange={(e) => setEditOriginalUrl(e.target.value)}
-                                  className="flex-1 px-3 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
-                                  placeholder="Enter new URL"
-                                  disabled={isLoading}
-                                  autoFocus
-                                />
-                                <button
-                                  onClick={() => handleUpdateUrl(url.id)}
-                                  disabled={isLoading}
-                                  className="px-3 py-1 text-xs font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors duration-200 disabled:opacity-50"
-                                >
-                                  {isLoading ? 'Saving...' : 'Save'}
-                                </button>
-                                <button
-                                  onClick={handleCancelEdit}
-                                  disabled={isLoading}
-                                  className="px-3 py-1 text-xs font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors duration-200"
-                                >
-                                  Cancel
-                                </button>
-                              </div>
-                            ) : (
-                              <div className="max-w-xs truncate text-sm text-gray-600" title={url.original_url}>
-                                {url.original_url}
-                              </div>
-                            )}
+                            <div className="truncate text-sm text-gray-600 text-center">
+                              {url.original_url}
+                            </div>
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-4 text-center">
                             {getStatusBadge(status)}
                           </td>
                           <td className="px-6 py-4">
-                            <div className="flex items-center justify-end gap-1.5 flex-nowrap">
-                              {!isCurrentlyEditing && (
+                            <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                              {/* View Button - Only show for approved URLs */}
+                              {(status === 'approved' || !status) && (
+                                <button
+                                  onClick={() => handleView(url)}
+                                  className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors duration-200 whitespace-nowrap"
+                                  title="View"
+                                >
+                                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                  </svg>
+                                  View
+                                </button>
+                              )}
+                              
+                              {status === 'pending' && (
                                 <>
-                                  {/* View button removed for all tabs */}
-                                  
-                                  {status === 'pending' && (
-                                    <>
-                                      <button
-                                        onClick={() => handleApprove(url.id)}
-                                        className="px-2.5 py-1.5 text-xs font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors duration-200 whitespace-nowrap"
-                                        title="Approve"
-                                      >
-                                        Approve
-                                      </button>
-                                      <button
-                                        onClick={() => handleReject(url.id)}
-                                        className="px-2.5 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200 whitespace-nowrap"
-                                        title="Reject"
-                                      >
-                                        Reject
-                                      </button>
-                                    </>
-                                  )}
-                                  
-                                  {(status === 'approved' || status === 'rejected') && (
-                                    <button
-                                      onClick={() => handleEdit(url)}
-                                      className="px-2.5 py-1.5 text-xs font-medium text-white bg-yellow-500 hover:bg-yellow-600 rounded-lg transition-colors duration-200 whitespace-nowrap"
-                                      title="Edit"
-                                    >
-                                      Edit
-                                    </button>
-                                  )}
+                                  <button
+                                    onClick={() => handleApprove(url.id)}
+                                    className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors duration-200 whitespace-nowrap"
+                                    title="Approve"
+                                  >
+                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    Approve
+                                  </button>
+                                  <button
+                                    onClick={() => handleReject(url.id)}
+                                    className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200 whitespace-nowrap"
+                                    title="Reject"
+                                  >
+                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                    Reject
+                                  </button>
                                 </>
                               )}
+                              
+                              {(status === 'approved' || status === 'rejected') && (
+                                <button
+                                  onClick={() => handleEdit(url)}
+                                  className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-white bg-yellow-500 hover:bg-yellow-600 rounded-lg transition-colors duration-200 whitespace-nowrap"
+                                  title="Edit"
+                                >
+                                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                  </svg>
+                                  Edit
+                                </button>
+                              )}
+                              
                               <button
                                 onClick={() => handleDelete(url.id)}
-                                className="px-2.5 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200 whitespace-nowrap"
+                                className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200 whitespace-nowrap"
                                 title="Delete"
                               >
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
                                 Delete
                               </button>
                             </div>
@@ -765,6 +663,22 @@ export default function Url() {
         </div>
       </div>
 
+      {/* Create URL Modal */}
+      <CreateShortenUrl
+        isOpen={isCreateModalOpen}
+        onClose={closeCreateModal}
+        onSuccess={handleCreateSuccess}
+      />
+
+      {/* Edit URL Modal */}
+      <EditShortenUrl
+        isOpen={isEditModalOpen}
+        onClose={handleEditClose}
+        onSave={handleEditSave}
+        url={editingUrl}
+        isLoading={isEditLoading}
+      />
+
       <ConfirmModal
         isOpen={Boolean(confirmation)}
         onClose={() => setConfirmation(null)}
@@ -804,44 +718,10 @@ export default function Url() {
         loading={isConfirmationLoading}
       />
 
-      <Modal
-        isOpen={Boolean(alertModal)}
-        onClose={() => setAlertModal(null)}
-        title={alertModal?.title || ''}
-        size="sm"
-      >
-        <div className="space-y-5 text-center">
-          <div className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full border-4 ${
-            alertModal?.icon === 'error'
-              ? 'border-red-200 text-red-500'
-              : alertModal?.icon === 'success'
-                ? 'border-green-200 text-green-500'
-                : 'border-orange-200 text-orange-400'
-          }`}>
-            <span className="text-4xl font-semibold leading-none">
-              {alertModal?.icon === 'error' ? '×' : alertModal?.icon === 'success' ? '✓' : '!'}
-            </span>
-          </div>
-          <p className="text-gray-600">{alertModal?.text}</p>
-          <div className="flex justify-center">
-            <button
-              type="button"
-              onClick={() => setAlertModal(null)}
-              className="px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              OK
-            </button>
-          </div>
-        </div>
-      </Modal>
-
+      {/* Success Modal for URL creation */}
       <Modal
         isOpen={isSuccessModalOpen}
-        onClose={() => {
-          setIsSuccessModalOpen(false);
-          setCopySuccess('');
-          setQrCode('');
-        }}
+        onClose={handleCloseSuccessModal}
         title="URL shortened successfully"
         size="md"
       >
@@ -886,11 +766,7 @@ export default function Url() {
           <div className="flex justify-end">
             <button
               type="button"
-              onClick={() => {
-                setIsSuccessModalOpen(false);
-                setCopySuccess('');
-                setQrCode('');
-              }}
+              onClick={handleCloseSuccessModal}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
             >
               Done

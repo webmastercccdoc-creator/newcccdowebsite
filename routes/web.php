@@ -14,6 +14,7 @@ use App\Http\Controllers\UserAccessController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UrlShortenerController; // Add this
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\DepartmentController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -222,6 +223,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/shorten-url', [UrlShortenerController::class, 'index'])->name('admin.shorten-url');
     Route::get('/admin/shorten-url/list', [UrlShortenerController::class, 'list'])->name('admin.shorten-url.list');
     Route::post('/admin/shorten-url', [UrlShortenerController::class, 'shorten'])->name('admin.shorten-url.store');
+    Route::put('/admin/shorten-url/{id}', [UrlShortenerController::class, 'update'])->name('admin.shorten-url.update');
     Route::put('/admin/shorten-url/{id}/status', [UrlShortenerController::class, 'updateStatus'])->name('admin.shorten-url.status');
     Route::delete('/admin/shorten-url/{id}', [UrlShortenerController::class, 'destroy'])->name('admin.shorten-url.destroy');
     
@@ -302,7 +304,12 @@ Route::middleware(['auth'])->group(function () {
     // ============================================
     // DEPARTMENT ROUTES
     // ============================================
-    Route::get('/admin/departments', [AdminController::class, 'getDepartments'])->name('admin.departments');
+    Route::get('/admin/departments', [DepartmentController::class, 'index'])->name('admin.departments');
+    Route::post('/admin/departments', [DepartmentController::class, 'store'])->name('admin.departments.store');
+    Route::get('/admin/departments/{id}', [DepartmentController::class, 'show'])->name('admin.departments.show');
+    Route::put('/admin/departments/{id}', [DepartmentController::class, 'update'])->name('admin.departments.update');
+    Route::delete('/admin/departments/{id}', [DepartmentController::class, 'destroy'])->name('admin.departments.destroy');
+    Route::get('/admin/departments/options', [DepartmentController::class, 'getOptions'])->name('admin.departments.options');
     
     // User Roles (if needed)
     Route::get('/admin/user-roles', [AdminController::class, 'getUserRoles'])->name('admin.user-roles');

@@ -71,7 +71,7 @@ class EventsController extends Controller
             \Log::error('Error fetching events: ' . $e->getMessage());
             return response()->json([
                 'error' => 'Failed to fetch events',
-                'message' => $e->getMessage()
+                'message' => 'Unable to load events.'
             ], 500);
         }
     }
@@ -222,7 +222,7 @@ class EventsController extends Controller
             \Log::error('Error creating event: ' . $e->getMessage());
             return response()->json([
                 'message' => 'Failed to create event',
-                'error' => $e->getMessage()
+                'error' => 'Unable to create or update event.'
             ], 500);
         }
     }
@@ -297,7 +297,7 @@ class EventsController extends Controller
             \Log::error('Error updating event: ' . $e->getMessage());
             return response()->json([
                 'message' => 'Failed to update event',
-                'error' => $e->getMessage()
+                'error' => 'Unable to update event.'
             ], 500);
         }
     }

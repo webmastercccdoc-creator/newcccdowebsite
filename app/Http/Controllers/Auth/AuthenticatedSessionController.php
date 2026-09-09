@@ -135,7 +135,7 @@ class AuthenticatedSessionController extends Controller
 
         $displayName = $user->name ?: $user->full_name;
 
-        Mail::raw("Hello {$displayName}!\n\nYou are attempting to log in to your account. Please use the following\nverification code to complete your login:\n\nYour verification code is: {$code}\n\nThis code will expire in 9 minutes from now.\n\nIf you did not attempt to log in, please ignore this email or contact\nsupport if you have concerns.\n\nFor your security, never share this code with anyone.\n\nRegards,\nCity College of CDO", function ($message) use ($user) {
+        Mail::raw("Hello {$displayName}!\n\nYou are attempting to log in to your account. Please use the following\nverification code to complete your login:\n\nYour verification code is: {$code}\n\nThis code will expire in 5 minutes from now.\n\nIf you did not attempt to log in, please ignore this email or contact\nsupport if you have concerns.\n\nFor your security, never share this code with anyone.\n\nRegards,\nCity College of CDO", function ($message) use ($user) {
             $message->to($user->email)
                 ->subject('Your login verification code');
         });

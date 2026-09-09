@@ -2,11 +2,11 @@ import { useEffect, useState, useRef } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
 import casBanner from '../../../assets/banner/cas-banner.png';
 import { motion, AnimatePresence } from 'framer-motion';
+import ccdologo from '../../../assets/logos/ccdologo.png';
 
 // --- Faculty Photo & Background Imports ---
 // Replace these placeholder strings with actual imports (e.g., import deanPhoto from '../../../assets/images/dean_name.jpg';)
 const deanPhoto = 'https://placehold.co/600x750/e2e8f0/1e293b?text=Dean+Photo';
-const ccdologo = 'https://placehold.co/100x100/e2e8f0/1e293b?text=Logo';
 const facultyPlaceholder = 'https://placehold.co/400x500/e2e8f0/1e293b?text=Faculty+Photo';
 
 // Imported exactly as it is in CBM.jsx
@@ -474,7 +474,7 @@ export default function CollegeArtsSciences() {
                                     <div className="overflow-hidden rounded-lg w-full aspect-[4/5] bg-slate-101">
                                         <img 
                                             src={deanPhoto} 
-                                            alt="Dean" 
+                                            alt="Dr. Donna Grace I. Cotejo" 
                                             className="w-full h-full object-cover object-top"
                                         />
                                     </div>
@@ -495,12 +495,12 @@ export default function CollegeArtsSciences() {
 
                             <div className="text-center mt-8 w-full max-w-xs mx-auto">
                                 <h3 className="text-2xl vp-serif font-semibold tracking-tight text-slate-800">
-                                    Dean Name
+                                    Dr. Donna Grace I. Cotejo
                                 </h3>
                                 <p className="mt-2 text-[12px] font-bold tracking-wider uppercase text-emerald-700">
                                     Dean, College of Arts and Sciences
                                 </p>
-                                <p className="mt-1 text-sm text-slate-400 font-medium">Degrees</p>
+                                <p className="mt-1 text-sm text-slate-400 font-medium">Doctor of Arts in Literature and Communication</p>
                                 <div className="mt-5 pt-4 flex items-center justify-center gap-2 text-xs text-slate-500 border-t border-slate-200">
                                     <svg className="w-4 h-4 flex-shrink-0 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z" />
@@ -524,9 +524,15 @@ export default function CollegeArtsSciences() {
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.6, delay: 0.2 }}
                             >
-                                <p>Coming soon...</p>
-                                <p>Coming soon...</p>
-                                <p>Coming soon...</p>
+                                <p>
+                                    Dr. Donna Grace I. Cotejo is a Filipino educator, academic leader, researcher, published author, and communication specialist who currently serves as Assistant Director of the Office of Curriculum and Instruction at the City College of Cagayan de Oro. She previously served as Dean of the College of Arts and Sciences and Director for Internationalization, and has held various leadership positions in higher education.
+                                </p>
+                                <p>
+                                    A Licensed Professional Teacher, she earned her Doctor of Arts in Literature and Communication from Cebu Normal University, where she received the Best Dissertation Award, as well as master's degrees in English Language and Literature Teaching and Educational Management. Her scholarly work encompasses language, literature, communication, curriculum development, educational leadership, social inquiry, and internationalization. She has published research articles in national and international academic journals, including Scopus-indexed publications, and has presented her studies at various scholarly conferences.
+                                </p>
+                                <p>
+                                    In recognition of her research productivity, scholarly influence, and citation record, she is listed as a World Scientist in the AD Scientific Index. She has also served as a research adviser, consultant, academic reviewer, and resource speaker, and contributed as a writer to UNESCO Japan, UNACOM Philippines, the Teacher Education Council, Times Higher Education, and the World University Rankings for Innovation. She is likewise a member of the Board of Directors of the World University Network of Innovation for Leaders for 2025–2026, reflecting her continuing commitment to research, educational excellence, responsible communication, and globally responsive institutional development.
+                                </p>
                             </motion.div>
 
                             <motion.div 
@@ -536,7 +542,7 @@ export default function CollegeArtsSciences() {
                                 viewport={{ once: true }}
                                 transition={{ delay: 0.4 }}
                             >
-                                {["Degree 1", "Degree 2", "Degree 3"].map((deg, i) => (
+                                {["Doctor of Arts in Literature and Communication", "MA English Language and Literature Teaching", "MA Educational Management"].map((deg, i) => (
                                     <span key={i} className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-xs font-medium text-slate-600 shadow-sm">
                                         {deg}
                                     </span>

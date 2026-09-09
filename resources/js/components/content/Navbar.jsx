@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import logoSrc from '../../assets/logos/cccdoclogo.png';
+import logoSrc from '../../assets/logos/cccdoclogo2.png';
 
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -236,13 +236,13 @@ const Navbar = () => {
 
     return (
         <div className="sticky top-0 z-50">
-            {/* TOP NAVBAR - Always visible */}
+            {/* TOP NAVBAR - Green Background */}
             <div 
                 className="w-full font-sans"
                 style={{ 
-                    backgroundColor: '#ffffff',
+                    backgroundColor: '#157D3C', // Changed to green
                     height: '36px',
-                    borderBottom: '1px solid #e5e7eb'
+                    borderBottom: '1px solid rgba(255,255,255,0.2)'
                 }}
             >
                 <div className="w-full px-4 sm:px-6 lg:px-8 h-full">
@@ -251,25 +251,25 @@ const Navbar = () => {
                         <div className="hidden md:flex items-center space-x-4 md:space-x-6">
                             <a 
                                 href="tel:+63888572333" 
-                                className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-green-700 transition-colors duration-200"
+                                className="flex items-center gap-1.5 text-xs text-white hover:text-green-100 transition-colors duration-200"
                             >
                                 <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                 </svg>
                                 +63 917 777 2946
                             </a>
-                            <span className="text-gray-300">|</span>
+                            <span className="text-white/30">|</span>
                             <a 
                                 href="mailto:info@cccdoc.edu.ph" 
-                                className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-green-700 transition-colors duration-200"
+                                className="flex items-center gap-1.5 text-xs text-white hover:text-green-100 transition-colors duration-200"
                             >
                                 <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                 </svg>
                                 ict.citycollege.cdo@gmail.com
                             </a>
-                            <span className="text-gray-300 hidden lg:inline">|</span>
-                            <span className="flex items-center gap-1.5 text-xs text-gray-600 hidden lg:flex">
+                            <span className="text-white/30 hidden lg:inline">|</span>
+                            <span className="flex items-center gap-1.5 text-xs text-white hidden lg:flex">
                                 <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -282,7 +282,7 @@ const Navbar = () => {
                         <div className="flex md:hidden items-center space-x-3">
                             <a 
                                 href="tel:+63888572333" 
-                                className="flex items-center gap-1 text-xs text-gray-600 hover:text-green-700 transition-colors duration-200"
+                                className="flex items-center gap-1 text-xs text-white hover:text-green-100 transition-colors duration-200"
                                 aria-label="Call us"
                             >
                                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -290,10 +290,10 @@ const Navbar = () => {
                                 </svg>
                                 <span className="text-[10px]">+63 917 777 2946</span>
                             </a>
-                            <span className="text-gray-300">|</span>
+                            <span className="text-white/30">|</span>
                             <a 
                                 href="mailto:info@cccdoc.edu.ph" 
-                                className="flex items-center gap-1 text-xs text-gray-600 hover:text-green-700 transition-colors duration-200"
+                                className="flex items-center gap-1 text-xs text-white hover:text-green-100 transition-colors duration-200"
                                 aria-label="Email us"
                             >
                                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -312,7 +312,7 @@ const Navbar = () => {
                                     href={social.href}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className={`flex items-center justify-center text-gray-600 ${social.hoverColor} transition-colors duration-200`}
+                                    className={`flex items-center justify-center text-white/90 ${social.hoverColor} transition-colors duration-200`}
                                     aria-label={social.name}
                                 >
                                     {social.icon('h-3.5 w-3.5 sm:h-4 sm:w-4')}
@@ -320,12 +320,12 @@ const Navbar = () => {
                             ))}
 
                             {/* Separator - Hidden on mobile, shown on sm+ */}
-                            <span className="text-gray-300 hidden sm:inline">|</span>
+                            <span className="text-white/30 hidden sm:inline">|</span>
 
                             {/* Enroll Now Button - Hidden on mobile, shown on sm+ */}
                             <a
                                 href="/apply"
-                                className="hidden sm:flex items-center gap-1.5 rounded-full bg-green-700 px-3 sm:px-4 py-1 text-[10px] sm:text-xs font-semibold text-white transition-all duration-300 hover:bg-green-800 hover:shadow-md hover:scale-105"
+                                className="hidden sm:flex items-center gap-1.5 rounded-full bg-white px-3 sm:px-4 py-1 text-[10px] sm:text-xs font-semibold text-green-700 transition-all duration-300 hover:bg-green-50 hover:shadow-md hover:scale-105"
                             >
                                 <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -336,7 +336,7 @@ const Navbar = () => {
                             {/* Mobile only: Small Enroll Now text link */}
                             <a
                                 href="/apply"
-                                className="sm:hidden text-[10px] font-semibold text-green-700 hover:text-green-800 transition-colors duration-200"
+                                className="sm:hidden text-[10px] font-semibold text-white hover:text-green-100 transition-colors duration-200"
                             >
                                 Enroll
                             </a>
@@ -345,18 +345,18 @@ const Navbar = () => {
                 </div>
             </div>
 
-            {/* MAIN NAVBAR - Also sticky */}
+            {/* MAIN NAVBAR - White Background */}
             <nav 
                 className={`
                     w-full flex-shrink-0 font-sans
                     transition-all duration-300 ease-in-out
                     ${isScrolled 
-                        ? 'shadow-2xl bg-opacity-95 backdrop-blur-sm' 
-                        : 'shadow-xl bg-opacity-100'
+                        ? 'shadow-2xl bg-white/95 backdrop-blur-sm' 
+                        : 'shadow-xl bg-white'
                     }
                 `} 
                 style={{ 
-                    backgroundColor: '#157D3C',
+                    backgroundColor: '#ffffff', // Changed to white
                     height: '80px',
                 }}
                 role="navigation" 
@@ -402,10 +402,10 @@ const Navbar = () => {
                                                     className={`
                                                         flex items-center justify-center gap-1 rounded-xl px-3 lg:px-4 xl:px-4 
                                                         transition-all duration-300 cubic-bezier(0.4, 0, 0.2, 1)
-                                                        text-white hover:bg-white/15 hover:text-green-100 hover:shadow-lg
+                                                        text-green-800 hover:bg-green-50 hover:text-green-900 hover:shadow-lg
                                                         whitespace-nowrap font-sans
                                                         ${isScrolled ? 'text-sm py-2' : 'text-sm font-semibold py-2.5'}
-                                                        ${openDropdown === item.name ? 'bg-white/20 text-green-100 shadow-lg' : ''}
+                                                        ${openDropdown === item.name ? 'bg-green-50 text-green-900 shadow-lg' : ''}
                                                     `}
                                                     aria-expanded={openDropdown === item.name}
                                                     aria-haspopup="true"
@@ -422,11 +422,11 @@ const Navbar = () => {
                                                     </svg>
                                                 </button>
 
-                                                {/* Landscape/Horizontal Dropdown - Semi-transparent with Opacity */}
+                                                {/* Landscape/Horizontal Dropdown */}
                                                 {openDropdown === item.name && (
                                                     <div 
                                                         ref={dropdownRef}
-                                                        className="absolute left-1/2 -translate-x-1/2 mt-3 w-auto min-w-[720px] max-w-[950px] origin-top bg-white/90 backdrop-blur-lg shadow-2xl ring-1 ring-white/50 transition-all duration-300 ease-out rounded-xl font-sans"
+                                                        className="absolute left-1/2 -translate-x-1/2 mt-3 w-auto min-w-[720px] max-w-[950px] origin-top bg-white/95 backdrop-blur-lg shadow-2xl ring-1 ring-gray-200 transition-all duration-300 ease-out rounded-xl font-sans"
                                                         role="menu"
                                                         style={{
                                                             animation: 'slideDown 0.25s ease-out'
@@ -497,7 +497,7 @@ const Navbar = () => {
                                                 href={item.href}
                                                 className={`
                                                     flex items-center justify-center rounded-xl px-3 lg:px-4 xl:px-4 
-                                                    text-white transition-all duration-300 hover:bg-white/15 hover:text-green-100 hover:shadow-lg 
+                                                    text-green-800 transition-all duration-300 hover:bg-green-50 hover:text-green-900 hover:shadow-lg 
                                                     whitespace-nowrap font-sans
                                                     ${isScrolled ? 'text-sm py-2' : 'text-sm font-semibold py-2.5'}
                                                 `}
@@ -509,7 +509,7 @@ const Navbar = () => {
                                 ))}
                             </ul>
 
-                            {/* Right Side - Empty (Enroll Now moved to top) */}
+                            {/* Right Side - Empty */}
                             <div className="flex-shrink-0 ml-4">
                                 {/* Enroll Now removed from here */}
                             </div>
@@ -518,7 +518,7 @@ const Navbar = () => {
                         {/* Mobile Menu Button */}
                         <button
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                            className="rounded-lg p-2 text-white hover:bg-white/10 hover:text-green-300 transition-colors xl:hidden"
+                            className="rounded-lg p-2 text-green-800 hover:bg-green-50 hover:text-green-900 transition-colors xl:hidden"
                             aria-expanded={isMobileMenuOpen}
                             aria-controls="mobile-menu"
                             aria-label="Toggle navigation menu"
@@ -536,7 +536,7 @@ const Navbar = () => {
                         </button>
                     </div>
 
-                    {/* Mobile Menu - Fixed with proper background and scrolling */}
+                    {/* Mobile Menu */}
                     <div 
                         id="mobile-menu"
                         ref={mobileMenuRef}
@@ -571,7 +571,7 @@ const Navbar = () => {
                                                 </svg>
                                             </button>
                                             
-                                            {/* Mobile Sub-menu - Scrollable with max height */}
+                                            {/* Mobile Sub-menu */}
                                             <div className={`
                                                 ml-2 space-y-1 overflow-y-auto transition-all duration-200 bg-white shadow-inner rounded-lg
                                                 ${openDropdown === item.name ? 'max-h-[400px] opacity-100 p-2' : 'max-h-0 opacity-0 p-0'}
@@ -606,7 +606,7 @@ const Navbar = () => {
                                 </div>
                             ))}
                             
-                            {/* Mobile CTA Button - White */}
+                            {/* Mobile CTA Button */}
                             <div className="px-3 pt-4 pb-2">
                                 <a
                                     href="/apply"

@@ -3,10 +3,9 @@ import MainLayout from '../../../layouts/MainLayout';
 import cedBanner from '../../../assets/banner/coe-banner.png';
 import ccdologo from '../../../assets/logos/ccdologo.png';
 import { motion, AnimatePresence } from 'framer-motion';
+import deanPhoto from '../../../assets/images/Dr_Liza_Chua.png';
 
 // --- Faculty Photo & Background Imports ---
-// TODO: Replace these placeholder strings with actual imports (e.g., import deanPhoto from '../../../assets/images/Dr_Liza_Chua.jpg';)
-const deanPhoto = 'https://placehold.co/600x750/e2e8f0/1e293b?text=Dr.+Liza+L.+Chua';
 const facultyPlaceholder = 'https://placehold.co/400x500/e2e8f0/1e293b?text=Faculty+Photo';
 
 // Imported exactly as it is in CBM.jsx

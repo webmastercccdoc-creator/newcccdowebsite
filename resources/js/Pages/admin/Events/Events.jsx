@@ -753,6 +753,7 @@ export default function Events() {
                 onUpdateStatus={handleUpdateParticipantStatus}
                 onExport={handleExportParticipants}
                 hasPermission={hasPermission('events')}
+                eventId={selectedEvent?.id}
             />
         </AdminLayout>
     );

@@ -285,15 +285,20 @@ Route::middleware(['auth'])->group(function () {
     // EVENT PARTICIPANTS ROUTES
     // ============================================
     Route::prefix('admin/events/{eventId}/participants')->group(function () {
-        Route::get('/', [EventParticipantController::class, 'index'])->name('admin.events.participants.index');
-        Route::post('/', [EventParticipantController::class, 'store'])->name('admin.events.participants.store');
-        Route::get('/{participantId}', [EventParticipantController::class, 'show'])->name('admin.events.participants.show');
-        Route::put('/{participantId}', [EventParticipantController::class, 'update'])->name('admin.events.participants.update');
-        Route::put('/{participantId}/status', [EventParticipantController::class, 'updateStatus'])->name('admin.events.participants.update-status');
-        Route::delete('/{participantId}', [EventParticipantController::class, 'destroy'])->name('admin.events.participants.destroy');
-        Route::post('/bulk', [EventParticipantController::class, 'bulkStore'])->name('admin.events.participants.bulk-store');
-        Route::get('/stats', [EventParticipantController::class, 'getStats'])->name('admin.events.participants.stats');
-        Route::get('/export', [EventParticipantController::class, 'export'])->name('admin.events.participants.export');
+        Route::get('/', [EventParticipantController::class, 'index']);
+
+        Route::post('/', [EventParticipantController::class, 'store']);
+
+        // Static routes must come before /{participantId}
+        Route::post('/bulk', [EventParticipantController::class, 'bulkStore']);
+        Route::get('/stats', [EventParticipantController::class, 'getStats']);
+        Route::get('/export', [EventParticipantController::class, 'export']);
+
+        // Dynamic route must be last
+        Route::get('/{participantId}', [EventParticipantController::class, 'show']);
+        Route::put('/{participantId}', [EventParticipantController::class, 'update']);
+        Route::put('/{participantId}/status', [EventParticipantController::class, 'updateStatus']);
+        Route::delete('/{participantId}', [EventParticipantController::class, 'destroy']);
     });
 
     // ============================================
@@ -335,7 +340,7 @@ Route::middleware(['auth'])->group(function () {
 
 Route::post('/api/contact', [ContactController::class, 'send'])
     ->name('contact.send');
-    
+
 // ============================================
 // AUTHENTICATION ROUTES
 // ============================================

@@ -2,7 +2,7 @@ import { Link } from '@inertiajs/react';
 import logoSrc from '../../assets/logos/cccdoclogo.png';
 import cdoLogoSrc from '../../assets/logos/cdoc-logo.png';
 import npcDpoSrc from '../../assets/logos/npc_dpo_2026_1.png';
-import tstiLogoSrc from '../../assets/logos/tsti-logo.png'; // Add this import
+import tstiLogoSrc from '../../assets/logos/tsti-logo.png';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -11,7 +11,7 @@ const Footer = () => {
         <footer className="mt-auto w-full bg-gradient-to-r from-green-800 via-green-700 to-green-800" role="contentinfo">
             <div className="w-full px-4 sm:px-6 lg:px-8">
                 {/* Main Footer Content */}
-                <div className="grid grid-cols-1 gap-12 py-8 md:grid-cols-2 lg:grid-cols-5">
+                <div className="grid grid-cols-1 gap-12 py-8 md:grid-cols-2 lg:grid-cols-4">
                     {/* Column 1: College Info */}
                     <div className="space-y-3">
                         <div className="flex items-start">
@@ -54,8 +54,8 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    {/* Column 3: Resources - First 4 items */}
-                    <div className="lg:mr-[-40px] xl:mr-[-50px]">
+                    {/* Column 3: Resources */}
+                    <div>
                         <h3 className="font-bold text-white mb-6 flex items-center text-lg">
                             <span className="w-1.5 h-7 bg-gradient-to-b from-green-400 to-green-600 rounded-full mr-3"></span>
                             Resources
@@ -81,12 +81,6 @@ const Footer = () => {
                                     <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span> URL Shortener
                                 </Link>
                             </li>
-                        </ul>
-                    </div>
-
-                    {/* Column 4: Resources Continued (no header) */}
-                    <div className="lg:ml-[-40px] xl:ml-[-50px]">
-                        <ul className="space-y-3 text-sm pt-14">
                             <li>
                                 <Link href="/incident-report" className="text-white/85 hover:text-green-300 transition-all duration-300 hover:translate-x-2 inline-block font-medium group">
                                     <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span> Incident Report
@@ -100,7 +94,7 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    {/* Column 5: Government Links & Logos */}
+                    {/* Column 4: Government Links & Logos */}
                     <div>
                         <h3 className="font-bold text-white mb-6 flex items-center text-lg">
                             <span className="w-1.5 h-7 bg-gradient-to-b from-green-400 to-green-600 rounded-full mr-3"></span>
@@ -129,7 +123,7 @@ const Footer = () => {
                             </li>
                             <li className="pt-4 mt-2 border-t border-green-600/30">
                                 <div className="flex flex-row items-center justify-start space-x-4 pt-2">
-                                    <div className="h-16 w-auto flex items-center justify-center">
+                                    <div className="h-20 w-auto flex items-center justify-center">
                                         <img src={cdoLogoSrc} alt="Cagayan de Oro City Logo" className="h-full w-auto object-contain brightness-110 drop-shadow-md" />
                                     </div>
                                     <div className="h-20 w-auto flex items-center justify-center">
@@ -139,7 +133,6 @@ const Footer = () => {
                                             className="h-full w-auto object-contain brightness-110 drop-shadow-md" 
                                         />
                                     </div>
-                                    {/* Add TSTI Logo here */}
                                     <div className="h-20 w-auto flex items-center justify-center">
                                         <img 
                                             src={tstiLogoSrc} 
@@ -165,15 +158,6 @@ const Footer = () => {
                     <p className="text-sm text-slate-700 text-center md:text-left font-medium tracking-wide">
                         &copy; {currentYear} City College of Cagayan de Oro. All rights reserved.
                     </p>
-                    <div className="mt-3 flex flex-wrap justify-center gap-6 md:mt-0 md:justify-end">
-                        <Link href="/privacy" className="text-sm text-slate-700 hover:text-green-700 transition-all duration-300 font-medium hover:underline">
-                            Privacy Policy
-                        </Link>
-                        <span className="text-green-300">|</span>
-                        <Link href="/terms" className="text-sm text-slate-700 hover:text-green-700 transition-all duration-300 font-medium hover:underline">
-                            Terms of Service
-                        </Link>
-                    </div>
                 </div>
             </div>
         </footer>

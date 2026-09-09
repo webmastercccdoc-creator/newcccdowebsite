@@ -30,7 +30,7 @@ class SetCspHeaders
                 . "connect-src 'self' http: https: ws: wss:;";
             
             // Use report-only in development
-            $response->header('Content-Security-Policy-Report-Only', $csp);
+            $response->headers->set('Content-Security-Policy-Report-Only', $csp);
         } else {
             // In production, use strict CSP
             $csp = "default-src 'self'; "
@@ -40,7 +40,7 @@ class SetCspHeaders
                 . "font-src 'self' https://fonts.bunny.net; "
                 . "connect-src 'self';";
             
-            $response->header('Content-Security-Policy', $csp);
+            $response->headers->set('Content-Security-Policy', $csp);
         }
 
         return $response;

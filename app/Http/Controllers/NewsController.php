@@ -49,13 +49,13 @@ class NewsController extends Controller
         $departmentFilter = trim((string) $request->query('department', ''));
         if ($departmentFilter !== '') {
             $normalized = preg_replace('/[^a-z0-9]+/', '', strtolower($departmentFilter));
-            $patterns = [
-                'cbm',
-                'businessmanagement',
-                'businessandmanagement',
-                'collegeofbusinessmanagement',
-                'collegeofbusinessandmanagement',
+            $aliases = [
+                'cas' => ['cas', 'artsandsciences', 'collegeofartsandsciences'],
+                'cbm' => ['cbm', 'businessmanagement', 'businessandmanagement', 'collegeofbusinessmanagement', 'collegeofbusinessandmanagement'],
+                'coe' => ['coe', 'education', 'collegeofeducation'],
+                'tsti' => ['tsti', 'technicalskillsandtechnologyinstitute'],
             ];
+            $patterns = $aliases[$normalized] ?? [$normalized];
 
             $query->where(function ($q) use ($normalized, $patterns) {
                 $q->whereRaw('LOWER(na.department) = ?', [$normalized])

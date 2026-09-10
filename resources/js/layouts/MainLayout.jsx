@@ -132,7 +132,7 @@ export default function MainLayout({
                     </h1>
                 )}
                 
-                <div className={`${className} min-w-0`}>
+                <div className={`content-page ${className} min-w-0`}>
                     {children}
                 </div>
             </main>

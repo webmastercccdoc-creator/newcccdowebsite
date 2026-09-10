@@ -642,7 +642,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
     );
 
     return (
-        <MainLayout title="Home" showTitle={false} maxWidth="full" containerClassName="px-0" mainClassName="py-0" className="overflow-hidden pb-0">
+        <MainLayout title="Home" showTitle={false} maxWidth="full" containerClassName="px-0" mainClassName="py-0" className="home-page overflow-hidden pb-0">
             <div className="landing-page w-full">
                 <div className="indicator"></div>
 

@@ -35,6 +35,10 @@ Route::get('/login-page', function () {
 // ============================================
 // URL SHORTENER ROUTES (Public)
 // ============================================
+Route::get('/campus-life', function () {
+    return Inertia::render('content/Quicklinks/CampusLife');
+})->name('campus-life');
+
 Route::get('/url-shortener', function () {
     return Inertia::render('content/Quicklinks/UrlShortener');
 })->name('url.shortener');

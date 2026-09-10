@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Url;
-use Illuminate\Support\Str;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class UrlShortenerController extends Controller
@@ -154,6 +157,21 @@ class UrlShortenerController extends Controller
             'status' => 'pending',
         ]);
 
+        $domain = rtrim(config('app.url'), '/');
+        $shortUrl = $domain . '/' . $url->short_code;
+        $approverEmails = $this->getApproverEmails();
+        $adminMail = config('mail.from.address');
+
+        foreach (array_unique(array_values(array_filter(array_merge($approverEmails, [$adminMail])))) as $recipient) {
+            Mail::send('emails.url-pending-approver', [
+                'url' => $url,
+                'shortUrl' => $shortUrl,
+            ], function ($message) use ($recipient, $url) {
+                $message->to($recipient)
+                    ->subject('Pending shortened URL approval: ' . $url->short_code);
+            });
+        }
+
         return $this->formatSuccessResponse($url, 'Your shortened URL is ready!');
     }
 
@@ -254,11 +272,62 @@ class UrlShortenerController extends Controller
         $url = Url::findOrFail($id);
         $url->update(['status' => $validated['status']]);
 
+        $domain = rtrim(config('app.url'), '/');
+        $shortUrl = $domain . '/' . $url->short_code;
+        $approverEmails = $this->getApproverEmails();
+        $adminMail = config('mail.from.address');
+        $recipients = array_unique(array_values(array_filter(array_merge($approverEmails, [$adminMail]))));
+
+        foreach ($recipients as $recipient) {
+            $view = $validated['status'] === 'approved'
+                ? 'emails.url-approved'
+                : 'emails.url-rejected';
+
+            Mail::send($view, [
+                'url' => $url,
+                'shortUrl' => $shortUrl,
+            ], function ($message) use ($recipient, $url, $validated) {
+                $subject = $validated['status'] === 'approved'
+                    ? 'Shortened URL approved: ' . $url->short_code
+                    : 'Shortened URL rejected: ' . $url->short_code;
+
+                $message->to($recipient)
+                    ->subject($subject);
+            });
+        }
+
         return response()->json([
             'success' => true,
             'status' => $url->status,
             'message' => 'URL status updated successfully.',
         ]);
+    }
+
+    /**
+     * Return all users who carry the article approver permission.
+     */
+    private function getApproverEmails(): array
+    {
+        $approverIds = DB::table('access_controls')
+            ->where('permission', 'approve_articles')
+            ->pluck('user_id')
+            ->unique()
+            ->values()
+            ->all();
+
+        if (empty($approverIds)) {
+            return [];
+        }
+
+        return User::query()
+            ->whereIn('id', $approverIds)
+            ->whereNotNull('email')
+            ->where('email', '!=', '')
+            ->pluck('email')
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
     }
 
     /**

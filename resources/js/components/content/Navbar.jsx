@@ -48,7 +48,7 @@ const Navbar = () => {
             }
         };
         window.addEventListener('resize', handleResize);
-        return () => document.removeEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     // Close dropdown on Escape key
@@ -240,7 +240,7 @@ const Navbar = () => {
             <div 
                 className="w-full font-sans"
                 style={{ 
-                    backgroundColor: '#157D3C', // Changed to green
+                    backgroundColor: '#157D3C',
                     height: '36px',
                     borderBottom: '1px solid rgba(255,255,255,0.2)'
                 }}
@@ -356,7 +356,7 @@ const Navbar = () => {
                     }
                 `} 
                 style={{ 
-                    backgroundColor: '#ffffff', // Changed to white
+                    backgroundColor: '#ffffff',
                     height: '80px',
                 }}
                 role="navigation" 
@@ -402,10 +402,10 @@ const Navbar = () => {
                                                     className={`
                                                         flex items-center justify-center gap-1 rounded-xl px-3 lg:px-4 xl:px-4 
                                                         transition-all duration-300 cubic-bezier(0.4, 0, 0.2, 1)
-                                                        text-green-800 hover:bg-green-50 hover:text-green-900 hover:shadow-lg
+                                                        text-black hover:bg-green-50 hover:text-black hover:shadow-lg
                                                         whitespace-nowrap font-sans
                                                         ${isScrolled ? 'text-sm py-2' : 'text-sm font-semibold py-2.5'}
-                                                        ${openDropdown === item.name ? 'bg-green-50 text-green-900 shadow-lg' : ''}
+                                                        ${openDropdown === item.name ? 'bg-green-50 text-black shadow-lg' : ''}
                                                     `}
                                                     aria-expanded={openDropdown === item.name}
                                                     aria-haspopup="true"
@@ -463,11 +463,11 @@ const Navbar = () => {
                                                                     <a
                                                                         key={subItem.name}
                                                                         href={subItem.href}
-                                                                        className="group relative px-5 py-4 text-left transition-all duration-300 hover:bg-gradient-to-br hover:from-green-50 hover:to-green-100 hover:text-green-800 border-2 border-transparent hover:border-green-300/60 rounded-xl hover:shadow-md font-sans"
+                                                                        className="group relative px-5 py-4 text-left transition-all duration-300 hover:bg-gradient-to-br hover:from-green-50 hover:to-green-100 hover:text-black border-2 border-transparent hover:border-green-300/60 rounded-xl hover:shadow-md font-sans"
                                                                         role="menuitem"
                                                                         onClick={() => setOpenDropdown(null)}
                                                                     >
-                                                                        <div className="font-semibold text-green-800 group-hover:text-green-900 font-sans">
+                                                                        <div className="font-semibold text-black group-hover:text-black font-sans">
                                                                             {subItem.name}
                                                                         </div>
                                                                         {subItem.description && (
@@ -497,7 +497,7 @@ const Navbar = () => {
                                                 href={item.href}
                                                 className={`
                                                     flex items-center justify-center rounded-xl px-3 lg:px-4 xl:px-4 
-                                                    text-green-800 transition-all duration-300 hover:bg-green-50 hover:text-green-900 hover:shadow-lg 
+                                                    text-black transition-all duration-300 hover:bg-green-50 hover:text-black hover:shadow-lg 
                                                     whitespace-nowrap font-sans
                                                     ${isScrolled ? 'text-sm py-2' : 'text-sm font-semibold py-2.5'}
                                                 `}
@@ -518,7 +518,7 @@ const Navbar = () => {
                         {/* Mobile Menu Button */}
                         <button
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                            className="rounded-lg p-2 text-green-800 hover:bg-green-50 hover:text-green-900 transition-colors xl:hidden"
+                            className="rounded-lg p-2 text-black hover:bg-green-50 hover:text-black transition-colors xl:hidden"
                             aria-expanded={isMobileMenuOpen}
                             aria-controls="mobile-menu"
                             aria-label="Toggle navigation menu"
@@ -554,8 +554,8 @@ const Navbar = () => {
                                                 onClick={() => toggleDropdown(item.name)}
                                                 className={`
                                                     flex w-full items-center justify-between rounded-lg px-4 py-3 text-base font-medium
-                                                    transition-colors text-green-700 hover:bg-green-50 hover:text-green-800 font-sans
-                                                    ${openDropdown === item.name ? 'bg-green-50 text-green-800' : ''}
+                                                    transition-colors text-black hover:bg-green-50 hover:text-black font-sans
+                                                    ${openDropdown === item.name ? 'bg-green-50 text-black' : ''}
                                                 `}
                                                 aria-expanded={openDropdown === item.name}
                                             >
@@ -580,7 +580,7 @@ const Navbar = () => {
                                                     <a
                                                         key={subItem.name}
                                                         href={subItem.href}
-                                                        className="block px-4 py-3 text-sm text-gray-700 transition-colors hover:bg-green-50 hover:text-green-700 rounded-lg font-sans border-b border-gray-100 last:border-b-0"
+                                                        className="block px-4 py-3 text-sm text-black transition-colors hover:bg-green-50 hover:text-black rounded-lg font-sans border-b border-gray-100 last:border-b-0"
                                                         onClick={() => {
                                                             setOpenDropdown(null);
                                                             setIsMobileMenuOpen(false);
@@ -597,7 +597,7 @@ const Navbar = () => {
                                     ) : (
                                         <a
                                             href={item.href}
-                                            className="block rounded-lg px-4 py-3 text-base font-medium text-green-700 transition-colors hover:bg-green-50 hover:text-green-800 font-sans"
+                                            className="block rounded-lg px-4 py-3 text-base font-medium text-black transition-colors hover:bg-green-50 hover:text-black font-sans"
                                             onClick={() => setIsMobileMenuOpen(false)}
                                         >
                                             {item.name}

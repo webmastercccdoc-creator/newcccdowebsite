@@ -8,9 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use App\Models\User;
 
 class ArticlesController extends Controller
 {
@@ -396,6 +398,41 @@ class ArticlesController extends Controller
             }
         }
 
+        $creator = Auth::user();
+        if ($creator && !empty($creator->email)) {
+            Mail::send('emails.article-submitted', [
+                'user' => $creator,
+                'article' => $article,
+            ], function ($message) use ($creator, $article) {
+                $message->to($creator->email)
+                    ->subject('Your article is pending approval');
+            });
+        }
+
+        $approverEmails = $this->getApproverEmails();
+        if (!empty($approverEmails)) {
+            foreach ($approverEmails as $approverEmail) {
+                Mail::send('emails.article-pending-approver', [
+                    'article' => $article,
+                    'authorName' => $creator ? ($creator->name ?: $creator->full_name) : 'Unknown User',
+                ], function ($message) use ($approverEmail, $article) {
+                    $message->to($approverEmail)
+                        ->subject('Pending article approval: ' . $article->title);
+                });
+            }
+        }
+
+        $defaultAdminMail = config('mail.from.address');
+        if (!empty($defaultAdminMail) && !in_array($defaultAdminMail, $approverEmails, true)) {
+            Mail::send('emails.article-pending-approver', [
+                'article' => $article,
+                'authorName' => $creator ? ($creator->name ?: $creator->full_name) : 'Unknown User',
+            ], function ($message) use ($defaultAdminMail, $article) {
+                $message->to($defaultAdminMail)
+                    ->subject('Pending article approval: ' . $article->title);
+            });
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Article created successfully.',
@@ -705,6 +742,21 @@ class ArticlesController extends Controller
             'status' => 'approved',
         ]);
 
+        $creator = $article->createdByUser;
+        if (!$creator && $article->created_by) {
+            $creator = User::find($article->created_by);
+        }
+
+        if ($creator && !empty($creator->email)) {
+            Mail::send('emails.article-approved', [
+                'user' => $creator,
+                'article' => $article,
+            ], function ($message) use ($creator, $article) {
+                $message->to($creator->email)
+                    ->subject('Your article has been approved');
+            });
+        }
+
         // Return JSON response for AJAX requests
         if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
             return response()->json([
@@ -741,6 +793,21 @@ class ArticlesController extends Controller
         $article->update([
             'status' => 'rejected',
         ]);
+
+        $creator = $article->createdByUser;
+        if (!$creator && $article->created_by) {
+            $creator = User::find($article->created_by);
+        }
+
+        if ($creator && !empty($creator->email)) {
+            Mail::send('emails.article-rejected', [
+                'user' => $creator,
+                'article' => $article,
+            ], function ($message) use ($creator, $article) {
+                $message->to($creator->email)
+                    ->subject('Your article has been rejected');
+            });
+        }
 
         // Return JSON response for AJAX requests
         if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
@@ -787,6 +854,33 @@ class ArticlesController extends Controller
         }
 
         return redirect()->route('admin.articles')->with('success', 'Article moved back to pending status.');
+    }
+
+    /**
+     * Return all users who carry the article approver permission.
+     */
+    private function getApproverEmails(): array
+    {
+        $approverIds = DB::table('access_controls')
+            ->where('permission', 'approve_articles')
+            ->pluck('user_id')
+            ->unique()
+            ->values()
+            ->all();
+
+        if (empty($approverIds)) {
+            return [];
+        }
+
+        return User::query()
+            ->whereIn('id', $approverIds)
+            ->whereNotNull('email')
+            ->where('email', '!=', '')
+            ->pluck('email')
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
     }
 
     /**

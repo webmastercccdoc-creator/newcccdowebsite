@@ -8,7 +8,7 @@ const Footer = () => {
     const currentYear = new Date().getFullYear();
     
     return (
-        <footer className="mt-auto w-full bg-gradient-to-r from-green-800 via-green-700 to-green-800" role="contentinfo">
+        <footer className="mt-auto w-full bg-gradient-to-r from-green-800 via-green-700 to-green-800 font-sans" role="contentinfo">
             <div className="w-full px-4 sm:px-6 lg:px-8">
                 {/* Main Footer Content */}
                 <div className="grid grid-cols-1 gap-12 py-8 md:grid-cols-2 lg:grid-cols-4">
@@ -19,36 +19,35 @@ const Footer = () => {
                                 <img src={logoSrc} alt="College Logo" className="h-full w-full object-contain brightness-110 drop-shadow-lg" />
                             </div>
                         </div>
-                        <p className="text-sm text-white/90 leading-relaxed max-w-xs font-medium">
+                        <p className="text-sm text-white leading-relaxed max-w-xs font-medium">
                             Aim higher, where students soar to achieve greater heights in learning, nurturing their potential and aspirations.
                         </p>
                     </div>
 
                     {/* Column 2: Quick Links */}
                     <div>
-                        <h3 className="font-bold text-white mb-6 flex items-center text-lg">
-                            <span className="w-1.5 h-7 bg-gradient-to-b from-green-400 to-green-600 rounded-full mr-3"></span>
+                        <h3 className="font-sans font-bold text-white mb-4 text-lg border-b border-white/40 pb-2">
                             Quick Links
                         </h3>
                         <ul className="space-y-3 text-sm">
                             <li>
-                                <Link href="/about" className="text-white/85 hover:text-green-300 transition-all duration-300 hover:translate-x-2 inline-block font-medium group">
-                                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span> About Us
+                                <Link href="/about" className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300">
+                                    About Us
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/admissions" className="text-white/85 hover:text-green-300 transition-all duration-300 hover:translate-x-2 inline-block font-medium group">
-                                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span> Admissions
+                                <Link href="/admissions" className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300">
+                                    Admissions
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/campus-life" className="text-white/85 hover:text-green-300 transition-all duration-300 hover:translate-x-2 inline-block font-medium group">
-                                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span> Campus Life
+                                <Link href="/campus-life" className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300">
+                                    Campus Life
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/library" className="text-white/85 hover:text-green-300 transition-all duration-300 hover:translate-x-2 inline-block font-medium group">
-                                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span> Library
+                                <Link href="/library" className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300">
+                                    Library
                                 </Link>
                             </li>
                         </ul>
@@ -56,39 +55,38 @@ const Footer = () => {
 
                     {/* Column 3: Resources */}
                     <div>
-                        <h3 className="font-bold text-white mb-6 flex items-center text-lg">
-                            <span className="w-1.5 h-7 bg-gradient-to-b from-green-400 to-green-600 rounded-full mr-3"></span>
+                        <h3 className="font-sans font-bold text-white mb-4 text-lg border-b border-white/40 pb-2">
                             Resources
                         </h3>
                         <ul className="space-y-3 text-sm">
                             <li>
-                                <Link href="/student-portal" className="text-white/85 hover:text-green-300 transition-all duration-300 hover:translate-x-2 inline-block font-medium group">
-                                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span> Student Portal
+                                <Link href="/student-portal" className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300">
+                                    Student Portal
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/faculty-staff" className="text-white/85 hover:text-green-300 transition-all duration-300 hover:translate-x-2 inline-block font-medium group">
-                                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span> Faculty & Staff
+                                <Link href="/faculty-staff" className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300">
+                                    Faculty & Staff
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/alumni" className="text-white/85 hover:text-green-300 transition-all duration-300 hover:translate-x-2 inline-block font-medium group">
-                                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span> Alumni
+                                <Link href="/alumni" className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300">
+                                    Alumni
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/url-shortener" className="text-white/85 hover:text-green-300 transition-all duration-300 hover:translate-x-2 inline-block font-medium group">
-                                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span> URL Shortener
+                                <Link href="/url-shortener" className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300">
+                                    URL Shortener
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/incident-report" className="text-white/85 hover:text-green-300 transition-all duration-300 hover:translate-x-2 inline-block font-medium group">
-                                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span> Incident Report
+                                <Link href="/incident-report" className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300">
+                                    Incident Report
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/downloadable-forms" className="text-white/85 hover:text-green-300 transition-all duration-300 hover:translate-x-2 inline-block font-medium group">
-                                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span> Downloadable Forms
+                                <Link href="/downloadable-forms" className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300">
+                                    Downloadable Forms
                                 </Link>
                             </li>
                         </ul>
@@ -96,8 +94,7 @@ const Footer = () => {
 
                     {/* Column 4: Government Links & Logos */}
                     <div>
-                        <h3 className="font-bold text-white mb-6 flex items-center text-lg">
-                            <span className="w-1.5 h-7 bg-gradient-to-b from-green-400 to-green-600 rounded-full mr-3"></span>
+                        <h3 className="font-sans font-bold text-white mb-4 text-lg border-b border-white/40 pb-2">
                             Government Links
                         </h3>
                         <ul className="space-y-3 text-sm">
@@ -106,9 +103,9 @@ const Footer = () => {
                                     href="http://www.ched.gov.ph/" 
                                     target="_blank" 
                                     rel="noopener noreferrer"
-                                    className="text-white/85 hover:text-green-300 transition-all duration-300 hover:translate-x-2 inline-block font-medium group"
+                                    className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300"
                                 >
-                                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span> Commission on Higher Education
+                                    Commission on Higher Education
                                 </a>
                             </li>
                             <li>
@@ -116,9 +113,9 @@ const Footer = () => {
                                     href="https://www.cagayandeoro.gov.ph/" 
                                     target="_blank" 
                                     rel="noopener noreferrer"
-                                    className="text-white/85 hover:text-green-300 transition-all duration-300 hover:translate-x-2 inline-block font-medium group"
+                                    className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300"
                                 >
-                                    <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span> City Government of Cagayan de Oro
+                                    City Government of Cagayan de Oro
                                 </a>
                             </li>
                             <li className="pt-4 mt-2 border-t border-green-600/30">
@@ -154,8 +151,8 @@ const Footer = () => {
                 </div>
 
                 {/* Bottom Bar - Light Green Design */}
-                <div className="w-full bg-white border-t border-green-200 py-4 px-6 md:flex md:items-center md:justify-between rounded-t-xl mt-6">
-                    <p className="text-sm text-slate-700 text-center md:text-left font-medium tracking-wide">
+                <div className="w-full bg-white border-t border-green-200 py-4 px-6 flex items-center justify-center rounded-t-xl mt-6">
+                    <p className="font-sans text-sm text-slate-700 text-center font-medium tracking-wide">
                         &copy; {currentYear} City College of Cagayan de Oro. All rights reserved.
                     </p>
                 </div>

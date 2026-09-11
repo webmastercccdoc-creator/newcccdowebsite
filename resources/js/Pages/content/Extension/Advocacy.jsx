@@ -7,6 +7,9 @@ export default function Advocacy() {
     }, []);
 
     return (
-        <ExtensionComingSoon />
+        <ExtensionComingSoon
+            title="Advocacy-Based Centers"
+            description="Learn about advocacy and community-based initiatives supported by the City College of Cagayan de Oro."
+        />
     );
 }

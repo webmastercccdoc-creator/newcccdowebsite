@@ -9,7 +9,13 @@ export default function WURI() {
         document.title = "WURI - City College of Cagayan de Oro";
     }, []);
 
-    return <ExtensionComingSoon />;
+    return (
+        <ExtensionComingSoon
+            title="WURI"
+            description="World University Rankings for Innovation - CC de Oro's commitment to innovation and excellence."
+            bannerImage={wuriImg}
+        />
+    );
 
     return (
         <MainLayout 

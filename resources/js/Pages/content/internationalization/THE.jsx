@@ -9,7 +9,13 @@ export default function THE() {
         document.title = "THE - City College of Cagayan de Oro";
     }, []);
 
-    return <ExtensionComingSoon />;
+    return (
+        <ExtensionComingSoon
+            title="THE"
+            description="Transdisciplinary Higher Education at CC de Oro."
+            bannerImage={theImg}
+        />
+    );
 
     return (
         <MainLayout 

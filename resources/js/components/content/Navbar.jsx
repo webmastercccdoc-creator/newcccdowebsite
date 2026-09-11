@@ -88,14 +88,14 @@ const Navbar = () => {
         if (dropdownRef.current && dropdownRef.current.contains(relatedTarget)) {
             return;
         }
-        
+
         let isOnMenuItem = false;
         Object.values(menuItemRefs.current).forEach(ref => {
             if (ref && ref.contains(relatedTarget)) {
                 isOnMenuItem = true;
             }
         });
-        
+
         if (!isOnMenuItem) {
             hoverTimeoutRef.current = setTimeout(() => {
                 setOpenDropdown(null);
@@ -118,7 +118,7 @@ const Navbar = () => {
                 isOnMenuItem = true;
             }
         });
-        
+
         if (!isOnMenuItem) {
             hoverTimeoutRef.current = setTimeout(() => {
                 setOpenDropdown(null);
@@ -132,45 +132,45 @@ const Navbar = () => {
 
     const navigationItems = [
         { name: 'Home', href: '/' },
-        { 
-            name: 'About Us', 
+        {
+            name: 'About Us',
             href: '/about',
             dropdown: [
                 { name: 'Cagayan De Oro City', href: '/about/cagayan-de-oro-city', description: 'Discover the city of golden friendship' },
                 { name: 'Message of the Mayor', href: '/about/mayors-message', description: 'A message from our city mayor' },
                 { name: 'Mission & Vision', href: '/about/mission-vision', description: 'Our guiding principles and aspirations' },
                 { name: 'Goals & Core Values', href: '/about/goals-core-values', description: 'The values that drive our institution' },
-                { name: 'Graduate Attributes', href: '/about/graduate-attributes', description: 'Characteristics expected of our graduates' },
+                // { name: 'Graduate Attributes', href: '/about/graduate-attributes', description: 'Characteristics expected of our graduates' },
                 { name: 'Governing Board', href: '/about/governing-board', description: 'Meet our board of directors' },
                 { name: 'Organizational Chart', href: '/about/organizational-chart', description: 'View our organizational structure' },
             ]
         },
-        { 
-            name: 'Clusters', 
+        {
+            name: 'Clusters',
             href: '/Offices',
             dropdown: [
-                { name: 'Office of the President',  href:'/offices/president', description:'Executive leadership and overall institutional direction' },
-                { name: 'Office of the Vice President for Academic Affairs',   href: '/offices/vp-academic-affairs',  description: 'Oversight of academic programs, curriculum, and faculty development'  },
+                { name: 'Office of the President', href: '/offices/president', description: 'Executive leadership and overall institutional direction' },
+                { name: 'Office of the Vice President for Academic Affairs', href: '/offices/vp-academic-affairs', description: 'Oversight of academic programs, curriculum, and faculty development' },
                 { name: 'Office of the Vice President for Administration and Finance', href: '/offices/vp-administration-finance', description: 'Management of administrative services, budget, and financial resources' },
                 { name: 'Office of the Vice President for Research and Extension', href: '/offices/vp-research-extension', description: 'Research initiatives, innovation, extension services, and scholarly activities' },
             ]
         },
-        { 
-        name: 'Academic Programs', 
-        href: '/Programs',
-        dropdown: [
-            { name: 'College of Education', href: '/programs/college-of-education', description: 'Teacher education and development programs' },
-            { name: 'College of Arts and Sciences', href: '/programs/college-of-arts-and-sciences', description: 'Liberal arts, sciences, and humanities' },
-            { name: 'College of Business and Management', href: '/programs/college-of-business-and-management', description: 'Business administration and management' },
-            { name: 'Technical Skill & Technology Institute', href: '/programs/technical-skill-technology', description: 'Technical and vocational education' },
+        {
+            name: 'Academic Programs',
+            href: '/Programs',
+            dropdown: [
+                { name: 'College of Education', href: '/programs/college-of-education', description: 'Teacher education and development programs' },
+                { name: 'College of Arts and Sciences', href: '/programs/college-of-arts-and-sciences', description: 'Liberal arts, sciences, and humanities' },
+                { name: 'College of Business and Management', href: '/programs/college-of-business-and-management', description: 'Business administration and management' },
+                { name: 'Technical Skill & Technology Institute', href: '/programs/technical-skill-technology', description: 'Technical and vocational education' },
             ]
         },
-        { 
-            name: 'Research', 
+        {
+            name: 'Research',
             href: 'https://sites.google.com/view/ritts-cccdo/home',
         },
-        { 
-            name: 'Extension', 
+        {
+            name: 'Extension',
             href: '/extension',
             dropdown: [
                 { name: 'Community Extension', href: '/extension/community', description: 'Community extension programs' },
@@ -178,8 +178,8 @@ const Navbar = () => {
                 { name: 'Advocacy-Based Centers', href: '/extension/advocacy', description: 'Advocacy and community-based initiatives' },
             ]
         },
-        { 
-            name: 'SDG & Internationalization', 
+        {
+            name: 'SDG & Internationalization',
             href: '/internationalization',
             dropdown: [
                 { name: 'Sustainable Development Goals', href: '/internationalization/sdg', description: 'Contributing to global sustainability goals' },
@@ -188,8 +188,8 @@ const Navbar = () => {
                 { name: 'UI GreenMetric', href: '/internationalization/ui-greenmetric', description: 'World university sustainability rankings and green campus initiatives' }
             ]
         },
-        { 
-            name: 'News & Events', 
+        {
+            name: 'News & Events',
             href: '/news',
             dropdown: [
                 { name: 'Latest News', href: '/news/latest', description: 'Recent updates and stories' },
@@ -202,32 +202,32 @@ const Navbar = () => {
 
     // Social media links
     const socialLinks = [
-        { 
-            name: 'Facebook', 
-            href: 'https://www.facebook.com/cccdofficial', 
+        {
+            name: 'Facebook',
+            href: 'https://www.facebook.com/cccdofficial',
             icon: (className) => (
                 <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                 </svg>
             ),
             hoverColor: 'hover:text-[#1877F2]'
         },
-        { 
-            name: 'Instagram', 
-            href: 'https://www.instagram.com/cccdofficial', 
+        {
+            name: 'Instagram',
+            href: 'https://www.instagram.com/cccdofficial',
             icon: (className) => (
                 <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
                 </svg>
             ),
             hoverColor: 'hover:text-[#E4405F]'
         },
-        { 
-            name: 'TikTok', 
-            href: 'https://www.tiktok.com/@cccdofficial', 
+        {
+            name: 'TikTok',
+            href: 'https://www.tiktok.com/@cccdofficial',
             icon: (className) => (
                 <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+                    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
                 </svg>
             ),
             hoverColor: 'hover:text-[#000000]'
@@ -237,9 +237,9 @@ const Navbar = () => {
     return (
         <div className="sticky top-0 z-50">
             {/* TOP NAVBAR - Green Background */}
-            <div 
+            <div
                 className="w-full font-sans"
-                style={{ 
+                style={{
                     backgroundColor: '#157D3C',
                     height: '36px',
                     borderBottom: '1px solid rgba(255,255,255,0.2)'
@@ -249,8 +249,8 @@ const Navbar = () => {
                     <div className="flex h-full items-center justify-between">
                         {/* Left side - Contact info - Hidden on mobile, shown on md+ */}
                         <div className="hidden md:flex items-center space-x-4 md:space-x-6">
-                            <a 
-                                href="tel:+63888572333" 
+                            <a
+                                href="tel:+63888572333"
                                 className="flex items-center gap-1.5 text-xs text-white hover:text-green-100 transition-colors duration-200"
                             >
                                 <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -259,8 +259,8 @@ const Navbar = () => {
                                 +63 917 777 2946
                             </a>
                             <span className="text-white/30">|</span>
-                            <a 
-                                href="mailto:info@cccdoc.edu.ph" 
+                            <a
+                                href="mailto:info@cccdoc.edu.ph"
                                 className="flex items-center gap-1.5 text-xs text-white hover:text-green-100 transition-colors duration-200"
                             >
                                 <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -280,8 +280,8 @@ const Navbar = () => {
 
                         {/* Mobile: Only show phone and email */}
                         <div className="flex md:hidden items-center space-x-3">
-                            <a 
-                                href="tel:+63888572333" 
+                            <a
+                                href="tel:+63888572333"
                                 className="flex items-center gap-1 text-xs text-white hover:text-green-100 transition-colors duration-200"
                                 aria-label="Call us"
                             >
@@ -291,8 +291,8 @@ const Navbar = () => {
                                 <span className="text-[10px]">+63 917 777 2946</span>
                             </a>
                             <span className="text-white/30">|</span>
-                            <a 
-                                href="mailto:info@cccdoc.edu.ph" 
+                            <a
+                                href="mailto:info@cccdoc.edu.ph"
                                 className="flex items-center gap-1 text-xs text-white hover:text-green-100 transition-colors duration-200"
                                 aria-label="Email us"
                             >
@@ -346,28 +346,28 @@ const Navbar = () => {
             </div>
 
             {/* MAIN NAVBAR - White Background */}
-            <nav 
+            <nav
                 className={`
                     w-full flex-shrink-0 font-sans
                     transition-all duration-300 ease-in-out
-                    ${isScrolled 
-                        ? 'shadow-2xl bg-white/95 backdrop-blur-sm' 
+                    ${isScrolled
+                        ? 'shadow-2xl bg-white/95 backdrop-blur-sm'
                         : 'shadow-xl bg-white'
                     }
-                `} 
-                style={{ 
+                `}
+                style={{
                     backgroundColor: '#ffffff',
                     height: '80px',
                 }}
-                role="navigation" 
+                role="navigation"
                 aria-label="Main navigation"
             >
                 <div className="w-full px-4 sm:px-6 lg:px-8 h-full">
                     <div className="flex h-full items-center justify-between w-full">
                         {/* Logo */}
                         <div className="flex-shrink-0">
-                            <a 
-                                href="/" 
+                            <a
+                                href="/"
                                 className="flex items-center hover:opacity-90 transition-opacity duration-200"
                             >
                                 <div className={`
@@ -384,8 +384,8 @@ const Navbar = () => {
                         <div className="hidden xl:flex xl:items-center xl:justify-between flex-1 ml-8">
                             <ul className="flex items-center space-x-1 lg:space-x-2 xl:space-x-2">
                                 {navigationItems.map((item) => (
-                                    <li 
-                                        key={item.name} 
+                                    <li
+                                        key={item.name}
                                         className="relative"
                                         ref={(el) => {
                                             if (el) {
@@ -411,10 +411,10 @@ const Navbar = () => {
                                                     aria-haspopup="true"
                                                 >
                                                     {item.name}
-                                                    <svg 
+                                                    <svg
                                                         className={`h-3 w-3 lg:h-4 lg:w-4 transition-transform duration-200 ${openDropdown === item.name ? 'rotate-180' : ''}`}
-                                                        fill="none" 
-                                                        viewBox="0 0 24 24" 
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
                                                         stroke="currentColor"
                                                         aria-hidden="true"
                                                     >
@@ -424,7 +424,7 @@ const Navbar = () => {
 
                                                 {/* Landscape/Horizontal Dropdown */}
                                                 {openDropdown === item.name && (
-                                                    <div 
+                                                    <div
                                                         ref={dropdownRef}
                                                         className="absolute left-1/2 -translate-x-1/2 mt-3 w-auto min-w-[720px] max-w-[950px] origin-top bg-white/95 backdrop-blur-lg shadow-2xl ring-1 ring-gray-200 transition-all duration-300 ease-out rounded-xl font-sans"
                                                         role="menu"
@@ -455,8 +455,8 @@ const Navbar = () => {
                                                             </div>
 
                                                             {/* Dynamic Grid Items based on dropdown count */}
-                                                            <div 
-                                                                className="grid gap-4" 
+                                                            <div
+                                                                className="grid gap-4"
                                                                 style={{ gridTemplateColumns: `repeat(${Math.min(item.dropdown.length, 3)}, minmax(0, 1fr))` }}
                                                             >
                                                                 {item.dropdown.map((subItem) => (
@@ -537,7 +537,7 @@ const Navbar = () => {
                     </div>
 
                     {/* Mobile Menu */}
-                    <div 
+                    <div
                         id="mobile-menu"
                         ref={mobileMenuRef}
                         className={`
@@ -560,17 +560,17 @@ const Navbar = () => {
                                                 aria-expanded={openDropdown === item.name}
                                             >
                                                 {item.name}
-                                                <svg 
+                                                <svg
                                                     className={`h-5 w-5 transition-transform duration-200 ${openDropdown === item.name ? 'rotate-180' : ''}`}
-                                                    fill="none" 
-                                                    viewBox="0 0 24 24" 
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
                                                     stroke="currentColor"
                                                     aria-hidden="true"
                                                 >
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                                 </svg>
                                             </button>
-                                            
+
                                             {/* Mobile Sub-menu */}
                                             <div className={`
                                                 ml-2 space-y-1 overflow-y-auto transition-all duration-200 bg-white shadow-inner rounded-lg
@@ -605,7 +605,7 @@ const Navbar = () => {
                                     )}
                                 </div>
                             ))}
-                            
+
                             {/* Mobile CTA Button */}
                             <div className="px-3 pt-4 pb-2">
                                 <a

@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 // Import images (PNG format)
 import GoverningBoardImage1 from '../../../assets/GoverningBoard/governing-board1.png';
 import GoverningBoardImage2 from '../../../assets/GoverningBoard/governing-board2.png';
-import GoverningBoardImage3 from '../../../assets/GoverningBoard/banner.png';
+import GoverningBoardImage3 from '../../../assets/banner/coregoals-banner.png';
 
 // Logo
 import cccoLogo from '../../../assets/logos/ccdologo.png';

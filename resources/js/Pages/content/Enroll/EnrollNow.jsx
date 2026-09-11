@@ -7,6 +7,7 @@ import tstiLogo from '../../../assets/logos/tsti-logo.png';
 import cbmLogo from '../../../assets/logos/cbm-logo.png';
 import casLogo from '../../../assets/logos/cas-logo.png';
 import coeLogo from '../../../assets/logos/coe-logo.png';
+import enrollBanner from '../../../assets/banner/News Banner.png';
 
 export default function EnrollNow() {
     const [showClosedModal, setShowClosedModal] = useState(false);
@@ -107,7 +108,7 @@ export default function EnrollNow() {
             <div
                 className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[300px] md:min-h-[400px] lg:min-h-[450px] flex items-center justify-center"
                 style={{
-                    backgroundImage: `url('/images/enroll-banner.jpg')`
+                    backgroundImage: `url('${enrollBanner}')`
                 }}
             >
                 <div className="absolute inset-0 bg-black/50"></div>

@@ -156,6 +156,16 @@ const Footer = () => {
                                     City Government of Cagayan de Oro
                                 </a>
                             </li>
+                            <li>
+                                <a
+                                    href="https://www.tesda.gov.ph/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300"
+                                >
+                                    Technical Education and Skills Development Authority (TESDA)
+                                </a>
+                            </li>
                             <li className="pt-4 mt-2 border-t border-green-600/30">
                                 <div className="flex flex-row items-center justify-start space-x-4 pt-2">
                                     <div className="h-20 w-auto flex items-center justify-center">

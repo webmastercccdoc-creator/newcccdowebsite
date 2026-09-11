@@ -1,11 +1,24 @@
+// import { Link } from "@inertiajs/react";
+import { useState } from "react";
 import { Link } from "@inertiajs/react";
+import { AnimatePresence, motion } from "framer-motion";
 import logoSrc from "../../assets/logos/cccdoclogo.png";
+import cclogoSrc from "../../assets/logos/ccdoclogo.png";
 import cdoLogoSrc from "../../assets/logos/cdoc-logo.png";
 import npcDpoSrc from "../../assets/logos/npc_dpo_2026_1.png";
 import tstiLogoSrc from "../../assets/logos/tsti-logo.png";
 
+
+const GREEN = "#157d3c";
+const GREEN_DARK = "#0f5c2c";
 const Footer = () => {
     const currentYear = new Date().getFullYear();
+    const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
+
+    const handleDownloadableFormsClick = (e) => {
+        e.preventDefault();
+        setIsAuditModalOpen(true);
+    };
 
     return (
         <footer
@@ -119,13 +132,14 @@ const Footer = () => {
                                     Incident Report
                                 </Link>
                             </li>
-                            <li>
-                                <Link
+                           <li>
+                                <a
                                     href="/downloadable-forms"
-                                    className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300"
+                                    onClick={handleDownloadableFormsClick}
+                                    className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300 cursor-pointer"
                                 >
                                     Downloadable Forms
-                                </Link>
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -210,6 +224,77 @@ const Footer = () => {
                     </p>
                 </div>
             </div>
+
+            {/* ================= UNDER AUDIT MODAL ================= */}
+            <AnimatePresence>
+                {isAuditModalOpen && (
+                    <motion.div
+                        className="fixed inset-0 z-50 flex items-center justify-center px-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        <div
+                            className="absolute inset-0 bg-black/60"
+                            onClick={() => setIsAuditModalOpen(false)}
+                        />
+
+                        <motion.div
+                            className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+                            initial={{ opacity: 0, y: 24, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 16, scale: 0.98 }}
+                            transition={{ duration: 0.25, ease: "easeOut" }}
+                        >
+                            <div
+                                className="relative flex items-center justify-center px-6 py-5"
+                                style={{ background: `linear-gradient(135deg, ${GREEN} 0%, ${GREEN_DARK} 100%)` }}
+                            >
+                                <h2
+                                    className="text-white font-bold text-lg text-center"
+                                    style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
+                                >
+                                    Page Under Audit
+                                </h2>
+                                <button
+                                    type="button"
+                                    onClick={() => setIsAuditModalOpen(false)}
+                                    className="absolute right-6 text-white/80 hover:text-white transition-colors text-xl leading-none"
+                                    aria-label="Close"
+                                >
+                                    &times;
+                                </button>
+                            </div>
+
+                            <div className="px-6 py-8 text-center">
+                                <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center mx-auto mb-4 shadow-md border border-gray-100">
+                                    <img
+                                        src={cclogoSrc}
+                                        alt="City College of CDO Logo"
+                                        className="w-20 h-20 object-contain"
+                                    />
+                                </div>
+                                <p className="text-gray-700 leading-relaxed">
+                                    This page is currently under audit and is not yet available.
+                                    Please check back again soon.
+                                </p>
+                            </div>
+
+                            <div className="flex items-center justify-center px-6 py-4 border-t border-gray-100 bg-gray-50">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsAuditModalOpen(false)}
+                                    className="px-6 py-2 rounded-md text-white text-sm font-semibold transition-colors"
+                                    style={{ backgroundColor: GREEN_DARK }}
+                                >
+                                    Got it
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </footer>
     );
 };

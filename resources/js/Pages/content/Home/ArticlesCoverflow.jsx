@@ -37,7 +37,7 @@ const stripHtmlAndTruncate = (html, maxLength = 80) => {
     return text.substring(0, maxLength) + '...';
 };
 
-export default function ArticlesCoverflow({ 
+export default function ArticlesCoverflow({
     articles = [],
     cardWidth = 260,
     cardHeight = 360,
@@ -65,7 +65,7 @@ export default function ArticlesCoverflow({
 
     const moveDur = 0.6;
     const lockRef = useRef(false);
-    
+
     const lock = useCallback(() => {
         lockRef.current = true;
         window.setTimeout(() => {
@@ -166,26 +166,26 @@ export default function ArticlesCoverflow({
                     const ax = Math.abs(rel);
                     const visible = ax <= MAX_VISIBLE;
                     const isActive = rel === 0;
-                    
+
                     // Scale: cards get smaller as they go further
                     const sc = Math.max(0.5, 1 - ax * SCALE_STEP);
-                    
+
                     // Dynamic overlap for 12 cards
                     const maxVisible = Math.min(n, MAX_VISIBLE);
                     const overlapPercentage = 0.52; // 52% overlap for tighter spacing
                     const overlapOffset = cardWidth * overlapPercentage;
-                    
+
                     // Reduce overlap for cards further away
                     const distanceFactor = Math.max(0.7, 1 - (ax / maxVisible) * 0.3);
                     const tx = rel * overlapOffset * distanceFactor;
-                    
+
                     // Depth: cards go further back as they move away
                     const tz = -ax * DEPTH;
-                    
+
                     // No rotation - straight cards
                     const ry = 0;
                     const rz = 0;
-                    
+
                     const src = article.image || article.image_path || '';
 
                     const cardStyle = {
@@ -204,11 +204,11 @@ export default function ArticlesCoverflow({
                         cursor: autoplay || isActive ? 'default' : 'pointer',
                         pointerEvents: visible && !isStatic && !autoplay ? 'auto' : 'none',
                         backgroundColor: '#ffffff',
-                        boxShadow: isActive 
-                            ? '0 20px 60px rgba(0, 0, 0, 0.3)' 
+                        boxShadow: isActive
+                            ? '0 20px 60px rgba(0, 0, 0, 0.3)'
                             : '0 8px 20px rgba(0, 0, 0, 0.1)',
                         zIndex: isActive ? 100 : (visible ? 100 - ax * 7 : 0),
-                        border: isActive ? '3px solid rgba(212, 175, 55, 0.6)' : '1px solid rgba(0,0,0,0.05)',
+                        border: isActive ? '3px solid rgba(254, 212, 33, 0.6)' : '1px solid rgba(0,0,0,0.05)',
                     };
 
                     return (
@@ -250,7 +250,7 @@ export default function ArticlesCoverflow({
                                 style={{
                                     position: 'absolute',
                                     inset: 0,
-                                    background: 'linear-gradient(180deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.18) 30%, rgba(0,0,0,0.78) 100%)',
+                                    background: 'linear-gradient(180deg, rgba(254, 212, 33, 0.78) 0%, rgba(0, 0, 0, 0.12) 20%, rgba(0, 0, 0, 0.28) 58%, rgba(254, 212, 33, 0.88) 100%)',
                                     pointerEvents: 'none',
                                 }}
                             />
@@ -439,7 +439,7 @@ export default function ArticlesCoverflow({
                     top: '50%',
                     transform: 'translateY(-50%)',
                     backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                    border: '2px solid rgba(212, 175, 55, 0.8)',
+                    border: '2px solid rgba(254, 212, 33, 0.8)',
                     borderRadius: '9999px',
                     cursor: 'pointer',
                     display: 'flex',
@@ -456,20 +456,20 @@ export default function ArticlesCoverflow({
                     backdropFilter: 'blur(4px)',
                 }}
                 onMouseOver={(e) => {
-                    e.target.style.backgroundColor = 'rgba(212, 175, 55, 0.3)';
-                    e.target.style.borderColor = '#d4af37';
+                    e.target.style.backgroundColor = 'rgba(254, 212, 33, 0.3)';
+                    e.target.style.borderColor = '#FED421';
                     e.target.style.transform = 'translateY(-50%) scale(1.1)';
                 }}
                 onMouseOut={(e) => {
                     e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
-                    e.target.style.borderColor = 'rgba(212, 175, 55, 0.8)';
+                    e.target.style.borderColor = 'rgba(254, 212, 33, 0.8)';
                     e.target.style.transform = 'translateY(-50%) scale(1)';
                 }}
                 aria-label="Previous article"
             >
                 ←
             </button>
-                
+
             <button
                 onClick={() => step(1)}
                 style={{
@@ -478,7 +478,7 @@ export default function ArticlesCoverflow({
                     top: '50%',
                     transform: 'translateY(-50%)',
                     backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                    border: '2px solid rgba(212, 175, 55, 0.8)',
+                    border: '2px solid rgba(254, 212, 33, 0.8)',
                     borderRadius: '9999px',
                     cursor: 'pointer',
                     display: 'flex',
@@ -495,13 +495,13 @@ export default function ArticlesCoverflow({
                     backdropFilter: 'blur(4px)',
                 }}
                 onMouseOver={(e) => {
-                    e.target.style.backgroundColor = 'rgba(212, 175, 55, 0.3)';
-                    e.target.style.borderColor = '#d4af37';
+                    e.target.style.backgroundColor = 'rgba(254, 212, 33, 0.3)';
+                    e.target.style.borderColor = '#FED421';
                     e.target.style.transform = 'translateY(-50%) scale(1.1)';
                 }}
                 onMouseOut={(e) => {
                     e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
-                    e.target.style.borderColor = 'rgba(212, 175, 55, 0.8)';
+                    e.target.style.borderColor = 'rgba(254, 212, 33, 0.8)';
                     e.target.style.transform = 'translateY(-50%) scale(1)';
                 }}
                 aria-label="Next article"
@@ -538,7 +538,7 @@ export default function ArticlesCoverflow({
                                 height: '6px',
                                 borderRadius: '3px',
                                 border: 'none',
-                                backgroundColor: i === active ? '#d4af37' : 'rgba(255, 255, 255, 0.4)',
+                                backgroundColor: i === active ? '#FED421' : 'rgba(255, 255, 255, 0.4)',
                                 cursor: 'pointer',
                                 transition: 'all 0.3s ease',
                                 padding: 0,

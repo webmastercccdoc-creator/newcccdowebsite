@@ -1,9 +1,110 @@
-@import url("https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 .content-page {
-	font-family: "Libre Baskerville", Georgia, serif;
+	font-family: "Merriweather", Georgia, serif;
+}
+
+/* Content and hero only. The navbar and footer intentionally remain unchanged. */
+.content-page,
+.landing-page,
+.video-banner-overlay {
+	font-family: "Merriweather", Georgia, serif !important;
+}
+
+.content-main > h1,
+.content-page h1,
+.content-page h2,
+.content-page h3,
+.content-page h4,
+.content-page h5,
+.content-page h6,
+.content-page button,
+.content-page [role="button"],
+.landing-page .title-1,
+.landing-page .title-2,
+.landing-page .discover {
+	font-family: Tahoma, sans-serif !important;
+}
+
+.content-main > h1 {
+	font-family: Tahoma, sans-serif !important;
+}
+
+.content-page p,
+.content-page li,
+.content-page label,
+.content-page input,
+.content-page textarea,
+.content-page select,
+.content-page a,
+.content-page span,
+.content-page div,
+.landing-page .place-box,
+.landing-page .desc,
+.landing-page .card-content,
+.landing-page .content-place,
+.landing-page .content-title-1,
+.landing-page .content-title-2 {
+	font-family: "Merriweather", Georgia, serif;
+}
+
+:where(.content-page, .landing-page) {
+	--brand-green: #086618;
+	--brand-green-light: #146734;
+	--brand-red: #FF3131;
+	--brand-red-light: #EF3A37;
+}
+
+:where(.content-page, .landing-page) [class*="text-green-"],
+:where(.content-page, .landing-page) [class*="text-emerald-"],
+:where(.content-page, .landing-page) [class*="text-teal-"],
+:where(.content-page, .landing-page) [class*="text-lime-"],
+:where(.content-page, .landing-page) [class*="text-[#059669]"],
+:where(.content-page, .landing-page) [class*="text-[#047857]"],
+:where(.content-page, .landing-page) [class*="text-[#0f5132]"],
+:where(.content-page, .landing-page) [class*="text-[#145A32]"],
+:where(.content-page, .landing-page) [class*="text-[#157D3C]"] {
+	color: var(--brand-green) !important;
+}
+
+:where(.content-page, .landing-page) [class*="bg-green-"],
+:where(.content-page, .landing-page) [class*="bg-emerald-"],
+:where(.content-page, .landing-page) [class*="bg-teal-"],
+:where(.content-page, .landing-page) [class*="bg-lime-"],
+:where(.content-page, .landing-page) [class*="bg-[#059669]"],
+:where(.content-page, .landing-page) [class*="bg-[#047857]"],
+:where(.content-page, .landing-page) [class*="bg-[#0f5132]"],
+:where(.content-page, .landing-page) [class*="bg-[#145A32]"],
+:where(.content-page, .landing-page) [class*="bg-[#157D3C]"] {
+	background-color: var(--brand-green) !important;
+}
+
+:where(.content-page, .landing-page) [class*="border-green-"],
+:where(.content-page, .landing-page) [class*="border-emerald-"],
+:where(.content-page, .landing-page) [class*="border-teal-"],
+:where(.content-page, .landing-page) [class*="border-lime-"],
+:where(.content-page, .landing-page) [class*="border-[#059669]"],
+:where(.content-page, .landing-page) [class*="border-[#047857]"],
+:where(.content-page, .landing-page) [class*="border-[#0f5132]"],
+:where(.content-page, .landing-page) [class*="border-[#145A32]"],
+:where(.content-page, .landing-page) [class*="border-[#157D3C]"] {
+	border-color: var(--brand-green) !important;
+}
+
+:where(.content-page, .landing-page) [class*="text-red-"],
+:where(.content-page, .landing-page) [class*="text-rose-"],
+:where(.content-page, .landing-page) [class*="text-[#dc3545]"],
+:where(.content-page, .landing-page) [class*="text-[#FF3A21]"] {
+	color: var(--brand-red) !important;
+}
+
+:where(.content-page, .landing-page) [class*="bg-red-"],
+:where(.content-page, .landing-page) [class*="bg-rose-"],
+:where(.content-page, .landing-page) [class*="bg-[#dc3545]"],
+:where(.content-page, .landing-page) [class*="bg-[#FF3A21]"] {
+	background-color: var(--brand-red) !important;
 }

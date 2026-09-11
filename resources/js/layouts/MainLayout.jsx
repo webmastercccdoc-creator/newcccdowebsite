@@ -119,7 +119,7 @@ export default function MainLayout({
             
             <main 
                 className={`
-                    flex-1 mx-auto w-full 
+                    content-main flex-1 mx-auto w-full 
                     ${getPaddingClass()}
                     ${getMainPaddingClass()}
                     ${getMaxWidthClass()}

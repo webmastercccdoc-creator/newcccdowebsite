@@ -14,10 +14,16 @@ const GREEN_DARK = "#0f5c2c";
 const Footer = () => {
     const currentYear = new Date().getFullYear();
     const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
+    const [isLibraryModalOpen, setIsLibraryModalOpen] = useState(false);
 
     const handleDownloadableFormsClick = (e) => {
         e.preventDefault();
         setIsAuditModalOpen(true);
+    };
+
+    const handleLibraryClick = (e) => {
+        e.preventDefault();
+        setIsLibraryModalOpen(true);
     };
 
     return (
@@ -77,12 +83,13 @@ const Footer = () => {
                                 </Link>
                             </li>
                             <li>
-                                <Link
+                                <a
                                     href="/library"
-                                    className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300"
+                                    onClick={handleLibraryClick}
+                                    className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300 cursor-pointer"
                                 >
                                     Library
-                                </Link>
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -285,6 +292,90 @@ const Footer = () => {
                                 <button
                                     type="button"
                                     onClick={() => setIsAuditModalOpen(false)}
+                                    className="px-6 py-2 rounded-md text-white text-sm font-semibold transition-colors"
+                                    style={{ backgroundColor: GREEN_DARK }}
+                                >
+                                    Got it
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+
+            {/* ================= LIBRARY COMING SOON MODAL ================= */}
+            <AnimatePresence>
+                {isLibraryModalOpen && (
+                    <motion.div
+                        className="fixed inset-0 z-50 flex items-center justify-center px-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        {/* Backdrop */}
+                        <div
+                            className="absolute inset-0 bg-black/60"
+                            onClick={() => setIsLibraryModalOpen(false)}
+                        />
+
+                        {/* Modal */}
+                        <motion.div
+                            className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+                            initial={{ opacity: 0, y: 24, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 16, scale: 0.98 }}
+                            transition={{ duration: 0.25, ease: "easeOut" }}
+                        >
+                            {/* Header */}
+                            <div
+                                className="relative flex items-center justify-center px-6 py-5"
+                                style={{
+                                    background: `linear-gradient(135deg, ${GREEN} 0%, ${GREEN_DARK} 100%)`,
+                                }}
+                            >
+                                <h2
+                                    className="text-white font-bold text-lg text-center"
+                                    style={{
+                                        fontFamily: '"Bricolage Grotesque", sans-serif',
+                                    }}
+                                >
+                                    Library Coming Soon
+                                </h2>
+
+                                <button
+                                    type="button"
+                                    onClick={() => setIsLibraryModalOpen(false)}
+                                    className="absolute right-6 text-white/80 hover:text-white transition-colors text-xl leading-none"
+                                    aria-label="Close"
+                                >
+                                    &times;
+                                </button>
+                            </div>
+
+                            {/* Content */}
+                            <div className="px-6 py-8 text-center">
+                                <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center mx-auto mb-4 shadow-md border border-gray-100">
+                                    <img
+                                        src={cclogoSrc}
+                                        alt="City College of CDO Logo"
+                                        className="w-20 h-20 object-contain"
+                                    />
+                                </div>
+
+                                <p className="text-gray-700 leading-relaxed">
+                                    The Library page is currently under development.
+                                    <br />
+                                    Please check back again soon.
+                                </p>
+                            </div>
+
+                            {/* Footer */}
+                            <div className="flex items-center justify-center px-6 py-4 border-t border-gray-100 bg-gray-50">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsLibraryModalOpen(false)}
                                     className="px-6 py-2 rounded-md text-white text-sm font-semibold transition-colors"
                                     style={{ backgroundColor: GREEN_DARK }}
                                 >

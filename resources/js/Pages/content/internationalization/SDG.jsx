@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
+import ExtensionComingSoon from '../Extension/ExtensionComingSoon';
 import sdg1 from '../../../assets/images/sdg1.png';
 import sdg2 from '../../../assets/images/sdg2.jpg';
 import sdg3 from '../../../assets/images/sdg3.png';
@@ -88,6 +89,8 @@ export default function SDG() {
 
         return () => clearInterval(intervalId);
     }, []);
+
+    return <ExtensionComingSoon />;
 
     return (
         <MainLayout 

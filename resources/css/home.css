@@ -11,7 +11,7 @@ SCROLL REVEAL ANIMATION
     opacity: 0;
     transform: translateY(32px) scale(0.98);
     transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal-on-scroll.reveal-from-left {
@@ -172,7 +172,7 @@ LANDING PAGE CAROUSEL
 }
 
 /* Description/Content */
-.landing-page .details > .desc {
+.landing-page .details>.desc {
     margin-top: 8px;
     width: 100%;
     max-width: 480px;
@@ -184,7 +184,7 @@ LANDING PAGE CAROUSEL
 }
 
 /* CTA Button */
-.landing-page .details > .cta {
+.landing-page .details>.cta {
     width: 100%;
     max-width: 480px;
     margin-top: 14px;
@@ -192,7 +192,7 @@ LANDING PAGE CAROUSEL
     align-items: center;
 }
 
-.landing-page .details > .cta > .discover {
+.landing-page .details>.cta>.discover {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -212,7 +212,7 @@ LANDING PAGE CAROUSEL
     text-decoration: none;
 }
 
-.landing-page .details > .cta > .discover:hover {
+.landing-page .details>.cta>.discover:hover {
     background-color: #d4a843;
     border-color: #d4a843;
     color: #0a0a0a;
@@ -302,7 +302,7 @@ LANDING PAGE CAROUSEL
     max-width: 100%;
 }
 
-.landing-page .pagination > .arrow {
+.landing-page .pagination>.arrow {
     width: 36px;
     height: 36px;
     border-radius: 999px;
@@ -317,12 +317,12 @@ LANDING PAGE CAROUSEL
     min-width: 36px;
 }
 
-.landing-page .pagination > .arrow:hover {
+.landing-page .pagination>.arrow:hover {
     border-color: #d4a843;
     background-color: rgba(212, 168, 67, 0.15);
 }
 
-.landing-page .pagination > .arrow svg {
+.landing-page .pagination>.arrow svg {
     width: 16px;
     height: 16px;
     stroke-width: 2;
@@ -330,7 +330,7 @@ LANDING PAGE CAROUSEL
     transition: color 0.25s ease;
 }
 
-.landing-page .pagination > .arrow:hover svg {
+.landing-page .pagination>.arrow:hover svg {
     color: #d4a843;
 }
 
@@ -419,37 +419,37 @@ LANDING PAGE MOBILE ADJUSTMENTS
         max-width: 100%;
         border-radius: 12px;
     }
-    
+
     .landing-page .details .title-box-1,
     .landing-page .details .title-box-2 {
         height: auto;
         margin-top: 2px;
         min-height: auto;
     }
-    
+
     .landing-page .details .title-1 {
         font-size: clamp(20px, 3.5vw, 28px);
     }
-    
+
     .landing-page .details .title-2 {
         font-size: clamp(13px, 1.8vw, 18px);
     }
-    
-    .landing-page .details > .desc {
+
+    .landing-page .details>.desc {
         font-size: 12px;
         -webkit-line-clamp: 3;
     }
-    
+
     .landing-page .details .place-box .text {
         font-size: 10px;
     }
-    
-    .landing-page .details > .cta > .discover {
+
+    .landing-page .details>.cta>.discover {
         padding: 0 18px;
         font-size: 10px;
         height: 32px;
     }
-    
+
     /* Pagination - Mobile fixes */
     .landing-page .pagination {
         bottom: 15px;
@@ -458,29 +458,29 @@ LANDING PAGE MOBILE ADJUSTMENTS
         width: 90%;
         justify-content: center;
     }
-    
-    .landing-page .pagination > .arrow {
+
+    .landing-page .pagination>.arrow {
         width: 32px;
         height: 32px;
         min-width: 32px;
     }
-    
-    .landing-page .pagination > .arrow svg {
+
+    .landing-page .pagination>.arrow svg {
         width: 14px;
         height: 14px;
     }
-    
+
     .landing-page .pagination .slide-numbers {
         width: 28px;
         height: 28px;
     }
-    
+
     .landing-page .pagination .slide-numbers .item {
         width: 28px;
         height: 28px;
         font-size: 18px;
     }
-    
+
     .landing-page .pagination .progress-sub-container {
         width: 80px;
         margin-left: 6px;
@@ -496,35 +496,35 @@ LANDING PAGE MOBILE ADJUSTMENTS
         right: 10px;
         border-radius: 10px;
     }
-    
+
     .landing-page .details .title-1 {
         font-size: clamp(18px, 3vw, 24px);
     }
-    
+
     .landing-page .details .title-2 {
         font-size: clamp(12px, 1.5vw, 16px);
     }
-    
+
     .landing-page .details .place-box .text {
         font-size: 9px;
     }
-    
-    .landing-page .details > .desc {
+
+    .landing-page .details>.desc {
         font-size: 11px;
         -webkit-line-clamp: 3;
         margin-top: 6px;
     }
-    
-    .landing-page .details > .cta {
+
+    .landing-page .details>.cta {
         margin-top: 10px;
     }
-    
-    .landing-page .details > .cta > .discover {
+
+    .landing-page .details>.cta>.discover {
         padding: 0 14px;
         font-size: 9px;
         height: 28px;
     }
-    
+
     /* Pagination - Small screen fixes */
     .landing-page .pagination {
         bottom: 12px;
@@ -532,41 +532,41 @@ LANDING PAGE MOBILE ADJUSTMENTS
         padding: 0 4px;
         width: 95%;
     }
-    
-    .landing-page .pagination > .arrow {
+
+    .landing-page .pagination>.arrow {
         width: 28px;
         height: 28px;
         min-width: 28px;
         border-width: 1px;
     }
-    
-    .landing-page .pagination > .arrow svg {
+
+    .landing-page .pagination>.arrow svg {
         width: 12px;
         height: 12px;
     }
-    
+
     .landing-page .pagination .slide-numbers {
         width: 24px;
         height: 24px;
     }
-    
+
     .landing-page .pagination .slide-numbers .item {
         width: 24px;
         height: 24px;
         font-size: 14px;
     }
-    
+
     .landing-page .pagination .progress-sub-container {
         width: 50px;
         margin-left: 4px;
         min-width: 20px;
         height: 24px;
     }
-    
+
     .landing-page .pagination .progress-sub-background {
         height: 2px;
     }
-    
+
     .landing-page .pagination .progress-sub-foreground {
         height: 2px;
     }
@@ -580,39 +580,39 @@ LANDING PAGE MOBILE ADJUSTMENTS
         right: 8px;
         border-radius: 8px;
     }
-    
+
     .landing-page .details .title-1 {
         font-size: clamp(16px, 2.5vw, 20px);
     }
-    
+
     .landing-page .details .title-2 {
         font-size: clamp(11px, 1.2vw, 14px);
         margin-top: 2px;
     }
-    
+
     .landing-page .details .place-box .text {
         font-size: 8px;
         min-height: 16px;
     }
-    
-    .landing-page .details > .desc {
+
+    .landing-page .details>.desc {
         font-size: 10px;
         -webkit-line-clamp: 2;
         margin-top: 4px;
         line-height: 1.4;
     }
-    
-    .landing-page .details > .cta {
+
+    .landing-page .details>.cta {
         margin-top: 8px;
     }
-    
-    .landing-page .details > .cta > .discover {
+
+    .landing-page .details>.cta>.discover {
         padding: 0 12px;
         font-size: 8px;
         height: 24px;
         border-width: 1px;
     }
-    
+
     /* Pagination - Extra small screen fixes */
     .landing-page .pagination {
         bottom: 10px;
@@ -620,45 +620,45 @@ LANDING PAGE MOBILE ADJUSTMENTS
         padding: 0 2px;
         width: 98%;
     }
-    
-    .landing-page .pagination > .arrow {
+
+    .landing-page .pagination>.arrow {
         width: 24px;
         height: 24px;
         min-width: 24px;
         border-width: 1px;
     }
-    
-    .landing-page .pagination > .arrow svg {
+
+    .landing-page .pagination>.arrow svg {
         width: 10px;
         height: 10px;
     }
-    
+
     .landing-page .pagination .slide-numbers {
         width: 20px;
         height: 20px;
     }
-    
+
     .landing-page .pagination .slide-numbers .item {
         width: 20px;
         height: 20px;
         font-size: 12px;
     }
-    
+
     .landing-page .pagination .progress-sub-container {
         width: 30px;
         margin-left: 3px;
         min-width: 15px;
         height: 20px;
     }
-    
+
     .landing-page .pagination .progress-sub-background {
         height: 1.5px;
     }
-    
+
     .landing-page .pagination .progress-sub-foreground {
         height: 1.5px;
     }
-    
+
     /* Hide card content on very small screens */
     .landing-page .card-content {
         display: none;
@@ -680,58 +680,58 @@ LANDING PAGE MOBILE ADJUSTMENTS
         padding: 10px 14px;
         border-radius: 8px;
     }
-    
+
     .landing-page .details .title-1 {
         font-size: clamp(16px, 2.5vw, 22px);
     }
-    
+
     .landing-page .details .title-2 {
         font-size: clamp(11px, 1.5vw, 16px);
     }
-    
-    .landing-page .details > .desc {
+
+    .landing-page .details>.desc {
         font-size: 10px;
         -webkit-line-clamp: 2;
         margin-top: 4px;
     }
-    
-    .landing-page .details > .cta {
+
+    .landing-page .details>.cta {
         margin-top: 6px;
     }
-    
-    .landing-page .details > .cta > .discover {
+
+    .landing-page .details>.cta>.discover {
         padding: 0 14px;
         font-size: 9px;
         height: 26px;
     }
-    
+
     .landing-page .pagination {
         bottom: 8px;
         gap: 6px;
     }
-    
-    .landing-page .pagination > .arrow {
+
+    .landing-page .pagination>.arrow {
         width: 26px;
         height: 26px;
         min-width: 26px;
     }
-    
-    .landing-page .pagination > .arrow svg {
+
+    .landing-page .pagination>.arrow svg {
         width: 12px;
         height: 12px;
     }
-    
+
     .landing-page .pagination .slide-numbers {
         width: 22px;
         height: 22px;
     }
-    
+
     .news carousel-page .pagination .slide-numbers .item {
         width: 22px;
         height: 22px;
         font-size: 14px;
     }
-    
+
     .landing-page .pagination .progress-sub-container {
         width: 40px;
         margin-left: 4px;
@@ -779,11 +779,15 @@ LATEST NEWS & UPDATES
 }
 
 @media (min-width: 640px) {
-    .news-section { padding: 2.5rem 1.5rem 3.5rem; }
+    .news-section {
+        padding: 2.5rem 1.5rem 3.5rem;
+    }
 }
 
 @media (min-width: 1024px) {
-    .news-section { padding: 3rem 2rem 4rem; }
+    .news-section {
+        padding: 3rem 2rem 4rem;
+    }
 }
 
 .news-container {
@@ -811,11 +815,13 @@ LATEST NEWS & UPDATES
 }
 
 .news-title .gold {
-    color: #d4a843; /* Gold color */
+    color: #d4a843;
+    /* Gold color */
 }
 
 .news-title .green {
-    color: #059669; /* Green color */
+    color: #059669;
+    /* Green color */
 }
 
 @media (min-width: 640px) {
@@ -843,7 +849,8 @@ LATEST NEWS & UPDATES
     margin: 1rem auto 0;
     width: 4rem;
     height: 3px;
-    background: linear-gradient(90deg, #d4a843, #f0d78c); /* Keep gold underline */
+    background: linear-gradient(90deg, #d4a843, #f0d78c);
+    /* Keep gold underline */
     border-radius: 99px;
 }
 
@@ -1072,7 +1079,7 @@ FEATURES WITH IMAGE - Responsive
         gap: 2rem;
         padding: 0 1rem;
     }
-    
+
     .features-image-wrapper {
         flex: 0 0 auto;
         width: 100%;
@@ -1086,7 +1093,7 @@ FEATURES WITH IMAGE - Responsive
         gap: 1.5rem;
         padding: 0 0.5rem;
     }
-    
+
     .features-image-wrapper {
         max-width: 100%;
         border-radius: 0.75rem;
@@ -1108,8 +1115,8 @@ FEATURES WITH IMAGE - Responsive
         gap: 2rem !important;
         padding: 0 1rem;
     }
-    
-    .features-flex-container > div:last-child {
+
+    .features-flex-container>div:last-child {
         flex: 0 0 auto !important;
         width: 100% !important;
         max-width: 500px !important;
@@ -1122,8 +1129,8 @@ FEATURES WITH IMAGE - Responsive
         gap: 1.5rem !important;
         padding: 0 0.5rem;
     }
-    
-    .features-flex-container > div:last-child {
+
+    .features-flex-container>div:last-child {
         max-width: 100% !important;
     }
 }
@@ -1412,10 +1419,12 @@ SDG FLIPPING IMAGES - Right Side
         transform: rotateY(0deg) scale(1);
         opacity: 1;
     }
+
     50% {
         transform: rotateY(180deg) scale(0.8);
         opacity: 0.5;
     }
+
     100% {
         transform: rotateY(360deg) scale(1);
         opacity: 1;
@@ -1514,30 +1523,30 @@ SDG HOME IMAGE - Left Side (if using image instead of text)
         grid-template-columns: repeat(4, 1fr);
         gap: 0.25rem;
     }
-    
+
     .sdg-text-container {
         padding: 1rem;
         min-height: 200px;
     }
-    
+
     .sdg-card-container {
         min-height: 200px;
     }
-    
+
     .sdg-image-container {
         min-height: 200px;
         padding: 1rem;
     }
-    
+
     .sdg-text-description {
         font-size: 0.75rem;
         line-height: 1.6;
     }
-    
+
     .sdg-view-more-wrapper {
         margin-top: 0.75rem;
     }
-    
+
     .sdg-view-more-btn {
         padding: 0.875rem 2.5rem;
         font-size: 0.9375rem;
@@ -1549,36 +1558,36 @@ SDG HOME IMAGE - Left Side (if using image instead of text)
         grid-template-columns: repeat(3, 1fr);
         gap: 0.2rem;
     }
-    
+
     .sdg-text-container {
         padding: 0.75rem;
         min-height: 180px;
     }
-    
+
     .sdg-card-container {
         min-height: 180px;
     }
-    
+
     .sdg-image-container {
         min-height: 180px;
         padding: 0.75rem;
     }
-    
+
     .sdg-text-description {
         font-size: 0.7rem;
         line-height: 1.5;
     }
-    
+
     .sdg-view-more-wrapper {
         margin-top: 0.5rem;
     }
-    
+
     .sdg-view-more-btn {
         padding: 0.4rem 1rem;
         font-size: 0.75rem;
         border-radius: 0;
     }
-    
+
     .sdg-view-more-icon {
         width: 0.875rem;
         height: 0.875rem;

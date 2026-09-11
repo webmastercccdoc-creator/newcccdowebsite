@@ -268,9 +268,9 @@ export default function Home({ newsArticles = [], promotions = [] }) {
     // Filter articles based on submitted search query
     const filteredArticles = useMemo(() => {
         if (!submittedSearch.trim()) return articles;
-        
+
         const query = submittedSearch.toLowerCase();
-        return articles.filter((article) => 
+        return articles.filter((article) =>
             article.title.toLowerCase().includes(query) ||
             article.excerpt.toLowerCase().includes(query) ||
             article.department.toLowerCase().includes(query) ||
@@ -332,7 +332,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
             setSlidesPerView(getSlidesPerView());
             setIsMobile(checkIsMobile());
         };
-        
+
         updateView();
         window.addEventListener('resize', updateView);
         return () => window.removeEventListener('resize', updateView);
@@ -390,14 +390,14 @@ export default function Home({ newsArticles = [], promotions = [] }) {
 
     const goToSlide = useCallback((index) => {
         if (isTransitioning || totalSlides === 0) return;
-        
+
         // Clamp the index to valid range
         const maxIndex = totalSlides * 3 - 1;
         const clampedIndex = Math.max(0, Math.min(index, maxIndex));
-        
+
         setIsTransitioning(true);
         setCurrentIndex(clampedIndex);
-        
+
         // Reset transition state after animation completes
         setTimeout(() => {
             if (isMounted.current) {
@@ -408,7 +408,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
 
     const goToNextSlide = useCallback(() => {
         if (isTransitioning || totalSlides === 0 || showVideo) return;
-        
+
         // On mobile: no infinite scroll, stop at the end
         if (isMobile) {
             const visibleIndex = getCurrentSlideIndex();
@@ -416,10 +416,10 @@ export default function Home({ newsArticles = [], promotions = [] }) {
             goToSlide(currentIndex + 1);
             return;
         }
-        
+
         // Desktop: infinite scroll
         let nextIndex = currentIndex + 1;
-        
+
         // If we're at the end of the slides, wrap around to the middle set
         if (nextIndex >= totalSlides * 2) {
             // Jump to the first slide of the middle set
@@ -432,13 +432,13 @@ export default function Home({ newsArticles = [], promotions = [] }) {
             }, 50);
             return;
         }
-        
+
         goToSlide(nextIndex);
     }, [currentIndex, isTransitioning, goToSlide, totalSlides, showVideo, isMobile, articles.length]);
 
     const goToPrevSlide = useCallback(() => {
         if (isTransitioning || totalSlides === 0 || showVideo) return;
-        
+
         // On mobile: no infinite scroll, stop at the beginning
         if (isMobile) {
             const visibleIndex = getCurrentSlideIndex();
@@ -446,10 +446,10 @@ export default function Home({ newsArticles = [], promotions = [] }) {
             goToSlide(currentIndex - 1);
             return;
         }
-        
+
         // Desktop: infinite scroll
         let prevIndex = currentIndex - 1;
-        
+
         // If we're at the beginning, wrap around to the end of the middle set
         if (prevIndex < totalSlides) {
             // Jump to the last slide of the middle set
@@ -462,7 +462,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
             }, 50);
             return;
         }
-        
+
         goToSlide(prevIndex);
     }, [currentIndex, isTransitioning, goToSlide, totalSlides, showVideo, isMobile, articles.length]);
 
@@ -472,7 +472,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
 
         const handleTransitionEnd = () => {
             if (!isMounted.current) return;
-            
+
             // If we've scrolled past the second set (end of middle set)
             if (currentIndex >= totalSlides * 2) {
                 setIsTransitioning(true);
@@ -483,7 +483,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                         setIsTransitioning(false);
                     }
                 }, 50);
-            } 
+            }
             // If we've scrolled before the first set (beginning)
             else if (currentIndex < totalSlides) {
                 setIsTransitioning(true);
@@ -780,6 +780,105 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                 </div>
             </section>
 
+            {/* --- OUR STORY / NURTURING DREAMS SECTION --- */}
+            <section
+                style={{
+                    width: '100%',
+                    padding: '4rem 1.5rem',
+                    background: 'linear-gradient(180deg, #ffffff 0%, #f7faf8 100%)',
+                    boxSizing: 'border-box',
+                }}
+            >
+                <motion.div
+                    className="reveal-on-scroll home-content-reveal"
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, amount: 0.2 }}
+                    variants={revealVariant}
+                    transition={{ duration: 0.6, ease: 'easeOut' }}
+                    style={{
+                        maxWidth: '760px',
+                        margin: '0 auto',
+                        textAlign: 'center',
+                    }}
+                >
+                    <span className="features-eyebrow" style={{ display: 'block', textAlign: 'center' }}>
+                        Our Story
+                    </span>
+
+                    <h2
+                        style={{
+                            fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
+                            fontWeight: 800,
+                            color: '#111827',
+                            lineHeight: 1.25,
+                            marginTop: '0.75rem',
+                            textAlign: 'center',
+                        }}
+                    >
+                        Nurturing Dreams for Every{' '}
+                        <span style={{ color: '#0f5132', position: 'relative', display: 'inline-block' }}>
+                            Kagay-anon
+                            <span
+                                style={{
+                                    content: '""',
+                                    position: 'absolute',
+                                    left: 0,
+                                    right: 0,
+                                    bottom: '-2px',
+                                    height: '4px',
+                                    background: '#fbbf24',
+                                    borderRadius: '2px',
+                                    opacity: 0.85,
+                                }}
+                            />
+                        </span>
+                    </h2>
+
+                    <div
+                        className="features-underline"
+                        aria-hidden="true"
+                        style={{ margin: '1rem auto 0' }}
+                    ></div>
+
+                    <p
+                        style={{
+                            fontSize: '1.0625rem',
+                            color: '#4b5563',
+                            lineHeight: 1.75,
+                            marginTop: '1.25rem',
+                            maxWidth: '680px',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                            textAlign: 'center',
+                        }}
+                    >
+                        By virtue of City Ordinance No. 14564, City College of Cagayan de Oro was
+                        established in 2023, expanding the institution's mandate and services from
+                        its predecessor, the Cagayan de Oro Technical-Vocational Institute (CDO-TVI),
+                        to provide both higher education and technical-vocational training
+                        opportunities to the community.
+                    </p>
+
+                    <p
+                        style={{
+                            fontSize: '1.0625rem',
+                            color: '#4b5563',
+                            lineHeight: 1.75,
+                            marginTop: '1rem',
+                            maxWidth: '680px',
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                            textAlign: 'center',
+                        }}
+                    >
+                        Today, City College of CDO has grown into a world-ranked local college,
+                        reflecting its continuing commitment to providing quality, accessible, and
+                        transformative education for the people of Cagayan de Oro.
+                    </p>
+                </motion.div>
+            </section>
+
             {/* --- WHY CHOOSE CITY COLLEGE OF CDO --- */}
             <section className="features-section">
                 <div className="features-container">
@@ -814,7 +913,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                                 City College of CDO provides quality education through relevant programs and dedicated instruction. Students gain practical experience, leadership opportunities, and a strong appreciation for culture and excellence while developing the skills to serve their community and build meaningful careers.
                             </motion.p>
                         </div>
-                        
+
                         <motion.div
                             className="features-image-container reveal-on-scroll home-content-reveal reveal-from-right"
                             initial={{ opacity: 0, x: 40 }}
@@ -822,9 +921,9 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                             viewport={{ once: true, amount: 0.2 }}
                             transition={{ duration: 0.7, ease: 'easeOut', delay: 0.15 }}
                         >
-                            <img 
-                                src={studentsImage} 
-                                alt="City College of CDO Students" 
+                            <img
+                                src={studentsImage}
+                                alt="City College of CDO Students"
                                 className="features-image"
                                 loading="lazy"
                             />
@@ -879,7 +978,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                         <>
                             {/* 3D Coverflow Carousel */}
                             <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-                                <ArticlesCoverflow 
+                                <ArticlesCoverflow
                                     articles={filteredArticles}
                                     cardWidth={280}
                                     cardHeight={420}
@@ -924,9 +1023,9 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     <div className="new-features-grid">
                         {/* Container 1 - SDG Image */}
                         <div className="sdg-image-container reveal-on-scroll home-content-reveal">
-                            <img 
-                                src={sdgHomeImage} 
-                                alt="City College of CDO Sustainable Development Goals" 
+                            <img
+                                src={sdgHomeImage}
+                                alt="City College of CDO Sustainable Development Goals"
                                 className="sdg-home-image"
                                 loading="lazy"
                             />
@@ -939,11 +1038,11 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                                     {SDG_IMAGES.map((item, index) => {
                                         const isAutoFlipped = autoFlippedIndices[index];
                                         const isHovered = activeHoverIndex === index;
-                                        
-                                        const currentSrc = isHovered && item.hoverImg 
-                                            ? item.hoverImg 
-                                            : isAutoFlipped && item.hoverImg 
-                                            ? item.hoverImg 
+
+                                        const currentSrc = isHovered && item.hoverImg
+                                            ? item.hoverImg
+                                            : isAutoFlipped && item.hoverImg
+                                            ? item.hoverImg
                                             : item.defaultImg;
 
                                         return (

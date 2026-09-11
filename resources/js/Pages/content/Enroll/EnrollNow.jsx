@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import MainLayout from '../../../layouts/MainLayout';
 import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
 // Fix: Use ../../../ to go up to resources/js folder
@@ -9,9 +9,11 @@ import casLogo from '../../../assets/logos/cas-logo.png';
 import coeLogo from '../../../assets/logos/coe-logo.png';
 
 export default function EnrollNow() {
+    const [showClosedModal, setShowClosedModal] = useState(false);
+
     useEffect(() => {
         document.title = "Enroll Now - City College of Cagayan de Oro";
-        
+
         // Reset any zoom-in animations when component mounts or user navigates back
         const resetCards = () => {
             const cards = document.querySelectorAll('.card-content');
@@ -38,11 +40,21 @@ export default function EnrollNow() {
         };
     }, []);
 
+    // Close modal on Escape key
+    useEffect(() => {
+        if (!showClosedModal) return;
+        const handleEsc = (e) => {
+            if (e.key === 'Escape') setShowClosedModal(false);
+        };
+        window.addEventListener('keydown', handleEsc);
+        return () => window.removeEventListener('keydown', handleEsc);
+    }, [showClosedModal]);
+
     // Animation variants
     const fadeInUp = {
         hidden: { opacity: 0, y: 60 },
-        visible: { 
-            opacity: 1, 
+        visible: {
+            opacity: 1,
             y: 0,
             transition: { duration: 0.6, ease: "easeOut" }
         }
@@ -50,25 +62,17 @@ export default function EnrollNow() {
 
     const fadeInScale = {
         hidden: { opacity: 0, scale: 0.9 },
-        visible: { 
-            opacity: 1, 
+        visible: {
+            opacity: 1,
             scale: 1,
             transition: { duration: 0.5, ease: "easeOut" }
         }
     };
 
-    // Navigation handlers with zoom-in animation
+    // CCAT card now shows an "Admissions Closed" modal instead of navigating
     const handleCCATClick = (e) => {
         e.preventDefault();
-        const card = e.currentTarget.querySelector('.card-content');
-        if (card) {
-            card.classList.add('zoom-in');
-            card.style.pointerEvents = 'none';
-        }
-        
-        setTimeout(() => {
-            window.location.href = '/enroll/ccat';
-        }, 800);
+        setShowClosedModal(true);
     };
 
     const handleTSTIClick = (e) => {
@@ -78,7 +82,7 @@ export default function EnrollNow() {
             card.classList.add('zoom-in');
             card.style.pointerEvents = 'none';
         }
-        
+
         setTimeout(() => {
             // Open Google Form in new tab for TSTI
             window.open('https://docs.google.com/forms/d/e/1FAIpQLSecF1XomDxZbi0IRvkD10ooljU0h9VSgTh2jWw6N-IyP6vP2Q/viewform', '_blank');
@@ -93,14 +97,14 @@ export default function EnrollNow() {
     };
 
     return (
-        <MainLayout 
-            maxWidth="full" 
-            containerClassName="px-0" 
-            mainClassName="py-0" 
+        <MainLayout
+            maxWidth="full"
+            containerClassName="px-0"
+            mainClassName="py-0"
             className="overflow-hidden pb-0"
         >
             {/* Hero Banner */}
-            <div 
+            <div
                 className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[300px] md:min-h-[400px] lg:min-h-[450px] flex items-center justify-center"
                 style={{
                     backgroundImage: `url('/images/enroll-banner.jpg')`
@@ -108,9 +112,9 @@ export default function EnrollNow() {
             >
                 <div className="absolute inset-0 bg-black/50"></div>
                 <div className="relative z-10 w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-10 text-center">
-                    <AnimatedBannerText 
-                        title="Enroll Now" 
-                        description="Start Your Journey at City College of Cagayan de Oro" 
+                    <AnimatedBannerText
+                        title="Enroll Now"
+                        description="Start Your Journey at City College of Cagayan de Oro"
                     />
                 </div>
             </div>
@@ -139,7 +143,7 @@ export default function EnrollNow() {
 
                     {/* Two Cards Grid */}
                     <div className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto">
-                        
+
                         {/* CCAT Card - College Programs */}
                         <motion.div
                             onClick={handleCCATClick}
@@ -162,23 +166,23 @@ export default function EnrollNow() {
                                 {/* College Logos */}
                                 <div className="absolute -top-[45px] left-1/2 transform -translate-x-1/2 z-10 flex items-center justify-center gap-4">
                                     <div className="w-[90px] h-[90px] rounded-full bg-white shadow-lg border-2 border-[#059669] p-1.5 flex items-center justify-center overflow-visible">
-                                        <img 
-                                            src={cbmLogo} 
-                                            alt="CBM Logo" 
+                                        <img
+                                            src={cbmLogo}
+                                            alt="CBM Logo"
                                             className="w-full h-full object-contain"
                                         />
                                     </div>
                                     <div className="w-[90px] h-[90px] rounded-full bg-white shadow-lg border-2 border-[#059669] p-1.5 flex items-center justify-center overflow-visible">
-                                        <img 
-                                            src={casLogo} 
-                                            alt="CAS Logo" 
+                                        <img
+                                            src={casLogo}
+                                            alt="CAS Logo"
                                             className="w-full h-full object-contain"
                                         />
                                     </div>
                                     <div className="w-[90px] h-[90px] rounded-full bg-white shadow-lg border-2 border-[#059669] p-1.5 flex items-center justify-center overflow-visible">
-                                        <img 
-                                            src={coeLogo} 
-                                            alt="COE Logo" 
+                                        <img
+                                            src={coeLogo}
+                                            alt="COE Logo"
                                             className="w-full h-full object-contain"
                                         />
                                     </div>
@@ -200,7 +204,7 @@ export default function EnrollNow() {
                                     <p className="text-gray-600 text-sm mb-4 flex-shrink-0">
                                         Earn a bachelor's degree through free quality education at City College of Cagayan de Oro (CCCDO). Our college programs are designed to prepare students for professional careers and lifelong learning.
                                     </p>
-                                    
+
                                     <div className="space-y-2 mb-4 flex-1">
                                         <div className="flex items-start text-sm text-gray-700">
                                             <svg className="w-4 h-4 text-[#059669] mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -270,9 +274,9 @@ export default function EnrollNow() {
                                 {/* TSTI Logo */}
                                 <div className="absolute -top-[45px] left-1/2 transform -translate-x-1/2 z-10">
                                     <div className="w-[90px] h-[90px] rounded-full bg-white shadow-lg border-2 border-[#1a365d] p-1.5 flex items-center justify-center overflow-visible">
-                                        <img 
-                                            src={tstiLogo} 
-                                            alt="TSTI Logo" 
+                                        <img
+                                            src={tstiLogo}
+                                            alt="TSTI Logo"
                                             className="w-full h-full object-contain"
                                         />
                                     </div>
@@ -294,7 +298,7 @@ export default function EnrollNow() {
                                     <p className="text-gray-600 text-sm mb-4 flex-shrink-0">
                                         Gain industry-ready technical skills through our TESDA-accredited programs. The Technical Skills &amp; Technology Institute offers hands-on training designed for immediate employment and entrepreneurship opportunities.
                                     </p>
-                                    
+
                                     <div className="space-y-2 mb-4 flex-1">
                                         <div className="flex items-start text-sm text-gray-700">
                                             <svg className="w-4 h-4 text-[#1a365d] mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -359,7 +363,7 @@ export default function EnrollNow() {
                                 Need Help Choosing?
                             </h3>
                             <p className="text-gray-600 text-sm leading-relaxed">
-                                Both programs offer quality education and pathways to success. 
+                                Both programs offer quality education and pathways to success.
                                 <br />
                                 <strong>Choose CCAT</strong> if you want to earn a bachelor's degree and pursue a professional career.
                                 <br />
@@ -382,6 +386,80 @@ export default function EnrollNow() {
                     </motion.div>
                 </div>
             </div>
+
+            {/* Admissions Closed Modal */}
+            <AnimatePresence>
+                {showClosedModal && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="fixed inset-0 bg-black/60 flex items-center justify-center z-[999] px-4"
+                        onClick={() => setShowClosedModal(false)}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            transition={{ duration: 0.25, ease: "easeOut" }}
+                            className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl relative"
+                            onClick={(e) => e.stopPropagation()}
+                            role="dialog"
+                            aria-modal="true"
+                            aria-labelledby="closed-modal-title"
+                        >
+                            {/* Close (X) button */}
+                            <button
+                                onClick={() => setShowClosedModal(false)}
+                                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+                                aria-label="Close"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+
+                            {/* Icon */}
+                            <div className="flex justify-center mb-4">
+                                <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center">
+                                    <svg className="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <h3
+                                id="closed-modal-title"
+                                className="text-xl font-bold text-center text-[#262525] mb-2"
+                                style={{ fontFamily: '"Bricolage", "Inter", sans-serif' }}
+                            >
+                                Admissions Currently Closed
+                            </h3>
+                            <p className="text-gray-600 text-sm text-center leading-relaxed">
+                                Thank you for your interest in our College Programs. Applications for this intake period is closed. Please check back soon or follow our official Facebook page for updates on the next enrollment schedule.
+                            </p>
+
+                            <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                                <a
+                                    href="https://www.facebook.com/orocitycollegeofficial"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex-1 text-center bg-gray-100 text-gray-700 font-semibold py-3 rounded-full hover:bg-gray-200 transition-colors text-sm"
+                                >
+                                    Visit Facebook Page
+                                </a>
+                                <button
+                                    onClick={() => setShowClosedModal(false)}
+                                    className="flex-1 bg-[#059669] text-white font-semibold py-3 rounded-full hover:bg-[#047857] transition-colors text-sm"
+                                >
+                                    Got it
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* CSS for zoom-in animation */}
             <style jsx>{`

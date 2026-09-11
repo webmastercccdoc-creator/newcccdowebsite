@@ -269,7 +269,6 @@ export default function CollegeBusinessManagement() {
 
     const programs = [
         {
-            num: "01",
             name: "Entrepreneurship",
             degree: "Bachelor of Science",
             desc: "Designed to develop innovative, opportunity-driven individuals capable of creating, managing, and growing sustainable business ventures. Emphasizes entrepreneurial mindset development, business planning, marketing, financial management, innovation, and strategic decision-making.",
@@ -277,7 +276,6 @@ export default function CollegeBusinessManagement() {
             careers: ["Startup Founder", "Business Consultant", "Intrapreneur", "Product Manager"]
         },
         {
-            num: "02",
             name: "Office Administration",
             degree: "Bachelor of Science",
             desc: "A four-year degree program that develops highly competent administrative professionals equipped with strong organizational, communication, and managerial skills. Focuses on office management, records management, business correspondence, IT, customer relations, and workplace ethics.",
@@ -645,13 +643,16 @@ export default function CollegeBusinessManagement() {
 
                 {/* === CURRICULUM === */}
                 <section
-                    className="relative py-24 md:py-32 overflow-hidden bg-cover bg-no-repeat"
+                    className="relative pt-24 pb-12 md:pt-32 md:pb-16 overflow-hidden bg-cover bg-no-repeat"
                     style={{ 
                         backgroundImage: `url(${acad_bg})`, 
                         backgroundColor: PANEL, 
                         borderTop: `1px solid ${HAIRLINE}`, 
                         borderBottom: `1px solid ${HAIRLINE}`,
-                        backgroundPosition: 'center 1%',
+                        backgroundPosition: 'center top',
+                        backgroundSize: '100% auto',
+                        backgroundAttachment: 'scroll',
+                        backgroundRepeat: 'no-repeat',
                     }}
                 >
                     <div className="relative max-w-7xl mx-auto px-6 z-10">
@@ -676,11 +677,8 @@ export default function CollegeBusinessManagement() {
                                         }`}
                                     >
                                         <div className="flex items-center gap-6 relative z-10">
-                                            <span className={`text-4xl font-bold vp-serif ${activeProg === idx ? 'text-amber-400' : 'text-slate-300'}`}>
-                                                {prog.num}
-                                            </span>
                                             <div>
-                                                <p className={`text-xs font-bold uppercase tracking-wider mb-1 ${activeProg === idx ? 'text-emerald-100' : 'text-amber-500'}`}>
+                                                <p className={`text-xs font-bold uppercase tracking-wider mb-1 ${activeProg === idx ? 'text-white/80' : 'text-amber-500'}`}>
                                                     {prog.degree}
                                                 </p>
                                                 <h3 className="text-xl font-bold vp-serif">
@@ -708,10 +706,6 @@ export default function CollegeBusinessManagement() {
                                         transition={{ duration: 0.5, ease: "easeInOut" }}
                                         className="relative p-8 md:p-10 bg-white rounded-[2rem] border border-emerald-100 shadow-2xl shadow-emerald-500/10 overflow-hidden"
                                     >
-                                        <span className="absolute -top-10 -right-10 text-[12rem] font-bold vp-serif text-emerald-50 select-none pointer-events-none">
-                                            {programs[activeProg].num}
-                                        </span>
-                                        
                                         <div className="relative z-10">
                                             <p className="text-sm text-amber-500 font-bold uppercase tracking-wider mb-2">Program Overview</p>
                                             <h3 className="text-2xl md:text-3xl font-bold vp-serif text-slate-900 mb-6">
@@ -725,7 +719,7 @@ export default function CollegeBusinessManagement() {
                                                 <p className="text-xs uppercase tracking-wider text-slate-400 mb-3 font-semibold">Curriculum Focus</p>
                                                 <div className="flex flex-wrap gap-2">
                                                     {programs[activeProg].tags.map(tag => (
-                                                        <span key={tag} className="px-3 py-1.5 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-full text-xs font-medium">
+                                                        <span key={tag} className="px-3 py-1.5 bg-white border border-[#086618]/30 text-[#086618] rounded-full text-xs font-medium">
                                                             {tag}
                                                         </span>
                                                     ))}
@@ -753,47 +747,10 @@ export default function CollegeBusinessManagement() {
                     </div>
                 </section>
 
-                {/* === CORE VALUES === */}
-                <section className="relative max-w-7xl mx-auto px-6 py-24 md:py-32">
-                    <div className="text-center mb-16">
-                        <Kicker textClass="text-amber-600" ruleClass="bg-amber-600" align="center">Guiding Principles</Kicker>
-                        <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif">
-                            <MaskedText text="Core Values" />
-                        </h2>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-                        {coreValues.map((val, idx) => (
-                            <motion.div 
-                                key={idx}
-                                initial={{ opacity: 0, y: 40 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: idx * 0.1, duration: 0.6 }}
-                                whileHover={{ y: -8, transition: { duration: 0.2 } }}
-                                className="relative p-8 rounded-2xl bg-white border border-slate-100 shadow-md flex flex-col items-center text-center overflow-hidden group cursor-default min-h-[280px]"
-                            >
-                                <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-[3rem] group-hover:bg-emerald-100 transition-colors duration-500"></div>
-                                
-                                <div className="relative z-10 flex flex-col items-center">
-                                    <div className="w-14 h-14 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 mb-6 group-hover:scale-110 transition-transform duration-300">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d={val.icon} />
-                                        </svg>
-                                    </div>
-                                    <h3 className="text-lg font-bold vp-serif text-slate-800 mb-3">{val.title}</h3>
-                                    <div className="h-px w-8 bg-amber-400 mb-4"></div>
-                                    <p className="text-xs text-slate-500 leading-relaxed">{val.desc}</p>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </section>
-
                 {/* =================================================== */}
                 {/* === NEWS & ANNOUNCEMENTS (3D Auto-Spin Carousel) === */}
                 {/* =================================================== */}
-                <section ref={newsSectionRef} className="news-section bg-slate-900 pt-12 pb-16 overflow-hidden">
+                <section ref={newsSectionRef} className="news-section bg-slate-900 pt-6 md:pt-8 pb-16 overflow-hidden">
                     <div className="news-container max-w-7xl mx-auto px-6">
                         <div className="news-header text-center mb-12">
                             <span className="features-eyebrow text-emerald-400">Stay Informed</span>

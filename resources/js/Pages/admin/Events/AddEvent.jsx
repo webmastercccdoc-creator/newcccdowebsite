@@ -16,14 +16,7 @@ const initialForm = {
 
 // Image validation constants
 const IMAGE_CONSTRAINTS = {
-    maxWidth: 2560,
-    minWidth: 1200,
-    maxHeight: 1440,
-    minHeight: 600,
-    maxFileSize: 5 * 1024 * 1024, // 5MB
     allowedTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-    recommendedAspectRatio: 16 / 9,
-    minAspectRatio: 2 / 1,
 };
 
 export default function AddEvent({
@@ -93,65 +86,12 @@ export default function AddEvent({
             
             img.onload = () => {
                 const { width, height } = img;
-                const aspectRatio = width / height;
-                const aspectRatioStr = aspectRatio.toFixed(2);
-                
                 const validation = {
                     isValid: true,
                     errors: [],
                     warnings: [],
                     dimensions: { width, height },
-                    aspectRatio: aspectRatioStr,
                 };
-
-                if (width < IMAGE_CONSTRAINTS.minWidth) {
-                    validation.isValid = false;
-                    validation.errors.push(
-                        `Image width (${width}px) is below the minimum required width of ${IMAGE_CONSTRAINTS.minWidth}px.`
-                    );
-                }
-
-                if (height < IMAGE_CONSTRAINTS.minHeight) {
-                    validation.isValid = false;
-                    validation.errors.push(
-                        `Image height (${height}px) is below the minimum required height of ${IMAGE_CONSTRAINTS.minHeight}px.`
-                    );
-                }
-
-                if (width > IMAGE_CONSTRAINTS.maxWidth) {
-                    validation.warnings.push(
-                        `Image width (${width}px) exceeds recommended maximum of ${IMAGE_CONSTRAINTS.maxWidth}px.`
-                    );
-                }
-
-                if (height > IMAGE_CONSTRAINTS.maxHeight) {
-                    validation.warnings.push(
-                        `Image height (${height}px) exceeds recommended maximum of ${IMAGE_CONSTRAINTS.maxHeight}px.`
-                    );
-                }
-
-                const minRatio = IMAGE_CONSTRAINTS.minAspectRatio;
-                const recommendedRatio = IMAGE_CONSTRAINTS.recommendedAspectRatio;
-                
-                if (aspectRatio < minRatio) {
-                    validation.isValid = false;
-                    validation.errors.push(
-                        `Image is too tall (${aspectRatioStr}:1). Recommended aspect ratio is ${recommendedRatio}:1 or wider (minimum ${minRatio}:1).`
-                    );
-                }
-
-                if (aspectRatio < recommendedRatio) {
-                    validation.warnings.push(
-                        `For best display, we recommend an aspect ratio of ${recommendedRatio}:1 or wider (current: ${aspectRatioStr}:1).`
-                    );
-                }
-
-                if (file.size > IMAGE_CONSTRAINTS.maxFileSize) {
-                    validation.isValid = false;
-                    validation.errors.push(
-                        `File size (${(file.size / (1024 * 1024)).toFixed(1)}MB) exceeds maximum of ${IMAGE_CONSTRAINTS.maxFileSize / (1024 * 1024)}MB.`
-                    );
-                }
 
                 setImageValidation(validation);
                 URL.revokeObjectURL(objectUrl);
@@ -164,7 +104,6 @@ export default function AddEvent({
                     errors: ['Failed to load image. Please try a different file.'],
                     warnings: [],
                     dimensions: null,
-                    aspectRatio: null,
                 });
                 URL.revokeObjectURL(objectUrl);
                 resolve(null);
@@ -181,10 +120,6 @@ export default function AddEvent({
         const basicErrors = [];
         if (!IMAGE_CONSTRAINTS.allowedTypes.includes(file.type)) {
             basicErrors.push('Please upload a valid image file (JPEG, PNG, GIF, or WEBP)');
-        }
-
-        if (file.size > IMAGE_CONSTRAINTS.maxFileSize) {
-            basicErrors.push(`Image size must be less than ${IMAGE_CONSTRAINTS.maxFileSize / (1024 * 1024)}MB`);
         }
 
         if (basicErrors.length > 0) {
@@ -325,15 +260,7 @@ export default function AddEvent({
             <div className="mt-2 space-y-1">
                 {imageValidation.dimensions && (
                     <p className="text-xs text-gray-500">
-                        Dimensions: {imageValidation.dimensions.width} × {imageValidation.dimensions.height}px 
-                        (Aspect Ratio: {imageValidation.aspectRatio}:1)
-                        {imageValidation.aspectRatio >= IMAGE_CONSTRAINTS.recommendedAspectRatio.toFixed(2) ? (
-                            <span className="ml-2 text-emerald-600">✓ Optimal</span>
-                        ) : imageValidation.aspectRatio >= IMAGE_CONSTRAINTS.minAspectRatio ? (
-                            <span className="ml-2 text-yellow-600">⚠ Acceptable</span>
-                        ) : (
-                            <span className="ml-2 text-red-600">✗ Too tall</span>
-                        )}
+                        Dimensions: {imageValidation.dimensions.width} × {imageValidation.dimensions.height}px
                     </p>
                 )}
                 {imageValidation.warnings.length > 0 && (
@@ -343,9 +270,8 @@ export default function AddEvent({
                         ))}
                     </div>
                 )}
-                <p className="text-xs text-red-600 font-medium">
-                    ⚠ Requirements: Minimum {IMAGE_CONSTRAINTS.minWidth}×{IMAGE_CONSTRAINTS.minHeight}px, 
-                    16:9 aspect ratio recommended, max {IMAGE_CONSTRAINTS.maxFileSize / (1024 * 1024)}MB
+                <p className="text-xs text-gray-500">
+                    Image dimensions and file size are unrestricted.
                 </p>
             </div>
         );
@@ -477,8 +403,8 @@ export default function AddEvent({
                                     <p className="mb-2 text-sm text-gray-500">
                                         <span className="font-semibold">Click to upload</span> or drag and drop
                                     </p>
-                                    <p className="text-xs text-red-600 font-medium">
-                                        ⚠ Required: {IMAGE_CONSTRAINTS.minWidth}×{IMAGE_CONSTRAINTS.minHeight}px min, 16:9 ratio, {IMAGE_CONSTRAINTS.maxFileSize / (1024 * 1024)}MB max
+                                    <p className="text-xs text-gray-500">
+                                        Any image dimensions and file size accepted
                                     </p>
                                 </div>
                                 <input

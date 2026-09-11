@@ -36,6 +36,9 @@ export default function ViewEvents() {
     useEffect(() => {
         if (id) {
             fetchEvent();
+        } else {
+            setLoading(false);
+            setError('Event could not be found.');
         }
     }, [id]);
 
@@ -64,6 +67,7 @@ export default function ViewEvents() {
 
     const handleRegistration = async (e) => {
         e.preventDefault();
+        if (!id) return;
         setIsSubmitting(true);
         
         const participantData = {

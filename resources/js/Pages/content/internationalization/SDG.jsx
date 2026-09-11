@@ -90,7 +90,12 @@ export default function SDG() {
         return () => clearInterval(intervalId);
     }, []);
 
-    return <ExtensionComingSoon />;
+    return (
+        <ExtensionComingSoon
+            title="Sustainable Development Goals"
+            description="Advancing sustainable development and global responsibility through education, action, and community impact."
+        />
+    );
 
     return (
         <MainLayout 

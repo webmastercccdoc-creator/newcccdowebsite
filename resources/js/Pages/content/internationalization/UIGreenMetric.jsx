@@ -9,7 +9,13 @@ export default function UIGreenMetric() {
         document.title = "UI GreenMetric - City College of Cagayan de Oro";
     }, []);
 
-    return <ExtensionComingSoon />;
+    return (
+        <ExtensionComingSoon
+            title="UI GreenMetric"
+            description="Committed to sustainability and environmental excellence in higher education."
+            bannerImage={uigreenImg}
+        />
+    );
 
     return (
         <MainLayout 

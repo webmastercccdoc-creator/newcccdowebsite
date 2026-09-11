@@ -90,6 +90,8 @@ export default function UpcomingEvents() {
 
     // Filter events based on status and search query
     const filteredEvents = events.filter((event) => {
+        if (!event?.id) return false;
+
         // For "upcoming" tab: show ONLY upcoming events
         if (filter === "upcoming") {
             if (event.status !== "upcoming") return false;
@@ -482,7 +484,7 @@ export default function UpcomingEvents() {
                                                     </div>
 
                                                     {/* Action Button - Using Inertia Link */}
-                                                    {buttonInfo.link ? (
+                                                    {buttonInfo.link && event.id ? (
                                                         <Link
                                                             href={`/events/${event.id}`}
                                                             className={`w-full py-3 text-sm font-bold rounded-xl transition-all duration-300 mt-auto text-center block ${buttonInfo.className}`}

@@ -186,7 +186,7 @@ class EventsController extends Controller
             'time' => 'nullable|date_format:H:i',
             'status' => 'nullable|in:active,upcoming,completed,cancelled',
             'department' => 'nullable|string|max:255',
-            'banner_image' => 'nullable|image|mimes:jpeg,png,webp|max:5120',
+            'banner_image' => 'nullable|image|mimes:jpeg,png,webp',
             'image_alt_text' => 'nullable|string|max:255',
         ]);
 
@@ -248,7 +248,7 @@ class EventsController extends Controller
             'time' => 'nullable|date_format:H:i',
             'status' => 'nullable|in:active,upcoming,completed,cancelled',
             'department' => 'nullable|string|max:255',
-            'banner_image' => 'nullable|image|mimes:jpeg,png,webp|max:5120',
+            'banner_image' => 'nullable|image|mimes:jpeg,png,webp',
             'image_alt_text' => 'nullable|string|max:255',
             'remove_banner_image' => 'nullable|boolean',
         ]);

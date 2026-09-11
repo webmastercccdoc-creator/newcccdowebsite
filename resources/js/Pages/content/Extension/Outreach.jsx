@@ -7,6 +7,9 @@ export default function Outreach() {
     }, []);
 
     return (
-        <ExtensionComingSoon />
+        <ExtensionComingSoon
+            title="Outreach and Volunteerism"
+            description="Explore volunteer opportunities and meaningful outreach programs for the community."
+        />
     );
 }

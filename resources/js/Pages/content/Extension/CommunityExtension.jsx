@@ -7,6 +7,9 @@ export default function CommunityExtension() {
     }, []);
 
     return (
-        <ExtensionComingSoon />
+        <ExtensionComingSoon
+            title="Community Extension Programs"
+            description="Discover the community outreach and extension programs of the City College of Cagayan de Oro."
+        />
     );
 }

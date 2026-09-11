@@ -39,6 +39,14 @@ Route::get('/campus-life', function () {
     return Inertia::render('content/Quicklinks/CampusLife');
 })->name('campus-life');
 
+Route::get('/campus-life', function () {
+    return Inertia::render('content/Quicklinks/CampusLife');
+})->name('campus-life');
+
+Route::get('/incident-report', function () {
+    return Inertia::render('content/Quicklinks/IncidentReport');
+})->name('incident-report');
+
 Route::get('/url-shortener', function () {
     return Inertia::render('content/Quicklinks/UrlShortener');
 })->name('url.shortener');
@@ -218,7 +226,7 @@ Route::get('/api/events/status-counts', [EventsController::class, 'getStatusCoun
 // ADMIN ROUTES (Requires Authentication)
 // ============================================
 Route::middleware(['auth'])->group(function () {
-    
+
     // ============================================
     // DASHBOARD ROUTES
     // ============================================
@@ -232,12 +240,12 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/admin/shorten-url/{id}', [UrlShortenerController::class, 'update'])->name('admin.shorten-url.update');
     Route::put('/admin/shorten-url/{id}/status', [UrlShortenerController::class, 'updateStatus'])->name('admin.shorten-url.status');
     Route::delete('/admin/shorten-url/{id}', [UrlShortenerController::class, 'destroy'])->name('admin.shorten-url.destroy');
-    
+
     // Dashboard API Endpoints
     Route::get('/api/dashboard/stats', [DashboardController::class, 'getStats']);
     Route::get('/api/dashboard/departments', [DashboardController::class, 'getAllDepartmentRankings']);
     Route::get('/api/dashboard/department/{departmentName}', [DashboardController::class, 'getDepartmentStats']);
-    
+
     // Admin Dashboard (legacy)
     Route::get('/admin', function () {
         return Inertia::render('admin/Dashboard');
@@ -248,10 +256,10 @@ Route::middleware(['auth'])->group(function () {
     // ============================================
     Route::get('/admin/articles', [ArticlesController::class, 'index'])->name('admin.articles');
     Route::get('/admin/approve-articles', [ArticlesController::class, 'approve'])->name('admin.approve-articles');
-    
+
     // SDG Suggestion Route - Now using SDGController
     Route::post('/admin/articles/suggest-sdgs', [SDGController::class, 'suggestSDGs'])->name('admin.articles.suggest-sdgs');
-    
+
     // Article CRUD Routes
     Route::post('/admin/articles', [ArticlesController::class, 'store'])->name('admin.articles.store');
     Route::get('/admin/articles/status-counts', [ArticlesController::class, 'articleStatusCounts'])->name('admin.articles.status-counts');
@@ -309,7 +317,7 @@ Route::middleware(['auth'])->group(function () {
     // USER MANAGEMENT ROUTES
     // ============================================
     Route::get('/admin/usersmanagement', [AdminController::class, 'users'])->name('admin.usersmanagement');
-    
+
     // User CRUD Operations
     Route::post('/admin/users', [AdminController::class, 'store'])->name('admin.users.store');
     Route::put('/admin/users/{id}', [AdminController::class, 'update'])->name('admin.users.update');
@@ -325,7 +333,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/admin/departments/{id}', [DepartmentController::class, 'update'])->name('admin.departments.update');
     Route::delete('/admin/departments/{id}', [DepartmentController::class, 'destroy'])->name('admin.departments.destroy');
     Route::get('/admin/departments/options', [DepartmentController::class, 'getOptions'])->name('admin.departments.options');
-    
+
     // User Roles (if needed)
     Route::get('/admin/user-roles', [AdminController::class, 'getUserRoles'])->name('admin.user-roles');
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MainLayout from '../../layouts/MainLayout';
 import AnimatedBannerText from '../../components/content/AnimatedBannerText';
+import ContactUS from '../../assets/banner/coregoals-banner.png';
 
 export default function Contact() {
     useEffect(() => {
@@ -82,7 +83,7 @@ export default function Contact() {
     // Validation function
     const validateForm = () => {
         const newErrors = {};
-        
+
         if (!formData.name.trim()) {
             newErrors.name = 'Name is required';
         }
@@ -124,7 +125,7 @@ export default function Contact() {
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         // Validate form
         if (!validateForm()) {
             return;
@@ -331,50 +332,50 @@ export default function Contact() {
     // Success message animation
     const successVariants = {
         hidden: { opacity: 0, y: -20, scale: 0.95 },
-        visible: { 
-            opacity: 1, 
-            y: 0, 
+        visible: {
+            opacity: 1,
+            y: 0,
             scale: 1,
             transition: { duration: 0.3 }
         },
-        exit: { 
-            opacity: 0, 
-            y: -20, 
+        exit: {
+            opacity: 0,
+            y: -20,
             scale: 0.95,
             transition: { duration: 0.3 }
         }
     };
 
     return (
-        <MainLayout 
-            maxWidth="full" 
-            containerClassName="px-0" 
-            mainClassName="py-0" 
+        <MainLayout
+            maxWidth="full"
+            containerClassName="px-0"
+            mainClassName="py-0"
             className="overflow-hidden pb-0"
         >
             {/* Hero Banner with Image */}
-            <motion.div 
+            <motion.div
                 className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
                 style={{
-                    backgroundImage: `url('')`
+                    backgroundImage: `url('${ContactUS}')`,
                 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8 }}
             >
                 {/* Dark Overlay for text readability */}
-                <motion.div 
+                <motion.div
                     className="absolute inset-0 bg-black/50"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
                 />
-                
+
                 <AnimatedBannerText title="Contact Us" description="The City College of Cagayan de Oro is ready to provide the right solution according to your needs." />
             </motion.div>
 
             {/* Main Content */}
-            <motion.div 
+            <motion.div
                 className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12 md:py-16"
                 variants={containerVariants}
                 initial="hidden"
@@ -383,13 +384,13 @@ export default function Contact() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Left Column - Contact Information */}
                     <motion.div variants={itemVariants}>
-                        <motion.h3 
+                        <motion.h3
                             className="text-2xl md:text-3xl font-bold text-gray-800 mb-4"
                             variants={titleVariants}
                         >
                             <span className="text-[#059669]">Get</span> in touch
                         </motion.h3>
-                        <motion.p 
+                        <motion.p
                             className="text-gray-600 mb-8"
                             variants={titleVariants}
                             transition={{ delay: 0.1 }}
@@ -399,8 +400,8 @@ export default function Contact() {
 
                         <motion.div className="space-y-4">
                             {offices.map((office, index) => (
-                                <motion.div 
-                                    key={office.id} 
+                                <motion.div
+                                    key={office.id}
                                     className="border-l-4 border-transparent hover:border-[#059669] pl-4 border-b border-gray-100 pb-4 last:border-0 last:pb-0 group cursor-pointer transition-all duration-300"
                                     custom={index}
                                     variants={officeCardVariants}
@@ -408,12 +409,12 @@ export default function Contact() {
                                     animate="visible"
                                     whileHover="hover"
                                 >
-                                    <motion.h4 
+                                    <motion.h4
                                         className="font-semibold text-green-800 text-lg mb-2 group-hover:text-[#059669] transition-colors duration-200"
                                     >
                                         {office.title}
                                     </motion.h4>
-                                    <motion.p 
+                                    <motion.p
                                         className="text-gray-600 text-sm"
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
@@ -421,7 +422,7 @@ export default function Contact() {
                                     >
                                         {office.address}
                                     </motion.p>
-                                    <motion.p 
+                                    <motion.p
                                         className="text-gray-600 text-sm mt-1"
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
@@ -429,7 +430,7 @@ export default function Contact() {
                                     >
                                         <span className="font-medium text-[#059669]">Email:</span> {office.email}
                                     </motion.p>
-                                    <motion.p 
+                                    <motion.p
                                         className="text-gray-600 text-sm"
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
@@ -444,21 +445,21 @@ export default function Contact() {
 
                     {/* Right Column - Contact Form and Map */}
                     <motion.div variants={itemVariants}>
-                        <motion.div 
+                        <motion.div
                             className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 md:p-8"
                             variants={formVariants}
-                            whileHover={{ 
+                            whileHover={{
                                 boxShadow: "0 20px 60px rgba(5, 150, 105, 0.12)",
                                 transition: { duration: 0.3 }
                             }}
                         >
-                            <motion.h3 
+                            <motion.h3
                                 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6"
                                 variants={titleVariants}
                             >
                                 Send us a <span className="text-[#059669]">message</span>
                             </motion.h3>
-                            
+
                             {/* Success Message */}
                             <AnimatePresence>
                                 {formStatus.success && (
@@ -656,15 +657,15 @@ export default function Contact() {
                         </motion.div>
 
                         {/* Google Maps - Directly Below Form */}
-                        <motion.div 
+                        <motion.div
                             className="mt-6 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 md:p-6"
                             variants={mapVariants}
-                            whileHover={{ 
+                            whileHover={{
                                 boxShadow: "0 20px 60px rgba(5, 150, 105, 0.12)",
                                 transition: { duration: 0.3 }
                             }}
                         >
-                            <motion.div 
+                            <motion.div
                                 className="w-full h-[300px] md:h-[350px] rounded-lg overflow-hidden"
                                 initial={{ scale: 0.98, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
@@ -681,7 +682,7 @@ export default function Contact() {
                                     title="City College of Cagayan de Oro Location"
                                 ></iframe>
                             </motion.div>
-                            <motion.p 
+                            <motion.p
                                 className="text-center text-gray-500 text-xs md:text-sm mt-3"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
@@ -699,7 +700,7 @@ export default function Contact() {
                 className="fixed bottom-8 right-8 z-40"
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ 
+                transition={{
                     delay: 1.5,
                     duration: 0.5,
                     ease: "easeOut",

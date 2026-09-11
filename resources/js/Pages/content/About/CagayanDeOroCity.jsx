@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import MainLayout from '../../../layouts/MainLayout';
 
 // Import the local images
-import cityhallBg from '../../../assets/images/cityhall.jpg';
+import cityhallBg from '../../../assets/banner/coregoals-banner.png';
 import spanishImg from '../../../assets/images/spanish.jpg';
 import riverImg from '../../../assets/images/river.jpg';
 import cathedralImg from '../../../assets/images/cathedral.jpg';

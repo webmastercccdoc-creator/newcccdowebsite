@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
 
+// Re-added: the original animated banner text component
+import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
+
 // 1. Import the local banner image
 import mayorBanner from '../../../assets/banner/mayor-banner.png';
 
@@ -64,38 +67,6 @@ function OrnamentDivider({ className = '' }) {
     );
 }
 
-/* ---------- RISE CDO pillar icons ---------- */
-const PILLARS = [
-    {
-        title: 'Safety & Security',
-        icon: (
-            <svg viewBox="0 0 24 24" className="w-9 h-9" fill="none" stroke="#E9BE2C" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M12 2.8 19.2 5.5v5.3c0 4.7-3.1 8.3-7.2 9.6-4.1-1.3-7.2-4.9-7.2-9.6V5.5L12 2.8z" />
-                <path d="m9.2 11.9 2 2 3.6-3.9" />
-            </svg>
-        ),
-    },
-    {
-        title: 'Human Development',
-        icon: (
-            <svg viewBox="0 0 24 24" className="w-9 h-9" fill="none" stroke="#E9BE2C" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <circle cx="12" cy="7.5" r="3.4" />
-                <path d="M5.2 20c1.5-3.6 4-5.4 6.8-5.4s5.3 1.8 6.8 5.4" />
-            </svg>
-        ),
-    },
-    {
-        title: 'Economic Recovery',
-        icon: (
-            <svg viewBox="0 0 24 24" className="w-9 h-9" fill="none" stroke="#E9BE2C" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <polyline points="3.5 17 9.5 11 13 14.5 20.5 7" />
-                <polyline points="15 7 20.5 7 20.5 12.5" />
-                <path d="M3.5 20.5h17" />
-            </svg>
-        ),
-    },
-];
-
 /* ---------- The letter (verbatim copy) ---------- */
 const LETTER_TOP = [
     `I hope this message finds you well. It is with great pride and a sense of accomplishment that I announce the establishment of the City College of Cagayan de Oro, a monumental step forward in our collective pursuit of progress and development under the RISE CDO governance platform, specifically focusing on Safety, Security, & Human Development and Economic Recovery.`,
@@ -123,7 +94,7 @@ export default function MayorMessage() {
     return (
         <MainLayout maxWidth="full" containerClassName="px-0" mainClassName="py-0" className="overflow-hidden pb-0">
 
-            {/* Typography + motion layer */}
+            {/* Typography layer */}
             <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Great+Vibes&family=Marcellus&display=swap');
 
@@ -146,118 +117,31 @@ export default function MayorMessage() {
           padding: 0.08em 0.16em 0 0;
           color: #B8912A;
         }
-
-        @keyframes kenburns {
-          from { transform: scale(1.03) translate(0, 0); }
-          to   { transform: scale(1.14) translate(-1.2%, -1%); }
-        }
-        .kb { animation: kenburns 26s ease-in-out infinite alternate; }
-
-        @keyframes cueDrop {
-          0%       { transform: translateY(-110%); }
-          65%,100% { transform: translateY(420%); }
-        }
-        .cue-bar { animation: cueDrop 2.6s cubic-bezier(0.45, 0, 0.3, 1) infinite; }
-
-        @media (prefers-reduced-motion: reduce) {
-          .kb, .cue-bar { animation: none !important; }
-        }
       `}</style>
 
-            {/* ============ CEREMONIAL HERO ============ */}
-            <section className="relative flex items-center justify-center overflow-hidden bg-[#0C3B2E] min-h-[600px] md:min-h-[680px] lg:min-h-[760px]">
-                {/* Gilded top hairline */}
-                <div className="absolute top-0 inset-x-0 z-20 h-[3px] bg-gradient-to-r from-transparent via-[#E9BE2C] to-transparent" />
+            {/* ============ HERO BANNER (original design) ============ */}
+            <div
+                className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
+                style={{
+                    backgroundImage: `url(${mayorBanner})`
+                }}
+            >
+                {/* Dark Overlay */}
+                <div className="absolute inset-0 bg-black/50"></div>
 
-                {/* Banner image with a slow, stately Ken Burns drift */}
-                <div
-                    className="kb absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: `url(${mayorBanner})` }}
+                <AnimatedBannerText
+                    title="Mayor's Message"
+                    description="A warm welcome and vision for the future of Cagayan de Oro City"
                 />
-
-                {/* Layered green scrims + vignette for depth */}
-                <div className="absolute inset-0 bg-gradient-to-b from-[#0C3B2E]/85 via-[#0C3B2E]/50 to-[#0C3B2E]" />
-                <div
-                    className="absolute inset-0"
-                    style={{ background: 'radial-gradient(ellipse at center, transparent 30%, rgba(12,59,46,0.6) 100%)' }}
-                />
-
-                {/* Inset yellow frame with brightened corners */}
-                <div className="absolute inset-4 md:inset-7 z-10 border border-[#F7DE8B]/20 pointer-events-none">
-                    <span className="absolute -top-px -left-px w-8 h-8 border-t-2 border-l-2 border-[#F7DE8B]/80" />
-                    <span className="absolute -top-px -right-px w-8 h-8 border-t-2 border-r-2 border-[#F7DE8B]/80" />
-                    <span className="absolute -bottom-px -left-px w-8 h-8 border-b-2 border-l-2 border-[#F7DE8B]/80" />
-                    <span className="absolute -bottom-px -right-px w-8 h-8 border-b-2 border-r-2 border-[#F7DE8B]/80" />
-                </div>
-
-                {/* Hero copy */}
-                <div className="relative z-10 max-w-4xl mx-auto px-6 text-center pb-20">
-                    <Reveal>
-                        <div className="flex items-center justify-center gap-4">
-                            <span className="h-px w-10 md:w-24 bg-gradient-to-r from-transparent to-[#F7DE8B]/80" />
-                            <span className="text-[10px] md:text-xs uppercase tracking-[0.45em] text-[#F7DE8B]">
-                                Office of the City Mayor
-                            </span>
-                            <span className="h-px w-10 md:w-24 bg-gradient-to-l from-transparent to-[#F7DE8B]/80" />
-                        </div>
-                    </Reveal>
-
-                    <Reveal delay={150}>
-                        <h1 className="mt-8 font-title text-4xl sm:text-6xl md:text-7xl tracking-[0.06em] leading-tight bg-gradient-to-b from-white via-[#FFF9EA] to-[#F2D370] bg-clip-text text-transparent drop-shadow-2xl">
-                            MAYOR'S MESSAGE
-                        </h1>
-                    </Reveal>
-
-                    <Reveal delay={300}>
-                        <OrnamentDivider className="mt-8" />
-                    </Reveal>
-
-                    <Reveal delay={450}>
-                        <p className="mt-8 font-display italic text-lg md:text-2xl leading-relaxed text-white/75 max-w-2xl mx-auto">
-                            A warm welcome and a vision for the future of Cagayan de Oro City
-                        </p>
-                    </Reveal>
-                </div>
-
-                {/* Scroll cue */}
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3">
-                    <span className="text-[9px] uppercase tracking-[0.5em] text-white/40">Scroll</span>
-                    <span className="relative block w-px h-12 overflow-hidden bg-white/15">
-                        <span className="cue-bar absolute inset-x-0 top-0 h-4 bg-gradient-to-b from-transparent via-[#F7DE8B] to-transparent" />
-                    </span>
-                </div>
-            </section>
-
-            {/* ============ RISE CDO PILLAR RIBBON ============ */}
-            <section className="relative bg-[#0C3B2E] border-b border-[#E9BE2C]/30">
-                <div className="max-w-6xl mx-auto px-6 pt-12 pb-20 md:pt-14 md:pb-24">
-                    <p className="text-center text-[10px] md:text-xs uppercase tracking-[0.5em] text-[#E9BE2C]/90">
-                        Under the RISE CDO Governance Platform
-                    </p>
-
-                    <div className="mt-10 grid sm:grid-cols-3 gap-10 sm:gap-0">
-                        {PILLARS.map((pillar, i) => (
-                            <Reveal key={pillar.title} delay={i * 140} className={i > 0 ? 'sm:border-l sm:border-[#E9BE2C]/20' : ''}>
-                                <div className="flex flex-col items-center text-center sm:px-8">
-                                    {pillar.icon}
-                                    <span className="mt-4 w-1.5 h-1.5 rotate-45 bg-[#E9BE2C]/70" />
-                                    <p className="mt-4 font-title text-sm md:text-base uppercase tracking-[0.25em] text-[#F7F3E8]">
-                                        {pillar.title}
-                                    </p>
-                                </div>
-                            </Reveal>
-                        ))}
-                    </div>
-                </div>
-            </section>
+            </div>
 
             {/* ============ THE LETTER ============ */}
             <section className="paper-bg">
                 <div className="max-w-5xl mx-auto px-5 sm:px-8 pb-16 md:pb-24">
 
-                    {/* ---- Letterhead (medallion straddles the green/ivory seam) ---- */}
+                    {/* ---- Letterhead (medallion straddles the banner/ivory seam) ---- */}
                     <Reveal className="relative z-10 -mt-14 md:-mt-[4.5rem] text-center">
-                        {/* Monogram medallion — swap the green disc for a portrait <img> if available */}
+                        {/* Portrait medallion */}
                         <div className="relative w-28 h-28 md:w-36 md:h-36 mx-auto">
                             <div className="absolute inset-0 rounded-full border border-[#B8912A]" />
                             <div className="absolute inset-[7px] rounded-full border border-[#B8912A]/40" />

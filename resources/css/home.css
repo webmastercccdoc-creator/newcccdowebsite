@@ -1132,17 +1132,18 @@ FEATURES WITH IMAGE - Responsive
 IMAGE CONTAINER - Mobile Responsive
 ============================================= */
 .features-image-container {
-    flex: 0 0 45%;
+    flex: 0 0 48%;
     border-radius: 1.25rem;
+    border: none;
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    box-shadow: none;
 }
 
 @media (max-width: 992px) {
     .features-image-container {
         flex: 0 0 auto !important;
         width: 100% !important;
-        max-width: 500px !important;
+        max-width: 540px !important;
         margin: 0 auto !important;
         border-radius: 1rem;
     }

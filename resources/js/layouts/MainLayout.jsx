@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import Navbar from '../components/content/Navbar';
 import Footer from '../components/content/Footer';
 
-export default function MainLayout({ 
-    title, 
-    children, 
-    className = '', 
-    showTitle = true, 
-    maxWidth = '7xl', 
+export default function MainLayout({
+    title,
+    children,
+    className = '',
+    showTitle = true,
+    maxWidth = '7xl',
     containerClassName = '',
     mainClassName = '',
     backgroundColor = 'rgba(5, 85, 20, 0.95)',
@@ -34,7 +34,7 @@ export default function MainLayout({
 
         window.addEventListener('resize', handleResize);
         window.addEventListener('scroll', handleScroll);
-        
+
         // Clean up
         return () => {
             window.removeEventListener('resize', handleResize);
@@ -57,7 +57,7 @@ export default function MainLayout({
     // Determine max width class based on screen size
     const getMaxWidthClass = () => {
         if (maxWidth === 'full') return 'max-w-full px-0';
-        
+
         const widthMap = {
             '7xl': 'max-w-7xl',
             '6xl': 'max-w-6xl',
@@ -70,14 +70,14 @@ export default function MainLayout({
             'md': 'max-w-md',
             'sm': 'max-w-sm'
         };
-        
+
         return widthMap[maxWidth] || 'max-w-7xl';
     };
 
     // Responsive padding based on screen size
     const getPaddingClass = () => {
         if (maxWidth === 'full') return 'px-0';
-        
+
         // Smaller padding on mobile, larger on desktop
         if (windowWidth < 640) {
             return 'px-3 sm:px-4';
@@ -91,7 +91,7 @@ export default function MainLayout({
     // Responsive main padding
     const getMainPaddingClass = () => {
         if (mainClassName) return mainClassName;
-        
+
         if (windowWidth < 640) {
             return 'py-3 md:py-4';
         } else if (windowWidth < 1024) {
@@ -116,8 +116,8 @@ export default function MainLayout({
         <div className="flex min-h-screen flex-col bg-gradient-to-br from-slate-50 to-slate-100 text-slate-900 transition-opacity duration-500 overflow-x-clip">
             {/* Sticky navbar stays in flow so banners start below it */}
             <Navbar />
-            
-            <main 
+
+            <main
                 className={`
                     content-main flex-1 mx-auto w-full 
                     ${getPaddingClass()}
@@ -131,12 +131,12 @@ export default function MainLayout({
                         {title}
                     </h1>
                 )}
-                
+
                 <div className={`content-page ${className} min-w-0`}>
                     {children}
                 </div>
             </main>
-            
+
             <Footer />
 
             {/* =============================================
@@ -158,17 +158,17 @@ export default function MainLayout({
                 `}
                 aria-label="Back to top"
             >
-                <svg 
-                    className="w-5 h-5 md:w-6 md:h-6" 
-                    fill="none" 
-                    stroke="currentColor" 
+                <svg
+                    className="w-5 h-5 md:w-6 md:h-6"
+                    fill="none"
+                    stroke="currentColor"
                     viewBox="0 0 24 24"
                 >
-                    <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth="2.5" 
-                        d="M5 15l7-7 7 7" 
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2.5"
+                        d="M5 15l7-7 7 7"
                     />
                 </svg>
             </button>

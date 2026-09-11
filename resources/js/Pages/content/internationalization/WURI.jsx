@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
+import ExtensionComingSoon from '../Extension/ExtensionComingSoon';
 import wuriImg from '../../../assets/banner/wuri-banner.png';
 import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
 
@@ -7,6 +8,8 @@ export default function WURI() {
     useEffect(() => {
         document.title = "WURI - City College of Cagayan de Oro";
     }, []);
+
+    return <ExtensionComingSoon />;
 
     return (
         <MainLayout 

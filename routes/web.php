@@ -131,6 +131,18 @@ Route::get('/extension/programs', function () {
     return Inertia::render('content/Extension/ExtensionPrograms');
 })->name('extension.programs');
 
+Route::get('/extension/community', function () {
+    return Inertia::render('content/Extension/CommunityExtension');
+})->name('extension.community');
+
+Route::get('/extension/outreach', function () {
+    return Inertia::render('content/Extension/Outreach');
+})->name('extension.outreach');
+
+Route::get('/extension/advocacy', function () {
+    return Inertia::render('content/Extension/Advocacy');
+})->name('extension.advocacy');
+
 Route::get('/extension/partners', function () {
     return Inertia::render('content/Extension/PartnersLinkages');
 })->name('extension.partners');

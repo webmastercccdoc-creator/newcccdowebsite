@@ -3,7 +3,7 @@ import { usePage } from "@inertiajs/react";
 import { motion } from "framer-motion";
 import MainLayout from "../../../layouts/MainLayout";
 import "../../../../css/home.css";
-import latestNewsBanner from "../../../assets/banner/latest-news.jpg";
+import latestNewsBanner from '../../../assets/banner/News Banner.png';
 import AnimatedBannerText from "../../../components/content/AnimatedBannerText";
 
 const normalizeImagePath = (value) => {
@@ -232,7 +232,7 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                             Welcome to <span className="text-green-700">City College</span> of <span className="text-green-700">Cagayan de Oro</span>
                         </h2>
                         <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                            Discover the latest news, announcements, and events happening at CC de Oro. 
+                            Discover the latest news, announcements, and events happening at CC de Oro.
                             Stay informed and connected with our vibrant academic community.
                         </p>
                         <div className="w-24 h-1 bg-gradient-to-r from-green-600 to-green-400 rounded-full mx-auto mt-4"></div>
@@ -260,17 +260,17 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                             title="Search articles"
                             aria-label="Search"
                         >
-                            <svg 
-                                className="w-5 h-5" 
-                                fill="none" 
-                                stroke="currentColor" 
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
                                 viewBox="0 0 24 24"
                                 strokeWidth="2.5"
                             >
-                                <path 
-                                    strokeLinecap="round" 
-                                    strokeLinejoin="round" 
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                                 />
                             </svg>
                         </button>
@@ -404,7 +404,7 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                                             </h3>
 
                                             {/* Content - 3 lines with ellipsis */}
-                                            <p 
+                                            <p
                                                 className="mb-4 text-sm leading-6 text-gray-600"
                                                 style={{
                                                     display: '-webkit-box',
@@ -491,11 +491,10 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                             <button
                                 onClick={goToPreviousPage}
                                 disabled={currentPage === 1}
-                                className={`px-4 py-2 rounded-lg border transition-colors ${
-                                    currentPage === 1
-                                        ? "bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200"
-                                        : "bg-white text-gray-700 hover:bg-gray-50 border-gray-300 hover:border-gray-400"
-                                }`}
+                                className={`px-4 py-2 rounded-lg border transition-colors ${currentPage === 1
+                                    ? "bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200"
+                                    : "bg-white text-gray-700 hover:bg-gray-50 border-gray-300 hover:border-gray-400"
+                                    }`}
                             >
                                 <svg
                                     className="w-5 h-5"
@@ -522,11 +521,10 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                                         <button
                                             key={number}
                                             onClick={() => paginate(number)}
-                                            className={`px-4 py-2 rounded-lg border transition-colors ${
-                                                currentPage === number
-                                                    ? "bg-green-600 text-white border-green-600 hover:bg-green-700"
-                                                    : "bg-white text-gray-700 hover:bg-gray-50 border-gray-300 hover:border-gray-400"
-                                            }`}
+                                            className={`px-4 py-2 rounded-lg border transition-colors ${currentPage === number
+                                                ? "bg-green-600 text-white border-green-600 hover:bg-green-700"
+                                                : "bg-white text-gray-700 hover:bg-gray-50 border-gray-300 hover:border-gray-400"
+                                                }`}
                                         >
                                             {number}
                                         </button>
@@ -547,11 +545,10 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                             <button
                                 onClick={goToNextPage}
                                 disabled={currentPage === totalPages}
-                                className={`px-4 py-2 rounded-lg border transition-colors ${
-                                    currentPage === totalPages
-                                        ? "bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200"
-                                        : "bg-white text-gray-700 hover:bg-gray-50 border-gray-300 hover:border-gray-400"
-                                }`}
+                                className={`px-4 py-2 rounded-lg border transition-colors ${currentPage === totalPages
+                                    ? "bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200"
+                                    : "bg-white text-gray-700 hover:bg-gray-50 border-gray-300 hover:border-gray-400"
+                                    }`}
                             >
                                 <svg
                                     className="w-5 h-5"

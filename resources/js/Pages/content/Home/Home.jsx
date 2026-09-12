@@ -181,6 +181,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [showVideo, setShowVideo] = useState(true);
     const [isFading, setIsFading] = useState(false);
+    const [videoAspectRatio, setVideoAspectRatio] = useState(null);
     const [slidesPerView, setSlidesPerView] = useState(4);
     const [isMobile, setIsMobile] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -643,18 +644,30 @@ export default function Home({ newsArticles = [], promotions = [] }) {
 
     return (
         <MainLayout title="Home" showTitle={false} maxWidth="full" containerClassName="px-0" mainClassName="py-0" className="home-page overflow-hidden pb-0">
-            <div className="landing-page w-full">
+            <div className={`landing-page w-full ${showVideo ? 'video-active' : ''}`}>
                 <div className="indicator"></div>
 
                 {/* Video Banner Overlay */}
                 {showVideo && (
-                    <div className={`video-banner-overlay ${isFading ? 'fade-out' : ''}`}>
+                    <div
+                        className={`video-banner-overlay ${isFading ? 'fade-out' : ''}`}
+                        style={videoAspectRatio ? {
+                            aspectRatio: videoAspectRatio,
+                            height: 'auto',
+                        } : undefined}
+                    >
                         <video
                             ref={videoRef}
                             className="video-banner"
                             muted
                             playsInline
                             preload="auto"
+                            onLoadedMetadata={(event) => {
+                                const { videoWidth, videoHeight } = event.currentTarget;
+                                if (videoWidth && videoHeight) {
+                                    setVideoAspectRatio(`${videoWidth} / ${videoHeight}`);
+                                }
+                            }}
                         >
                             <source src={bannerVideo} type="video/mp4" />
                         </video>
@@ -1065,7 +1078,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                             </div>
                             {/* View More Button - Updated to green */}
                             <div className="sdg-view-more-wrapper">
-                                <a href="/internationalization/sdg" className="sdg-view-more-btn">
+                                <a href="/sdg" className="sdg-view-more-btn">
                                     View More
                                     <svg className="sdg-view-more-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />

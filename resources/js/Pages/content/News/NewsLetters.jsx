@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import MainLayout from "../../../layouts/MainLayout";
-import NewsLetterBanner from "../../../assets/banner/news-letter.jpg";
+import NewsLetterBanner from '../../../assets/banner/News Banner.png'
 import ExtensionComingSoon from "../Extension/ExtensionComingSoon";
 
 export default function NewsLetters() {

@@ -495,6 +495,8 @@ const Navbar = () => {
                                         ) : (
                                             <a
                                                 href={item.href}
+                                                target={item.href.startsWith('http') ? '_blank' : undefined}
+                                                rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                                                 className={`
                                                     flex items-center justify-center rounded-xl px-3 lg:px-4 xl:px-4 
                                                     text-black transition-all duration-300 hover:bg-green-50 hover:text-black hover:shadow-lg 
@@ -597,6 +599,8 @@ const Navbar = () => {
                                     ) : (
                                         <a
                                             href={item.href}
+                                            target={item.href.startsWith('http') ? '_blank' : undefined}
+                                            rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                                             className="block rounded-lg px-4 py-3 text-base font-medium text-black transition-colors hover:bg-green-50 hover:text-black font-sans"
                                             onClick={() => setIsMobileMenuOpen(false)}
                                         >

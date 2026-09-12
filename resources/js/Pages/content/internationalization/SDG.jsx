@@ -98,10 +98,10 @@ export default function SDG() {
     );
 
     return (
-        <MainLayout 
-            maxWidth="full" 
-            containerClassName="px-0" 
-            mainClassName="py-0" 
+        <MainLayout
+            maxWidth="full"
+            containerClassName="px-0"
+            mainClassName="py-0"
             className="overflow-hidden pb-0"
         >
             <div className="relative w-full bg-white py-6 px-4 pt-[10px] md:pt-[20px] shadow-lg">
@@ -109,12 +109,12 @@ export default function SDG() {
                     {SDG_IMAGES.map((item, index) => {
                         const isAutoFlipped = autoFlippedIndices[index];
                         const isHovered = activeHoverIndex === index;
-                        
-                        const currentSrc = isHovered && item.hoverImg 
-                            ? item.hoverImg 
-                            : isAutoFlipped && item.hoverImg 
-                            ? item.hoverImg 
-                            : item.defaultImg;
+
+                        const currentSrc = isHovered && item.hoverImg
+                            ? item.hoverImg
+                            : isAutoFlipped && item.hoverImg
+                                ? item.hoverImg
+                                : item.defaultImg;
 
                         return (
                             /* 

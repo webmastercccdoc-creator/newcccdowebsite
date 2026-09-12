@@ -8,6 +8,36 @@ use Inertia\Inertia;
 
 class NewsController extends Controller
 {
+    private function normalizeArticleContent($content)
+    {
+        if (empty($content)) {
+            return '';
+        }
+
+        $trimmed = trim($content);
+        if (preg_match('/<\s*(p|br|div|ul|ol|li|h[1-6])\b/i', $trimmed)) {
+            return $trimmed;
+        }
+
+        $normalized = str_replace(["\r\n", "\r"], "\n", $trimmed);
+        $blocks = preg_split('/\n{2,}/', $normalized);
+
+        if (count($blocks) <= 1) {
+            $blocks = preg_split('/\n+/', $normalized);
+        }
+
+        $blocks = array_values(array_filter(array_map('trim', $blocks), fn ($block) => $block !== ''));
+
+        if (count($blocks) <= 1) {
+            return $trimmed;
+        }
+
+        return implode('', array_map(function ($block) {
+            $escaped = e($block);
+            return '<p>' . nl2br($escaped) . '</p>';
+        }, $blocks));
+    }
+
     public function index()
     {
         $newsArticles = DB::table('news_articles as na')
@@ -91,6 +121,8 @@ class NewsController extends Controller
             abort(404);
         }
 
+        $article->content = $this->normalizeArticleContent($article->content);
+
         // Normalize image path
         if ($article->image_path) {
             $article->image_path = '/' . ltrim($article->image_path, '/');
@@ -135,6 +167,8 @@ class NewsController extends Controller
                 'images' => [],
             ], 404);
         }
+
+        $article->content = $this->normalizeArticleContent($article->content);
 
         $images = DB::table('article_images')
             ->where('article_id', $id)

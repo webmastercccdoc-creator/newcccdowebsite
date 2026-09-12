@@ -1042,8 +1042,8 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                                         const currentSrc = isHovered && item.hoverImg
                                             ? item.hoverImg
                                             : isAutoFlipped && item.hoverImg
-                                            ? item.hoverImg
-                                            : item.defaultImg;
+                                                ? item.hoverImg
+                                                : item.defaultImg;
 
                                         return (
                                             <div
@@ -1065,7 +1065,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                             </div>
                             {/* View More Button - Updated to green */}
                             <div className="sdg-view-more-wrapper">
-                                <a href="/sdg" className="sdg-view-more-btn">
+                                <a href="/internationalization/sdg" className="sdg-view-more-btn">
                                     View More
                                     <svg className="sdg-view-more-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />

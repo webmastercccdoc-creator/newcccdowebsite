@@ -83,7 +83,7 @@ export default function AddEvent({
         return new Promise((resolve) => {
             const img = new Image();
             const objectUrl = URL.createObjectURL(file);
-            
+
             img.onload = () => {
                 const { width, height } = img;
                 const validation = {
@@ -138,7 +138,7 @@ export default function AddEvent({
         }
 
         const validation = await validateImageResolution(file);
-        
+
         if (!validation || !validation.isValid) {
             const errorMessages = validation?.errors || ['Invalid image'];
             setErrors((current) => ({
@@ -156,13 +156,13 @@ export default function AddEvent({
 
         setImageFile(file);
         setForm((current) => ({ ...current, image: file }));
-        
+
         const reader = new FileReader();
         reader.onloadend = () => {
             setPreviewImage(reader.result);
         };
         reader.readAsDataURL(file);
-        
+
         setErrors((current) => ({ ...current, image: undefined }));
     };
 
@@ -215,7 +215,7 @@ export default function AddEvent({
             formData.append('status', form.status);
             if (form.department) formData.append('department', form.department);
             formData.append('image_alt_text', form.image_alt_text || form.title);
-            
+
             if (imageFile) {
                 formData.append('banner_image', imageFile);
             }
@@ -255,7 +255,7 @@ export default function AddEvent({
 
     const renderImageValidationInfo = () => {
         if (!imageValidation) return null;
-        
+
         return (
             <div className="mt-2 space-y-1">
                 {imageValidation.dimensions && (
@@ -379,9 +379,9 @@ export default function AddEvent({
                     <div className="flex items-center justify-center w-full">
                         {previewImage ? (
                             <div className="relative w-full">
-                                <img 
-                                    src={previewImage} 
-                                    alt="Preview" 
+                                <img
+                                    src={previewImage}
+                                    alt="Preview"
                                     className="w-full h-48 object-cover rounded-lg border border-gray-200"
                                 />
                                 <button
@@ -429,7 +429,7 @@ export default function AddEvent({
                         </div>
                     )}
                     {renderImageValidationInfo()}
-                    
+
                     {previewImage && (
                         <div className="mt-2">
                             <label htmlFor="image-alt-text" className="mb-1 block text-sm font-medium text-gray-700">

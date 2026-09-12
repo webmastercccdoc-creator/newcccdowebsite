@@ -128,6 +128,23 @@ const OFFICES = [
     },
 ];
 
+/* ---- Presidential Message Content ---- */
+function Em({ children }) {
+    return <span className="text-[#E5C68A] font-medium">{children}</span>;
+}
+
+const MESSAGE_OPENING = [
+    <>City College was founded on a vision: to create meaningful opportunities for deserving Kagay-anons to pursue higher education, develop their potential, and build better futures. From this vision, the College continues to grow as an institution committed to <Em>accessible, inclusive, and transformative education</Em>.</>,
+    <>As the College moves forward, we take pride in how far we have come. From our beginnings as a young local institution, we have steadily developed into a growing center of quality education, innovation, and service. Our inclusion in the <Em>2025 and 2026 Times Higher Education Impact Ratings</Em>, where we placed in the 1001–1500 and 801–1000 global brackets, respectively, and our recognition in the <Em>World University Rankings for Innovation (WURI)</Em>, where we ranked 55th worldwide for Culture/Values and 64th for Curricular Innovation for Future-Readiness, among many other significant milestones, mark important milestones in our journey. These achievements reflect the collective efforts of our faculty, staff, students, partners, and the City Government of Cagayan de Oro, whose shared commitment continues to move the College forward.</>,
+    <>Yet, while rankings and recognitions affirm our progress, they do not define the full measure of our success. Our greatest achievement lies in the lives we touch, the opportunities we create, and the communities we serve. Every student who discovers their potential, every faculty member who inspires learning, every staff member who enables student success, and every partnership that opens new possibilities contributes to the continuing story of City College.</>,
+];
+
+const MESSAGE_CLOSING = [
+    <>Today, we remain committed to strengthening research and innovation, advancing sustainability and internationalization, expanding meaningful partnerships, and creating learning experiences that prepare our students to contribute to a changing world. We strive not only to provide access to education, but to ensure that such access leads to growth, purpose, and meaningful opportunities.</>,
+    <>The City College of Cagayan de Oro is, above all, an institution built with and for the people of Cagayan de Oro. As we continue this journey, may we remain guided by <Em>excellence, integrity, innovation, and service</Em>. May we continue building a College that is inclusive in its opportunities, ambitious in its aspirations, and responsive to the needs of the communities we serve.</>,
+    <>Welcome to the City College of Cagayan de Oro, a home for learning, a community of opportunity, and a place where education helps turn aspirations into possibilities.</>,
+];
+
 /* Premium Scroll Reveal Hook */
 function useReveal() {
     const ref = useRef(null);
@@ -162,13 +179,12 @@ function Reveal({ children, delay = 0, className = '' }) {
     return (
         <div
             ref={ref}
-            className={`transition-all ${className} ${
-                visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
-            }`}
-            style={{ 
-                transitionDelay: `${delay}ms`, 
-                transitionDuration: '1.2s', 
-                transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' 
+            className={`transition-all ${className} ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+                }`}
+            style={{
+                transitionDelay: `${delay}ms`,
+                transitionDuration: '1.2s',
+                transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
             }}
         >
             {children}
@@ -186,10 +202,87 @@ function AnimatedPanel({ children }) {
     }, []);
 
     return (
-        <div 
+        <div
             className={`transition-all duration-700 ease-out-expo ${show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
         >
             {children}
+        </div>
+    );
+}
+
+/* Gilded Divider with Center Diamond */
+function GoldDivider({ className = '' }) {
+    return (
+        <div className={`flex items-center justify-center gap-3 ${className}`} aria-hidden="true">
+            <span className="h-px w-14 sm:w-20 bg-gradient-to-r from-transparent to-[#D4AF37]/70"></span>
+            <span className="w-1.5 h-1.5 rotate-45 bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.8)]"></span>
+            <span className="h-px w-14 sm:w-20 bg-gradient-to-l from-transparent to-[#D4AF37]/70"></span>
+        </div>
+    );
+}
+
+/* Self-Drawing Gold Signature Flourish */
+function GoldFlourish({ className = '' }) {
+    const [ref, visible] = useReveal();
+    return (
+        <svg
+            ref={ref}
+            viewBox="0 0 260 30"
+            fill="none"
+            className={`block w-52 sm:w-64 h-auto ${className}`}
+            aria-hidden="true"
+        >
+            <defs>
+                <linearGradient id="vpFlourishGold" x1="0" y1="0" x2="260" y2="0" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stopColor="#A97F2E" />
+                    <stop offset="50%" stopColor="#E9CE8C" />
+                    <stop offset="100%" stopColor="#A97F2E" />
+                </linearGradient>
+            </defs>
+            <path
+                d="M6 20 C 52 6, 92 28, 132 15 C 166 4, 204 24, 254 12"
+                stroke="url(#vpFlourishGold)"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                pathLength="1"
+                strokeDasharray="1"
+                strokeDashoffset={visible ? 0 : 1}
+                style={{ transition: 'stroke-dashoffset 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s' }}
+            />
+        </svg>
+    );
+}
+
+/* Rotating Presidential Seal */
+function PresidentialSeal() {
+    return (
+        <div className="relative w-32 h-32 md:w-40 md:h-40 select-none" aria-hidden="true">
+            {/* Soft gold halo */}
+            <div
+                className="absolute inset-0 rounded-full"
+                style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.18), transparent 70%)' }}
+            ></div>
+            <svg viewBox="0 0 120 120" className="relative w-full h-full vp-spin-slow">
+                <defs>
+                    <path id="vpSealRing" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0" fill="none" />
+                </defs>
+                <circle cx="60" cy="60" r="57" fill="none" stroke="rgba(212,175,55,0.35)" strokeWidth="1" />
+                <circle cx="60" cy="60" r="34" fill="none" stroke="rgba(212,175,55,0.3)" strokeWidth="0.75" strokeDasharray="1.5 3" />
+                <text
+                    fill="#D4AF37"
+                    fontSize="5.6"
+                    fontWeight="600"
+                    letterSpacing="1.1"
+                    style={{ fontFamily: "'Inter', sans-serif" }}
+                >
+                    <textPath href="#vpSealRing">CITY COLLEGE OF CAGAYAN DE ORO ★ OFFICE OF THE COLLEGE PRESIDENT ★</textPath>
+                </text>
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-14 h-14 md:w-[4.25rem] md:h-[4.25rem] rounded-full bg-white p-1.5 shadow-lg border border-[#D4AF37]/50">
+                    <img src={ccdologo} alt="" className="w-full h-full object-contain" />
+                </div>
+            </div>
         </div>
     );
 }
@@ -201,11 +294,10 @@ function OrgNode({ node, isRoot = false }) {
     return (
         <li className="relative flex flex-col items-center list-none">
             {/* Node Box */}
-            <div className={`relative px-5 py-4 bg-white border rounded-xl shadow-sm text-center transition-all duration-500 ease-out-expo group hover:-translate-y-1 z-10 ${
-                isRoot 
-                    ? 'border-[#C79A3E] shadow-md hover:shadow-xl w-[300px]' 
-                    : 'border-[#E7E2D6] hover:border-[#145A32] hover:shadow-xl w-[240px]'
-            }`}>
+            <div className={`relative px-5 py-4 bg-white border rounded-xl shadow-sm text-center transition-all duration-500 ease-out-expo group hover:-translate-y-1 z-10 ${isRoot
+                ? 'border-[#C79A3E] shadow-md hover:shadow-xl w-[300px]'
+                : 'border-[#E7E2D6] hover:border-[#145A32] hover:shadow-xl w-[240px]'
+                }`}>
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#145A32] to-[#C79A3E] rounded-t-lg transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                 <span className="text-[13px] font-semibold text-gray-800 leading-snug">{node.name}</span>
             </div>
@@ -266,7 +358,7 @@ export default function PresidentUnit() {
             className="overflow-x-hidden pb-0"
         >
             <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+                @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&display=swap');
 
                 :root {
                     --vp-ink: #1E2A22;
@@ -286,13 +378,13 @@ export default function PresidentUnit() {
                     --vp-line: #E5E0D3;
                 }
 
-                .vp-serif { font-family: 'Fraunces', ui-serif, Georgia, serif; }
-                .vp-sans { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+                .vp-serif { font-family: 'Merriweather', Georgia, serif; }
+                .vp-sans { font-family: Tahoma, 'Segoe UI', sans-serif; }
                 .ease-out-expo { transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important; }
                 
                 /* Responsive Drop Cap */
                 .vp-bio-lead::first-letter {
-                    font-family: 'Fraunces', ui-serif, Georgia, serif;
+                    font-family: 'Merriweather', Georgia, serif;
                     font-size: clamp(3rem, 12vw, 5rem);
                     font-weight: 500;
                     float: left;
@@ -300,6 +392,39 @@ export default function PresidentUnit() {
                     padding-right: 0.75rem;
                     padding-top: 0.5rem;
                     color: var(--vp-green-mid);
+                }
+
+                /* ---- Presidential Message Additions ---- */
+                .vp-gold-text {
+                    background: linear-gradient(120deg, #B8922E 0%, #E5C68A 30%, #D4AF37 55%, #F1DFAE 80%, #B8922E 100%);
+                    -webkit-background-clip: text;
+                    background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    color: transparent;
+                }
+
+                .vp-message-lead::first-letter {
+                    font-family: 'Merriweather', Georgia, serif;
+                    font-size: clamp(3rem, 9vw, 4.25rem);
+                    font-weight: 600;
+                    float: left;
+                    line-height: 0.8;
+                    padding-right: 0.7rem;
+                    padding-top: 0.45rem;
+                    color: var(--vp-gold);
+                }
+
+                @keyframes vp-spin-slow {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+                .vp-spin-slow {
+                    animation: vp-spin-slow 36s linear infinite;
+                    transform-origin: 50% 50%;
+                }
+
+                @media (prefers-reduced-motion: reduce) {
+                    .vp-spin-slow { animation: none !important; }
                 }
 
                 @keyframes fadeInPanel {
@@ -411,7 +536,7 @@ export default function PresidentUnit() {
                         </Reveal>
                         <Reveal delay={150}>
                             <h1 className="vp-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium leading-[1.05] tracking-tight mb-4 sm:mb-6">
-                                Dr. Jestoni P. <br/>Babia
+                                Dr. Jestoni P. <br />Babia
                             </h1>
                         </Reveal>
                         <Reveal delay={300}>
@@ -443,16 +568,16 @@ export default function PresidentUnit() {
                         <Reveal delay={300} className="relative max-w-sm mx-auto lg:max-w-none">
                             {/* Floating Gold Border Frame */}
                             <div className="absolute inset-0 border border-[#D4AF37]/30 rounded-2xl transform translate-x-3 translate-y-3 sm:translate-x-6 sm:translate-y-6 transition-transform duration-700 ease-out-expo hover:translate-x-2 hover:translate-y-2 sm:hover:translate-x-3 sm:hover:translate-y-3"></div>
-                            
+
                             <div className="relative rounded-2xl overflow-hidden shadow-2xl group border border-white/10">
-                                <img 
-                                    src={presidentImage} 
-                                    alt="Dr. Jestoni P. Babia" 
+                                <img
+                                    src={presidentImage}
+                                    alt="Dr. Jestoni P. Babia"
                                     className="w-full aspect-[4/5] object-cover transition-transform duration-[1.5s] ease-out-expo group-hover:scale-105"
                                 />
                                 {/* Gradient Overlay */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A2E18] via-[#0A2E18]/20 to-transparent opacity-80 pointer-events-none"></div>
-                                
+
                                 {/* Floating CCDO Seal & Label */}
                                 <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 flex items-center gap-3 sm:gap-4 z-10">
                                     <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white p-1.5 sm:p-2 shadow-xl border border-[#D4AF37]/50 flex-shrink-0">
@@ -473,7 +598,7 @@ export default function PresidentUnit() {
             <section className="bg-[#F9F7F2] py-16 sm:py-20 md:py-28 lg:py-32 vp-sans relative overflow-hidden">
                 {/* Subtle top accent */}
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#145A32] to-transparent opacity-10"></div>
-                
+
                 <div className="max-w-3xl mx-auto px-4 sm:px-6">
                     <Reveal className="text-center mb-10 sm:mb-16">
                         <div className="inline-flex items-center gap-4 mb-4">
@@ -506,7 +631,141 @@ export default function PresidentUnit() {
                 </div>
             </section>
 
-            {/* ===================== 03 — Institutional Offices Cluster ===================== */}
+            {/* ===================== 3. Presidential Message (Ceremonial Address) ===================== */}
+            <section
+                className="relative vp-sans text-white overflow-hidden"
+                style={{ background: 'linear-gradient(180deg, #0A2E18 0%, #0C371E 50%, #0A2E18 100%)' }}
+                aria-label="Message from the College President"
+            >
+                {/* Gilded seam */}
+                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent" aria-hidden="true"></div>
+
+                {/* Ambient texture & glows */}
+                <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(#D4AF37 1px, transparent 1px)', backgroundSize: '34px 34px' }} aria-hidden="true"></div>
+                <div className="absolute -top-40 -left-40 w-[34rem] h-[34rem] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.10), transparent 65%)' }} aria-hidden="true"></div>
+                <div className="absolute -bottom-48 -right-32 w-[36rem] h-[36rem] rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.08), transparent 65%)' }} aria-hidden="true"></div>
+
+                {/* Charter-style inset frame */}
+                <div className="absolute inset-3 sm:inset-5 border border-[#D4AF37]/10 rounded pointer-events-none" aria-hidden="true"></div>
+                {/* Corner ornaments */}
+                <div className="absolute top-3 sm:top-5 left-3 sm:left-5 w-7 h-7 border-t-2 border-l-2 border-[#D4AF37]/50 pointer-events-none" aria-hidden="true"></div>
+                <div className="absolute top-3 sm:top-5 right-3 sm:right-5 w-7 h-7 border-t-2 border-r-2 border-[#D4AF37]/50 pointer-events-none" aria-hidden="true"></div>
+                <div className="absolute bottom-3 sm:bottom-5 left-3 sm:left-5 w-7 h-7 border-b-2 border-l-2 border-[#D4AF37]/50 pointer-events-none" aria-hidden="true"></div>
+                <div className="absolute bottom-3 sm:bottom-5 right-3 sm:right-5 w-7 h-7 border-b-2 border-r-2 border-[#D4AF37]/50 pointer-events-none" aria-hidden="true"></div>
+
+                {/* Vertical margin annotations */}
+                <span
+                    className="hidden xl:block absolute left-10 top-1/2 -translate-y-1/2 text-[9px] font-semibold tracking-[0.5em] uppercase text-white/20 select-none pointer-events-none"
+                    style={{ writingMode: 'vertical-rl' }}
+                    aria-hidden="true"
+                >
+                    Office of the College President
+                </span>
+                <span
+                    className="hidden xl:block absolute right-10 top-1/2 -translate-y-1/2 text-[9px] font-semibold tracking-[0.5em] uppercase text-white/20 select-none pointer-events-none"
+                    style={{ writingMode: 'vertical-rl' }}
+                    aria-hidden="true"
+                >
+                    City College of Cagayan de Oro
+                </span>
+
+                <div className="relative max-w-4xl mx-auto px-5 sm:px-8 py-20 sm:py-24 md:py-32">
+
+                    {/* Ceremonial header */}
+                    <div className="text-center max-w-3xl mx-auto">
+                        <Reveal>
+                            <div className="inline-flex items-center gap-4 mb-7 sm:mb-9">
+                                <span className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent to-[#D4AF37]/70"></span>
+                                <span className="text-[10px] sm:text-[11px] font-bold tracking-[0.3em] sm:tracking-[0.35em] uppercase text-[#D4AF37]">
+                                    Message from the College President
+                                </span>
+                                <span className="h-px w-8 sm:w-12 bg-gradient-to-l from-transparent to-[#D4AF37]/70"></span>
+                            </div>
+                        </Reveal>
+
+                        <Reveal delay={100}>
+                            <div className="vp-serif vp-gold-text text-[5rem] sm:text-[6.5rem] leading-[0.5] select-none" aria-hidden="true">“</div>
+                        </Reveal>
+
+                        <Reveal delay={180}>
+                            <h2 className="vp-serif italic font-medium text-[1.4rem] sm:text-3xl md:text-[2.5rem] leading-[1.25] tracking-tight text-white -mt-2 sm:-mt-4">
+                                <span className="vp-gold-text">Maayong pag-abot</span> sa City College of Cagayan de Oro, Kauban!
+                            </h2>
+                        </Reveal>
+
+                        <Reveal delay={260}>
+                            <p className="vp-serif italic text-sm sm:text-base text-white/40 mt-5">
+                                — a warm welcome to the City College of Cagayan de Oro, kauban —
+                            </p>
+                        </Reveal>
+
+                        <Reveal delay={340}>
+                            <GoldDivider className="mt-10 sm:mt-12" />
+                        </Reveal>
+                    </div>
+
+                    {/* Message body — opening */}
+                    <div className="mt-12 sm:mt-16 md:mt-20 max-w-[42rem] mx-auto text-white/70 text-[15px] sm:text-base md:text-[17px] leading-[1.85] sm:leading-[1.95] space-y-6 sm:space-y-8">
+                        {MESSAGE_OPENING.map((para, i) => (
+                            <Reveal key={`msg-open-${i}`} delay={i * 70}>
+                                <p className={i === 0 ? 'vp-message-lead' : ''}>{para}</p>
+                            </Reveal>
+                        ))}
+                    </div>
+
+                    {/* Pull quote */}
+                    <Reveal className="mt-14 sm:mt-20">
+                        <figure className="relative text-center px-2 sm:px-10">
+                            <span
+                                className="absolute -top-6 sm:-top-10 left-1/2 -translate-x-1/2 vp-serif text-[6rem] sm:text-[8rem] leading-none text-[#D4AF37]/10 select-none pointer-events-none"
+                                aria-hidden="true"
+                            >
+                                “
+                            </span>
+                            <GoldDivider />
+                            <blockquote className="relative vp-serif italic text-xl sm:text-2xl md:text-[1.7rem] leading-snug text-white/90 max-w-2xl mx-auto mt-8 sm:mt-10">
+                                “Our greatest achievement lies in the lives we touch, the opportunities we create, and the communities we serve.”
+                            </blockquote>
+                            <GoldDivider className="mt-8 sm:mt-10" />
+                        </figure>
+                    </Reveal>
+
+                    {/* Message body — closing */}
+                    <div className="mt-12 sm:mt-16 max-w-[42rem] mx-auto text-white/70 text-[15px] sm:text-base md:text-[17px] leading-[1.85] sm:leading-[1.95] space-y-6 sm:space-y-8">
+                        {MESSAGE_CLOSING.map((para, i) => {
+                            const isLast = i === MESSAGE_CLOSING.length - 1;
+                            return (
+                                <Reveal key={`msg-close-${i}`} delay={i * 70}>
+                                    <p className={isLast ? 'vp-serif italic text-lg sm:text-xl md:text-[1.35rem] leading-relaxed text-white/85' : ''}>
+                                        {para}
+                                    </p>
+                                </Reveal>
+                            );
+                        })}
+                    </div>
+
+                    {/* Signature & seal */}
+                    <Reveal className="mt-16 sm:mt-20">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-10 sm:gap-16">
+                            <div className="text-center">
+                                <p className="vp-serif italic font-medium text-3xl sm:text-4xl text-white/95">Dr. Jestoni P. Babia</p>
+                                <GoldFlourish className="mt-1 mx-auto" />
+                                <p className="text-[10px] sm:text-[11px] font-bold tracking-[0.35em] uppercase text-[#D4AF37]">
+                                    College President III
+                                </p>
+                                <p className="mt-2 text-[9px] sm:text-[10px] font-semibold tracking-[0.25em] uppercase text-white/35">
+                                    City College of Cagayan de Oro
+                                </p>
+                            </div>
+                            <div className="transform sm:-rotate-6 hover:rotate-0 transition-transform duration-700 ease-out-expo">
+                                <PresidentialSeal />
+                            </div>
+                        </div>
+                    </Reveal>
+                </div>
+            </section>
+
+            {/* ===================== 04 — Institutional Offices Cluster ===================== */}
             <section
                 className="relative vp-sans overflow-hidden"
                 style={{ background: 'var(--vp-paper)' }}
@@ -521,7 +780,7 @@ export default function PresidentUnit() {
                 <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 md:py-28">
                     <Reveal>
                         <div className="flex items-center gap-3 mb-4">
-                            <p className="vp-serif text-3xl md:text-4xl font-semibold" style={{ color: 'var(--vp-gold)' }}>03</p>
+                            <p className="vp-serif text-3xl md:text-4xl font-semibold" style={{ color: 'var(--vp-gold)' }}>04</p>
                             <span className="text-[11px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-green-700)' }}>
                                 Cluster Offices
                             </span>
@@ -628,7 +887,7 @@ export default function PresidentUnit() {
                 </div>
             </section>
 
-            {/* ===================== 04 — Office Detail Panel ===================== */}
+            {/* ===================== 05 — Office Detail Panel ===================== */}
             <section
                 className="relative vp-sans overflow-hidden"
                 style={{ background: 'var(--vp-sage)' }}

@@ -18,14 +18,14 @@ export default function WURI() {
     );
 
     return (
-        <MainLayout 
-            maxWidth="full" 
-            containerClassName="px-0" 
-            mainClassName="py-0" 
+        <MainLayout
+            maxWidth="full"
+            containerClassName="px-0"
+            mainClassName="py-0"
             className="overflow-hidden pb-0"
         >
             {/* Hero Banner with Image */}
-            <div 
+            <div
                 className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
                 style={{
                     backgroundImage: `url('${wuriImg}')`
@@ -33,7 +33,7 @@ export default function WURI() {
             >
                 {/* Dark Overlay for text readability */}
                 <div className="absolute inset-0 bg-black/50"></div>
-                
+
                 <AnimatedBannerText title="WURI" description="World University Rankings for Innovation - CC de Oro's commitment to innovation and excellence." />
             </div>
 

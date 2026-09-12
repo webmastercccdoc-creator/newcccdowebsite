@@ -66,7 +66,7 @@ export default function UpcomingEvents() {
             // Fetch all events from the API
             const response = await axios.get('/api/events');
             console.log('API Response:', response.data);
-            
+
             // Handle different response formats
             let eventsData = [];
             if (Array.isArray(response.data)) {
@@ -77,7 +77,7 @@ export default function UpcomingEvents() {
                 console.error('Unexpected API response format:', response.data);
                 eventsData = [];
             }
-            
+
             setEvents(eventsData);
         } catch (error) {
             console.error('Error fetching events:', error);
@@ -231,7 +231,7 @@ export default function UpcomingEvents() {
                             <span className="text-[#0f5132]">Cagayan de Oro</span>
                         </h2>
                         <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                            Explore upcoming and past events, workshops, and activities 
+                            Explore upcoming and past events, workshops, and activities
                             happening at City College of Cagayan de Oro.
                         </p>
                         <div className="w-24 h-1 bg-gradient-to-r from-[#0f5132] to-[#1a7a4a] rounded-full mx-auto mt-4"></div>
@@ -254,17 +254,17 @@ export default function UpcomingEvents() {
                             title="Search events"
                             aria-label="Search"
                         >
-                            <svg 
-                                className="w-5 h-5" 
-                                fill="none" 
-                                stroke="currentColor" 
+                            <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
                                 viewBox="0 0 24 24"
                                 strokeWidth="2.5"
                             >
-                                <path 
-                                    strokeLinecap="round" 
-                                    strokeLinejoin="round" 
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                                 />
                             </svg>
                         </button>
@@ -274,7 +274,7 @@ export default function UpcomingEvents() {
                     {!loading && !error && searchQuery && (
                         <div className="text-center mt-3 text-sm text-gray-500">
                             Found {sortedEvents.length} event{sortedEvents.length !== 1 ? 's' : ''}
-                            {filter === 'upcoming' ? ' upcoming' : ' past'} 
+                            {filter === 'upcoming' ? ' upcoming' : ' past'}
                             {searchQuery && ` matching "${searchQuery}"`}
                         </div>
                     )}
@@ -284,21 +284,19 @@ export default function UpcomingEvents() {
                 <div className="flex flex-wrap justify-start gap-4 mb-12">
                     <button
                         onClick={() => setFilter("upcoming")}
-                        className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${
-                            filter === "upcoming"
+                        className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${filter === "upcoming"
                                 ? "bg-white text-[#0f5132] border-2 border-[#0f5132] shadow-md"
                                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                        }`}
+                            }`}
                     >
                         Upcoming Events
                     </button>
                     <button
                         onClick={() => setFilter("past")}
-                        className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${
-                            filter === "past"
+                        className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${filter === "past"
                                 ? "bg-white text-[#0f5132] border-2 border-[#0f5132] shadow-md"
                                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                        }`}
+                            }`}
                     >
                         Past Events
                     </button>
@@ -330,7 +328,7 @@ export default function UpcomingEvents() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         <p className="text-xl font-medium">{error}</p>
-                        <button 
+                        <button
                             onClick={fetchEvents}
                             className="mt-4 px-6 py-2 bg-[#0f5132] text-white rounded-lg hover:bg-[#0a3b24] transition-colors"
                         >
@@ -492,7 +490,7 @@ export default function UpcomingEvents() {
                                                             {buttonInfo.text}
                                                         </Link>
                                                     ) : (
-                                                        <button 
+                                                        <button
                                                             className={`w-full py-3 text-sm font-bold rounded-xl transition-all duration-300 mt-auto ${buttonInfo.className}`}
                                                             disabled={buttonInfo.disabled}
                                                         >
@@ -514,10 +512,10 @@ export default function UpcomingEvents() {
                                     {searchQuery ? 'No events found matching your search' : `No ${filter} events found`}
                                 </p>
                                 <p className="text-base">
-                                    {searchQuery 
+                                    {searchQuery
                                         ? `Try adjusting your search terms or clear the search to see all ${filter} events.`
-                                        : filter === 'upcoming' 
-                                            ? 'Check back later for upcoming events.' 
+                                        : filter === 'upcoming'
+                                            ? 'Check back later for upcoming events.'
                                             : 'No completed events to display.'}
                                 </p>
                                 {searchQuery && (

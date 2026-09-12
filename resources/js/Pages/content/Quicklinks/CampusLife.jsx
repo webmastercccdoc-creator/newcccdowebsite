@@ -21,7 +21,7 @@ import imgBraveKnights from '../../../assets/OrgPics/TheBraveKnights.jpg';
 import imgTukma from '../../../assets/OrgPics/TukmaFilmCircle.jpg';
 import imgYES from '../../../assets/OrgPics/YES.png';
 import imgSocialWork from '../../../assets/OrgPics/SocialWork.jpg';
-import imgSmashers from '../../../assets/OrgPics/CCCDOSMASHERS.jpg';
+import imgSmasher from '../../../assets/OrgPics/CCCDOSMASHERS.jpg';
 
 // ---- Event/Activity photos ----
 import imgAblaze1 from '../../../assets/Events/ablaze1.png';
@@ -29,8 +29,16 @@ import imgAblaze2 from '../../../assets/Events/ablaze2.png';
 import imgAblaze3 from '../../../assets/Events/ablaze3.png';
 import imgAblaze4 from '../../../assets/Events/ablaze4.png';
 import imgAblaze5 from '../../../assets/Events/ablaze5.png';
-// TODO: add HIUSA imports here once you confirm the filenames, e.g.:
-// import imgHiusa1 from '../../../assets/Events/hiusa1.png';
+import imgHiusa1 from '../../../assets/Events/Hiusa1.JPG';
+import imgHiusa2 from '../../../assets/Events/Hiusa2.JPG';
+import imgHiusa3 from '../../../assets/Events/Hiusa3.JPG';
+import imgHiusa4 from '../../../assets/Events/Hiusa4.JPG';
+import imgHiusa5 from '../../../assets/Events/Hiusa5.JPG';
+import imgEmerging1 from '../../../assets/Events/Emerging1.JPG';
+import imgEmerging2 from '../../../assets/Events/Emerging2.JPG';
+import imgEmerging3 from '../../../assets/Events/Emerging3.JPG';
+import imgEmerging4 from '../../../assets/Events/Emerging4.JPG';
+import imgEmerging5 from '../../../assets/Events/Emerging5.JPG';
 
 const orgs = [
     { icon: 'fa-landmark', title: 'Central Student Government', image: imgCentralGov, desc: 'The representative body of the CCCDO student community, promoting student welfare, leadership, participation, and responsible representation.' },
@@ -41,7 +49,7 @@ const orgs = [
     { icon: 'fa-hand-holding-heart', title: 'Red Cross Youth Council', image: imgRedCross, desc: 'Engages students in volunteerism, humanitarian service, preparedness, and activities that promote a culture of compassion and community involvement.' },
     { icon: 'fa-music', title: 'Talindaw Chorale', image: imgTalindaw, desc: 'Brings students together through choral music, developing musical expression, teamwork, discipline, and appreciation for the performing arts.' },
     { icon: 'fa-people-arrows', title: 'Peer Facilitators\u2019 Circle', image: imgPeerFac, desc: 'Promotes peer support and student development by encouraging empathy, communication, collaboration, and a culture of mutual assistance.' },
-    { icon: 'fa-water', title: 'ISDA-CCCDO', image: imgISDA, desc: 'Provides students with opportunities to engage in activities that foster camaraderie, leadership, participation, and appreciation of their shared interests.' },
+    { icon: 'fa-water', title: 'ISDA-CCCDO', image: imgISDA, desc: 'brings together the City’s scholars, fostering camaraderie, student engagement, leadership, and a shared commitment to learning and service to the Cagayan de Oro community.' },
     { icon: 'fa-drum', title: 'Oro Dayaw Dance Ensemble', image: imgOroDayaw, desc: 'Celebrates culture and artistic expression through dance while cultivating discipline, creativity, teamwork, and pride in local heritage.' },
     { icon: 'fa-chess-knight', title: 'The Brave Knights', image: imgBraveKnights, desc: 'Brings students together through shared interests and activities that encourage camaraderie, teamwork, leadership, and active campus participation.' },
     { icon: 'fa-hands-helping', title: 'CIVIC: City College Volunteerism and Involvement Center', image: imgCivic, desc: 'Promotes volunteerism and civic engagement by providing students with opportunities to serve, participate, and contribute meaningfully to the community.' },
@@ -50,7 +58,7 @@ const orgs = [
     { icon: 'fa-lightbulb', title: 'Young Entrepreneurial Society (YES)', image: imgYES, desc: 'Encourages students to explore entrepreneurship, innovation, and business-minded thinking through learning experiences, collaboration, and practical engagement.' },
     { icon: 'fa-dumbbell', title: 'Students\u2019 Wellness & Fitness Society (SWAF)', image: imgSWAF, desc: 'Promotes student well-being through activities that encourage physical fitness, healthy habits, recreation, and a balanced campus experience.' },
     { icon: 'fa-hands-praying', title: 'Prayground', image: imgPrayground, desc: 'Provides a welcoming space for students to nurture their spiritual life, build community, and engage in activities centered on faith, reflection, and fellowship.' },
-    { icon: 'fa-table-tennis-paddle-ball', title: 'CCCDO SMASHERS', image: imgSmashers, desc: 'Brings students together through badminton and sports-related activities, promoting physical fitness, teamwork, discipline, and camaraderie.' },
+    { icon: 'fa-table-tennis-paddle-ball', title: 'CCCDO SMASHERS',image: imgSmasher, desc: 'Brings students together through badminton and sports-related activities, promoting physical fitness, teamwork, discipline, and camaraderie.' },
     { icon: 'fa-people-group', title: 'Social Work Students\u2019 Association', image: imgSocialWork, desc: 'Brings social work students together through activities that promote professional development, service, advocacy, leadership, and community engagement.' },
 ];
 
@@ -63,10 +71,16 @@ const activities = [
         images: [imgAblaze1, imgAblaze2, imgAblaze3, imgAblaze4, imgAblaze5],
     },
     {
+        icon: 'fa-user-tie',
+        title: 'Emerging Leadership Camp',
+        desc: 'A student leadership development initiative of the City College of Cagayan de Oro designed to bring student leaders together in a meaningful space for leadership formation, collaboration, reflection, and fellowship. The camp seeks to strengthen the capacity of student leaders to work across organizations, build stronger relationships, and develop a shared commitment to serving the City College community.',
+        images: [imgEmerging1, imgEmerging2, imgEmerging3, imgEmerging4, imgEmerging5],
+    },
+    {
         icon: 'fa-volleyball',
         title: 'HIUSA Sports League',
         desc: 'The HIUSA Sports League brings students together through competitive sports, promoting teamwork, discipline, camaraderie, and healthy competition across the CCCDO community.',
-        images: [], // add HIUSA imports once filenames are confirmed
+        images: [imgHiusa1, imgHiusa2, imgHiusa3, imgHiusa4, imgHiusa5],
     },
 ];
 

@@ -66,6 +66,15 @@ export default function AddEvent({
         setSubmitError('');
     };
 
+    // Convert "14:30" → "14:30:00", leave empty string as-is
+    const normalizeTime = (value) => {
+    if (!value) return '';
+    // Strip seconds: "09:49:00" → "09:49"
+    const match = value.match(/^(\d{2}):(\d{2})/);
+    if (match) return `${match[1]}:${match[2]}`;
+    return value;
+};
+
     const clearForm = () => {
         setForm(initialForm);
         setErrors({});
@@ -188,8 +197,8 @@ export default function AddEvent({
         onClose();
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setIsSubmitting(true);
         setErrors({});
         setSubmitError('');
@@ -211,7 +220,7 @@ export default function AddEvent({
             formData.append('description', form.description);
             if (form.location) formData.append('location', form.location);
             if (form.date) formData.append('date', form.date);
-            if (form.time) formData.append('time', form.time);
+            if (form.time) formData.append('time', normalizeTime(form.time));
             formData.append('status', form.status);
             if (form.department) formData.append('department', form.department);
             formData.append('image_alt_text', form.image_alt_text || form.title);
@@ -236,6 +245,7 @@ export default function AddEvent({
             }
             onClose();
         } catch (error) {
+
             if (error.response?.status === 422) {
                 setErrors(error.response.data.errors || {});
             } else {

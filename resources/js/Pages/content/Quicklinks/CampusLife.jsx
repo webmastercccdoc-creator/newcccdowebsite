@@ -3,8 +3,6 @@ import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import MainLayout from '../../../layouts/MainLayout';
 
 // ---- Org photos ----
-// NOTE: adjust the "../../../../" prefix if your CampusLife.jsx path differs
-// from resources/js/Pages/<folder>/<folder>/CampusLife.jsx
 import imgCentralGov from '../../../assets/OrgPics/CentralStudentGovernment.jpg';
 import imgCivic from '../../../assets/OrgPics/CIVIC.png';
 import imgCAS from '../../../assets/OrgPics/CollegeofArts&Sciences.jpg';
@@ -22,6 +20,25 @@ import imgTalindaw from '../../../assets/OrgPics/TalindawChorale.png';
 import imgBraveKnights from '../../../assets/OrgPics/TheBraveKnights.jpg';
 import imgTukma from '../../../assets/OrgPics/TukmaFilmCircle.jpg';
 import imgYES from '../../../assets/OrgPics/YES.png';
+import imgSocialWork from '../../../assets/OrgPics/SocialWork.jpg';
+import imgSmasher from '../../../assets/OrgPics/CCCDOSMASHERS.jpg';
+
+// ---- Event/Activity photos ----
+import imgAblaze1 from '../../../assets/Events/ablaze1.png';
+import imgAblaze2 from '../../../assets/Events/ablaze2.png';
+import imgAblaze3 from '../../../assets/Events/ablaze3.png';
+import imgAblaze4 from '../../../assets/Events/ablaze4.png';
+import imgAblaze5 from '../../../assets/Events/ablaze5.png';
+import imgHiusa1 from '../../../assets/Events/Hiusa1.JPG';
+import imgHiusa2 from '../../../assets/Events/Hiusa2.JPG';
+import imgHiusa3 from '../../../assets/Events/Hiusa3.JPG';
+import imgHiusa4 from '../../../assets/Events/Hiusa4.JPG';
+import imgHiusa5 from '../../../assets/Events/Hiusa5.JPG';
+import imgEmerging1 from '../../../assets/Events/Emerging1.JPG';
+import imgEmerging2 from '../../../assets/Events/Emerging2.JPG';
+import imgEmerging3 from '../../../assets/Events/Emerging3.JPG';
+import imgEmerging4 from '../../../assets/Events/Emerging4.JPG';
+import imgEmerging5 from '../../../assets/Events/Emerging5.JPG';
 
 const orgs = [
     { icon: 'fa-landmark', title: 'Central Student Government', image: imgCentralGov, desc: 'The representative body of the CCCDO student community, promoting student welfare, leadership, participation, and responsible representation.' },
@@ -32,7 +49,7 @@ const orgs = [
     { icon: 'fa-hand-holding-heart', title: 'Red Cross Youth Council', image: imgRedCross, desc: 'Engages students in volunteerism, humanitarian service, preparedness, and activities that promote a culture of compassion and community involvement.' },
     { icon: 'fa-music', title: 'Talindaw Chorale', image: imgTalindaw, desc: 'Brings students together through choral music, developing musical expression, teamwork, discipline, and appreciation for the performing arts.' },
     { icon: 'fa-people-arrows', title: 'Peer Facilitators\u2019 Circle', image: imgPeerFac, desc: 'Promotes peer support and student development by encouraging empathy, communication, collaboration, and a culture of mutual assistance.' },
-    { icon: 'fa-water', title: 'ISDA-CCCDO', image: imgISDA, desc: 'Provides students with opportunities to engage in activities that foster camaraderie, leadership, participation, and appreciation of their shared interests.' },
+    { icon: 'fa-water', title: 'ISDA-CCCDO', image: imgISDA, desc: 'brings together the City’s scholars, fostering camaraderie, student engagement, leadership, and a shared commitment to learning and service to the Cagayan de Oro community.' },
     { icon: 'fa-drum', title: 'Oro Dayaw Dance Ensemble', image: imgOroDayaw, desc: 'Celebrates culture and artistic expression through dance while cultivating discipline, creativity, teamwork, and pride in local heritage.' },
     { icon: 'fa-chess-knight', title: 'The Brave Knights', image: imgBraveKnights, desc: 'Brings students together through shared interests and activities that encourage camaraderie, teamwork, leadership, and active campus participation.' },
     { icon: 'fa-hands-helping', title: 'CIVIC: City College Volunteerism and Involvement Center', image: imgCivic, desc: 'Promotes volunteerism and civic engagement by providing students with opportunities to serve, participate, and contribute meaningfully to the community.' },
@@ -41,31 +58,30 @@ const orgs = [
     { icon: 'fa-lightbulb', title: 'Young Entrepreneurial Society (YES)', image: imgYES, desc: 'Encourages students to explore entrepreneurship, innovation, and business-minded thinking through learning experiences, collaboration, and practical engagement.' },
     { icon: 'fa-dumbbell', title: 'Students\u2019 Wellness & Fitness Society (SWAF)', image: imgSWAF, desc: 'Promotes student well-being through activities that encourage physical fitness, healthy habits, recreation, and a balanced campus experience.' },
     { icon: 'fa-hands-praying', title: 'Prayground', image: imgPrayground, desc: 'Provides a welcoming space for students to nurture their spiritual life, build community, and engage in activities centered on faith, reflection, and fellowship.' },
-    { icon: 'fa-table-tennis-paddle-ball', title: 'CCCDO SMASHERS', desc: 'Brings students together through badminton and sports-related activities, promoting physical fitness, teamwork, discipline, and camaraderie.' },
-    { icon: 'fa-people-group', title: 'Social Work Students\u2019 Association', desc: 'Brings social work students together through activities that promote professional development, service, advocacy, leadership, and community engagement.' },
+    { icon: 'fa-table-tennis-paddle-ball', title: 'CCCDO SMASHERS',image: imgSmasher, desc: 'Brings students together through badminton and sports-related activities, promoting physical fitness, teamwork, discipline, and camaraderie.' },
+    { icon: 'fa-people-group', title: 'Social Work Students\u2019 Association', image: imgSocialWork, desc: 'Brings social work students together through activities that promote professional development, service, advocacy, leadership, and community engagement.' },
 ];
 
-const facilities = [
-    { icon: 'fa-book', title: 'Library & Learning Commons', desc: 'Quiet study floors, group discussion rooms, and a growing digital collection open to all students.' },
-    { icon: 'fa-flask', title: 'Science & Computer Labs', desc: 'Hands-on laboratories for the sciences and IT programs, equipped for coursework and student research.' },
-    { icon: 'fa-utensils', title: 'Canteen & Food Court', desc: 'Affordable meals and snacks between classes, with covered seating for group study or downtime.' },
-    { icon: 'fa-house-medical', title: 'Clinic & Wellness Room', desc: 'On-campus first aid, basic checkups, and a quiet space to rest during the school day.' },
-    { icon: 'fa-basketball', title: 'Gymnasium & Grounds', desc: 'Covered court and open grounds for PE classes, intramurals, and student org events.' },
-    { icon: 'fa-wifi', title: 'Campus Wi-Fi Zones', desc: 'Free internet access in the library, covered court, and common areas for coursework and research.' },
-];
-
-const events = [
-    { month: 'JUN', title: 'Freshmen Orientation', desc: 'Welcome week for incoming students — campus tours, org fairs, and an introduction to student services.' },
-    { month: 'AUG', title: 'Foundation Day', desc: 'The college\u2019s anniversary celebration, with a program, exhibits, and performances from student organizations.' },
-    { month: 'OCT', title: 'Intramurals', desc: 'A week of inter-department sports competitions culminating in a friendly overall championship.' },
-    { month: 'FEB', title: 'Academic & Cultural Fair', desc: 'Program showcases, research poster sessions, and cultural performances open to the public.' },
-];
-
-const services = [
-    { icon: 'fa-user-graduate', title: 'Guidance & Counseling', desc: 'Academic advising, career guidance, and confidential counseling for personal concerns.' },
-    { icon: 'fa-hand-holding-dollar', title: 'Scholarships & Financial Aid', desc: 'Information and application support for institutional, government, and partner scholarships.' },
-    { icon: 'fa-briefcase', title: 'Career & Placement Office', desc: 'Job fairs, resume workshops, and employer partnerships for graduating students and alumni.' },
-    { icon: 'fa-universal-access', title: 'Student Accessibility Support', desc: 'Coordination and accommodations for students with disabilities across classes and facilities.' },
+// ---- Events & Activities ----
+const activities = [
+    {
+        icon: 'fa-fire',
+        title: 'ABLAZE Welcome Week',
+        desc: 'ABLAZE Welcome Week welcomes students to the CCCDO community through engaging activities, opportunities to connect, and experiences that foster belonging and school spirit.',
+        images: [imgAblaze1, imgAblaze2, imgAblaze3, imgAblaze4, imgAblaze5],
+    },
+    {
+        icon: 'fa-user-tie',
+        title: 'Emerging Leadership Camp',
+        desc: 'A student leadership development initiative of the City College of Cagayan de Oro designed to bring student leaders together in a meaningful space for leadership formation, collaboration, reflection, and fellowship. The camp seeks to strengthen the capacity of student leaders to work across organizations, build stronger relationships, and develop a shared commitment to serving the City College community.',
+        images: [imgEmerging1, imgEmerging2, imgEmerging3, imgEmerging4, imgEmerging5],
+    },
+    {
+        icon: 'fa-volleyball',
+        title: 'HIUSA Sports League',
+        desc: 'The HIUSA Sports League brings students together through competitive sports, promoting teamwork, discipline, camaraderie, and healthy competition across the CCCDO community.',
+        images: [imgHiusa1, imgHiusa2, imgHiusa3, imgHiusa4, imgHiusa5],
+    },
 ];
 
 // ---- Shared org photo/placeholder banner ----
@@ -83,6 +99,54 @@ const OrgBanner = ({ org, className = '' }) => (
         </div>
     )
 );
+
+// ---- Auto-rotating photo gallery for activity cards ----
+const EventGallery = ({ images, title, icon, className = 'h-56' }) => {
+    const [index, setIndex] = useState(0);
+
+    useEffect(() => {
+        if (images.length <= 1) return;
+        const id = setInterval(() => setIndex((i) => (i + 1) % images.length), 3500);
+        return () => clearInterval(id);
+    }, [images.length]);
+
+    if (!images.length) {
+        return (
+            <div className={`w-full flex items-center justify-center bg-[#ecfdf5] ${className}`}>
+                <i className={`fas ${icon} text-[#059669]/40 text-4xl`} />
+            </div>
+        );
+    }
+
+    return (
+        <div className={`relative w-full overflow-hidden ${className}`}>
+            <AnimatePresence mode="wait">
+                <motion.img
+                    key={index}
+                    src={images[index]}
+                    alt={title}
+                    className="w-full h-full object-cover absolute inset-0"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.6 }}
+                />
+            </AnimatePresence>
+            {images.length > 1 && (
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                    {images.map((_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => setIndex(i)}
+                            aria-label={`Show photo ${i + 1}`}
+                            className={`w-2 h-2 rounded-full transition-colors ${i === index ? 'bg-white' : 'bg-white/50'}`}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
 
 // ---- Infinite Org Carousel ----
 const CARD_WIDTH = 300; // px, includes gap
@@ -336,7 +400,6 @@ const OrgDetailModal = ({ org, onBack, onClose }) => (
 );
 
 const CampusLife = () => {
-    const [activeEvent, setActiveEvent] = useState(null);
     const [showAllOrgs, setShowAllOrgs] = useState(false);
     const [selectedOrg, setSelectedOrg] = useState(null);
 
@@ -478,87 +541,27 @@ const CampusLife = () => {
                     <OrgCarousel onSelect={setSelectedOrg} />
                 </motion.section>
 
-                {/* Facilities */}
+                {/* Events & Activities */}
                 <motion.section className="mb-16 px-4" variants={itemVariants}>
-                    <SectionHeader title="Facilities & Amenities" subtitle="Spaces students use every day, on and off the classroom." />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                        {facilities.map((f) => (
+                    <SectionHeader title="Events & Activities" subtitle="Signature experiences that bring the CCCDO community together." />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {activities.map((a) => (
                             <motion.div
-                                key={f.title}
-                                className="bg-gray-50 rounded-2xl p-6 border border-transparent"
+                                key={a.title}
+                                className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
                                 variants={cardHover}
                                 initial="rest"
                                 whileHover="hover"
                             >
-                                <div className="w-11 h-11 rounded-lg bg-white shadow-sm flex items-center justify-center mb-4">
-                                    <i className={`fas ${f.icon} text-[#059669] text-lg`} />
-                                </div>
-                                <h3 className="font-bold text-gray-800 mb-1.5" style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}>
-                                    {f.title}
-                                </h3>
-                                <p className="text-sm text-gray-600 leading-relaxed">{f.desc}</p>
-                            </motion.div>
-                        ))}
-                    </div>
-                </motion.section>
-
-                {/* Events */}
-                <motion.section className="mb-16 px-4" variants={itemVariants}>
-                    <SectionHeader title="Events & Activities" subtitle="Recurring dates on the student calendar." />
-                    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-                        {events.map((ev, i) => (
-                            <motion.button
-                                key={ev.title}
-                                onClick={() => setActiveEvent(activeEvent === ev.title ? null : ev.title)}
-                                className={`w-full text-left flex items-start gap-5 p-5 md:p-6 ${i !== events.length - 1 ? 'border-b border-gray-100' : ''} hover:bg-[#f7fdfb] transition-colors duration-200`}
-                            >
-                                <div className="shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-[#059669] to-[#047857] text-white flex items-center justify-center font-bold text-sm" style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}>
-                                    {ev.month}
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="font-bold text-gray-800" style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}>
-                                        {ev.title}
+                                <EventGallery images={a.images} title={a.title} icon={a.icon} className="h-56" />
+                                <div className="p-6">
+                                    <h3
+                                        className="font-bold text-lg text-gray-800 mb-2"
+                                        style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
+                                    >
+                                        {a.title}
                                     </h3>
-                                    <AnimatePresence>
-                                        {activeEvent === ev.title && (
-                                            <motion.p
-                                                initial={{ opacity: 0, height: 0 }}
-                                                animate={{ opacity: 1, height: 'auto' }}
-                                                exit={{ opacity: 0, height: 0 }}
-                                                transition={{ duration: 0.25 }}
-                                                className="text-sm text-gray-600 leading-relaxed mt-1.5 overflow-hidden"
-                                            >
-                                                {ev.desc}
-                                            </motion.p>
-                                        )}
-                                    </AnimatePresence>
-                                </div>
-                                <i className={`fas fa-chevron-down text-gray-400 mt-1.5 transition-transform duration-200 ${activeEvent === ev.title ? 'rotate-180' : ''}`} />
-                            </motion.button>
-                        ))}
-                    </div>
-                </motion.section>
-
-                {/* Support Services */}
-                <motion.section className="mb-16 px-4" variants={itemVariants}>
-                    <SectionHeader title="Student Support Services" subtitle="Offices that help students beyond the syllabus." />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        {services.map((s) => (
-                            <motion.div
-                                key={s.title}
-                                className="flex gap-4 bg-white rounded-2xl border border-gray-100 p-6"
-                                variants={cardHover}
-                                initial="rest"
-                                whileHover="hover"
-                            >
-                                <div className="shrink-0 w-11 h-11 rounded-lg bg-[#ecfdf5] flex items-center justify-center">
-                                    <i className={`fas ${s.icon} text-[#059669] text-lg`} />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-gray-800 mb-1" style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}>
-                                        {s.title}
-                                    </h3>
-                                    <p className="text-sm text-gray-600 leading-relaxed">{s.desc}</p>
+                                    <p className="text-sm text-gray-600 leading-relaxed">{a.desc}</p>
                                 </div>
                             </motion.div>
                         ))}
@@ -568,7 +571,7 @@ const CampusLife = () => {
                 {/* Footer note */}
                 <motion.div className="text-center text-sm text-gray-500 px-4" variants={itemVariants}>
                     <p>
-                        Want to join an organization or learn more about a service?{' '}
+                        Want to join an organization or learn more about an activity?{' '}
                         <span className="text-[#059669] font-semibold">Visit the Student Affairs office</span> or your department chair.
                     </p>
                 </motion.div>

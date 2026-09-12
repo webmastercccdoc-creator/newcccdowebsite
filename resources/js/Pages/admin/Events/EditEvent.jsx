@@ -27,9 +27,7 @@ export default function EditEvent({
         try {
             const response = await axios.get(`/api/events/${id}`);
             const data = response.data;
-            
-            console.log('Fetched event data:', data);
-            
+
             // Format dates for the form - using 'date' and 'time' fields
             const formattedData = {
                 id: data.id,
@@ -45,10 +43,9 @@ export default function EditEvent({
                 // Keep the original data for reference
                 _original: data
             };
-            
+
             setEvent(formattedData);
         } catch (error) {
-            console.error('Error fetching event:', error);
             setError('Failed to load event data. Please try again.');
         } finally {
             setLoading(false);
@@ -65,6 +62,30 @@ export default function EditEvent({
             return dateString;
         }
     };
+
+    const normalizeTime = (value) => {
+    if (!value) return '';
+
+    // Already HH:MM or HH:MM:SS
+    if (/^\d{2}:\d{2}(:\d{2})?$/.test(value)) return value;
+
+    // "2:30 PM" / "2:30PM" / "14:30"
+    const match = value.trim().match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?$/i);
+    if (!match) return value;
+
+    let [, h, m, s, mod] = match;
+    h = parseInt(h, 10);
+
+    if (mod) {
+        mod = mod.toUpperCase();
+        if (mod === 'PM' && h !== 12) h += 12;
+        if (mod === 'AM' && h === 12) h = 0;
+    }
+
+    const hh = String(h).padStart(2, '0');
+    // If backend wants H:i:s, uncomment the next line and use `${hh}:${m}:${s || '00'}`
+    return `${hh}:${m}`;
+};
 
     // Prepare event data for the AddEvent component
     const eventData = event ? {
@@ -83,7 +104,7 @@ export default function EditEvent({
     // Handle the update - this will be called by AddEvent's onCreated
     const handleUpdate = async (formData) => {
         setUpdateError(null);
-        
+
         // Create FormData for file upload if there's a banner image
         const isMultipart = formData.banner_image instanceof File;
         let updateData;
@@ -101,7 +122,7 @@ export default function EditEvent({
             formDataObj.append('image_alt_text', formData.image_alt_text || '');
             formDataObj.append('banner_image', formData.banner_image);
             formDataObj.append('_method', 'PUT');
-            
+
             updateData = formDataObj;
             headers = {
                 'Content-Type': 'multipart/form-data',
@@ -117,7 +138,7 @@ export default function EditEvent({
                 department: formData.department || '',
                 image_alt_text: formData.image_alt_text || '',
             };
-            
+
             // If removing banner image
             if (formData.remove_banner_image) {
                 updateData.remove_banner_image = true;
@@ -137,7 +158,7 @@ export default function EditEvent({
                     },
                 });
             }
-            
+
             if (response.status === 200) {
                 // Call the parent's onUpdated callback
                 if (onUpdated) {
@@ -147,8 +168,11 @@ export default function EditEvent({
                 return true;
             }
         } catch (error) {
-            console.error('Error updating event:', error);
-            const errorMessage = error.response?.data?.message || error.response?.data?.error || 'Failed to update event';
+            const errors = error.response?.data?.errors;
+            const errorMessage = errors
+                ? Object.values(errors).flat().join('\n')
+                : error.response?.data?.message || 'Failed to update event';
+
             setUpdateError(errorMessage);
             alert(errorMessage);
             return false;
@@ -200,7 +224,7 @@ export default function EditEvent({
         <AddEvent
             isOpen={isOpen}
             onClose={onClose}
-            onCreated={handleUpdate}
+            onCreated={onUpdated}
             isEditing={true}
             event={eventData}
         />

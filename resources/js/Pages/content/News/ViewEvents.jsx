@@ -266,10 +266,10 @@ export default function ViewEvents() {
                         />
                         <div className="absolute top-6 right-6">
                             <span className={`px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider text-white shadow-lg ${event.status === 'upcoming' ? 'bg-blue-600' :
-                                    event.status === 'active' ? 'bg-emerald-600' :
-                                        event.status === 'completed' ? 'bg-gray-500' :
-                                            event.status === 'cancelled' ? 'bg-red-500' :
-                                                'bg-gray-500'
+                                event.status === 'active' ? 'bg-emerald-600' :
+                                    event.status === 'completed' ? 'bg-gray-500' :
+                                        event.status === 'cancelled' ? 'bg-red-500' :
+                                            'bg-gray-500'
                                 }`}>
                                 {event.status || 'Unknown'}
                             </span>

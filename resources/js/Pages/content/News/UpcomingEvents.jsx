@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "@inertiajs/react";
 import MainLayout from "../../../layouts/MainLayout";
 import { motion, AnimatePresence } from "framer-motion";
-import UpcomingEventsBanner from "../../../assets/banner/upcoming-events.jpg";
+import UpcomingEventsBanner from '../../../assets/banner/News Banner.png';
 import AnimatedBannerText from "../../../components/content/AnimatedBannerText";
 import axios from "axios";
 
@@ -50,7 +50,6 @@ const formatTime = (timeString) => {
 export default function UpcomingEvents() {
     const [filter, setFilter] = useState("upcoming");
     const [events, setEvents] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -60,7 +59,6 @@ export default function UpcomingEvents() {
     }, []);
 
     const fetchEvents = async () => {
-        setLoading(true);
         setError(null);
         try {
             // Fetch all events from the API
@@ -83,8 +81,6 @@ export default function UpcomingEvents() {
             console.error('Error fetching events:', error);
             setError('Failed to load events. Please try again later.');
             setEvents([]);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -271,7 +267,7 @@ export default function UpcomingEvents() {
                     </div>
 
                     {/* Search results count */}
-                    {!loading && !error && searchQuery && (
+                    {!error && searchQuery && (
                         <div className="text-center mt-3 text-sm text-gray-500">
                             Found {sortedEvents.length} event{sortedEvents.length !== 1 ? 's' : ''}
                             {filter === 'upcoming' ? ' upcoming' : ' past'}
@@ -285,8 +281,8 @@ export default function UpcomingEvents() {
                     <button
                         onClick={() => setFilter("upcoming")}
                         className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${filter === "upcoming"
-                                ? "bg-white text-[#0f5132] border-2 border-[#0f5132] shadow-md"
-                                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                            ? "bg-white text-[#0f5132] border-2 border-[#0f5132] shadow-md"
+                            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                             }`}
                     >
                         Upcoming Events
@@ -294,8 +290,8 @@ export default function UpcomingEvents() {
                     <button
                         onClick={() => setFilter("past")}
                         className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 ${filter === "past"
-                                ? "bg-white text-[#0f5132] border-2 border-[#0f5132] shadow-md"
-                                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                            ? "bg-white text-[#0f5132] border-2 border-[#0f5132] shadow-md"
+                            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                             }`}
                     >
                         Past Events
@@ -312,14 +308,6 @@ export default function UpcomingEvents() {
 
                 {/* Green Rectangle Line under Tabs */}
                 <div className="w-full h-1 bg-[#0f5132] mb-12"></div>
-
-                {/* Loading State */}
-                {loading && (
-                    <div className="flex justify-center items-center py-20">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0f5132]"></div>
-                        <span className="ml-3 text-gray-600">Loading events...</span>
-                    </div>
-                )}
 
                 {/* Error State */}
                 {error && (
@@ -338,7 +326,7 @@ export default function UpcomingEvents() {
                 )}
 
                 {/* Event Cards Grid */}
-                {!loading && !error && (
+                {!error && (
                     <>
                         {sortedEvents.length > 0 ? (
                             <motion.div
@@ -492,9 +480,9 @@ export default function UpcomingEvents() {
                                                     ) : (
                                                         <button
                                                             className={`w-full py-3 text-sm font-bold rounded-xl transition-all duration-300 mt-auto ${buttonInfo.className}`}
-                                                            disabled={buttonInfo.disabled}
+                                                            disabled={buttonInfo.disabled || !event.id}
                                                         >
-                                                            {buttonInfo.text}
+                                                            {event.id ? buttonInfo.text : 'Event Unavailable'}
                                                         </button>
                                                     )}
                                                 </div>

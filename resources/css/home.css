@@ -45,7 +45,7 @@ VIDEO BANNER OVERLAY
     width: 100%;
     height: 100%;
     z-index: 10;
-    background-color: #000;
+    background-color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -65,9 +65,24 @@ VIDEO BANNER OVERLAY
 }
 
 @media (max-width: 768px) {
+    .landing-page.video-active {
+        min-height: 0;
+        height: auto;
+    }
+
+    .landing-page.video-active .video-banner-overlay {
+        position: relative;
+        height: auto;
+    }
+
     .video-banner {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
         object-fit: contain;
-        background-color: #000;
+        object-position: center;
+        background-color: #fff;
     }
 }
 
@@ -86,6 +101,10 @@ LANDING PAGE CAROUSEL
     overflow: hidden;
     font-family: "Inter", sans-serif;
     box-sizing: border-box;
+}
+
+.landing-page.video-active {
+    background-color: #fff;
 }
 
 .landing-page #demo {

@@ -206,6 +206,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
     // Banner data with fallback to dummy
     const bannerData = useMemo(() => {
         const mappedPromotions = promotions.map((promotion) => ({
+            id: promotion.id,
             place: promotion.department || "City College of Cagayan de Oro",
             title: promotion.title || "Promotion",
             title2: promotion.subtitle || promotion.title2 || "",
@@ -220,7 +221,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     promotion.image_url ||
                     promotion.image_path,
             ),
-            link: promotion.link || "#",
+            link: promotion.id ? `/featured-news/${promotion.id}` : promotion.link || "#",
         }));
 
         if (mappedPromotions.length === 0) {
@@ -415,6 +416,8 @@ export default function Home({ newsArticles = [], promotions = [] }) {
         }
         return currentIndex;
     };
+
+    const activeBanner = bannerData[getCurrentSlideIndex()] || bannerData[0];
 
     const goToSlide = useCallback(
         (index) => {
@@ -827,9 +830,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     <div className="cta">
                         <a
                             className="discover"
-                            href={bannerData[0]?.link || "#"}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            href={activeBanner?.link || "#"}
                         >
                             View Post
                         </a>
@@ -854,9 +855,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     <div className="cta">
                         <a
                             className="discover"
-                            href={bannerData[0]?.link || "#"}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            href={activeBanner?.link || "#"}
                         >
                             View Post
                         </a>

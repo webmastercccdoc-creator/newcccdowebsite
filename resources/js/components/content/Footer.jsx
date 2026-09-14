@@ -6,7 +6,7 @@ import logoSrc from "../../assets/logos/cccdoclogo.png";
 import cclogoSrc from "../../assets/logos/ccdoclogo.png";
 import cdoLogoSrc from "../../assets/logos/cdoc-logo.png";
 import npcDpoSrc from "../../assets/logos/npc_dpo_2026_1.png";
-import tstiLogoSrc from "../../assets/logos/tsti-logo.png";
+import tstiLogoSrc from "../../assets/logos/tesda-logo.png";
 
 
 const GREEN = "#157d3c";

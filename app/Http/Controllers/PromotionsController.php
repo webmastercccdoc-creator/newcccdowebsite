@@ -141,6 +141,46 @@ class PromotionsController extends Controller
         return response()->json($promotion);
     }
 
+        /**
+     * ⭐ Public detail page for a featured promotion — renders ViewFeaturedNews.
+     */
+    public function featuredShow($id)
+    {
+        // Keep statuses in sync with dates before serving
+        $this->updatePromotionStatuses();
+
+        $promotion = Promotion::findOrFail($id);
+        $promotion = $this->addImageUrls($promotion);
+
+        // Build image list — carousel first, banner as fallback
+        $images = [];
+        if ($promotion->carousel_image_url) {
+            $images[] = ['image_path' => $promotion->carousel_image_url];
+        }
+        if (
+            $promotion->banner_image_url &&
+            $promotion->banner_image_url !== $promotion->carousel_image_url
+        ) {
+            $images[] = ['image_path' => $promotion->banner_image_url];
+        }
+
+        return Inertia::render('content/Home/ViewFeaturedNews', [
+            'article' => [
+                'id'          => $promotion->id,
+                'title'       => $promotion->title,
+                'content'     => $promotion->content,
+                'department'  => $promotion->department,
+                'date'        => $promotion->date
+                    ? Carbon::parse($promotion->date)->toIso8601String()
+                    : ($promotion->created_at ? $promotion->created_at->toIso8601String() : null),
+                'sdg_numbers' => $promotion->sdg_numbers ?? null,
+                'image_path'  => $promotion->banner_image_url,
+                'link'        => $promotion->link,
+            ],
+            'articleImages' => $images,
+        ]);
+    }
+
     /**
      * Store a newly created promotion in storage.
      */

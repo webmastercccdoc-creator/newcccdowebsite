@@ -329,7 +329,7 @@ export default function EnrollNow() {
 
                                     <div className="border-t border-gray-100 pt-4 mb-4 flex-shrink-0">
                                         <p className="text-xs text-gray-500 italic">
-                                            <strong>Programs offered:</strong> Computer Systems Servicing, Electrical Installation, Electronics, Welding, Automotive, Food Processing, Housekeeping, and Cookery
+                                            <strong>Programs offered:</strong> Electrical Installation And Maintenance, Shielded Metal Arc Welding, Bookkeeping, Barangay Health Services, Housekeeping, Carpentry and Plumbing
                                         </p>
                                     </div>
 

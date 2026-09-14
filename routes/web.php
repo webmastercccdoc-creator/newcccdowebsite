@@ -227,6 +227,12 @@ Route::get('/api/promotions', [PromotionsController::class, 'apiIndex']);
 Route::get('/api/promotions/{id}', [PromotionsController::class, 'apiShow']);
 
 // ============================================
+// FEATURED NEWS / PROMOTION DETAIL PAGE (Public)
+// ============================================
+Route::get('/featured-news/{id}', [PromotionsController::class, 'featuredShow'])
+    ->name('featured-news.show');
+
+// ============================================
 // EVENTS API ROUTES (Public)
 // ============================================
 Route::get('/api/events', [EventsController::class, 'apiIndex']);

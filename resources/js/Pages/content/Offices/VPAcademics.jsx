@@ -177,7 +177,7 @@ const OFFICES = [
     {
         id: 'tsti',
         label: 'TSTI',
-        name: 'Technical Skills and Training Institute',
+        name: 'Technical Skills and Technology Institute',
         description:
             'The Vocational School Administrator oversees the Technical Skills and Training Institute, providing technical-vocational education and institutional linkages.',
         functions: [
@@ -185,7 +185,7 @@ const OFFICES = [
             'Skills Assessment', 'Facility Management', 'Program Development',
         ],
         orgChart: {
-            name: 'Vocational School Administrator, Technical Skills and Training Institute',
+            name: 'Vocational School Administrator, Technical Skills and Technology Institute',
             children: [
                 { name: 'Training and Instruction' },
                 { name: 'Administrative Support' },

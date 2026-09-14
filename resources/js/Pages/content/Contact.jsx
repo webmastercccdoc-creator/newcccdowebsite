@@ -697,7 +697,7 @@ export default function Contact() {
 
             {/* Floating Animation Elements */}
             <motion.div
-                className="fixed bottom-8 right-8 z-40"
+                className="fixed bottom-24 right-6 md:bottom-28 md:right-8 z-40"
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{

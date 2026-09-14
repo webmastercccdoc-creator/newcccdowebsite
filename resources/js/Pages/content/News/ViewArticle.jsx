@@ -1,5 +1,42 @@
 import { useEffect, useState } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
+import sdg1 from '../../../assets/images/sdg1.png';
+import sdg2 from '../../../assets/images/sdg2.jpg';
+import sdg3 from '../../../assets/images/sdg3.png';
+import sdg4 from '../../../assets/images/sdg4.png';
+import sdg5 from '../../../assets/images/sdg5.jpg';
+import sdg6 from '../../../assets/images/sdg6.png';
+import sdg7 from '../../../assets/images/sdg7.png';
+import sdg8 from '../../../assets/images/sdg8.png';
+import sdg9 from '../../../assets/images/sdg9.png';
+import sdg10 from '../../../assets/images/sdg10.png';
+import sdg11 from '../../../assets/images/sdg11.png';
+import sdg12 from '../../../assets/images/sdg12.jpg';
+import sdg13 from '../../../assets/images/sdg13.png';
+import sdg14 from '../../../assets/images/sdg14.png';
+import sdg15 from '../../../assets/images/sdg15.png';
+import sdg16 from '../../../assets/images/sdg16.png';
+import sdg17 from '../../../assets/images/sdg17.png';
+
+const sdgImages = {
+    1: sdg1,
+    2: sdg2,
+    3: sdg3,
+    4: sdg4,
+    5: sdg5,
+    6: sdg6,
+    7: sdg7,
+    8: sdg8,
+    9: sdg9,
+    10: sdg10,
+    11: sdg11,
+    12: sdg12,
+    13: sdg13,
+    14: sdg14,
+    15: sdg15,
+    16: sdg16,
+    17: sdg17,
+};
 
 const normalizeImagePath = (value) => {
     if (!value) return 'https://placehold.co/1200x800/cccccc/ffffff?text=No+Image';
@@ -143,9 +180,8 @@ export default function ViewArticle({ article: initialArticle = null, articleIma
 
     // Social media follow links - Only Facebook, Instagram, TikTok
     const socialLinks = {
-        facebook: 'https://www.facebook.com/cccdofficial',
-        instagram: 'https://www.instagram.com/cccdofficial',
-        tiktok: 'https://www.tiktok.com/@cccdofficial'
+        facebook: 'https://www.facebook.com/orocitycollegeofficial/',
+        tiktok: 'https://www.tiktok.com/@orocitycollegeofficial'
     };
 
     // Share functions - Only Facebook
@@ -190,17 +226,16 @@ export default function ViewArticle({ article: initialArticle = null, articleIma
                     {sdgNumbers.length > 0 && (
                         <div className="mb-5 flex flex-wrap justify-center gap-2" aria-label="Sustainable Development Goals">
                             {sdgNumbers.map((sdgNumber) => (
-                                <span
+                                <img
                                     key={`hero-sdg-${sdgNumber}`}
-                                    className="rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white backdrop-blur-sm"
-                                >
-                                    SDG {sdgNumber}
-                                </span>
+                                    src={sdgImages[sdgNumber]}
+                                    alt={`Sustainable Development Goal ${sdgNumber}`}
+                                    title={`SDG ${sdgNumber}`}
+                                    className="h-16 w-16 rounded-md object-cover shadow-sm sm:h-20 sm:w-20"
+                                />
                             ))}
                         </div>
                     )}
-
-                    {/* Title - Pure white for maximum contrast */}
                     <h1 className="text-4xl font-bold tracking-tight text-white drop-shadow-md sm:text-5xl md:text-6xl lg:text-7xl">
                         {article?.title || 'Loading Article...'}
                     </h1>
@@ -252,22 +287,29 @@ export default function ViewArticle({ article: initialArticle = null, articleIma
                 {article ? (
                     <article className="bg-white rounded-none md:rounded-xl md:shadow-lg overflow-hidden">
                         <div className="px-4 sm:px-8 md:px-12 py-8 md:py-12">
-                            <p className="mb-4 text-sm font-medium uppercase tracking-[0.2em] text-green-700">
-                                {article?.department || 'News'}
-                            </p>
+                            {/* Top row: Department (left) + SDG badges (right) */}
+                            <div className="mb-4 flex items-start justify-between gap-4">
+                                <p className="text-sm font-medium uppercase tracking-[0.2em] text-green-700">
+                                    {article?.department || 'News'}
+                                </p>
 
-                            {sdgNumbers.length > 0 && (
-                                <div className="mb-5 flex flex-wrap gap-2" aria-label="Sustainable Development Goals">
-                                    {sdgNumbers.map((sdgNumber) => (
-                                        <span
-                                            key={sdgNumber}
-                                            className="rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-green-800"
-                                        >
-                                            SDG {sdgNumber}
-                                        </span>
-                                    ))}
-                                </div>
-                            )}
+                                {sdgNumbers.length > 0 && (
+                                    <div
+                                        className="flex flex-wrap justify-end gap-2 shrink-0"
+                                        aria-label="Sustainable Development Goals"
+                                    >
+                                        {sdgNumbers.map((sdgNumber) => (
+                                            <img
+                                                key={sdgNumber}
+                                                src={sdgImages[sdgNumber]}
+                                                alt={`Sustainable Development Goal ${sdgNumber}`}
+                                                title={`SDG ${sdgNumber}`}
+                                                className="h-12 w-12 rounded-md object-cover shadow-sm sm:h-14 sm:w-14"
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
 
                             <h2 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">
                                 {article?.title}
@@ -326,20 +368,6 @@ export default function ViewArticle({ article: initialArticle = null, articleIma
                                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                                 </svg>
                             </a>
-
-                            {/* Instagram */}
-                            <a
-                                href={socialLinks.instagram}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="w-11 h-11 rounded-full bg-gradient-to-br from-[#f09433] via-[#e6683c] to-[#dc2743] text-white flex items-center justify-center hover:scale-110 transition-transform duration-200 shadow-md hover:shadow-lg"
-                                aria-label="Follow us on Instagram"
-                            >
-                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
-                                </svg>
-                            </a>
-
                             {/* TikTok */}
                             <a
                                 href={socialLinks.tiktok}

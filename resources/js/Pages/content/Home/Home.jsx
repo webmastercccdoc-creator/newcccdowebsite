@@ -15,6 +15,7 @@ import bannerVideo from '../../../assets/video/video-banner.mp4';
 
 // Import Student Image
 import studentsImage from '../../../assets/images/students-home.png';
+import nurturingBanner from '../../../assets/banner/nurturing-banner.png';
 
 // SDG Images for flipping effect
 import sdg1 from '../../../assets/images/sdg1.png';
@@ -798,7 +799,10 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                 style={{
                     width: '100%',
                     padding: '4rem 1.5rem',
-                    background: 'linear-gradient(180deg, #ffffff 0%, #f7faf8 100%)',
+                    backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.24), rgba(247, 250, 248, 0.38)), url(${nurturingBanner})`,
+                    backgroundPosition: 'center',
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
                     boxSizing: 'border-box',
                 }}
             >

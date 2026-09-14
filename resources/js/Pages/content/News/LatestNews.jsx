@@ -5,6 +5,24 @@ import MainLayout from "../../../layouts/MainLayout";
 import "../../../../css/home.css";
 import latestNewsBanner from '../../../assets/banner/News Banner.png';
 import AnimatedBannerText from "../../../components/content/AnimatedBannerText";
+import collegeLogo from '../../../assets/logos/ccdoclogo.png';
+import sdg1 from '../../../assets/images/sdg1.png';
+import sdg2 from '../../../assets/images/sdg2.jpg';
+import sdg3 from '../../../assets/images/sdg3.png';
+import sdg4 from '../../../assets/images/sdg4.png';
+import sdg5 from '../../../assets/images/sdg5.jpg';
+import sdg6 from '../../../assets/images/sdg6.png';
+import sdg7 from '../../../assets/images/sdg7.png';
+import sdg8 from '../../../assets/images/sdg8.png';
+import sdg9 from '../../../assets/images/sdg9.png';
+import sdg10 from '../../../assets/images/sdg10.png';
+import sdg11 from '../../../assets/images/sdg11.png';
+import sdg12 from '../../../assets/images/sdg12.jpg';
+import sdg13 from '../../../assets/images/sdg13.png';
+import sdg14 from '../../../assets/images/sdg14.png';
+import sdg15 from '../../../assets/images/sdg15.png';
+import sdg16 from '../../../assets/images/sdg16.png';
+import sdg17 from '../../../assets/images/sdg17.png';
 
 const normalizeImagePath = (value) => {
     if (!value)
@@ -13,24 +31,35 @@ const normalizeImagePath = (value) => {
     return "/" + value.replace(/^\/+/, "");
 };
 
-const SDG_COLORS = {
-    1: { bg: "#E5243B", text: "#FFFFFF", border: "#C81F35" },
-    2: { bg: "#DDA63A", text: "#111827", border: "#C5942A" },
-    3: { bg: "#4C9F38", text: "#FFFFFF", border: "#3D8A30" },
-    4: { bg: "#C5192D", text: "#FFFFFF", border: "#A91427" },
-    5: { bg: "#FF3A21", text: "#FFFFFF", border: "#DB2D19" },
-    6: { bg: "#26BDE2", text: "#0F172A", border: "#1AA4C8" },
-    7: { bg: "#FCC30B", text: "#111827", border: "#E6B108" },
-    8: { bg: "#A21942", text: "#FFFFFF", border: "#861635" },
-    9: { bg: "#FD6925", text: "#FFFFFF", border: "#E55B1D" },
-    10: { bg: "#DD1367", text: "#FFFFFF", border: "#C21058" },
-    11: { bg: "#FD9D24", text: "#111827", border: "#E78E1D" },
-    12: { bg: "#BF8B2E", text: "#FFFFFF", border: "#A77725" },
-    13: { bg: "#3F7E44", text: "#FFFFFF", border: "#2F6536" },
-    14: { bg: "#0A97D9", text: "#FFFFFF", border: "#087EB9" },
-    15: { bg: "#56C02B", text: "#111827", border: "#47A323" },
-    16: { bg: "#00689D", text: "#FFFFFF", border: "#00557E" },
-    17: { bg: "#19486A", text: "#FFFFFF", border: "#123A53" },
+const formatArticleDate = (value) => {
+    if (!value) return "";
+    const date = new Date(value);
+    if (isNaN(date.getTime())) return value;
+    return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    });
+};
+
+const sdgImages = {
+    1: sdg1,
+    2: sdg2,
+    3: sdg3,
+    4: sdg4,
+    5: sdg5,
+    6: sdg6,
+    7: sdg7,
+    8: sdg8,
+    9: sdg9,
+    10: sdg10,
+    11: sdg11,
+    12: sdg12,
+    13: sdg13,
+    14: sdg14,
+    15: sdg15,
+    16: sdg16,
+    17: sdg17,
 };
 
 // Placeholder news items for the carousel
@@ -350,44 +379,41 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                                             {sdgNumbers.length > 0 && (
                                                 <div className="absolute left-3 top-3 flex flex-wrap gap-2">
                                                     {sdgNumbers.slice(0, 2).map((sdgNumber) => {
-                                                        const palette =
-                                                            SDG_COLORS[sdgNumber] || {
-                                                                bg: "#E5E7EB",
-                                                                text: "#111827",
-                                                                border: "#D1D5DB",
-                                                            };
-
                                                         return (
-                                                            <span
+                                                            <img
                                                                 key={`${item.id}-sdg-${sdgNumber}`}
-                                                                className="rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em]"
-                                                                style={{
-                                                                    backgroundColor: palette.bg,
-                                                                    color: palette.text,
-                                                                    border: `1px solid ${palette.border}`,
-                                                                }}
-                                                            >
-                                                                SDG {sdgNumber}
-                                                            </span>
+                                                                src={sdgImages[sdgNumber]}
+                                                                alt={`Sustainable Development Goal ${sdgNumber}`}
+                                                                title={`SDG ${sdgNumber}`}
+                                                                className="h-12 w-12 rounded-md border border-white/70 object-cover shadow-md"
+                                                            />
                                                         );
                                                     })}
                                                 </div>
                                             )}
+                                        </div>
 
-                                            <div className="absolute bottom-0 left-0 right-0 p-4">
-                                                <span className="inline-flex items-center rounded-full border border-white/20 bg-black/40 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-white backdrop-blur-sm">
+                                        <div className="relative overflow-hidden p-4">
+                                            <img
+                                                src={collegeLogo}
+                                                alt=""
+                                                aria-hidden="true"
+                                                className="pointer-events-none absolute inset-0 z-0 h-full w-full object-contain p-8 opacity-[0.12]"
+                                            />
+
+                                            {/* Date + Department row */}
+                                            <div className="relative z-10 mb-3 flex items-center justify-between gap-2">
+                                                <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-gray-500">
+                                                    {formatArticleDate(item.date)}
+                                                </span>
+
+                                                <span className="inline-flex items-center rounded-full bg-green-700 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-white whitespace-nowrap shrink-0">
                                                     {item.department || "News"}
                                                 </span>
                                             </div>
-                                        </div>
-
-                                        <div className="p-4">
-                                            <div className="mb-3 text-[11px] font-medium uppercase tracking-[0.12em] text-gray-500">
-                                                {item.date}
-                                            </div>
 
                                             {/* Title - 2 lines with ellipsis */}
-                                            <h3 className="mb-3 text-lg font-bold leading-snug text-gray-900">
+                                            <h3 className="relative z-10 mb-3 text-lg font-bold leading-snug text-gray-900">
                                                 <a
                                                     href={`/news/${item.id}`}
                                                     className="transition-colors duration-200 hover:text-green-700 line-clamp-2"
@@ -405,7 +431,7 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
 
                                             {/* Content - 3 lines with ellipsis */}
                                             <p
-                                                className="mb-4 text-sm leading-6 text-gray-600"
+                                                className="relative z-10 mb-4 text-sm leading-6 text-gray-600"
                                                 style={{
                                                     display: '-webkit-box',
                                                     WebkitLineClamp: 3,
@@ -417,25 +443,27 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                                                 {getTruncatedContent(item.content, 120)}
                                             </p>
 
-                                            <a
-                                                href={`/news/${item.id}`}
-                                                className="inline-flex items-center gap-2 text-sm font-semibold text-green-700 transition-colors duration-200 hover:text-green-800"
-                                            >
-                                                Read Article
-                                                <svg
-                                                    className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
+                                            <div className="flex items-center">
+                                                <a
+                                                    href={`/news/${item.id}`}
+                                                    className="relative z-10 inline-flex items-center gap-2 text-sm font-semibold text-green-700 transition-colors duration-200 hover:text-green-800"
                                                 >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth="2"
-                                                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                                                    />
-                                                </svg>
-                                            </a>
+                                                    Read Article
+                                                    <svg
+                                                        className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth="2"
+                                                            d="M17 8l4 4m0 0l-4 4m4-4H3"
+                                                        />
+                                                    </svg>
+                                                </a>
+                                            </div>
                                         </div>
                                     </motion.article>
                                 );

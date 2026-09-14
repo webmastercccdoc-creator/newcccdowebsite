@@ -190,7 +190,7 @@ LANDING PAGE CAROUSEL
     margin-top: 4px;
 }
 
-/* Description/Content */
+/* Description/Content — clamped to 4 lines with ellipsis */
 .landing-page .details>.desc {
     margin-top: 8px;
     width: 100%;
@@ -200,6 +200,14 @@ LANDING PAGE CAROUSEL
     color: rgba(255, 255, 255, 0.8);
     white-space: normal;
     word-wrap: break-word;
+
+    /* Line clamp */
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: calc(1.6em * 4); /* fallback */
 }
 
 /* CTA Button */

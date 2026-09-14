@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
-import ExtensionComingSoon from '../Extension/ExtensionComingSoon';
+import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
+import sdgBanner from '../../../assets/banner/extension-banner.png';
+import sdgRank from '../../../assets/images/sdg-rank-2026.png';
 import sdg1 from '../../../assets/images/sdg1.png';
 import sdg2 from '../../../assets/images/sdg2.jpg';
 import sdg3 from '../../../assets/images/sdg3.png';
@@ -61,6 +63,7 @@ export default function SDG() {
 
     const [autoFlippedIndices, setAutoFlippedIndices] = useState({});
     const [activeHoverIndex, setActiveHoverIndex] = useState(null);
+    const [showClickMe, setShowClickMe] = useState(true);
 
     useEffect(() => {
         const triggerRandomFlip = () => {
@@ -91,52 +94,118 @@ export default function SDG() {
     }, []);
 
     return (
-        <ExtensionComingSoon
-            title="Sustainable Development Goals"
-            description="Advancing sustainable development and global responsibility through education, action, and community impact."
-        />
-    );
-
-    return (
         <MainLayout
             maxWidth="full"
             containerClassName="px-0"
             mainClassName="py-0"
             className="overflow-hidden pb-0"
         >
-            <div className="relative w-full bg-white py-6 px-4 pt-[10px] md:pt-[20px] shadow-lg">
-                <div className="relative z-10 mx-auto max-w-7xl grid w-full gap-1 sm:gap-1.5 md:gap-2 grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-6 2xl:grid-cols-6">
-                    {SDG_IMAGES.map((item, index) => {
-                        const isAutoFlipped = autoFlippedIndices[index];
-                        const isHovered = activeHoverIndex === index;
+            {/* Hero Banner with Image */}
+            <div
+                className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
+                style={{
+                    backgroundImage: `url('${sdgBanner}')`
+                }}
+            >
+                {/* Dark Overlay for text readability */}
+                <div className="absolute inset-0 bg-black/50"></div>
 
-                        const currentSrc = isHovered && item.hoverImg
-                            ? item.hoverImg
-                            : isAutoFlipped && item.hoverImg
-                                ? item.hoverImg
-                                : item.defaultImg;
+                <AnimatedBannerText
+                    title="Sustainable Development Goals"
+                    description="Advancing sustainable development and global responsibility through education, action, and community impact."
+                />
+            </div>
 
-                        return (
-                            /* 
-                                BORDERLESS FLOATING SHADOW:
-                                - Added 'bg-transparent' to ensure no white box.
-                                - Added 'drop-shadow-xl' for a soft, blurry shadow that follows the image shape.
-                                - Added 'rounded-full' if the image is circular, or keep it as is for square logos.
-                            */
+            {/* Two Containers: Left (all SDGs) + Right (text + image) */}
+            <div className="w-full bg-gray-50 px-4 py-6 md:py-10">
+                <div className="mx-auto max-w-7xl flex flex-col lg:flex-row gap-4 lg:gap-6 items-stretch">
+                    {/* LEFT CONTAINER — all 18 SDG items + centered floating button (no bg) */}
+                    <div className="relative w-full lg:w-1/2 bg-white rounded-lg shadow-md overflow-hidden">
+                        <div className="grid w-full h-full grid-cols-4 auto-rows-fr">
+                            {SDG_IMAGES.map((item, index) => {
+                                const isAutoFlipped = autoFlippedIndices[index];
+                                const isHovered = activeHoverIndex === index;
+
+                                const currentSrc = isHovered && item.hoverImg
+                                    ? item.hoverImg
+                                    : isAutoFlipped && item.hoverImg
+                                        ? item.hoverImg
+                                        : item.defaultImg;
+
+                                return (
+                                    <img
+                                        key={currentSrc}
+                                        src={currentSrc}
+                                        alt={`SDG ${index + 1}`}
+                                        className={`w-full h-full object-cover ring-1 ring-white transition-all duration-300 ease-in-out cursor-pointer animate-spin-in ${index === SDG_IMAGES.length - 1 ? 'animate-spin' : ''}`}
+                                        onMouseEnter={() => item.hoverImg && setActiveHoverIndex(index)}
+                                        onMouseLeave={() => setActiveHoverIndex(null)}
+                                    />
+                                );
+                            })}
+                        </div>
+
+                        {/* ===== CENTERED FLOATING "CLICK ME" BUTTON — NO BACKGROUND ===== */}
+                        {showClickMe && (
+                            <button
+                                type="button"
+                                onClick={() => setShowClickMe(false)}
+                                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-transparent border-none text-white font-extrabold uppercase tracking-widest text-lg md:text-2xl drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] animate-bounce cursor-pointer"
+                            >
+                                Click Me
+                            </button>
+                        )}
+                    </div>
+
+                    {/* RIGHT CONTAINER — text + rank image */}
+                    <div className="w-full lg:w-1/2 bg-white rounded-lg shadow-md p-6 md:p-10 flex flex-col justify-center text-center">
+                        {/* Badge */}
+                        <span className="mx-auto inline-block w-fit rounded-full border border-green-700 bg-transparent px-3 py-1 text-xs font-semibold uppercase tracking-wider text-green-700">
+                            SDG Ranking Update
+                        </span>
+
+                        {/* Title */}
+                        <h2 className="mt-4 text-2xl md:text-4xl font-extrabold text-green-700 leading-tight text-center">
+                            City College of Cagayan de Oro Climbs to a Higher SDG Rank
+                        </h2>
+
+                        {/* Accent bar */}
+                        <div className="mx-auto mt-3 h-1 w-20 rounded-full bg-green-700" />
+
+                        <p className="mt-5 text-sm md:text-base text-gray-700 leading-relaxed text-left">
+                            City College of Cagayan de Oro continues to strengthen its commitment
+                            to the Sustainable Development Goals. Compared to last year's ranking,
+                            the institution has achieved a <span className="font-semibold text-green-800">higher SDG rank this year</span>,
+                            reflecting measurable progress in education, community engagement,
+                            sustainability practices, and social impact.
+                        </p>
+
+                        <p className="mt-4 text-sm md:text-base text-gray-700 leading-relaxed text-left">
+                            This improvement is the result of sustained efforts across teaching,
+                            research, extension programs, and partnerships — all aligned with the
+                            17 SDGs. The college remains dedicated to advancing global
+                            responsibility and creating lasting, positive change within the
+                            community and beyond.
+                        </p>
+
+                        {/* Rank image below text */}
+                        <div className="mt-7">
                             <img
-                                key={currentSrc}
-                                src={currentSrc}
-                                alt={`SDG ${index + 1}`}
-                                className={`w-full h-auto object-contain bg-transparent transition-all duration-300 ease-in-out drop-shadow-lg hover:-translate-y-2 hover:drop-shadow-2xl cursor-pointer animate-spin-in ${index === SDG_IMAGES.length - 1 ? 'animate-spin' : ''}`}
-                                onMouseEnter={() => item.hoverImg && setActiveHoverIndex(index)}
-                                onMouseLeave={() => setActiveHoverIndex(null)}
+                                src={sdgRank}
+                                alt="SDG Rank 2026"
+                                className="w-full h-auto object-contain mx-auto rounded-lg"
                             />
-                        );
-                    })}
+                        </div>
+
+                        <p className="mt-6 text-xs md:text-sm text-gray-500 italic text-center">
+                            Together, we continue to move forward — one goal at a time.
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <div className="mx-auto max-w-6xl py-8 md:py-12">
+            {/* Empty Main Content */}
+            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
                 {/* Content area - empty */}
             </div>
 

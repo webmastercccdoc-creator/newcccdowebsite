@@ -24,7 +24,8 @@ export default function ViewEvents() {
 
     // Social media follow links
     const socialLinks = {
-        facebook: 'https://facebook.com/yourpage'
+        facebook: 'https://facebook.com/yourpage',
+        tiktok: 'https://www.tiktok.com/@orocitycollegeofficial'
     };
 
     // Fetch event details

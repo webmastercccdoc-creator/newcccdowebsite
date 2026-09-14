@@ -374,7 +374,7 @@ export default function EnrollNow() {
                                 You can also visit our <a href="#" className="text-[#059669] font-semibold hover:underline">Admissions Office</a> for personalized guidance.
                             </p>
                             <div className="flex flex-wrap justify-center gap-4 mt-4">
-                                <span className="inline-flex items-center px-3 py-1 bg-[#059669]/10 text-[#059669] rounded-full text-xs font-medium">
+                                <span className="inline-flex items-center px-3 py-1 bg-[#059669]/10 text-[#1a365d] rounded-full text-xs font-medium">
                                     <span className="w-2 h-2 bg-[#059669] rounded-full mr-2"></span>
                                     CCAT - College Programs
                                 </span>

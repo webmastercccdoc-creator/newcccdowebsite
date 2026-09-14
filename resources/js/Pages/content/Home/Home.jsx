@@ -1,152 +1,159 @@
-import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { router } from '@inertiajs/react';
-import MainLayout from '../../../layouts/MainLayout';
-import '../../../../css/home.css';
-import { initLandingAnimations } from '../../../home-animations';
-import ArticlesCoverflow from './ArticlesCoverflow';
-import sdgHomeImage from '../../../assets/images/sdg-home.png';
+import { useEffect, useMemo, useState, useRef, useCallback } from "react";
+import { motion } from "framer-motion";
+import { router } from "@inertiajs/react";
+import MainLayout from "../../../layouts/MainLayout";
+import "../../../../css/home.css";
+import { initLandingAnimations } from "../../../home-animations";
+import ArticlesCoverflow from "./ArticlesCoverflow";
+import sdgHomeImage from "../../../assets/images/sdg-home.png";
 
 // Ranking Logos
-import homeLogo from '../../../assets/logos/home-logo.png';
+import homeLogo from "../../../assets/logos/home-logo.png";
 
 // Import Video
-import bannerVideo from '../../../assets/video/video-banner.mp4';
+import bannerVideo from "../../../assets/video/video-banner.mp4";
 
 // Import Student Image
-import studentsImage from '../../../assets/images/students-home.png';
-import nurturingBanner from '../../../assets/banner/nurturing-banner.png';
+import studentsImage from "../../../assets/images/students-home.png";
+import nurturingBanner from "../../../assets/banner/nurturing-banner.png";
 
 // SDG Images for flipping effect
-import sdg1 from '../../../assets/images/sdg1.png';
-import sdg2 from '../../../assets/images/sdg2.jpg';
-import sdg3 from '../../../assets/images/sdg3.png';
-import sdg4 from '../../../assets/images/sdg4.png';
-import sdg5 from '../../../assets/images/sdg5.jpg';
-import sdg6 from '../../../assets/images/sdg6.png';
-import sdg7 from '../../../assets/images/sdg7.png';
-import sdg8 from '../../../assets/images/sdg8.png';
-import sdg9 from '../../../assets/images/sdg9.png';
-import sdg10 from '../../../assets/images/sdg10.png';
-import sdg11 from '../../../assets/images/sdg11.png';
-import sdg12 from '../../../assets/images/sdg12.jpg';
-import sdg13 from '../../../assets/images/sdg13.png';
-import sdg14 from '../../../assets/images/sdg14.png';
-import sdg15 from '../../../assets/images/sdg15.png';
-import sdg16 from '../../../assets/images/sdg16.png';
-import sdg17 from '../../../assets/images/sdg17.png';
-import sdg from '../../../assets/logos/sdg.png';
-import sdg_01 from '../../../assets/images/sdg_01.jpg';
-import sdg_02 from '../../../assets/images/sdg_02.jpg';
-import sdg_03 from '../../../assets/images/sdg_03.jpg';
-import sdg_04 from '../../../assets/images/sdg_04.jpg';
-import sdg_05 from '../../../assets/images/sdg_05.jpg';
-import sdg_06 from '../../../assets/images/sdg_06.jpg';
-import sdg_07 from '../../../assets/images/sdg_07.jpg';
-import sdg_08 from '../../../assets/images/sdg_08.jpg';
-import sdg_10 from '../../../assets/images/sdg_10.jpg';
-import sdg_13 from '../../../assets/images/sdg_13.jpg';
-import sdg_14 from '../../../assets/images/sdg_14.jpg';
-import sdg_15 from '../../../assets/images/sdg_15.jpg';
-import sdg_17 from '../../../assets/images/sdg_17.jpg';
+import sdg1 from "../../../assets/images/sdg1.png";
+import sdg2 from "../../../assets/images/sdg2.jpg";
+import sdg3 from "../../../assets/images/sdg3.png";
+import sdg4 from "../../../assets/images/sdg4.png";
+import sdg5 from "../../../assets/images/sdg5.jpg";
+import sdg6 from "../../../assets/images/sdg6.png";
+import sdg7 from "../../../assets/images/sdg7.png";
+import sdg8 from "../../../assets/images/sdg8.png";
+import sdg9 from "../../../assets/images/sdg9.png";
+import sdg10 from "../../../assets/images/sdg10.png";
+import sdg11 from "../../../assets/images/sdg11.png";
+import sdg12 from "../../../assets/images/sdg12.jpg";
+import sdg13 from "../../../assets/images/sdg13.png";
+import sdg14 from "../../../assets/images/sdg14.png";
+import sdg15 from "../../../assets/images/sdg15.png";
+import sdg16 from "../../../assets/images/sdg16.png";
+import sdg17 from "../../../assets/images/sdg17.png";
+import sdg from "../../../assets/logos/sdg.png";
+import sdg_01 from "../../../assets/images/sdg_01.jpg";
+import sdg_02 from "../../../assets/images/sdg_02.jpg";
+import sdg_03 from "../../../assets/images/sdg_03.jpg";
+import sdg_04 from "../../../assets/images/sdg_04.jpg";
+import sdg_05 from "../../../assets/images/sdg_05.jpg";
+import sdg_06 from "../../../assets/images/sdg_06.jpg";
+import sdg_07 from "../../../assets/images/sdg_07.jpg";
+import sdg_08 from "../../../assets/images/sdg_08.jpg";
+import sdg_10 from "../../../assets/images/sdg_10.jpg";
+import sdg_13 from "../../../assets/images/sdg_13.jpg";
+import sdg_14 from "../../../assets/images/sdg_14.jpg";
+import sdg_15 from "../../../assets/images/sdg_15.jpg";
+import sdg_17 from "../../../assets/images/sdg_17.jpg";
 
 const normalizeImagePath = (value) => {
-    if (!value) return 'https://placehold.co/600x400/1e3a8a/ffffff?text=No+Image';
-    if (/^https?:\/\//i.test(value) || value.startsWith('data:')) return value;
-    return '/' + value.replace(/^\/+/, '');
+    if (!value)
+        return "https://placehold.co/600x400/1e3a8a/ffffff?text=No+Image";
+    if (/^https?:\/\//i.test(value) || value.startsWith("data:")) return value;
+    return "/" + value.replace(/^\/+/, "");
 };
 
 const SDG_COLORS = {
-    1: { bg: '#E5243B', text: '#FFFFFF', border: '#C81F35' },
-    2: { bg: '#DDA63A', text: '#111827', border: '#C5942A' },
-    3: { bg: '#4C9F38', text: '#FFFFFF', border: '#3D8A30' },
-    4: { bg: '#C5192D', text: '#FFFFFF', border: '#A91427' },
-    5: { bg: '#FF3A21', text: '#FFFFFF', border: '#DB2D19' },
-    6: { bg: '#26BDE2', text: '#0F172A', border: '#1AA4C8' },
-    7: { bg: '#FCC30B', text: '#111827', border: '#E6B108' },
-    8: { bg: '#A21942', text: '#FFFFFF', border: '#861635' },
-    9: { bg: '#FD6925', text: '#FFFFFF', border: '#E55B1D' },
-    10: { bg: '#DD1367', text: '#FFFFFF', border: '#C21058' },
-    11: { bg: '#FD9D24', text: '#111827', border: '#E78E1D' },
-    12: { bg: '#BF8B2E', text: '#FFFFFF', border: '#A77725' },
-    13: { bg: '#3F7E44', text: '#FFFFFF', border: '#2F6536' },
-    14: { bg: '#0A97D9', text: '#FFFFFF', border: '#087EB9' },
-    15: { bg: '#56C02B', text: '#111827', border: '#47A323' },
-    16: { bg: '#00689D', text: '#FFFFFF', border: '#00557E' },
-    17: { bg: '#19486A', text: '#FFFFFF', border: '#123A53' },
+    1: { bg: "#E5243B", text: "#FFFFFF", border: "#C81F35" },
+    2: { bg: "#DDA63A", text: "#111827", border: "#C5942A" },
+    3: { bg: "#4C9F38", text: "#FFFFFF", border: "#3D8A30" },
+    4: { bg: "#C5192D", text: "#FFFFFF", border: "#A91427" },
+    5: { bg: "#FF3A21", text: "#FFFFFF", border: "#DB2D19" },
+    6: { bg: "#26BDE2", text: "#0F172A", border: "#1AA4C8" },
+    7: { bg: "#FCC30B", text: "#111827", border: "#E6B108" },
+    8: { bg: "#A21942", text: "#FFFFFF", border: "#861635" },
+    9: { bg: "#FD6925", text: "#FFFFFF", border: "#E55B1D" },
+    10: { bg: "#DD1367", text: "#FFFFFF", border: "#C21058" },
+    11: { bg: "#FD9D24", text: "#111827", border: "#E78E1D" },
+    12: { bg: "#BF8B2E", text: "#FFFFFF", border: "#A77725" },
+    13: { bg: "#3F7E44", text: "#FFFFFF", border: "#2F6536" },
+    14: { bg: "#0A97D9", text: "#FFFFFF", border: "#087EB9" },
+    15: { bg: "#56C02B", text: "#111827", border: "#47A323" },
+    16: { bg: "#00689D", text: "#FFFFFF", border: "#00557E" },
+    17: { bg: "#19486A", text: "#FFFFFF", border: "#123A53" },
 };
 
 const calculateReadTime = (content) => {
-    if (!content) return '1 min read';
+    if (!content) return "1 min read";
     const wordsPerMinute = 200;
-    const text = content.replace(/<[^>]*>/g, '');
+    const text = content.replace(/<[^>]*>/g, "");
     const wordCount = text.split(/\s+/).length;
     const minutes = Math.ceil(wordCount / wordsPerMinute);
     return `${minutes} min read`;
 };
 
 const stripHtmlAndTruncate = (html, maxLength = 120) => {
-    if (!html) return '';
-    const text = html.replace(/<[^>]*>/g, '');
+    if (!html) return "";
+    const text = html.replace(/<[^>]*>/g, "");
     if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...';
+    return text.substring(0, maxLength) + "...";
 };
 
 // DUMMY BANNER DATA - Used when database is empty
 const DUMMY_BANNER = {
-    place: 'City College of Cagayan de Oro',
-    title: 'Your City to learn, create, and grow',
-    title2: 'Discover opportunities at the City College of Cagayan de Oro.',
-    description: 'Through innovation and excellence, we shape the future of education in Northern Mindanao.',
-    image: 'https://placehold.co/1200x600/1a237e/ffffff?text=City+College+of+CDO',
-    bannerImage: 'https://placehold.co/1200x600/1a237e/ffffff?text=City+College+of+CDO',
-    link: '#',
+    place: "City College of Cagayan de Oro",
+    title: "Your City to learn, create, and grow",
+    title2: "Discover opportunities at the City College of Cagayan de Oro.",
+    description:
+        "Through innovation and excellence, we shape the future of education in Northern Mindanao.",
+    image: "https://placehold.co/1200x600/1a237e/ffffff?text=City+College+of+CDO",
+    bannerImage:
+        "https://placehold.co/1200x600/1a237e/ffffff?text=City+College+of+CDO",
+    link: "#",
 };
 
 // DUMMY NEWS DATA - Used when database is empty
 const DUMMY_ARTICLES = [
     {
-        id: 'dummy-1',
-        date: 'January 15, 2026',
-        title: 'Welcome to City College of CDO',
-        content: 'City College of Cagayan de Oro is dedicated to providing quality education and fostering excellence in our students. Discover our programs and opportunities.',
-        category: 'Announcement',
-        department: 'Office of the President',
-        image: 'https://placehold.co/600x400/1a237e/ffffff?text=Welcome+to+CCCDO',
-        alt: 'City College of CDO Campus',
+        id: "dummy-1",
+        date: "January 15, 2026",
+        title: "Welcome to City College of CDO",
+        content:
+            "City College of Cagayan de Oro is dedicated to providing quality education and fostering excellence in our students. Discover our programs and opportunities.",
+        category: "Announcement",
+        department: "Office of the President",
+        image: "https://placehold.co/600x400/1a237e/ffffff?text=Welcome+to+CCCDO",
+        alt: "City College of CDO Campus",
         sdg_numbers: [4, 8],
     },
     {
-        id: 'dummy-2',
-        date: 'January 10, 2026',
-        title: 'New Academic Programs Announced',
-        content: 'We are excited to announce new academic programs designed to meet the evolving needs of our students and the community.',
-        category: 'Academics',
-        department: 'Academic Affairs',
-        image: 'https://placehold.co/600x400/0d47a1/ffffff?text=New+Programs',
-        alt: 'Academic Programs',
+        id: "dummy-2",
+        date: "January 10, 2026",
+        title: "New Academic Programs Announced",
+        content:
+            "We are excited to announce new academic programs designed to meet the evolving needs of our students and the community.",
+        category: "Academics",
+        department: "Academic Affairs",
+        image: "https://placehold.co/600x400/0d47a1/ffffff?text=New+Programs",
+        alt: "Academic Programs",
         sdg_numbers: [4],
     },
     {
-        id: 'dummy-3',
-        date: 'January 5, 2026',
-        title: 'Student Achievements and Recognition',
-        content: 'Our students continue to excel in various fields, bringing honor to the institution through their achievements and contributions.',
-        category: 'Student Life',
-        department: 'Student Affairs',
-        image: 'https://placehold.co/600x400/1565c0/ffffff?text=Student+Achievements',
-        alt: 'Student Achievements',
+        id: "dummy-3",
+        date: "January 5, 2026",
+        title: "Student Achievements and Recognition",
+        content:
+            "Our students continue to excel in various fields, bringing honor to the institution through their achievements and contributions.",
+        category: "Student Life",
+        department: "Student Affairs",
+        image: "https://placehold.co/600x400/1565c0/ffffff?text=Student+Achievements",
+        alt: "Student Achievements",
         sdg_numbers: [4, 10],
     },
     {
-        id: 'dummy-4',
-        date: 'December 20, 2025',
-        title: 'Community Engagement Programs',
-        content: 'City College of CDO remains committed to community service and engagement, fostering meaningful partnerships and initiatives.',
-        category: 'Community',
-        department: 'Community Relations',
-        image: 'https://placehold.co/600x400/0d47a1/ffffff?text=Community+Engagement',
-        alt: 'Community Engagement',
+        id: "dummy-4",
+        date: "December 20, 2025",
+        title: "Community Engagement Programs",
+        content:
+            "City College of CDO remains committed to community service and engagement, fostering meaningful partnerships and initiatives.",
+        category: "Community",
+        department: "Community Relations",
+        image: "https://placehold.co/600x400/0d47a1/ffffff?text=Community+Engagement",
+        alt: "Community Engagement",
         sdg_numbers: [11, 17],
     },
 ];
@@ -185,8 +192,8 @@ export default function Home({ newsArticles = [], promotions = [] }) {
     const [videoAspectRatio, setVideoAspectRatio] = useState(null);
     const [slidesPerView, setSlidesPerView] = useState(4);
     const [isMobile, setIsMobile] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [submittedSearch, setSubmittedSearch] = useState('');
+    const [searchQuery, setSearchQuery] = useState("");
+    const [submittedSearch, setSubmittedSearch] = useState("");
     const carouselRef = useRef(null);
     const autoPlayRef = useRef(null);
     const videoRef = useRef(null);
@@ -199,13 +206,21 @@ export default function Home({ newsArticles = [], promotions = [] }) {
     // Banner data with fallback to dummy
     const bannerData = useMemo(() => {
         const mappedPromotions = promotions.map((promotion) => ({
-            place: promotion.department || 'City College of Cagayan de Oro',
-            title: promotion.title || 'Promotion',
-            title2: promotion.subtitle || promotion.title2 || '',
-            description: promotion.content || promotion.description || '',
-            image: normalizeImagePath(promotion.carousel_image_url || promotion.image_url || promotion.image_path),
-            bannerImage: normalizeImagePath(promotion.banner_image_url || promotion.image_url || promotion.image_path),
-            link: promotion.link || '#',
+            place: promotion.department || "City College of Cagayan de Oro",
+            title: promotion.title || "Promotion",
+            title2: promotion.subtitle || promotion.title2 || "",
+            description: promotion.content || promotion.description || "",
+            image: normalizeImagePath(
+                promotion.carousel_image_url ||
+                    promotion.image_url ||
+                    promotion.image_path,
+            ),
+            bannerImage: normalizeImagePath(
+                promotion.banner_image_url ||
+                    promotion.image_url ||
+                    promotion.image_path,
+            ),
+            link: promotion.link || "#",
         }));
 
         if (mappedPromotions.length === 0) {
@@ -224,22 +239,26 @@ export default function Home({ newsArticles = [], promotions = [] }) {
     const articles = useMemo(() => {
         const mappedArticles = newsArticles.map((article) => ({
             id: article.id || `article-${Date.now()}-${Math.random()}`,
-            date: article.date || article.created_at || '',
-            title: article.title || 'News item',
-            excerpt: article.content || '',
-            category: article.category || 'News',
-            department: article.department || article.category || 'News',
+            date: article.date || article.created_at || "",
+            title: article.title || "News item",
+            excerpt: article.content || "",
+            category: article.category || "News",
+            department: article.department || article.category || "News",
             image: normalizeImagePath(article.image_path || article.image),
-            alt: article.article_alt_text || article.alt_text || article.title || 'News image',
+            alt:
+                article.article_alt_text ||
+                article.alt_text ||
+                article.title ||
+                "News image",
             link: `/news/${article.id}`,
             sdgNumbers: (() => {
                 if (!article.sdg_numbers) return [];
                 if (Array.isArray(article.sdg_numbers)) {
-                    return article.sdg_numbers.filter(num => !isNaN(num));
+                    return article.sdg_numbers.filter((num) => !isNaN(num));
                 }
-                if (typeof article.sdg_numbers === 'string') {
+                if (typeof article.sdg_numbers === "string") {
                     return article.sdg_numbers
-                        .split(',')
+                        .split(",")
                         .map((value) => Number(value.trim()))
                         .filter((value) => !Number.isNaN(value));
                 }
@@ -255,7 +274,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
         if (articles.length === 0) return [];
         return articles.map((article, idx) => ({
             ...article,
-            _uniqueKey: `article-${article.id}-${idx}`
+            _uniqueKey: `article-${article.id}-${idx}`,
         }));
     }, [articles]);
 
@@ -272,11 +291,12 @@ export default function Home({ newsArticles = [], promotions = [] }) {
         if (!submittedSearch.trim()) return articles;
 
         const query = submittedSearch.toLowerCase();
-        return articles.filter((article) =>
-            article.title.toLowerCase().includes(query) ||
-            article.excerpt.toLowerCase().includes(query) ||
-            article.department.toLowerCase().includes(query) ||
-            article.category.toLowerCase().includes(query)
+        return articles.filter(
+            (article) =>
+                article.title.toLowerCase().includes(query) ||
+                article.excerpt.toLowerCase().includes(query) ||
+                article.department.toLowerCase().includes(query) ||
+                article.category.toLowerCase().includes(query),
         );
     }, [articles, submittedSearch]);
 
@@ -302,16 +322,19 @@ export default function Home({ newsArticles = [], promotions = [] }) {
             }
         };
 
-        const intervalId = setInterval(() => {
-            triggerRandomFlip();
-        }, 2000 + Math.random() * 3000);
+        const intervalId = setInterval(
+            () => {
+                triggerRandomFlip();
+            },
+            2000 + Math.random() * 3000,
+        );
 
         return () => clearInterval(intervalId);
     }, []);
 
     // Get slides per view based on screen width
     const getSlidesPerView = useCallback(() => {
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
             const width = window.innerWidth;
             if (width <= 640) return 1;
             if (width <= 992) return 2;
@@ -322,7 +345,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
 
     // Check if mobile
     const checkIsMobile = useCallback(() => {
-        if (typeof window !== 'undefined') {
+        if (typeof window !== "undefined") {
             return window.innerWidth <= 640;
         }
         return false;
@@ -336,15 +359,15 @@ export default function Home({ newsArticles = [], promotions = [] }) {
         };
 
         updateView();
-        window.addEventListener('resize', updateView);
-        return () => window.removeEventListener('resize', updateView);
+        window.addEventListener("resize", updateView);
+        return () => window.removeEventListener("resize", updateView);
     }, [getSlidesPerView, checkIsMobile]);
 
     // Auto-play the video and start fade out when it ends
     useEffect(() => {
         if (videoRef.current && showVideo) {
-            videoRef.current.play().catch(error => {
-                console.log('Video autoplay failed:', error);
+            videoRef.current.play().catch((error) => {
+                console.log("Video autoplay failed:", error);
             });
 
             const handleVideoEnd = () => {
@@ -355,11 +378,14 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                 }, 1000);
             };
 
-            videoRef.current.addEventListener('ended', handleVideoEnd);
+            videoRef.current.addEventListener("ended", handleVideoEnd);
 
             return () => {
                 if (videoRef.current) {
-                    videoRef.current.removeEventListener('ended', handleVideoEnd);
+                    videoRef.current.removeEventListener(
+                        "ended",
+                        handleVideoEnd,
+                    );
                 }
             };
         }
@@ -390,23 +416,26 @@ export default function Home({ newsArticles = [], promotions = [] }) {
         return currentIndex;
     };
 
-    const goToSlide = useCallback((index) => {
-        if (isTransitioning || totalSlides === 0) return;
+    const goToSlide = useCallback(
+        (index) => {
+            if (isTransitioning || totalSlides === 0) return;
 
-        // Clamp the index to valid range
-        const maxIndex = totalSlides * 3 - 1;
-        const clampedIndex = Math.max(0, Math.min(index, maxIndex));
+            // Clamp the index to valid range
+            const maxIndex = totalSlides * 3 - 1;
+            const clampedIndex = Math.max(0, Math.min(index, maxIndex));
 
-        setIsTransitioning(true);
-        setCurrentIndex(clampedIndex);
+            setIsTransitioning(true);
+            setCurrentIndex(clampedIndex);
 
-        // Reset transition state after animation completes
-        setTimeout(() => {
-            if (isMounted.current) {
-                setIsTransitioning(false);
-            }
-        }, 500);
-    }, [isTransitioning, totalSlides]);
+            // Reset transition state after animation completes
+            setTimeout(() => {
+                if (isMounted.current) {
+                    setIsTransitioning(false);
+                }
+            }, 500);
+        },
+        [isTransitioning, totalSlides],
+    );
 
     const goToNextSlide = useCallback(() => {
         if (isTransitioning || totalSlides === 0 || showVideo) return;
@@ -436,7 +465,15 @@ export default function Home({ newsArticles = [], promotions = [] }) {
         }
 
         goToSlide(nextIndex);
-    }, [currentIndex, isTransitioning, goToSlide, totalSlides, showVideo, isMobile, articles.length]);
+    }, [
+        currentIndex,
+        isTransitioning,
+        goToSlide,
+        totalSlides,
+        showVideo,
+        isMobile,
+        articles.length,
+    ]);
 
     const goToPrevSlide = useCallback(() => {
         if (isTransitioning || totalSlides === 0 || showVideo) return;
@@ -466,11 +503,25 @@ export default function Home({ newsArticles = [], promotions = [] }) {
         }
 
         goToSlide(prevIndex);
-    }, [currentIndex, isTransitioning, goToSlide, totalSlides, showVideo, isMobile, articles.length]);
+    }, [
+        currentIndex,
+        isTransitioning,
+        goToSlide,
+        totalSlides,
+        showVideo,
+        isMobile,
+        articles.length,
+    ]);
 
     // Handle infinite scroll - reset position when reaching boundaries (Desktop only)
     useEffect(() => {
-        if (carouselSlides.length === 0 || totalSlides === 0 || showVideo || isMobile) return;
+        if (
+            carouselSlides.length === 0 ||
+            totalSlides === 0 ||
+            showVideo ||
+            isMobile
+        )
+            return;
 
         const handleTransitionEnd = () => {
             if (!isMounted.current) return;
@@ -501,9 +552,12 @@ export default function Home({ newsArticles = [], promotions = [] }) {
 
         const carousel = carouselRef.current;
         if (carousel) {
-            carousel.addEventListener('transitionend', handleTransitionEnd);
+            carousel.addEventListener("transitionend", handleTransitionEnd);
             return () => {
-                carousel.removeEventListener('transitionend', handleTransitionEnd);
+                carousel.removeEventListener(
+                    "transitionend",
+                    handleTransitionEnd,
+                );
             };
         }
     }, [currentIndex, totalSlides, carouselSlides.length, showVideo, isMobile]);
@@ -515,7 +569,12 @@ export default function Home({ newsArticles = [], promotions = [] }) {
             autoPlayRef.current = null;
         }
 
-        if (carouselSlides.length === 0 || totalSlides === 0 || showVideo || isMobile) {
+        if (
+            carouselSlides.length === 0 ||
+            totalSlides === 0 ||
+            showVideo ||
+            isMobile
+        ) {
             return;
         }
 
@@ -531,7 +590,13 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                 autoPlayRef.current = null;
             }
         };
-    }, [goToNextSlide, carouselSlides.length, totalSlides, showVideo, isMobile]);
+    }, [
+        goToNextSlide,
+        carouselSlides.length,
+        totalSlides,
+        showVideo,
+        isMobile,
+    ]);
 
     // Pause auto-play on hover (desktop only)
     const handleMouseEnter = useCallback(() => {
@@ -544,7 +609,8 @@ export default function Home({ newsArticles = [], promotions = [] }) {
 
     const handleMouseLeave = useCallback(() => {
         if (isMobile) return;
-        if (carouselSlides.length === 0 || totalSlides === 0 || showVideo) return;
+        if (carouselSlides.length === 0 || totalSlides === 0 || showVideo)
+            return;
 
         if (autoPlayRef.current) {
             clearInterval(autoPlayRef.current);
@@ -556,7 +622,13 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                 goToNextSlide();
             }
         }, 5000);
-    }, [goToNextSlide, carouselSlides.length, totalSlides, showVideo, isMobile]);
+    }, [
+        goToNextSlide,
+        carouselSlides.length,
+        totalSlides,
+        showVideo,
+        isMobile,
+    ]);
 
     // Cleanup on unmount
     useEffect(() => {
@@ -591,7 +663,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     loading="lazy"
                 />
                 <div className="news-card-badge">
-                    {news.department || news.category || 'News'}
+                    {news.department || news.category || "News"}
                 </div>
             </div>
 
@@ -603,12 +675,20 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     {news.sdgNumbers && news.sdgNumbers.length > 0 && (
                         <div className="flex flex-wrap gap-2">
                             {news.sdgNumbers.slice(0, 3).map((sdg) => {
-                                const color = SDG_COLORS[sdg] || { bg: '#e2e8f0', text: '#0f172a', border: '#cbd5e1' };
+                                const color = SDG_COLORS[sdg] || {
+                                    bg: "#e2e8f0",
+                                    text: "#0f172a",
+                                    border: "#cbd5e1",
+                                };
                                 return (
                                     <span
                                         key={`sdg-${news.id}-${sdg}`}
                                         className="rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em]"
-                                        style={{ backgroundColor: color.bg, color: color.text, border: `1px solid ${color.border}` }}
+                                        style={{
+                                            backgroundColor: color.bg,
+                                            color: color.text,
+                                            border: `1px solid ${color.border}`,
+                                        }}
                                     >
                                         SDG {sdg}
                                     </span>
@@ -635,8 +715,18 @@ export default function Home({ newsArticles = [], promotions = [] }) {
 
                 <a href={news.link} className="news-read-more">
                     Read Article
-                    <svg className="news-arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    <svg
+                        className="news-arrow-icon"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"
+                        />
                     </svg>
                 </a>
             </div>
@@ -644,18 +734,31 @@ export default function Home({ newsArticles = [], promotions = [] }) {
     );
 
     return (
-        <MainLayout title="Home" showTitle={false} maxWidth="full" containerClassName="px-0" mainClassName="py-0" className="home-page overflow-hidden pb-0">
-            <div className={`landing-page w-full ${showVideo ? 'video-active' : ''}`}>
+        <MainLayout
+            title="Home"
+            showTitle={false}
+            maxWidth="full"
+            containerClassName="px-0"
+            mainClassName="py-0"
+            className="home-page overflow-hidden pb-0"
+        >
+            <div
+                className={`landing-page w-full ${showVideo ? "video-active" : ""}`}
+            >
                 <div className="indicator"></div>
 
                 {/* Video Banner Overlay */}
                 {showVideo && (
                     <div
-                        className={`video-banner-overlay ${isFading ? 'fade-out' : ''}`}
-                        style={videoAspectRatio ? {
-                            aspectRatio: videoAspectRatio,
-                            height: 'auto',
-                        } : undefined}
+                        className={`video-banner-overlay ${isFading ? "fade-out" : ""}`}
+                        style={
+                            videoAspectRatio
+                                ? {
+                                      aspectRatio: videoAspectRatio,
+                                      height: "auto",
+                                  }
+                                : undefined
+                        }
                     >
                         <video
                             ref={videoRef}
@@ -664,9 +767,12 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                             playsInline
                             preload="auto"
                             onLoadedMetadata={(event) => {
-                                const { videoWidth, videoHeight } = event.currentTarget;
+                                const { videoWidth, videoHeight } =
+                                    event.currentTarget;
                                 if (videoWidth && videoHeight) {
-                                    setVideoAspectRatio(`${videoWidth} / ${videoHeight}`);
+                                    setVideoAspectRatio(
+                                        `${videoWidth} / ${videoHeight}`,
+                                    );
                                 }
                             }}
                         >
@@ -675,7 +781,10 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     </div>
                 )}
 
-                <div id="demo" style={{ display: showVideo ? 'none' : 'block' }}>
+                <div
+                    id="demo"
+                    style={{ display: showVideo ? "none" : "block" }}
+                >
                     {bannerData.map((item, index) => (
                         <div
                             key={`card-${index}`}
@@ -700,7 +809,11 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     ))}
                 </div>
 
-                <div className="details" id="details-even" style={{ display: showVideo ? 'none' : 'flex' }}>
+                <div
+                    className="details"
+                    id="details-even"
+                    style={{ display: showVideo ? "none" : "flex" }}
+                >
                     <div className="place-box">
                         <div className="text"></div>
                     </div>
@@ -712,11 +825,22 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     </div>
                     <div className="desc"></div>
                     <div className="cta">
-                        <a className="discover" href={bannerData[0]?.link || '#'} target="_blank" rel="noopener noreferrer">View Post</a>
+                        <a
+                            className="discover"
+                            href={bannerData[0]?.link || "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            View Post
+                        </a>
                     </div>
                 </div>
 
-                <div className="details" id="details-odd" style={{ display: showVideo ? 'none' : 'flex' }}>
+                <div
+                    className="details"
+                    id="details-odd"
+                    style={{ display: showVideo ? "none" : "flex" }}
+                >
                     <div className="place-box">
                         <div className="text"></div>
                     </div>
@@ -728,11 +852,22 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     </div>
                     <div className="desc"></div>
                     <div className="cta">
-                        <a className="discover" href={bannerData[0]?.link || '#'} target="_blank" rel="noopener noreferrer">View Post</a>
+                        <a
+                            className="discover"
+                            href={bannerData[0]?.link || "#"}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            View Post
+                        </a>
                     </div>
                 </div>
 
-                <div className="pagination" id="pagination" style={{ display: showVideo ? 'none' : 'flex' }}>
+                <div
+                    className="pagination"
+                    id="pagination"
+                    style={{ display: showVideo ? "none" : "flex" }}
+                >
                     <div className="arrow arrow-left">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -768,7 +903,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                                 id={`slide-item-${index}`}
                                 className="item"
                             >
-                                {String(index + 1).padStart(2, '0')}
+                                {String(index + 1).padStart(2, "0")}
                             </div>
                         ))}
                     </div>
@@ -797,13 +932,13 @@ export default function Home({ newsArticles = [], promotions = [] }) {
             {/* --- OUR STORY / NURTURING DREAMS SECTION --- */}
             <section
                 style={{
-                    width: '100%',
-                    padding: '4rem 1.5rem',
+                    width: "100%",
+                    padding: "4rem 1.5rem",
                     backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.24), rgba(247, 250, 248, 0.38)), url(${nurturingBanner})`,
-                    backgroundPosition: 'center',
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat',
-                    boxSizing: 'border-box',
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                    backgroundRepeat: "no-repeat",
+                    boxSizing: "border-box",
                 }}
             >
                 <motion.div
@@ -812,40 +947,49 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     whileInView="visible"
                     viewport={{ once: true, amount: 0.2 }}
                     variants={revealVariant}
-                    transition={{ duration: 0.6, ease: 'easeOut' }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
                     style={{
-                        maxWidth: '760px',
-                        margin: '0 auto',
-                        textAlign: 'center',
+                        maxWidth: "760px",
+                        margin: "0 auto",
+                        textAlign: "center",
                     }}
                 >
-                    <span className="features-eyebrow" style={{ display: 'block', textAlign: 'center' }}>
+                    <span
+                        className="features-eyebrow"
+                        style={{ display: "block", textAlign: "center" }}
+                    >
                         Our Story
                     </span>
 
                     <h2
                         style={{
-                            fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
+                            fontSize: "clamp(1.75rem, 3vw, 2.5rem)",
                             fontWeight: 800,
-                            color: '#111827',
+                            color: "#111827",
                             lineHeight: 1.25,
-                            marginTop: '0.75rem',
-                            textAlign: 'center',
+                            marginTop: "0.75rem",
+                            textAlign: "center",
                         }}
                     >
-                        Nurturing Dreams for Every{' '}
-                        <span style={{ color: '#0f5132', position: 'relative', display: 'inline-block' }}>
+                        Nurturing Dreams for Every{" "}
+                        <span
+                            style={{
+                                color: "#0f5132",
+                                position: "relative",
+                                display: "inline-block",
+                            }}
+                        >
                             Kagay-anon
                             <span
                                 style={{
                                     content: '""',
-                                    position: 'absolute',
+                                    position: "absolute",
                                     left: 0,
                                     right: 0,
-                                    bottom: '-2px',
-                                    height: '4px',
-                                    background: '#fbbf24',
-                                    borderRadius: '2px',
+                                    bottom: "-2px",
+                                    height: "4px",
+                                    background: "#fbbf24",
+                                    borderRadius: "2px",
                                     opacity: 0.85,
                                 }}
                             />
@@ -855,43 +999,46 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     <div
                         className="features-underline"
                         aria-hidden="true"
-                        style={{ margin: '1rem auto 0' }}
+                        style={{ margin: "1rem auto 0" }}
                     ></div>
 
                     <p
                         style={{
-                            fontSize: '1.0625rem',
-                            color: '#4b5563',
+                            fontSize: "1.0625rem",
+                            color: "#4b5563",
                             lineHeight: 1.75,
-                            marginTop: '1.25rem',
-                            maxWidth: '680px',
-                            marginLeft: 'auto',
-                            marginRight: 'auto',
-                            textAlign: 'center',
+                            marginTop: "1.25rem",
+                            maxWidth: "680px",
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            textAlign: "center",
                         }}
                     >
-                        By virtue of City Ordinance No. 14564, City College of Cagayan de Oro was
-                        established in 2023, expanding the institution's mandate and services from
-                        its predecessor, the Cagayan de Oro Technical-Vocational Institute (CDO-TVI),
-                        to provide both higher education and technical-vocational training
-                        opportunities to the community.
+                        By virtue of City Ordinance No. 14564, City College of
+                        Cagayan de Oro was established in 2023, expanding the
+                        institution's mandate and services from its predecessor,
+                        the Cagayan de Oro Technical-Vocational Institute
+                        (CDO-TVI), to provide both higher education and
+                        technical-vocational training opportunities to the
+                        community.
                     </p>
 
                     <p
                         style={{
-                            fontSize: '1.0625rem',
-                            color: '#4b5563',
+                            fontSize: "1.0625rem",
+                            color: "#4b5563",
                             lineHeight: 1.75,
-                            marginTop: '1rem',
-                            maxWidth: '680px',
-                            marginLeft: 'auto',
-                            marginRight: 'auto',
-                            textAlign: 'center',
+                            marginTop: "1rem",
+                            maxWidth: "680px",
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            textAlign: "center",
                         }}
                     >
-                        Today, City College of CDO has grown into a world-ranked local college,
-                        reflecting its continuing commitment to providing quality, accessible, and
-                        transformative education for the people of Cagayan de Oro.
+                        Today, City College of CDO has grown into a world-ranked
+                        local college, reflecting its continuing commitment to
+                        providing quality, accessible, and transformative
+                        education for the people of Cagayan de Oro.
                     </p>
                 </motion.div>
             </section>
@@ -907,15 +1054,25 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                                 whileInView="visible"
                                 viewport={{ once: true, amount: 0.2 }}
                                 variants={revealVariant}
-                                transition={{ duration: 0.6, ease: 'easeOut' }}
+                                transition={{ duration: 0.6, ease: "easeOut" }}
                             >
-                                <span className="features-eyebrow">Our Difference</span>
+                                <span className="features-eyebrow">
+                                    Our Difference
+                                </span>
                                 <h2 className="features-title">
-                                    Why Choose City College of <span className="highlight">Cagayan de Oro</span>
+                                    Why Choose City College of{" "}
+                                    <span className="highlight">
+                                        Cagayan de Oro
+                                    </span>
                                 </h2>
-                                <div className="features-underline" aria-hidden="true"></div>
+                                <div
+                                    className="features-underline"
+                                    aria-hidden="true"
+                                ></div>
                                 <p className="text-base sm:text-xl text-gray-600 leading-relaxed mt-2">
-                                    Discover an education grounded in excellence, opportunity, and service to the community.
+                                    Discover an education grounded in
+                                    excellence, opportunity, and service to the
+                                    community.
                                 </p>
                             </motion.div>
 
@@ -925,9 +1082,19 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                                 whileInView="visible"
                                 viewport={{ once: true, amount: 0.2 }}
                                 variants={revealVariant}
-                                transition={{ duration: 0.7, ease: 'easeOut', delay: 0.1 }}
+                                transition={{
+                                    duration: 0.7,
+                                    ease: "easeOut",
+                                    delay: 0.1,
+                                }}
                             >
-                                City College of CDO provides quality education through relevant programs and dedicated instruction. Students gain practical experience, leadership opportunities, and a strong appreciation for culture and excellence while developing the skills to serve their community and build meaningful careers.
+                                City College of CDO provides quality education
+                                through relevant programs and dedicated
+                                instruction. Students gain practical experience,
+                                leadership opportunities, and a strong
+                                appreciation for culture and excellence while
+                                developing the skills to serve their community
+                                and build meaningful careers.
                             </motion.p>
                         </div>
 
@@ -936,7 +1103,11 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                             initial={{ opacity: 0, x: 40 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true, amount: 0.2 }}
-                            transition={{ duration: 0.7, ease: 'easeOut', delay: 0.15 }}
+                            transition={{
+                                duration: 0.7,
+                                ease: "easeOut",
+                                delay: 0.15,
+                            }}
                         >
                             <img
                                 src={studentsImage}
@@ -955,7 +1126,8 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     <div className="news-header">
                         <span className="features-eyebrow">Stay Informed</span>
                         <h2 className="news-title">
-                            Latest <span className="green">News</span> & <span className="green">Updates</span>
+                            Latest <span className="green">News</span> &{" "}
+                            <span className="green">Updates</span>
                         </h2>
                         <div className="news-title-underline"></div>
                     </div>
@@ -969,8 +1141,13 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 onKeyPress={(e) => {
-                                    if (e.key === 'Enter' && searchQuery.trim()) {
-                                        router.visit(`/news/latest?search=${encodeURIComponent(searchQuery)}`);
+                                    if (
+                                        e.key === "Enter" &&
+                                        searchQuery.trim()
+                                    ) {
+                                        router.visit(
+                                            `/news/latest?search=${encodeURIComponent(searchQuery)}`,
+                                        );
                                     }
                                 }}
                                 className="w-full pl-6 pr-16 py-3 rounded-full border-0 focus:outline-none transition duration-200 text-base shadow-lg"
@@ -978,14 +1155,26 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                             <button
                                 onClick={() => {
                                     if (searchQuery.trim()) {
-                                        router.visit(`/news/latest?search=${encodeURIComponent(searchQuery)}`);
+                                        router.visit(
+                                            `/news/latest?search=${encodeURIComponent(searchQuery)}`,
+                                        );
                                     }
                                 }}
                                 className="absolute right-1 top-1/2 transform -translate-y-1/2 w-11 h-11 rounded-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 transition duration-200 font-semibold flex items-center justify-center"
                                 title="Search articles"
                             >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                <svg
+                                    className="w-5 h-5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                    />
                                 </svg>
                             </button>
                         </div>
@@ -994,7 +1183,12 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                     {filteredArticles.length > 0 ? (
                         <>
                             {/* 3D Coverflow Carousel */}
-                            <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+                            <div
+                                style={{
+                                    marginTop: "2rem",
+                                    marginBottom: "2rem",
+                                }}
+                            >
                                 <ArticlesCoverflow
                                     articles={filteredArticles}
                                     cardWidth={280}
@@ -1012,14 +1206,19 @@ export default function Home({ newsArticles = [], promotions = [] }) {
 
                             {/* View All Button */}
                             <div className="news-view-all-wrapper">
-                                <a href="/news/latest" className="news-view-all-btn">
+                                <a
+                                    href="/news/latest"
+                                    className="news-view-all-btn"
+                                >
                                     View All News
                                 </a>
                             </div>
                         </>
                     ) : (
                         <div className="news-empty-message">
-                            {searchQuery ? `No articles found matching "${searchQuery}". Try a different search term.` : 'No news articles are available at this time.'}
+                            {searchQuery
+                                ? `No articles found matching "${searchQuery}". Try a different search term.`
+                                : "No news articles are available at this time."}
                         </div>
                     )}
                 </div>
@@ -1030,11 +1229,17 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                 <div className="new-features-container">
                     {/* Updated header with green styling */}
                     <div className="new-features-header reveal-on-scroll home-content-reveal">
-                        <span className="new-features-eyebrow">Sustainable Development Goals</span>
+                        <span className="new-features-eyebrow">
+                            Sustainable Development Goals
+                        </span>
                         <h2 className="new-features-title">
-                            CCCDO's Commitment to <span className="highlight">SDG</span>
+                            CCCDO's Commitment to{" "}
+                            <span className="highlight">SDG</span>
                         </h2>
-                        <div className="new-features-underline" aria-hidden="true"></div>
+                        <div
+                            className="new-features-underline"
+                            aria-hidden="true"
+                        ></div>
                     </div>
 
                     <div className="new-features-grid">
@@ -1053,21 +1258,29 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                             <div className="sdg-grid-container">
                                 <div className="sdg-grid">
                                     {SDG_IMAGES.map((item, index) => {
-                                        const isAutoFlipped = autoFlippedIndices[index];
-                                        const isHovered = activeHoverIndex === index;
+                                        const isAutoFlipped =
+                                            autoFlippedIndices[index];
+                                        const isHovered =
+                                            activeHoverIndex === index;
 
-                                        const currentSrc = isHovered && item.hoverImg
-                                            ? item.hoverImg
-                                            : isAutoFlipped && item.hoverImg
+                                        const currentSrc =
+                                            isHovered && item.hoverImg
                                                 ? item.hoverImg
-                                                : item.defaultImg;
+                                                : isAutoFlipped && item.hoverImg
+                                                  ? item.hoverImg
+                                                  : item.defaultImg;
 
                                         return (
                                             <div
                                                 key={index}
                                                 className="sdg-image-wrapper"
-                                                onMouseEnter={() => item.hoverImg && setActiveHoverIndex(index)}
-                                                onMouseLeave={() => setActiveHoverIndex(null)}
+                                                onMouseEnter={() =>
+                                                    item.hoverImg &&
+                                                    setActiveHoverIndex(index)
+                                                }
+                                                onMouseLeave={() =>
+                                                    setActiveHoverIndex(null)
+                                                }
                                             >
                                                 <img
                                                     src={currentSrc}
@@ -1082,10 +1295,23 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                             </div>
                             {/* View More Button - Updated to green */}
                             <div className="sdg-view-more-wrapper">
-                                <a href="/sdg" className="sdg-view-more-btn">
+                                <a
+                                    href="/internationalization/sdg"
+                                    className="sdg-view-more-btn"
+                                >
                                     View More
-                                    <svg className="sdg-view-more-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    <svg
+                                        className="sdg-view-more-icon"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M17 8l4 4m0 0l-4 4m4-4H3"
+                                        />
                                     </svg>
                                 </a>
                             </div>

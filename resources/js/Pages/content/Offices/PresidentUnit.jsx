@@ -6,6 +6,35 @@ import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
 import ccdologo from '../../../assets/logos/ccdologo.png';
 
 /* ============================================================================
+   CONSTANTS
+   ============================================================================ */
+const MEMO_URL = 'https://drive.google.com/drive/folders/1gTsEWOv0Vtv-pGaFauEY2cgRtJDymqW-?usp=drive_link';
+
+/* Official Memo Seal Icon — document with a presidential seal & ribbon */
+function MemoSealIcon({ className = '' }) {
+    return (
+        <svg
+            className={className}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+        >
+            {/* Document outline with folded corner */}
+            <path strokeLinecap="round" strokeLinejoin="round" d="M7 3.5h5.75L17.5 8.25v5.5" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M7 3.5A2.25 2.25 0 004.75 5.75v12.5A2.25 2.25 0 007 20.5h4.25" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12.75 3.5v4.75H17.5" />
+            {/* Text lines */}
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 10.75h4.5M8.25 14.25h3" />
+            {/* Presidential seal with ribbon */}
+            <circle cx="17.25" cy="17" r="3.25" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.8 19.9l-.8 2.4 2.25-1.15 2.25 1.15-.8-2.4" />
+        </svg>
+    );
+}
+
+/* ============================================================================
    DATA CONTENT
    ============================================================================ */
 const BIONOTE_PARAGRAPHS = [
@@ -58,42 +87,65 @@ const CREDENTIALS = [
 
 const OFFICES = [
     {
-        id: 'president',
-        label: 'President',
-        name: 'Office of the College President',
-        description: 'Provides executive leadership, institutional direction, and stewardship of the college mission, vision, and strategic priorities. Under Dr. Babia’s leadership, the institution achieved international recognition through Times Higher Education Impact Rankings, GreenMetric, and WURI.',
-        functions: ['Institutional Leadership', 'Strategic Planning', 'Policy Direction', 'External Relations', 'Quality Governance', 'Public Accountability'],
+        id: 'internationalization',
+        label: 'Internationalization',
+        name: 'Internationalization Office',
+        description: 'Global partnerships, mobility programs, and international recognition.',
+        functions: ['International Partnerships', 'Student & Faculty Exchange', 'Global Rankings Engagement', 'International Programs', 'Mobility & Scholarships', 'Cross-Border Collaboration'],
         orgChart: {
             name: 'College President III',
             children: [
                 {
-                    name: 'Chief of Staff / Executive Secretary',
+                    name: 'Internationalization Head',
                     children: [
-                        { name: 'Administrative Staff' },
-                        { name: 'Executive Support' }
+                        { name: 'International Programs Officers' },
+                        { name: 'Administrative Staff' }
                     ]
                 }
             ]
         },
         icon: (
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
         ),
     },
     {
-        id: 'governance',
-        label: 'Governance',
-        name: 'Governance and Planning',
-        description: 'Supports evidence-based governance, institutional planning, policy coordination, and performance monitoring across the college.',
-        functions: ['Institutional Planning', 'Policy Coordination', 'Performance Monitoring', 'Risk Management', 'Board Support', 'Compliance'],
+        id: 'promotions-communications',
+        label: 'Promotions & Communications',
+        name: 'Promotions and Communications Office',
+        description: 'Institutional branding, media relations, and public engagement.',
+        functions: ['Public Information', 'Media Relations', 'Marketing & Promotions', 'Digital Content', 'Publications', 'Brand Management'],
         orgChart: {
             name: 'College President III',
             children: [
                 {
-                    name: 'Planning and Governance Head',
+                    name: 'Promotions and Communications Head',
                     children: [
-                        { name: 'Planning Officers' },
-                        { name: 'Administrative Staff' }
+                        { name: 'Information Officers' },
+                        { name: 'Creative & Media Staff' }
+                    ]
+                }
+            ]
+        },
+        icon: (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
+                d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+        ),
+    },
+    {
+        id: 'quality-assurance',
+        label: 'Quality Assurance',
+        name: 'Quality Assurance Office',
+        description: 'Accreditation, standards monitoring, and continuous quality improvement.',
+        functions: ['Accreditation Management', 'Quality Standards', 'Program Evaluation', 'Compliance Monitoring', 'Policy Review', 'Continuous Improvement'],
+        orgChart: {
+            name: 'College President III',
+            children: [
+                {
+                    name: 'Quality Assurance Head',
+                    children: [
+                        { name: 'Accreditation Officers' },
+                        { name: 'QA Staff' }
                     ]
                 }
             ]
@@ -104,26 +156,49 @@ const OFFICES = [
         ),
     },
     {
-        id: 'communications',
-        label: 'Communications',
-        name: 'Public Information and Communications',
-        description: 'Coordinates official communications and strengthens the college relationship with students, partners, stakeholders, and the public.',
-        functions: ['Official Information', 'Stakeholder Relations', 'Media Coordination', 'Digital Communications', 'Ceremonial Support', 'Public Engagement'],
+        id: 'culture-arts',
+        label: 'Culture and Arts',
+        name: 'Office for Culture and Arts',
+        description: 'Cultural preservation, artistic development, and creative expression.',
+        functions: ['Cultural Programs', 'Arts Development', 'Heritage Preservation', 'Cultural Events', 'Talent Development', 'Creative Productions'],
         orgChart: {
             name: 'College President III',
             children: [
                 {
-                    name: 'Communications Head',
+                    name: 'Culture and Arts Head',
                     children: [
-                        { name: 'Information Officers' },
-                        { name: 'Communications Staff' }
+                        { name: 'Cultural Affairs Officers' },
+                        { name: 'Arts Coordinators' }
                     ]
                 }
             ]
         },
         icon: (
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
-                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+        ),
+    },
+    {
+        id: 'linkages-partnership',
+        label: 'Linkages & Partnership',
+        name: 'Linkages and Partnership Office',
+        description: 'Strategic alliances with industry, government, academe, and communities.',
+        functions: ['Institutional Linkages', 'MOU & MOA Management', 'Industry Partnerships', 'Consortium Membership', 'Stakeholder Engagement', 'Collaborative Projects'],
+        orgChart: {
+            name: 'College President III',
+            children: [
+                {
+                    name: 'Linkages and Partnership Head',
+                    children: [
+                        { name: 'Linkages Officers' },
+                        { name: 'Partnership Staff' }
+                    ]
+                }
+            ]
+        },
+        icon: (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
+                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
         ),
     },
 ];
@@ -287,19 +362,18 @@ function PresidentialSeal() {
     );
 }
 
-/* Recursive Node Component for Mathematically Perfect Tree-style Org Chart */
+/* Recursive Node — Tree layout (Tablet / Desktop) */
 function OrgNode({ node, isRoot = false }) {
     const hasChildren = node.children && node.children.length > 0;
 
     return (
         <li className="relative flex flex-col items-center list-none">
-            {/* Node Box */}
-            <div className={`relative px-5 py-4 bg-white border rounded-xl shadow-sm text-center transition-all duration-500 ease-out-expo group hover:-translate-y-1 z-10 ${isRoot
-                ? 'border-[#C79A3E] shadow-md hover:shadow-xl w-[300px]'
-                : 'border-[#E7E2D6] hover:border-[#145A32] hover:shadow-xl w-[240px]'
+            <div className={`relative px-3 sm:px-5 py-3 sm:py-4 bg-white border rounded-xl shadow-sm text-center transition-all duration-500 ease-out-expo group hover:-translate-y-1 z-10 w-[170px] sm:w-[240px] ${isRoot
+                ? 'sm:w-[300px] border-[#C79A3E] shadow-md hover:shadow-xl'
+                : 'border-[#E7E2D6] hover:border-[#145A32] hover:shadow-xl'
                 }`}>
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#145A32] to-[#C79A3E] rounded-t-lg transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                <span className="text-[13px] font-semibold text-gray-800 leading-snug">{node.name}</span>
+                <span className="text-[12px] sm:text-[13px] font-semibold text-gray-800 leading-snug">{node.name}</span>
             </div>
 
             {hasChildren && (
@@ -313,19 +387,65 @@ function OrgNode({ node, isRoot = false }) {
     );
 }
 
-/* Office Org Chart Wrapper */
+/* Recursive Node — Vertical stacked layout (Mobile — fully visible, no scroll) */
+function OrgNodeMobile({ node, isRoot = false }) {
+    const hasChildren = node.children && node.children.length > 0;
+
+    return (
+        <li className="relative flex flex-col items-center w-full list-none">
+            <div className={`relative w-full max-w-[280px] px-4 py-3 bg-white border rounded-xl text-center shadow-sm ${isRoot ? 'border-[#C79A3E] shadow-md' : 'border-[#E7E2D6]'}`}>
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#145A32] to-[#C79A3E] rounded-t-lg"></div>
+                <span className="text-[12px] font-semibold text-gray-800 leading-snug">{node.name}</span>
+            </div>
+
+            {hasChildren && (
+                <div className="flex flex-col items-center w-full">
+                    {/* Connector: parent → children block */}
+                    <span className="w-px h-4 bg-[#145A32]/25" aria-hidden="true"></span>
+                    <ul className="flex flex-col items-center w-full">
+                        {node.children.map((child, i) => (
+                            <li key={i} className="flex flex-col items-center w-full">
+                                {/* Connector: previous level → this child */}
+                                <span className="w-px h-4 bg-[#145A32]/25" aria-hidden="true"></span>
+                                <OrgNodeMobile node={child} />
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </li>
+    );
+}
+
+/* Office Org Chart Wrapper — auto-switches layout per device */
 function OfficeOrgChart({ root }) {
     return (
-        <ul className="org-tree flex justify-center w-full">
-            <OrgNode node={root} isRoot={true} />
-        </ul>
+        <>
+            {/* Mobile: vertical stacked — everything visible */}
+            <div className="sm:hidden">
+                <ul className="flex flex-col items-center w-full">
+                    <OrgNodeMobile node={root} isRoot={true} />
+                </ul>
+            </div>
+
+            {/* Tablet / Desktop: tree layout */}
+            <div className="hidden sm:block w-full overflow-x-auto no-scrollbar">
+                <ul className="org-tree flex justify-center min-w-max mx-auto py-1">
+                    <OrgNode node={root} isRoot={true} />
+                </ul>
+            </div>
+        </>
     );
 }
 
 export default function PresidentUnit() {
     const [scrollProgress, setScrollProgress] = useState(0);
-    const [activeOffice, setActiveOffice] = useState('president');
+    const [activeOffice, setActiveOffice] = useState('internationalization');
     const [bioExpanded, setBioExpanded] = useState(false);
+    const [pendingScroll, setPendingScroll] = useState(false);
+
+    const officeNavRef = useRef(null);
+    const officeDetailsRef = useRef(null);
 
     useEffect(() => {
         document.title = "Office of the College President - City College of Cagayan de Oro";
@@ -345,6 +465,26 @@ export default function PresidentUnit() {
         () => OFFICES.find((office) => office.id === activeOffice),
         [activeOffice]
     );
+
+    /* Auto-scroll to details after selecting an office */
+    useEffect(() => {
+        if (!pendingScroll) return;
+        const t = setTimeout(() => {
+            officeDetailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setPendingScroll(false);
+        }, 120);
+        return () => clearTimeout(t);
+    }, [pendingScroll]);
+
+    const handleSelectOffice = (id) => {
+        setActiveOffice(id);
+        setPendingScroll(true);
+    };
+
+    /* Return to the exact location of the office buttons */
+    const handleBackToOffices = () => {
+        officeNavRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
 
     const visibleParagraphs = bioExpanded
         ? BIONOTE_PARAGRAPHS
@@ -370,8 +510,7 @@ export default function PresidentUnit() {
                     --vp-gold-light: #E5C68A;
                     --vp-cream: #F9F7F2;
                     --vp-gray: #8C9A92;
-                    
-                    /* Variables requested by the provided snippet */
+
                     --vp-paper: #FBFAF6;
                     --vp-sage: #EFF3ED;
                     --vp-gold-dark: #A97F2E;
@@ -381,7 +520,7 @@ export default function PresidentUnit() {
                 .vp-serif { font-family: 'Merriweather', Georgia, serif; }
                 .vp-sans { font-family: Tahoma, 'Segoe UI', sans-serif; }
                 .ease-out-expo { transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important; }
-                
+
                 /* Responsive Drop Cap */
                 .vp-bio-lead::first-letter {
                     font-family: 'Merriweather', Georgia, serif;
@@ -439,7 +578,7 @@ export default function PresidentUnit() {
                 .no-scrollbar::-webkit-scrollbar { display: none; }
                 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-                /* Bulletproof CSS Tree Connectors for Org Chart */
+                /* Bulletproof CSS Tree Connectors for Org Chart (Desktop) */
                 .org-tree, .org-tree ul {
                     display: flex;
                     justify-content: center;
@@ -498,6 +637,49 @@ export default function PresidentUnit() {
                     width: 0;
                     height: 20px;
                 }
+
+                /* ---- Office chip shimmer sweep ---- */
+                @keyframes vpChipShimmer {
+                    0% { left: -160%; }
+                    100% { left: 160%; }
+                }
+                .office-chip .vp-chip-shimmer {
+                    position: absolute;
+                    top: 0;
+                    left: -160%;
+                    width: 55%;
+                    height: 100%;
+                    transform: skewX(-18deg);
+                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+                    opacity: 0;
+                    pointer-events: none;
+                }
+                .office-chip:hover .vp-chip-shimmer,
+                .office-chip:focus-visible .vp-chip-shimmer {
+                    opacity: 1;
+                    animation: vpChipShimmer 0.9s ease forwards;
+                }
+
+                /* Function list item entrance */
+                @keyframes vpItemIn {
+                    from { opacity: 0; transform: translateX(-8px); }
+                    to { opacity: 1; transform: translateX(0); }
+                }
+
+                /* ---- President's Memo floating button pulse ---- */
+                @keyframes vpMemoPulse {
+                    0% { box-shadow: 0 0 0 0 rgba(212,175,55,0.45); }
+                    70% { box-shadow: 0 0 0 14px rgba(212,175,55,0); }
+                    100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); }
+                }
+                .vp-memo-pulse {
+                    animation: vpMemoPulse 2.6s ease-out infinite;
+                }
+
+                @media (prefers-reduced-motion: reduce) {
+                    .office-chip .vp-chip-shimmer { animation: none !important; opacity: 0 !important; }
+                    .vp-memo-pulse { animation: none !important; }
+                }
             `}</style>
 
             {/* Scroll Progress Indicator */}
@@ -507,6 +689,45 @@ export default function PresidentUnit() {
                     style={{ width: `${scrollProgress}%`, background: 'linear-gradient(90deg, var(--vp-green-mid), var(--vp-gold))' }}
                 />
             </div>
+
+            {/* ===================== President's Memo — Floating Button (top-right, lowered) ===================== */}
+            <a
+                href={MEMO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open President's Memo in a new tab"
+                className="group fixed top-28 right-4 sm:top-32 sm:right-8 z-[900] inline-flex items-center gap-2.5 sm:gap-3 rounded-full pl-3 pr-4 sm:pl-4 sm:pr-5 py-2.5 sm:py-3 text-white border border-[#D4AF37]/60 shadow-[0_18px_40px_-12px_rgba(10,46,24,0.7)] transition-all duration-500 ease-out-expo hover:-translate-y-1 hover:shadow-[0_26px_55px_-12px_rgba(10,46,24,0.8)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]/70 focus-visible:ring-offset-2"
+                style={{ background: 'linear-gradient(120deg, #0A2E18 0%, #145A32 60%, #0A2E18 100%)' }}
+            >
+                {/* Pulsing gold halo */}
+                <span
+                    className="vp-memo-pulse absolute inset-0 rounded-full pointer-events-none"
+                    aria-hidden="true"
+                ></span>
+
+                {/* Icon medallion — official memo seal */}
+                <span className="relative flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-[#D4AF37]/60 bg-white/10 text-[#E5C68A] transition-all duration-500 group-hover:bg-[#D4AF37] group-hover:text-[#0A2E18]">
+                    <MemoSealIcon className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
+                </span>
+
+                {/* Label */}
+                <span className="relative flex flex-col gap-[3px] leading-none">
+                    <span className="text-[8px] sm:text-[9px] font-bold tracking-[0.25em] uppercase text-[#D4AF37]">
+                        Official
+                    </span>
+                    <span className="text-[11px] sm:text-xs font-semibold tracking-wide whitespace-nowrap">
+                        President's Memo
+                    </span>
+                </span>
+
+                {/* External-link arrow */}
+                <svg
+                    className="relative h-3 w-3 text-[#E5C68A] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                    fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true"
+                >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                </svg>
+            </a>
 
             {/* ===================== Hero Banner ===================== */}
             <div
@@ -762,247 +983,282 @@ export default function PresidentUnit() {
                             </div>
                         </div>
                     </Reveal>
+
+                    {/* President's Memo — inline CTA */}
+                    <Reveal className="mt-12 sm:mt-16">
+                        <div className="flex flex-col items-center gap-3">
+                            <a
+                                href={MEMO_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group inline-flex items-center gap-3 rounded-full border border-[#D4AF37]/60 bg-white/5 backdrop-blur-md px-6 sm:px-8 py-3 sm:py-3.5 text-white transition-all duration-500 ease-out-expo hover:-translate-y-1 hover:bg-[#D4AF37] hover:border-[#D4AF37] hover:text-[#0A2E18] hover:shadow-[0_18px_40px_-14px_rgba(212,175,55,0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A2E18]"
+                            >
+                                <MemoSealIcon className="h-4 w-4 text-[#D4AF37] transition-colors duration-500 group-hover:text-[#0A2E18]" />
+                                <span className="text-[10px] sm:text-xs font-bold tracking-widest uppercase">
+                                    President's Memo
+                                </span>
+                                <svg
+                                    className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                                    fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                                </svg>
+                            </a>
+                            <p className="text-[9px] font-semibold tracking-[0.3em] uppercase text-white/30">
+                                Opens in a new tab · Google Drive
+                            </p>
+                        </div>
+                    </Reveal>
                 </div>
             </section>
 
-            {/* ===================== 04 — Institutional Offices Cluster ===================== */}
+            {/* ===================== 04 — Institutional Offices Cluster (Selector + Details) ===================== */}
             <section
                 className="relative vp-sans overflow-hidden"
                 style={{ background: 'var(--vp-paper)' }}
                 aria-label="Institutional Offices Cluster"
             >
+                {/* Ambient texture & glow */}
                 <div
-                    className="absolute inset-0 opacity-[0.02] pointer-events-none"
+                    className="absolute inset-0 opacity-[0.025] pointer-events-none"
                     style={{ backgroundImage: 'radial-gradient(#145A32 1px, transparent 1px)', backgroundSize: '32px 32px' }}
                     aria-hidden="true"
                 />
+                <div
+                    className="absolute -top-24 right-0 w-[28rem] h-[28rem] rounded-full pointer-events-none"
+                    style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.07), transparent 65%)' }}
+                    aria-hidden="true"
+                />
 
-                <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 md:py-28">
-                    <Reveal>
-                        <div className="flex items-center gap-3 mb-4">
-                            <p className="vp-serif text-3xl md:text-4xl font-semibold" style={{ color: 'var(--vp-gold)' }}>04</p>
-                            <span className="text-[11px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-green-700)' }}>
-                                Cluster Offices
+                <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 md:py-24">
+
+                    {/* ---- Ceremonial Header ---- */}
+                    <Reveal className="text-center max-w-2xl mx-auto">
+                        <div className="inline-flex items-center gap-3 mb-4">
+                            <span className="h-px w-8 bg-gradient-to-r from-transparent to-[#A97F2E]/60" aria-hidden="true"></span>
+                            <span className="text-[10px] sm:text-[11px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-gold-dark)' }}>
+                                04 &nbsp;·&nbsp; Cluster Offices
                             </span>
+                            <span className="h-px w-8 bg-gradient-to-l from-transparent to-[#A97F2E]/60" aria-hidden="true"></span>
                         </div>
-                        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-                            <h2 className="vp-serif text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight" style={{ color: 'var(--vp-green-950)' }}>
-                                Institutional Offices
-                            </h2>
-                            <p className="text-sm text-gray-500 max-w-md leading-relaxed">
-                                Three institutional offices operating under the leadership of the College President.
-                            </p>
+                        <h2 className="vp-serif text-3xl sm:text-4xl md:text-[2.75rem] font-semibold tracking-tight" style={{ color: 'var(--vp-green-950)' }}>
+                            Institutional Offices
+                        </h2>
+                        <p className="mt-3 text-sm sm:text-[15px] text-gray-500 leading-relaxed">
+                            Five offices operating under the direct leadership of the College President.
+                        </p>
+                        <GoldDivider className="mt-6" />
+                    </Reveal>
+
+                    {/* ---- Compact Office Selector (vertical list on mobile — ALL visible) ---- */}
+                    <Reveal delay={120}>
+                        <div ref={officeNavRef} className="mt-10 sm:mt-12 scroll-mt-32">
+                            <div
+                                role="tablist"
+                                aria-label="Select an office"
+                                className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3 lg:max-w-5xl lg:mx-auto"
+                            >
+                                {OFFICES.map((office, i) => {
+                                    const isActive = activeOffice === office.id;
+                                    return (
+                                        <button
+                                            key={office.id}
+                                            type="button"
+                                            role="tab"
+                                            aria-selected={isActive}
+                                            onClick={() => handleSelectOffice(office.id)}
+                                            className={`office-chip group relative w-full sm:w-auto overflow-hidden flex items-center gap-3 sm:gap-2.5 rounded-2xl sm:rounded-full pl-3 pr-4 sm:pl-2.5 sm:pr-5 py-3 sm:py-2 text-left transition-all duration-500 ease-out-expo focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBFAF6] ${
+                                                isActive
+                                                    ? 'text-white shadow-[0_14px_30px_-12px_rgba(10,46,24,0.6)] ring-1 ring-[#D4AF37]/50'
+                                                    : 'bg-white border border-[#E5E0D3] text-[#3A4A41] hover:-translate-y-0.5 hover:border-[#D4AF37]/60 hover:shadow-[0_14px_28px_-16px_rgba(169,127,46,0.5)]'
+                                            }`}
+                                        >
+                                            {/* Active gradient fill */}
+                                            {isActive && (
+                                                <span
+                                                    className="absolute inset-0"
+                                                    style={{ background: 'linear-gradient(120deg, #0A2E18 0%, #145A32 55%, #0A2E18 100%)' }}
+                                                    aria-hidden="true"
+                                                />
+                                            )}
+                                            {/* Shimmer sweep on hover */}
+                                            <span className="vp-chip-shimmer" aria-hidden="true" />
+
+                                            {/* Icon medallion */}
+                                            <span className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border flex-shrink-0 transition-all duration-500 ${
+                                                isActive
+                                                    ? 'border-[#D4AF37]/60 bg-white/10 text-[#E5C68A]'
+                                                    : 'border-[#E5E0D3] bg-[#F9F7F2] text-[#145A32] group-hover:border-[#D4AF37]/50 group-hover:text-[#A97F2E]'
+                                            }`}>
+                                                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                    {office.icon}
+                                                </svg>
+                                            </span>
+
+                                            {/* Number + label */}
+                                            <span className="relative z-10 flex flex-col gap-[3px] leading-none">
+                                                <span className={`text-[8px] sm:text-[9px] font-bold tracking-[0.25em] uppercase transition-colors duration-500 ${
+                                                    isActive ? 'text-[#D4AF37]' : 'text-[#A8B0AA] group-hover:text-[#A97F2E]'
+                                                }`}>
+                                                    {String(i + 1).padStart(2, '0')} · {office.label}
+                                                </span>
+                                                <span className="text-[12px] sm:text-xs font-semibold tracking-wide whitespace-normal sm:whitespace-nowrap">
+                                                    {office.name}
+                                                </span>
+                                            </span>
+
+                                            {/* Active diamond marker — pills (sm+) */}
+                                            <span
+                                                className={`relative z-10 ml-0.5 h-1.5 w-1.5 rotate-45 transition-all duration-500 hidden sm:block ${
+                                                    isActive ? 'bg-[#D4AF37] shadow-[0_0_8px_rgba(212,175,55,0.9)] scale-100' : 'bg-transparent scale-0'
+                                                }`}
+                                                aria-hidden="true"
+                                            />
+
+                                            {/* Chevron — mobile affordance */}
+                                            <svg
+                                                className={`relative z-10 ml-auto h-4 w-4 flex-shrink-0 transition-all duration-300 sm:hidden ${
+                                                    isActive ? 'text-[#D4AF37]' : 'text-[#A8B0AA] group-hover:text-[#A97F2E]'
+                                                }`}
+                                                fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </Reveal>
 
-                    <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                        {OFFICES.map((office, i) => {
-                            const isActive = activeOffice === office.id;
-                            return (
-                                <Reveal key={office.id} delay={i * 100}>
-                                    <button
-                                        type="button"
-                                        onClick={() => setActiveOffice(office.id)}
-                                        aria-pressed={isActive}
-                                        aria-label={`View ${office.name} details`}
-                                        className="group w-full text-left h-full rounded-xl p-7 transition-all duration-500 relative overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-                                        style={{
-                                            background: isActive ? 'var(--vp-green-950)' : '#fff',
-                                            border: `1px solid ${isActive ? 'var(--vp-gold)' : '#E7E2D6'}`,
-                                            transform: isActive ? 'translateY(-6px)' : 'translateY(0)',
-                                            boxShadow: isActive
-                                                ? '0 24px 48px -16px rgba(11,61,31,0.35)'
-                                                : '0 1px 3px rgba(11,61,31,0.06)',
-                                            outlineColor: 'var(--vp-gold)',
-                                        }}
+                    {/* ---- Office Details Panel ---- */}
+                    <div ref={officeDetailsRef} className="mt-8 sm:mt-10 scroll-mt-24">
+                        <AnimatedPanel key={activeOffice}>
+                            <div
+                                role="tabpanel"
+                                aria-label={activeOfficeData.name}
+                                className="relative rounded-2xl border border-[#E5E0D3] bg-white overflow-hidden shadow-[0_35px_70px_-35px_rgba(10,46,24,0.25)]"
+                            >
+                                {/* Gilded top seam */}
+                                <div className="h-[3px] w-full" style={{ background: 'linear-gradient(90deg, #A97F2E, #E9CE8C 50%, #A97F2E)' }} aria-hidden="true" />
+
+                                {/* Panel Header */}
+                                <div className="relative px-5 sm:px-8 lg:px-10 pt-6 sm:pt-8 pb-6 sm:pb-7 border-b border-[#E5E0D3]">
+                                    {/* Watermark icon */}
+                                    <svg
+                                        className="absolute -right-4 -top-4 h-36 w-36 sm:h-44 sm:w-44 text-[#145A32] opacity-[0.045] pointer-events-none"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"
                                     >
-                                        {/* Subtle inner corner accent */}
-                                        <div
-                                            className="absolute top-0 right-0 w-20 h-20 opacity-10 pointer-events-none transition-opacity duration-500 group-hover:opacity-20"
-                                            style={{
-                                                background: `radial-gradient(circle at top right, ${isActive ? 'var(--vp-gold)' : 'var(--vp-green-700)'}, transparent 70%)`
-                                            }}
-                                            aria-hidden="true"
-                                        />
-                                        {/* Number */}
-                                        <div className="flex items-start justify-between mb-6 relative">
-                                            <span
-                                                className="vp-serif text-5xl font-semibold leading-none"
-                                                style={{ color: isActive ? 'var(--vp-gold)' : 'var(--vp-green-700)' }}
-                                            >
-                                                0{i + 1}
-                                            </span>
-                                            <div
-                                                className="w-12 h-12 rounded-full flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
-                                                style={{
-                                                    background: isActive ? 'rgba(199,154,62,0.15)' : 'var(--vp-sage)',
-                                                    border: `1px solid ${isActive ? 'rgba(199,154,62,0.3)' : '#DEE6DB'}`,
-                                                }}
-                                            >
-                                                <svg
-                                                    className="w-5 h-5"
-                                                    style={{ color: isActive ? 'var(--vp-gold)' : 'var(--vp-green-700)' }}
-                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                    aria-hidden="true"
+                                        {activeOfficeData.icon}
+                                    </svg>
+
+                                    <div className="relative flex items-start justify-between gap-3 sm:gap-6">
+                                        <div className="flex items-center gap-4 sm:gap-5 min-w-0">
+                                            {/* Medallion */}
+                                            <div className="relative flex-shrink-0">
+                                                <div
+                                                    className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl border border-[#D4AF37]/45"
+                                                    style={{ background: 'linear-gradient(145deg, #0A2E18, #145A32)' }}
                                                 >
-                                                    {office.icon}
-                                                </svg>
+                                                    <svg className="h-5 w-5 sm:h-6 sm:w-6 text-[#E5C68A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                        {activeOfficeData.icon}
+                                                    </svg>
+                                                </div>
+                                                <span className="absolute -bottom-1.5 -right-1.5 h-3 w-3 rotate-45 bg-[#D4AF37] border-2 border-white shadow" aria-hidden="true" />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-[9px] sm:text-[10px] font-bold tracking-[0.3em] uppercase mb-1" style={{ color: 'var(--vp-gold-dark)' }}>
+                                                    Office {String(OFFICES.findIndex(o => o.id === activeOffice) + 1).padStart(2, '0')} · Presidential Cluster
+                                                </p>
+                                                <h3 className="vp-serif text-xl sm:text-2xl md:text-[1.8rem] font-semibold leading-tight tracking-tight" style={{ color: 'var(--vp-green-950)' }}>
+                                                    {activeOfficeData.name}
+                                                </h3>
                                             </div>
                                         </div>
-                                        {/* Abbreviation label */}
-                                        <p
-                                            className="text-[10px] font-bold tracking-[0.25em] uppercase mb-2"
-                                            style={{ color: isActive ? 'var(--vp-gold)' : 'var(--vp-gold-dark)' }}
+
+                                        {/* Back to Offices — desktop */}
+                                        <button
+                                            type="button"
+                                            onClick={handleBackToOffices}
+                                            className="group hidden sm:inline-flex flex-shrink-0 items-center gap-2 self-start rounded-full border border-[#E5E0D3] bg-white px-4 py-2 text-[10px] font-bold tracking-[0.18em] uppercase text-[#145A32] transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-[#D4AF37] hover:bg-[#0A2E18] hover:text-[#E5C68A] hover:shadow-[0_12px_24px_-10px_rgba(10,46,24,0.5)]"
                                         >
-                                            {office.label}
-                                        </p>
-                                        {/* Office name */}
-                                        <h3
-                                            className="vp-serif text-lg font-semibold mb-4 leading-snug min-h-[3.5rem]"
-                                            style={{ color: isActive ? '#fff' : 'var(--vp-green-950)' }}
-                                        >
-                                            {office.name}
-                                        </h3>
-                                        {/* Gold accent line — animates on hover */}
-                                        <div
-                                            className="h-0.5 w-0 group-hover:w-full transition-all duration-500"
-                                            style={{ background: 'var(--vp-gold)' }}
-                                            aria-hidden="true"
-                                        />
-                                        {/* Explore indicator */}
-                                        <div
-                                            className="mt-5 flex items-center gap-2 text-xs font-semibold"
-                                            style={{ color: isActive ? 'var(--vp-gold)' : 'var(--vp-green-700)' }}
-                                        >
-                                            <span>{isActive ? 'Currently Viewing' : 'Explore Office'}</span>
-                                            <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                            <svg className="h-3 w-3 transition-transform duration-300 group-hover:-translate-y-0.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
                                             </svg>
-                                        </div>
-                                    </button>
-                                </Reveal>
-                            );
-                        })}
-                    </div>
-                </div>
-            </section>
-
-            {/* ===================== 05 — Office Detail Panel ===================== */}
-            <section
-                className="relative vp-sans overflow-hidden"
-                style={{ background: 'var(--vp-sage)' }}
-                aria-label="Office Details"
-            >
-                <div className="absolute top-0 left-0 w-full h-0.5" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
-
-                <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-                    {activeOfficeData && (
-                        <AnimatedPanel key={activeOffice}>
-                            {/* Office Header */}
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-12">
-                                <div className="lg:col-span-8 min-w-0">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <span className="h-px w-8" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
-                                        <span className="text-[10px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-gold-dark)' }}>
-                                            {activeOfficeData.label} · Office Overview
-                                        </span>
+                                            Back to Offices
+                                        </button>
                                     </div>
-                                    <h3 className="vp-serif text-2xl md:text-3xl lg:text-[2.25rem] font-semibold tracking-tight mb-5 leading-tight" style={{ color: 'var(--vp-green-950)' }}>
-                                        {activeOfficeData.name}
-                                    </h3>
-                                    <p className="text-base leading-relaxed text-gray-700 max-w-[65ch]">
+
+                                    <p className="relative mt-4 text-[13px] sm:text-sm text-gray-500 max-w-2xl leading-relaxed">
                                         {activeOfficeData.description}
                                     </p>
                                 </div>
-                                <div className="lg:col-span-4">
-                                    <div
-                                        className="rounded-xl p-6 h-full relative overflow-hidden"
-                                        style={{ background: 'var(--vp-green-950)' }}
-                                    >
-                                        <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-20" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
-                                        <div className="relative">
-                                            <div
-                                                className="w-14 h-14 rounded-full flex items-center justify-center mb-5"
-                                                style={{ background: 'rgba(199,154,62,0.15)', border: '1px solid rgba(199,154,62,0.3)' }}
-                                            >
-                                                <svg className="w-6 h-6" style={{ color: 'var(--vp-gold)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                                    {activeOfficeData.icon}
-                                                </svg>
-                                            </div>
-                                            <p className="text-[10px] font-bold tracking-[0.25em] uppercase mb-2" style={{ color: 'var(--vp-gold)' }}>
-                                                Cluster Office
-                                            </p>
-                                            <p className="vp-serif text-lg font-semibold text-white leading-snug mb-3">
-                                                {activeOfficeData.label}
-                                            </p>
-                                            <p className="text-xs text-white/60 leading-relaxed">
-                                                Under the College President.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            {/* Core Functions */}
-                            <div className="mb-16">
-                                <div className="flex items-center gap-3 mb-6">
-                                    <span className="h-px w-8" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
-                                    <p className="text-[10px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-gold-dark)' }}>
-                                        Core Functions
-                                    </p>
-                                </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                                    {activeOfficeData.functions.map((fn, i) => (
+                                {/* Panel Body — Functions full-width on top, Org Chart full-width at the bottom */}
+                                <div className="relative px-5 sm:px-8 lg:px-10 py-7 sm:py-9">
+
+                                    {/* Core Functions — full width */}
+                                    <div className="mb-9">
+                                        <div className="flex items-center gap-3 mb-4 sm:mb-5">
+                                            <span className="h-px w-6 bg-[#A97F2E]/60" aria-hidden="true"></span>
+                                            <h4 className="text-[10px] sm:text-[11px] font-bold tracking-[0.28em] uppercase" style={{ color: 'var(--vp-green-700)' }}>
+                                                Core Functions
+                                            </h4>
+                                        </div>
+                                        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                                            {activeOfficeData.functions.map((fn, i) => (
+                                                <li
+                                                    key={fn}
+                                                    className="flex items-center gap-3 rounded-lg border border-[#EFEAE0] bg-[#FDFCF9] px-3.5 py-2.5 transition-all duration-300 hover:border-[#D4AF37]/50 hover:bg-white hover:shadow-[0_8px_20px_-12px_rgba(169,127,46,0.45)] hover:translate-x-1"
+                                                    style={{ animation: `vpItemIn 0.5s cubic-bezier(0.16,1,0.3,1) ${0.15 + i * 0.06}s both` }}
+                                                >
+                                                    <span className="vp-serif text-sm font-semibold flex-shrink-0 w-6" style={{ color: 'var(--vp-green-700)' }}>
+                                                        {String(i + 1).padStart(2, '0')}
+                                                    </span>
+                                                    <span className="text-[12px] sm:text-[13px] font-medium text-[#3A4A41]">{fn}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    {/* Organizational Structure — full width at the bottom */}
+                                    <div>
+                                        <div className="flex items-center gap-3 mb-4 sm:mb-5">
+                                            <span className="h-px w-6 bg-[#A97F2E]/60" aria-hidden="true"></span>
+                                            <h4 className="text-[10px] sm:text-[11px] font-bold tracking-[0.28em] uppercase" style={{ color: 'var(--vp-green-700)' }}>
+                                                Organizational Structure
+                                            </h4>
+                                        </div>
                                         <div
-                                            key={fn}
-                                            className="group flex items-start gap-4 px-5 py-4 rounded-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg bg-white relative overflow-hidden"
-                                            style={{ border: '1px solid #E7E2D6' }}
+                                            className="rounded-xl border p-4 sm:p-6 lg:p-8"
+                                            style={{
+                                                background: 'linear-gradient(180deg, rgba(238,242,236,0.55), rgba(251,249,244,0.4))',
+                                                borderColor: 'rgba(199,154,62,0.18)',
+                                            }}
                                         >
-                                            {/* Left gold accent bar */}
-                                            <div
-                                                className="absolute left-0 top-0 h-full w-0.5 transition-all duration-300 group-hover:w-1"
-                                                style={{ background: 'var(--vp-gold)' }}
-                                                aria-hidden="true"
-                                            />
-                                            <span
-                                                className="vp-serif text-lg font-semibold flex-shrink-0 leading-none pt-1"
-                                                style={{ color: 'var(--vp-green-700)' }}
-                                            >
-                                                {String(i + 1).padStart(2, '0')}
-                                            </span>
-                                            <span className="text-sm text-gray-700 font-medium pt-0.5">{fn}</span>
+                                            <OfficeOrgChart root={activeOfficeData.orgChart} />
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Organizational Structure */}
-                            <div>
-                                <div className="flex items-center gap-3 mb-8">
-                                    <span className="h-px w-8" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
-                                    <p className="text-[10px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-gold-dark)' }}>
-                                        Organizational Structure
-                                    </p>
-                                </div>
-                                <div
-                                    className="rounded-xl p-6 md:p-10 overflow-x-auto relative"
-                                    style={{
-                                        background: 'linear-gradient(180deg, rgba(238,242,236,0.6), rgba(251,249,244,0.4))',
-                                        border: '1px solid rgba(199,154,62,0.15)',
-                                    }}
-                                >
-                                    <div className="min-w-[320px] flex justify-center">
-                                        <OfficeOrgChart root={activeOfficeData.orgChart} />
                                     </div>
+                                </div>
+
+                                {/* Panel Footer — mobile back button */}
+                                <div className="sm:hidden border-t border-[#E5E0D3] px-5 py-4 flex justify-center bg-[#FDFCF9]">
+                                    <button
+                                        type="button"
+                                        onClick={handleBackToOffices}
+                                        className="group inline-flex items-center gap-2 rounded-full border border-[#E5E0D3] bg-white px-5 py-2.5 text-[10px] font-bold tracking-[0.18em] uppercase text-[#145A32] transition-all duration-300 active:scale-95"
+                                    >
+                                        <svg className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                                        </svg>
+                                        Back to Offices
+                                    </button>
                                 </div>
                             </div>
                         </AnimatedPanel>
-                    )}
+                    </div>
                 </div>
             </section>
-
-            {/* ===================== Footer spacing ===================== */}
-            <div className="h-4" style={{ background: 'var(--vp-paper)' }} aria-hidden="true" />
         </MainLayout>
     );
 }

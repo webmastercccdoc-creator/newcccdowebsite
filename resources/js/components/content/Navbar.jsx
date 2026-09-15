@@ -130,6 +130,26 @@ const Navbar = () => {
         setOpenDropdown(openDropdown === menu ? null : menu);
     };
 
+    const getDropdownStyle = (menu) => {
+        const menuItem = menuItemRefs.current[menu];
+
+        if (!menuItem || typeof window === 'undefined') {
+            return {};
+        }
+
+        const bounds = menuItem.getBoundingClientRect();
+        const width = Math.min(950, window.innerWidth - 32);
+        const centeredLeft = bounds.left + (bounds.width - width) / 2;
+        const left = Math.max(16, Math.min(centeredLeft, window.innerWidth - width - 16));
+
+        return {
+            position: 'fixed',
+            top: `${bounds.bottom + 12}px`,
+            left: `${left}px`,
+            width: `${width}px`,
+        };
+    };
+
     const navigationItems = [
         { name: 'Home', href: '/' },
         {
@@ -364,7 +384,7 @@ const Navbar = () => {
 
                         {/* Desktop Navigation - Maximized Space */}
                         <div className="hidden xl:flex xl:items-center xl:justify-between flex-1 ml-8">
-                            <ul className="flex items-center space-x-1 lg:space-x-2 xl:space-x-2">
+                            <ul className="flex items-center space-x-1">
                                 {navigationItems.map((item) => (
                                     <li
                                         key={item.name}
@@ -382,11 +402,11 @@ const Navbar = () => {
                                                 <button
                                                     onClick={() => toggleDropdown(item.name)}
                                                     className={`
-                                                        flex items-center justify-center gap-1 rounded-xl px-3 lg:px-4 xl:px-4 
+                                                        flex items-center justify-center gap-1 rounded-xl px-1
                                                         transition-all duration-300 cubic-bezier(0.4, 0, 0.2, 1)
                                                         text-black hover:bg-green-50 hover:text-black hover:shadow-lg
                                                         whitespace-nowrap font-sans
-                                                        ${isScrolled ? 'text-sm py-2' : 'text-sm font-semibold py-2.5'}
+                                                        ${isScrolled ? 'text-[16px] py-2' : 'text-[16px] font-semibold py-2.5'}
                                                         ${openDropdown === item.name ? 'bg-green-50 text-black shadow-lg' : ''}
                                                     `}
                                                     aria-expanded={openDropdown === item.name}
@@ -408,10 +428,11 @@ const Navbar = () => {
                                                 {openDropdown === item.name && (
                                                     <div
                                                         ref={dropdownRef}
-                                                        className="absolute left-1/2 -translate-x-1/2 mt-3 w-auto min-w-[720px] max-w-[950px] origin-top bg-white/95 backdrop-blur-lg shadow-2xl ring-1 ring-gray-200 transition-all duration-300 ease-out rounded-xl font-sans"
+                                                        className="origin-top bg-white/95 backdrop-blur-lg shadow-2xl ring-1 ring-gray-200 transition-all duration-300 ease-out rounded-xl font-sans"
                                                         role="menu"
                                                         style={{
-                                                            animation: 'slideDown 0.25s ease-out'
+                                                            ...getDropdownStyle(item.name),
+                                                            animation: 'slideDown 0.25s ease-out',
                                                         }}
                                                         onMouseEnter={handleDropdownMouseEnter}
                                                         onMouseLeave={handleDropdownMouseLeave}
@@ -449,11 +470,11 @@ const Navbar = () => {
                                                                         role="menuitem"
                                                                         onClick={() => setOpenDropdown(null)}
                                                                     >
-                                                                        <div className="font-semibold text-black group-hover:text-black font-sans">
+                                                                        <div className="text-[16px] font-semibold text-black group-hover:text-black font-sans">
                                                                             {subItem.name}
                                                                         </div>
                                                                         {subItem.description && (
-                                                                            <div className="text-xs text-gray-600 mt-2 group-hover:text-gray-800 leading-relaxed font-sans">
+                                                                            <div className="text-[14px] text-gray-600 mt-2 group-hover:text-gray-800 leading-relaxed font-sans">
                                                                                 {subItem.description}
                                                                             </div>
                                                                         )}
@@ -480,10 +501,10 @@ const Navbar = () => {
                                                 target={item.href.startsWith('http') ? '_blank' : undefined}
                                                 rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                                                 className={`
-                                                    flex items-center justify-center rounded-xl px-3 lg:px-4 xl:px-4 
+                                                    flex items-center justify-center rounded-xl px-1
                                                     text-black transition-all duration-300 hover:bg-green-50 hover:text-black hover:shadow-lg 
                                                     whitespace-nowrap font-sans
-                                                    ${isScrolled ? 'text-sm py-2' : 'text-sm font-semibold py-2.5'}
+                                                    ${isScrolled ? 'text-[16px] py-2' : 'text-[17px] font-semibold py-2.5'}
                                                 `}
                                             >
                                                 {item.name}
@@ -537,7 +558,7 @@ const Navbar = () => {
                                             <button
                                                 onClick={() => toggleDropdown(item.name)}
                                                 className={`
-                                                    flex w-full items-center justify-between rounded-lg px-4 py-3 text-base font-medium
+                                                    flex w-full items-center justify-between rounded-lg px-4 py-3 text-[16px] font-medium
                                                     transition-colors text-black hover:bg-green-50 hover:text-black font-sans
                                                     ${openDropdown === item.name ? 'bg-green-50 text-black' : ''}
                                                 `}
@@ -570,9 +591,9 @@ const Navbar = () => {
                                                             setIsMobileMenuOpen(false);
                                                         }}
                                                     >
-                                                        <div className="font-medium font-sans">{subItem.name}</div>
+                                                        <div className="text-[16px] font-medium font-sans">{subItem.name}</div>
                                                         {subItem.description && (
-                                                            <div className="text-xs text-gray-500 mt-0.5 font-sans">{subItem.description}</div>
+                                                            <div className="text-[14px] text-gray-500 mt-0.5 font-sans">{subItem.description}</div>
                                                         )}
                                                     </a>
                                                 ))}
@@ -583,7 +604,7 @@ const Navbar = () => {
                                             href={item.href}
                                             target={item.href.startsWith('http') ? '_blank' : undefined}
                                             rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                                            className="block rounded-lg px-4 py-3 text-base font-medium text-black transition-colors hover:bg-green-50 hover:text-black font-sans"
+                                            className="block rounded-lg px-4 py-3 text-[16px] font-medium text-black transition-colors hover:bg-green-50 hover:text-black font-sans"
                                             onClick={() => setIsMobileMenuOpen(false)}
                                         >
                                             {item.name}
@@ -601,11 +622,11 @@ const Navbar = () => {
                     @keyframes slideDown {
                         from {
                             opacity: 0;
-                            transform: translateY(-12px) scale(0.97) translateX(-50%);
+                            transform: translateY(-12px) scale(0.97);
                         }
                         to {
                             opacity: 1;
-                            transform: translateY(0) scale(1) translateX(-50%);
+                            transform: translateY(0) scale(1);
                         }
                     }
                     

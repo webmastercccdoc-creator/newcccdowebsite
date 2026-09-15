@@ -8,7 +8,7 @@
 <body style="font-family: Arial, Helvetica, sans-serif; background-color: #f6f8f7; color: #1f2937; line-height: 1.6; margin: 0; padding: 0;">
     <div style="max-width: 640px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 8px;">
         <div style="text-align: center; padding-bottom: 20px;">
-            <img src="https://old.citycollegecdo.edu.ph/ccdologo.png" alt="City College of CDO" style="max-width: 150px; height: auto;">
+            <img src="https://citycollegecdo.edu.ph/ccdologo.png" alt="City College of CDO" style="max-width: 150px; height: auto;">
         </div>
 
         <h2 style="color: #0f5132; margin: 0 0 16px; font-size: 24px;">Your login verification code</h2>

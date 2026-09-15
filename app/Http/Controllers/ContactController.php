@@ -18,18 +18,23 @@ class ContactController extends Controller
             'message' => 'required|string|max:5000',
         ]);
 
-        Mail::raw(
-            "Name: {$data['name']}\n" .
-            "Company: " . ($data['company'] ?: 'Not provided') . "\n" .
-            "Phone: {$data['phone']}\n" .
-            "Email: {$data['email']}\n\n" .
-            "Message:\n{$data['message']}",
-            function ($mail) use ($data) {
-                $mail->to(env('CONTACT_TO_ADDRESS'))
-                    ->replyTo($data['email'], $data['name'])
-                    ->subject($data['subject']);
-            }
-        );
+        Mail::send('emails.contact-message', [
+            ...$data,
+            'contactMessage' => $data['message'],
+        ], function ($mail) use ($data) {
+            $mail->to('registrar.citycollegeofcdo@gmail.com')
+                ->cc('ict.citycollege.cdo@gmail.com')
+                ->replyTo($data['email'], $data['name'])
+                ->subject($data['subject']);
+        });
+
+        Mail::send('emails.contact-auto-reply', [
+            ...$data,
+            'contactMessage' => $data['message'],
+        ], function ($mail) use ($data) {
+            $mail->to($data['email'])
+                ->subject('We received your message - City College of Cagayan de Oro');
+        });
 
         return response()->json([
             'success' => true,

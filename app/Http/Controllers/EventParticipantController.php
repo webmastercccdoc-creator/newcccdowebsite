@@ -46,6 +46,69 @@ class EventParticipantController extends Controller
     }
 
     /**
+     * Public registration endpoint for event attendees.
+     */
+    public function publicStore(Request $request, $eventId)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'role' => 'nullable|in:participant,speaker,organizer,attendee',
+            'status' => 'nullable|in:registered,confirmed,attended,no_show',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $event = Event::findOrFail($eventId);
+
+            $email = trim($request->email);
+            if ($email) {
+                $existing = EventParticipant::where('event_id', $eventId)
+                    ->where('email', $email)
+                    ->first();
+
+                if ($existing) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'A participant with this email already exists for this event.'
+                    ], 422);
+                }
+            }
+
+            $participant = EventParticipant::create([
+                'event_id' => $eventId,
+                'name' => $request->name,
+                'email' => $email,
+                'department' => null,
+                'role' => $request->role ?? 'participant',
+                'status' => $request->status ?? 'registered',
+                'phone' => $request->phone,
+                'notes' => null,
+                'registered_by' => null,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Registration successful.',
+                'data' => $participant
+            ], 201);
+        } catch (\Exception $e) {
+            Log::error('Error adding public participant: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to register for this event.'
+            ], 500);
+        }
+    }
+
+    /**
      * Store a new participant for an event.
      */
     public function store(Request $request, $eventId)

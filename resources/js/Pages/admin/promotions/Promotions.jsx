@@ -230,11 +230,19 @@ export default function Promotions() {
         return pages;
     };
 
+    // Strip HTML and return plain text preview
     const getContentPreview = (content) => {
         if (!content) return 'No content available';
         const plainText = content.replace(/<[^>]*>/g, '');
         const preview = plainText.substring(0, 100);
         return preview.length < plainText.length ? preview + '...' : preview;
+    };
+
+    // Truncate title to a max length with ellipsis
+    const getTitlePreview = (title) => {
+        if (!title) return '';
+        const maxLength = 60;
+        return title.length > maxLength ? title.substring(0, maxLength) + '...' : title;
     };
 
     const getToggleButtonInfo = (status) => {
@@ -366,15 +374,15 @@ export default function Promotions() {
             {/* Promotions Table */}
             <div className="bg-white border border-gray-200 shadow-lg overflow-hidden">
                 <div className="overflow-hidden">
-                    <table className="w-full text-sm">
+                    <table className="w-full text-sm table-fixed">
                         <thead>
                             <tr className="bg-gray-700 text-white">
-                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">#</th>
+                                <th className="w-12 text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">#</th>
                                 <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Title & Content</th>
-                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Status</th>
-                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Start Date</th>
-                                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Expiry Date</th>
-                                <th className="text-center py-4 px-4 font-semibold text-xs uppercase tracking-wider">Actions</th>
+                                <th className="w-28 text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Status</th>
+                                <th className="w-32 text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Start Date</th>
+                                <th className="w-32 text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Expiry Date</th>
+                                <th className="w-64 text-center py-4 px-4 font-semibold text-xs uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
@@ -389,12 +397,18 @@ export default function Promotions() {
                                             <td className="py-3 px-4 text-gray-500 text-xs font-medium border-r border-gray-200">
                                                 {String(startIndex + index + 1).padStart(2, '0')}
                                             </td>
-                                            <td className="py-3 px-4 border-r border-gray-200">
-                                                <div>
-                                                    <span className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer">
-                                                        {promo.title}
+                                            <td className="py-3 px-4 border-r border-gray-200 min-w-0">
+                                                <div className="min-w-0">
+                                                    <span
+                                                        className="block font-semibold text-gray-800 hover:text-emerald-600 transition-colors cursor-pointer truncate"
+                                                        title={promo.title}
+                                                    >
+                                                        {getTitlePreview(promo.title)}
                                                     </span>
-                                                    <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
+                                                    <p
+                                                        className="text-xs text-gray-500 mt-0.5 truncate"
+                                                        title={promo.content ? promo.content.replace(/<[^>]*>/g, '') : ''}
+                                                    >
                                                         {getContentPreview(promo.content)}
                                                     </p>
                                                 </div>

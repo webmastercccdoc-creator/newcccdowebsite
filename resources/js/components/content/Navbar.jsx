@@ -384,7 +384,7 @@ const Navbar = () => {
 
                         {/* Desktop Navigation - Maximized Space */}
                         <div className="hidden xl:flex xl:items-center xl:justify-between flex-1 ml-8">
-                            <ul className="flex items-center space-x-1">
+                            <ul className="flex items-center space-x-3">
                                 {navigationItems.map((item) => (
                                     <li
                                         key={item.name}
@@ -604,7 +604,7 @@ const Navbar = () => {
                                             href={item.href}
                                             target={item.href.startsWith('http') ? '_blank' : undefined}
                                             rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                                            className="block rounded-lg px-4 py-3 text-[16px] font-medium text-black transition-colors hover:bg-green-50 hover:text-black font-sans"
+                                            className="block rounded-lg px-4 py-3 text-[14px] font-medium text-black transition-colors hover:bg-green-50 hover:text-black font-sans"
                                             onClick={() => setIsMobileMenuOpen(false)}
                                         >
                                             {item.name}

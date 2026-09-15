@@ -58,6 +58,10 @@ Route::post('/lookup-url', [UrlShortenerController::class, 'lookup'])->name('url
 // ============================================
 // ABOUT PAGES
 // ============================================
+Route::get('/about', function () {
+    return Inertia::render('content/About');
+})->name('about');
+
 Route::get('/about/cagayan-de-oro-city', function () {
     return Inertia::render('content/About/CagayanDeOroCity');
 })->name('about.cagayan-de-oro-city');

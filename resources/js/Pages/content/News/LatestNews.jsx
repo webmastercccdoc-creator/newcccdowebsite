@@ -66,7 +66,7 @@ const sdgImages = {
 const PLACEHOLDER_ARTICLES = [
     {
         id: "placeholder-1",
-        title: "CC de Oro Launches New Research Center for Sustainable Development",
+        title: "City College of Cagayan de Oro Launches New Research Center for Sustainable Development",
         date: "August 20, 2026",
         content:
             "City College of Cagayan de Oro proudly announces the establishment of its new Research Center for Sustainable Development, aimed at addressing pressing environmental and social challenges.",
@@ -79,7 +79,7 @@ const PLACEHOLDER_ARTICLES = [
         title: "Student Leaders Shine at National Youth Conference 2026",
         date: "August 18, 2026",
         content:
-            "A delegation of student leaders from CC de Oro represented the institution at the National Youth Conference, showcasing their innovative ideas and leadership skills.",
+            "A delegation of student leaders from City College of Cagayan de Oro represented the institution at the National Youth Conference, showcasing their innovative ideas and leadership skills.",
         image_path:
             "https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=600&auto=format&fit=crop",
         sdg_numbers: [5, 16],
@@ -89,7 +89,7 @@ const PLACEHOLDER_ARTICLES = [
         title: "Groundbreaking Partnership with Local Government for Community Development",
         date: "August 15, 2026",
         content:
-            "CC de Oro signs a landmark partnership agreement with the local government to implement community development programs that benefit underserved communities.",
+            "City College of Cagayan de Oro signs a landmark partnership agreement with the local government to implement community development programs that benefit underserved communities.",
         image_path:
             "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=600&auto=format&fit=crop",
         sdg_numbers: [1, 8, 10],
@@ -99,7 +99,7 @@ const PLACEHOLDER_ARTICLES = [
         title: "Faculty Researchers Win International Award for Innovative Study",
         date: "August 12, 2026",
         content:
-            "A team of faculty researchers from CC de Oro has been recognized with an international award for their groundbreaking study on educational technology integration.",
+            "A team of faculty researchers from City College of Cagayan de Oro has been recognized with an international award for their groundbreaking study on educational technology integration.",
         image_path:
             "https://images.unsplash.com/photo-1532094349884-543bc11b234d?q=80&w=600&auto=format&fit=crop",
         sdg_numbers: [4, 9],
@@ -109,7 +109,7 @@ const PLACEHOLDER_ARTICLES = [
         title: "New Scholarship Program Opens Doors for Underprivileged Students",
         date: "August 10, 2026",
         content:
-            "CC de Oro announces a new scholarship program that will provide full tuition support to underprivileged students, making quality education accessible to all.",
+            "City College of Cagayan de Oro announces a new scholarship program that will provide full tuition support to underprivileged students, making quality education accessible to all.",
         image_path:
             "https://images.unsplash.com/photo-1523050854058-8df90110c7f1?q=80&w=600&auto=format&fit=crop",
         sdg_numbers: [1, 4, 10],
@@ -248,7 +248,7 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
 
                 <AnimatedBannerText
                     title="Latest News"
-                    description="Stay updated with the latest happenings, announcements, and events at CC de Oro."
+                    description="Stay updated with the latest happenings, announcements, and events at City College of Cagayan de Oro."
                 />
             </div>
 
@@ -261,7 +261,7 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                             Welcome to <span className="text-green-700">City College</span> of <span className="text-green-700">Cagayan de Oro</span>
                         </h2>
                         <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                            Discover the latest news, announcements, and events happening at CC de Oro.
+                            Discover the latest news, announcements, and events happening at City College of Cagayan de Oro.
                             Stay informed and connected with our vibrant academic community.
                         </p>
                         <div className="w-24 h-1 bg-gradient-to-r from-green-600 to-green-400 rounded-full mx-auto mt-4"></div>

@@ -75,7 +75,7 @@ export default function ViewEvents() {
         };
 
         try {
-            const response = await axios.post(`/admin/events/${id}/participants`, participantData);
+            const response = await axios.post(`/api/events/${id}/register`, participantData);
             if (response.status === 201 && response.data?.success) {
                 setRegistrationSuccess(true);
                 setFormData({
@@ -339,11 +339,6 @@ export default function ViewEvents() {
 
                                 {registrationSuccess ? (
                                     <div className="bg-gradient-to-r from-emerald-50 to-emerald-100/50 border border-emerald-200 rounded-2xl p-8 text-center">
-                                        <div className="w-20 h-20 mx-auto bg-emerald-500/10 rounded-full flex items-center justify-center mb-4">
-                                            <svg className="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                        </div>
                                         <h3 className="text-2xl font-bold text-emerald-800 mb-2">Registration Successful!</h3>
                                         <p className="text-emerald-700 max-w-md mx-auto">Thank you for registering for this event. We look forward to seeing you!</p>
                                         <button

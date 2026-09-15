@@ -11,10 +11,10 @@ export default function AdminLayout({ title, children, activePage }) {
         const checkScreen = () => {
             setIsMobile(window.innerWidth < 1024); // lg breakpoint
         };
-        
+
         checkScreen();
         window.addEventListener('resize', checkScreen);
-        
+
         return () => window.removeEventListener('resize', checkScreen);
     }, []);
 
@@ -26,30 +26,32 @@ export default function AdminLayout({ title, children, activePage }) {
     }, [isMobile, sidebarOpen]);
 
     return (
-        <div className="flex min-h-screen bg-slate-50">
-            {/* Sidebar - Fixed position */}
-            <div className="hidden lg:block flex-shrink-0">
+        <div className="flex h-screen overflow-hidden bg-slate-50">
+            {/* Sidebar - Fixed position, sticky, not part of scroll */}
+            <div className="hidden lg:block flex-shrink-0 h-screen sticky top-0">
                 <Sidebar activePage={activePage} />
             </div>
 
             {/* Mobile Sidebar Overlay */}
             {sidebarOpen && (
-                <div 
+                <div
                     className="fixed inset-0 bg-black/50 z-40 lg:hidden"
                     onClick={() => setSidebarOpen(false)}
                 />
             )}
 
             {/* Mobile Sidebar */}
-            <div className={`
-                fixed left-0 top-0 h-screen w-64 z-50 lg:hidden transition-transform duration-300 transform
-                ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-            `}>
+            <div
+                className={`
+                    fixed left-0 top-0 h-screen w-64 z-50 lg:hidden transition-transform duration-300 transform
+                    ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+                `}
+            >
                 <Sidebar activePage={activePage} />
             </div>
 
             {/* Main Content Area */}
-            <div className="flex flex-col flex-1 w-full overflow-hidden">
+            <div className="flex flex-col flex-1 w-full min-w-0 h-screen">
                 {/* Top Navigation */}
                 <Navbar />
 
@@ -66,8 +68,8 @@ export default function AdminLayout({ title, children, activePage }) {
                     </button>
                 </div>
 
-                {/* Main Content */}
-                <main className="flex-1 px-3 md:px-5 py-4 overflow-auto">
+                {/* Main Content - Scrollable */}
+                <main className="flex-1 px-3 md:px-5 py-4 overflow-y-auto">
                     <div className="w-full h-full">
                         <h1 className="mb-4 text-2xl md:text-3xl font-bold text-gray-900">
                             {title}

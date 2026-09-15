@@ -237,6 +237,7 @@ Route::get('/featured-news/{id}', [PromotionsController::class, 'featuredShow'])
 // ============================================
 Route::get('/api/events', [EventsController::class, 'apiIndex']);
 Route::get('/api/events/{id}', [EventsController::class, 'apiShow']);
+Route::post('/api/events/{eventId}/register', [EventParticipantController::class, 'publicStore'])->name('api.events.register');
 Route::get('/api/events/active', [EventsController::class, 'getActiveEvents']);
 Route::get('/api/events/status-counts', [EventsController::class, 'getStatusCounts']);
 

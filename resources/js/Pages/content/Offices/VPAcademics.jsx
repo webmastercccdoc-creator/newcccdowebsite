@@ -3,7 +3,7 @@ import MainLayout from '../../../layouts/MainLayout';
 import vpAcademicsBanner from '../../../assets/banner/ovpacads-banner.png';
 import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
 import ccdologo from '../../../assets/logos/ccdologo.png';
-import helmaeTapananImage from '../../../assets/images/Dr_Helmae_Tapanan.png'; 
+import helmaeTapananImage from '../../../assets/images/Dr_Helmae_Tapanan.png';
 
 /* ============================================================================
    DATA CONTENT
@@ -59,10 +59,9 @@ const OFFICES = [
         id: 'coe',
         label: 'COE',
         name: 'College of Education',
-        description:
-            'The College of Education provides quality instruction and training for future educators in various disciplines.',
+        description: 'Quality instruction and training for future educators across disciplines.',
         functions: [
-            'Curriculum Development', 'Faculty Development', 'Instructional Design', 
+            'Curriculum Development', 'Faculty Development', 'Instructional Design',
             'Student Assessment', 'Program Accreditation', 'Academic Advising',
         ],
         orgChart: {
@@ -91,10 +90,9 @@ const OFFICES = [
         id: 'cas',
         label: 'CAS',
         name: 'College of Arts and Sciences',
-        description:
-            'The College of Arts and Sciences offers programs that develop critical thinking, communication, and analytical skills.',
+        description: 'Critical thinking, communication, and analytical skill development.',
         functions: [
-            'Curriculum Development', 'Faculty Development', 'Instructional Design', 
+            'Curriculum Development', 'Faculty Development', 'Instructional Design',
             'Student Assessment', 'Program Accreditation', 'Academic Advising',
         ],
         orgChart: {
@@ -127,10 +125,9 @@ const OFFICES = [
         id: 'cbm',
         label: 'CBM',
         name: 'College of Business and Management',
-        description:
-            'The College of Business and Management prepares students for leadership roles in business, entrepreneurship, and administration.',
+        description: 'Leadership preparation for business, entrepreneurship, and administration.',
         functions: [
-            'Curriculum Development', 'Faculty Development', 'Instructional Design', 
+            'Curriculum Development', 'Faculty Development', 'Instructional Design',
             'Student Assessment', 'Program Accreditation', 'Academic Advising',
         ],
         orgChart: {
@@ -155,10 +152,9 @@ const OFFICES = [
         id: 'nstp',
         label: 'NSTP',
         name: 'National Service Training Program',
-        description:
-            'The NSTP Office oversees the implementation of civic welfare, literacy, and ROTC programs for college students.',
+        description: 'Civic welfare, literacy training, and ROTC programs for students.',
         functions: [
-            'Program Implementation', 'Student Training', 'Community Engagement', 
+            'Program Implementation', 'Student Training', 'Community Engagement',
             'Compliance Monitoring', 'Event Coordination', 'Safety and Logistics',
         ],
         orgChart: {
@@ -178,10 +174,9 @@ const OFFICES = [
         id: 'tsti',
         label: 'TSTI',
         name: 'Technical Skills and Technology Institute',
-        description:
-            'The Vocational School Administrator oversees the Technical Skills and Training Institute, providing technical-vocational education and institutional linkages.',
+        description: 'Technical-vocational education, skills training, and industry linkages.',
         functions: [
-            'Technical Skills Training', 'Vocational Education', 'Industry Partnership', 
+            'Technical Skills Training', 'Vocational Education', 'Industry Partnership',
             'Skills Assessment', 'Facility Management', 'Program Development',
         ],
         orgChart: {
@@ -201,10 +196,9 @@ const OFFICES = [
         id: 'support',
         label: 'Academic Support',
         name: 'Academic Support Offices',
-        description:
-            'Academic Support Offices provide essential services including curriculum, library, registrar, licensure review, and student affairs support.',
+        description: 'Curriculum, library, registrar, licensure review, and student affairs services.',
         functions: [
-            'Curriculum Management', 'Library Resources', 'Records Management', 
+            'Curriculum Management', 'Library Resources', 'Records Management',
             'Review Coordination', 'Student Welfare', 'Academic Support',
         ],
         orgChart: {
@@ -285,10 +279,10 @@ function Reveal({ children, delay = 0, className = '' }) {
             className={`transition-all ${className} ${
                 visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
             }`}
-            style={{ 
-                transitionDelay: `${delay}ms`, 
-                transitionDuration: '1.2s', 
-                transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' 
+            style={{
+                transitionDelay: `${delay}ms`,
+                transitionDuration: '1.2s',
+                transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
             }}
         >
             {children}
@@ -306,7 +300,7 @@ function AnimatedPanel({ children }) {
     }, []);
 
     return (
-        <div 
+        <div
             className={`transition-all duration-700 ease-out-expo ${show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}
         >
             {children}
@@ -314,45 +308,168 @@ function AnimatedPanel({ children }) {
     );
 }
 
-/* Recursive Node Component for Tree-style Org Chart */
-function OrgNode({ node }) {
-    const hasChildren = node.children && node.children.length > 0;
-
+/* Gilded Divider with Center Diamond */
+function GoldDivider({ className = '' }) {
     return (
-        <div className="flex flex-col items-center relative">
-            {/* Node Box */}
-            <div className="relative px-5 py-4 bg-white border border-[#E7E2D6] rounded-xl shadow-sm text-center transition-all duration-500 ease-out-expo group hover:-translate-y-1 hover:border-[#145A32] hover:shadow-xl w-full max-w-[260px]">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#145A32] to-[#C79A3E] rounded-t-lg transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                <span className="text-[13px] font-semibold text-gray-800 leading-snug">{node.name}</span>
-            </div>
-
-            {/* Children Branch */}
-            {hasChildren && (
-                <div className="flex flex-wrap justify-center gap-x-6 gap-y-8 pt-10 relative w-full max-w-7xl mx-auto">
-                    {/* Vertical drop line from parent */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-10 bg-[#145A32]/30" aria-hidden="true"></div>
-                    
-                    {/* Render Children */}
-                    {node.children.map((child, i) => (
-                        <div key={i} className="relative flex flex-col items-center w-[220px]">
-                            {/* Vertical drop line to child */}
-                            <div className="w-px h-10 bg-[#145A32]/30" aria-hidden="true"></div>
-                            <div className="w-full flex justify-center">
-                                <OrgNode node={child} />
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            )}
+        <div className={`flex items-center justify-center gap-3 ${className}`} aria-hidden="true">
+            <span className="h-px w-14 sm:w-20 bg-gradient-to-r from-transparent to-[#D4AF37]/70"></span>
+            <span className="w-1.5 h-1.5 rotate-45 bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.8)]"></span>
+            <span className="h-px w-14 sm:w-20 bg-gradient-to-l from-transparent to-[#D4AF37]/70"></span>
         </div>
     );
 }
 
-/* Office Org Chart Wrapper */
+/* Recursive Node — Tree layout (Desktop lg+) */
+function OrgNode({ node, isRoot = false }) {
+    const hasChildren = node.children && node.children.length > 0;
+
+    return (
+        <li className="relative flex flex-col items-center list-none">
+            <div className={`relative px-4 py-3.5 bg-white border rounded-xl shadow-sm text-center transition-all duration-500 ease-out-expo group hover:-translate-y-1 z-10 w-[185px] ${isRoot
+                ? 'w-[280px] border-[#C79A3E] shadow-md hover:shadow-xl'
+                : 'border-[#E7E2D6] hover:border-[#145A32] hover:shadow-xl'
+                }`}>
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#145A32] to-[#C79A3E] rounded-t-lg transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                <span className="text-[12px] font-semibold text-gray-800 leading-snug">{node.name}</span>
+            </div>
+
+            {hasChildren && (
+                <ul className="flex justify-center relative">
+                    {node.children.map((child, i) => (
+                        <OrgNode key={i} node={child} />
+                    ))}
+                </ul>
+            )}
+        </li>
+    );
+}
+
+/* Recursive Node — Vertical stacked layout (fully visible, no scroll) */
+function OrgNodeMobile({ node, isRoot = false }) {
+    const hasChildren = node.children && node.children.length > 0;
+
+    return (
+        <li className="relative flex flex-col items-center w-full list-none">
+            <div className={`relative w-full max-w-[290px] px-4 py-3 bg-white border rounded-xl text-center shadow-sm ${isRoot ? 'border-[#C79A3E] shadow-md' : 'border-[#E7E2D6]'}`}>
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#145A32] to-[#C79A3E] rounded-t-lg"></div>
+                <span className="text-[12px] font-semibold text-gray-800 leading-snug">{node.name}</span>
+            </div>
+
+            {hasChildren && (
+                <div className="flex flex-col items-center w-full">
+                    <span className="w-px h-4 bg-[#145A32]/25" aria-hidden="true"></span>
+                    <ul className="flex flex-col items-center w-full">
+                        {node.children.map((child, i) => (
+                            <li key={i} className="flex flex-col items-center w-full">
+                                <span className="w-px h-4 bg-[#145A32]/25" aria-hidden="true"></span>
+                                <OrgNodeMobile node={child} />
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+        </li>
+    );
+}
+
+/* Office Org Chart Wrapper — stacked below lg, fitted tree at lg+ */
 function OfficeOrgChart({ root }) {
     return (
-        <div className="flex flex-col items-center w-full">
-            <OrgNode node={root} />
+        <>
+            <div className="lg:hidden">
+                <ul className="flex flex-col items-center w-full">
+                    <OrgNodeMobile node={root} isRoot={true} />
+                </ul>
+            </div>
+
+            <div className="hidden lg:block w-full">
+                <ul className="org-tree flex justify-center w-full">
+                    <OrgNode node={root} isRoot={true} />
+                </ul>
+            </div>
+        </>
+    );
+}
+
+/* Academic Support Org Chart — fluid grouped-card layout, fully visible on every device */
+function AcademicSupportOrgChart({ root }) {
+    const osas = root.children[0];
+    const supportOffices = root.children[1].children;
+
+    const healthNames = ['Head, Health Services', 'College Physician and Nurses', 'College Dentist'];
+    const healthUnits = osas.children.filter((n) => healthNames.includes(n.name));
+    const osasUnits = osas.children.filter((n) => !healthNames.includes(n.name));
+
+    return (
+        <div className="w-full flex flex-col items-center">
+            {/* Root */}
+            <div className="relative w-full max-w-[300px] px-4 py-3.5 bg-white border border-[#C79A3E] rounded-xl shadow-md text-center z-10">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#145A32] to-[#C79A3E] rounded-t-lg"></div>
+                <span className="text-[13px] font-semibold text-gray-800 leading-snug">{root.name}</span>
+            </div>
+
+            {/* Connector */}
+            <span className="w-px h-6 bg-[#145A32]/25" aria-hidden="true"></span>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 w-full">
+                {/* OSAS Branch */}
+                <div className="lg:col-span-7">
+                    <div className="h-full rounded-xl border border-[#E7E2D6] bg-white p-4 sm:p-5">
+                        <div className="flex items-start gap-2.5 mb-3 sm:mb-4">
+                            <span className="mt-1.5 h-1.5 w-1.5 rotate-45 bg-[#D4AF37] flex-shrink-0" aria-hidden="true"></span>
+                            <p className="text-[12px] sm:text-[13px] font-bold text-[#0B3D1F] leading-snug">{osas.name}</p>
+                        </div>
+                        <ul className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
+                            {osasUnits.map((u) => (
+                                <li
+                                    key={u.name}
+                                    className="flex items-start gap-2.5 rounded-lg border border-[#E7E2D6] bg-[#FDFCF9] px-3 py-2.5 text-[11.5px] sm:text-xs font-medium text-[#3A4A41] leading-snug transition-all duration-300 hover:border-[#145A32]/40 hover:bg-white hover:shadow-[0_8px_18px_-10px_rgba(20,90,50,0.35)]"
+                                >
+                                    <span className="mt-1.5 h-1.5 w-1.5 rotate-45 flex-shrink-0 bg-[#145A32]/50" aria-hidden="true"></span>
+                                    <span>{u.name}</span>
+                                </li>
+                            ))}
+                        </ul>
+
+                        {/* Health Services sub-group */}
+                        <div className="mt-3 rounded-lg border border-[#D4AF37]/35 bg-[#FBF6E9] p-3">
+                            <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-[#A97F2E] mb-2">Health Services</p>
+                            <ul className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                {healthUnits.map((u) => (
+                                    <li
+                                        key={u.name}
+                                        className="flex items-start gap-2.5 rounded-md border border-[#D4AF37]/30 bg-white px-3 py-2.5 text-[11.5px] sm:text-xs font-medium text-[#6B5316] leading-snug transition-all duration-300 hover:border-[#D4AF37]/60"
+                                    >
+                                        <span className="mt-1.5 h-1.5 w-1.5 rotate-45 flex-shrink-0 bg-[#D4AF37]" aria-hidden="true"></span>
+                                        <span>{u.name}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Academic Support Offices Branch */}
+                <div className="lg:col-span-5">
+                    <div className="h-full rounded-xl border border-[#E7E2D6] bg-white p-4 sm:p-5">
+                        <div className="flex items-start gap-2.5 mb-3 sm:mb-4">
+                            <span className="mt-1.5 h-1.5 w-1.5 rotate-45 bg-[#D4AF37] flex-shrink-0" aria-hidden="true"></span>
+                            <p className="text-[12px] sm:text-[13px] font-bold text-[#0B3D1F] leading-snug">{root.children[1].name}</p>
+                        </div>
+                        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
+                            {supportOffices.map((u) => (
+                                <li
+                                    key={u.name}
+                                    className="flex items-start gap-2.5 rounded-lg border border-[#E7E2D6] bg-[#FDFCF9] px-3 py-2.5 text-[11.5px] sm:text-xs font-medium text-[#3A4A41] leading-snug transition-all duration-300 hover:border-[#145A32]/40 hover:bg-white hover:shadow-[0_8px_18px_-10px_rgba(20,90,50,0.35)]"
+                                >
+                                    <span className="mt-1.5 h-1.5 w-1.5 rotate-45 flex-shrink-0 bg-[#145A32]/50" aria-hidden="true"></span>
+                                    <span>{u.name}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
@@ -361,6 +478,10 @@ export default function VPAcademics() {
     const [scrollProgress, setScrollProgress] = useState(0);
     const [activeOffice, setActiveOffice] = useState('coe');
     const [bioExpanded, setBioExpanded] = useState(false);
+    const [pendingScroll, setPendingScroll] = useState(false);
+
+    const officeNavRef = useRef(null);
+    const officeDetailsRef = useRef(null);
 
     useEffect(() => {
         document.title = "Vice President for Academics - City College of Cagayan de Oro";
@@ -378,6 +499,28 @@ export default function VPAcademics() {
         () => OFFICES.find((office) => office.id === activeOffice),
         [activeOffice]
     );
+
+    /* Auto-scroll to details after selecting an office */
+    useEffect(() => {
+        if (!pendingScroll) return;
+        const t = setTimeout(() => {
+            officeDetailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setPendingScroll(false);
+        }, 120);
+        return () => clearTimeout(t);
+    }, [pendingScroll]);
+
+    const handleSelectOffice = (id) => {
+        setActiveOffice(id);
+        setPendingScroll(true);
+    };
+
+    /* Return to the exact location of the office buttons */
+    const handleBackToOffices = () => {
+        officeNavRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
+    const isSupport = activeOffice === 'support';
 
     const visibleParagraphs = bioExpanded
         ? BIONOTE_PARAGRAPHS
@@ -403,8 +546,7 @@ export default function VPAcademics() {
                     --vp-gold-light: #E5C68A;
                     --vp-cream: #F9F7F2;
                     --vp-gray: #8C9A92;
-                    
-                    /* Variables requested by the provided snippet */
+
                     --vp-paper: #FBFAF6;
                     --vp-sage: #EFF3ED;
                     --vp-gold-dark: #A97F2E;
@@ -414,7 +556,7 @@ export default function VPAcademics() {
                 .vp-serif { font-family: 'Fraunces', ui-serif, Georgia, serif; }
                 .vp-sans { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
                 .ease-out-expo { transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important; }
-                
+
                 /* Responsive Drop Cap */
                 .vp-bio-lead::first-letter {
                     font-family: 'Fraunces', ui-serif, Georgia, serif;
@@ -438,6 +580,98 @@ export default function VPAcademics() {
                 /* Hide Scrollbar utility */
                 .no-scrollbar::-webkit-scrollbar { display: none; }
                 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+                /* Bulletproof CSS Tree Connectors for Org Chart (Desktop lg+) */
+                .org-tree, .org-tree ul {
+                    display: flex;
+                    justify-content: center;
+                    position: relative;
+                    padding: 0;
+                    margin: 0;
+                    list-style: none;
+                }
+                .org-tree li {
+                    position: relative;
+                    padding: 18px 8px 0 8px;
+                    list-style: none;
+                }
+                .org-tree > li {
+                    padding-top: 0;
+                }
+                .org-tree li::before, .org-tree li::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    right: 50%;
+                    border-top: 1px solid rgba(20, 90, 50, 0.3);
+                    width: 50%;
+                    height: 18px;
+                }
+                .org-tree li::after {
+                    right: auto;
+                    left: 50%;
+                    border-left: 1px solid rgba(20, 90, 50, 0.3);
+                }
+                .org-tree li:only-child::after, .org-tree li:only-child::before {
+                    display: none;
+                }
+                .org-tree li:only-child {
+                    padding-top: 18px;
+                }
+                .org-tree > li:only-child {
+                    padding-top: 0;
+                }
+                .org-tree li:first-child::before, .org-tree li:last-child::after {
+                    border: 0 none;
+                }
+                .org-tree li:last-child::before {
+                    border-right: 1px solid rgba(20, 90, 50, 0.3);
+                    border-radius: 0 5px 0 0;
+                }
+                .org-tree li:first-child::after {
+                    border-radius: 5px 0 0 0;
+                }
+                .org-tree ul ul::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 50%;
+                    border-left: 1px solid rgba(20, 90, 50, 0.3);
+                    width: 0;
+                    height: 18px;
+                }
+
+                /* ---- Office chip shimmer sweep ---- */
+                @keyframes vpChipShimmer {
+                    0% { left: -160%; }
+                    100% { left: 160%; }
+                }
+                .office-chip .vp-chip-shimmer {
+                    position: absolute;
+                    top: 0;
+                    left: -160%;
+                    width: 55%;
+                    height: 100%;
+                    transform: skewX(-18deg);
+                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+                    opacity: 0;
+                    pointer-events: none;
+                }
+                .office-chip:hover .vp-chip-shimmer,
+                .office-chip:focus-visible .vp-chip-shimmer {
+                    opacity: 1;
+                    animation: vpChipShimmer 0.9s ease forwards;
+                }
+
+                /* Function list item entrance */
+                @keyframes vpItemIn {
+                    from { opacity: 0; transform: translateX(-8px); }
+                    to { opacity: 1; transform: translateX(0); }
+                }
+
+                @media (prefers-reduced-motion: reduce) {
+                    .office-chip .vp-chip-shimmer { animation: none !important; opacity: 0 !important; }
+                }
             `}</style>
 
             {/* Scroll Progress Indicator */}
@@ -476,7 +710,7 @@ export default function VPAcademics() {
                         </Reveal>
                         <Reveal delay={150}>
                             <h1 className="vp-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium leading-[1.05] tracking-tight mb-4 sm:mb-6">
-                                Dr. Helmae E. <br/>Tapanan
+                                Dr. Helmae E. <br />Tapanan
                             </h1>
                         </Reveal>
                         <Reveal delay={300}>
@@ -508,16 +742,16 @@ export default function VPAcademics() {
                         <Reveal delay={300} className="relative max-w-sm mx-auto lg:max-w-none">
                             {/* Floating Gold Border Frame */}
                             <div className="absolute inset-0 border border-[#D4AF37]/30 rounded-2xl transform translate-x-3 translate-y-3 sm:translate-x-6 sm:translate-y-6 transition-transform duration-700 ease-out-expo hover:translate-x-2 hover:translate-y-2 sm:hover:translate-x-3 sm:hover:translate-y-3"></div>
-                            
+
                             <div className="relative rounded-2xl overflow-hidden shadow-2xl group border border-white/10">
-                                <img 
-                                    src={helmaeTapananImage} 
-                                    alt="Dr. Helmae E. Tapanan" 
+                                <img
+                                    src={helmaeTapananImage}
+                                    alt="Dr. Helmae E. Tapanan"
                                     className="w-full aspect-[4/5] object-cover transition-transform duration-[1.5s] ease-out-expo group-hover:scale-105"
                                 />
                                 {/* Gradient Overlay */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A2E18] via-[#0A2E18]/20 to-transparent opacity-80"></div>
-                                
+
                                 {/* Floating CCDO Seal & Label */}
                                 <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 flex items-center gap-3 sm:gap-4">
                                     <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-white p-1.5 sm:p-2 shadow-xl border border-[#D4AF37]/50 flex-shrink-0">
@@ -538,7 +772,7 @@ export default function VPAcademics() {
             <section className="bg-[#F9F7F2] py-16 sm:py-20 md:py-28 lg:py-32 vp-sans relative overflow-hidden">
                 {/* Subtle top accent */}
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#145A32] to-transparent opacity-10"></div>
-                
+
                 <div className="max-w-3xl mx-auto px-4 sm:px-6">
                     <Reveal className="text-center mb-10 sm:mb-16">
                         <div className="inline-flex items-center gap-4 mb-4">
@@ -571,322 +805,260 @@ export default function VPAcademics() {
                 </div>
             </section>
 
-            {/* ===================== 03 — Academics Cluster ===================== */}
+            {/* ===================== 03 — Academic Cluster (Selector + Details) ===================== */}
             <section
                 className="relative vp-sans overflow-hidden"
                 style={{ background: 'var(--vp-paper)' }}
                 aria-label="Academic Cluster"
             >
+                {/* Ambient texture & glow */}
                 <div
-                    className="absolute inset-0 opacity-[0.02] pointer-events-none"
+                    className="absolute inset-0 opacity-[0.025] pointer-events-none"
                     style={{ backgroundImage: 'radial-gradient(#145A32 1px, transparent 1px)', backgroundSize: '32px 32px' }}
                     aria-hidden="true"
                 />
+                <div
+                    className="absolute -top-24 right-0 w-[28rem] h-[28rem] rounded-full pointer-events-none"
+                    style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.07), transparent 65%)' }}
+                    aria-hidden="true"
+                />
 
-                <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20 md:py-28">
-                    <Reveal>
-                        <div className="flex items-center gap-3 mb-4">
-                            <p className="vp-serif text-3xl md:text-4xl font-semibold" style={{ color: 'var(--vp-gold)' }}>03</p>
-                            <span className="text-[11px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-green-700)' }}>
-                                Cluster Offices
+                <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-20 md:py-24">
+
+                    {/* ---- Ceremonial Header ---- */}
+                    <Reveal className="text-center max-w-2xl mx-auto">
+                        <div className="inline-flex items-center gap-3 mb-4">
+                            <span className="h-px w-8 bg-gradient-to-r from-transparent to-[#A97F2E]/60" aria-hidden="true"></span>
+                            <span className="text-[10px] sm:text-[11px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-gold-dark)' }}>
+                                03 &nbsp;·&nbsp; Cluster Offices
                             </span>
+                            <span className="h-px w-8 bg-gradient-to-l from-transparent to-[#A97F2E]/60" aria-hidden="true"></span>
                         </div>
-                        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-                            <h2 className="vp-serif text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight" style={{ color: 'var(--vp-green-950)' }}>
-                                Academic Cluster
-                            </h2>
-                            <p className="text-sm text-gray-500 max-w-md leading-relaxed">
-                                Six major academic offices and colleges operating under the leadership of the Vice President for Academic Affairs.
-                            </p>
+                        <h2 className="vp-serif text-3xl sm:text-4xl md:text-[2.75rem] font-semibold tracking-tight" style={{ color: 'var(--vp-green-950)' }}>
+                            Academic Cluster
+                        </h2>
+                        <p className="mt-3 text-sm sm:text-[15px] text-gray-500 leading-relaxed">
+                            Six offices and colleges operating under the Vice President for Academic Affairs.
+                        </p>
+                        <GoldDivider className="mt-6" />
+                    </Reveal>
+
+                    {/* ---- Compact Office Selector (vertical list on mobile — ALL visible) ---- */}
+                    <Reveal delay={120}>
+                        <div ref={officeNavRef} className="mt-10 sm:mt-12 scroll-mt-32">
+                            <div
+                                role="tablist"
+                                aria-label="Select an office"
+                                className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-3 lg:max-w-5xl lg:mx-auto"
+                            >
+                                {OFFICES.map((office, i) => {
+                                    const isActive = activeOffice === office.id;
+                                    return (
+                                        <button
+                                            key={office.id}
+                                            type="button"
+                                            role="tab"
+                                            aria-selected={isActive}
+                                            onClick={() => handleSelectOffice(office.id)}
+                                            className={`office-chip group relative w-full sm:w-auto overflow-hidden flex items-center gap-3 sm:gap-2.5 rounded-2xl sm:rounded-full pl-3 pr-4 sm:pl-2.5 sm:pr-5 py-3 sm:py-2 text-left transition-all duration-500 ease-out-expo focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4AF37]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBFAF6] ${
+                                                isActive
+                                                    ? 'text-white shadow-[0_14px_30px_-12px_rgba(10,46,24,0.6)] ring-1 ring-[#D4AF37]/50'
+                                                    : 'bg-white border border-[#E5E0D3] text-[#3A4A41] hover:-translate-y-0.5 hover:border-[#D4AF37]/60 hover:shadow-[0_14px_28px_-16px_rgba(169,127,46,0.5)]'
+                                            }`}
+                                        >
+                                            {/* Active gradient fill */}
+                                            {isActive && (
+                                                <span
+                                                    className="absolute inset-0"
+                                                    style={{ background: 'linear-gradient(120deg, #0A2E18 0%, #145A32 55%, #0A2E18 100%)' }}
+                                                    aria-hidden="true"
+                                                />
+                                            )}
+                                            {/* Shimmer sweep on hover */}
+                                            <span className="vp-chip-shimmer" aria-hidden="true" />
+
+                                            {/* Icon medallion */}
+                                            <span className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border flex-shrink-0 transition-all duration-500 ${
+                                                isActive
+                                                    ? 'border-[#D4AF37]/60 bg-white/10 text-[#E5C68A]'
+                                                    : 'border-[#E5E0D3] bg-[#F9F7F2] text-[#145A32] group-hover:border-[#D4AF37]/50 group-hover:text-[#A97F2E]'
+                                            }`}>
+                                                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                    {office.icon}
+                                                </svg>
+                                            </span>
+
+                                            {/* Number + label */}
+                                            <span className="relative z-10 flex flex-col gap-[3px] leading-none">
+                                                <span className={`text-[8px] sm:text-[9px] font-bold tracking-[0.25em] uppercase transition-colors duration-500 ${
+                                                    isActive ? 'text-[#D4AF37]' : 'text-[#A8B0AA] group-hover:text-[#A97F2E]'
+                                                }`}>
+                                                    {String(i + 1).padStart(2, '0')} · {office.label}
+                                                </span>
+                                                <span className="text-[12px] sm:text-xs font-semibold tracking-wide whitespace-normal sm:whitespace-nowrap">
+                                                    {office.name}
+                                                </span>
+                                            </span>
+
+                                            {/* Active diamond marker — pills (sm+) */}
+                                            <span
+                                                className={`relative z-10 ml-0.5 h-1.5 w-1.5 rotate-45 transition-all duration-500 hidden sm:block ${
+                                                    isActive ? 'bg-[#D4AF37] shadow-[0_0_8px_rgba(212,175,55,0.9)] scale-100' : 'bg-transparent scale-0'
+                                                }`}
+                                                aria-hidden="true"
+                                            />
+
+                                            {/* Chevron — mobile affordance */}
+                                            <svg
+                                                className={`relative z-10 ml-auto h-4 w-4 flex-shrink-0 transition-all duration-300 sm:hidden ${
+                                                    isActive ? 'text-[#D4AF37]' : 'text-[#A8B0AA] group-hover:text-[#A97F2E]'
+                                                }`}
+                                                fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true"
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </Reveal>
 
-                    <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                        {OFFICES.map((office, i) => {
-                            const isActive = activeOffice === office.id;
-                            return (
-                                <Reveal key={office.id} delay={i * 100}>
-                                    <button
-                                        type="button"
-                                        onClick={() => setActiveOffice(office.id)}
-                                        aria-pressed={isActive}
-                                        aria-label={`View ${office.name} details`}
-                                        className="group w-full text-left h-full rounded-xl p-7 transition-all duration-500 relative overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-                                        style={{
-                                            background: isActive ? 'var(--vp-green-950)' : '#fff',
-                                            border: `1px solid ${isActive ? 'var(--vp-gold)' : '#E7E2D6'}`,
-                                            transform: isActive ? 'translateY(-6px)' : 'translateY(0)',
-                                            boxShadow: isActive
-                                                ? '0 24px 48px -16px rgba(11,61,31,0.35)'
-                                                : '0 1px 3px rgba(11,61,31,0.06)',
-                                            outlineColor: 'var(--vp-gold)',
-                                        }}
+                    {/* ---- Office Details Panel ---- */}
+                    <div ref={officeDetailsRef} className="mt-8 sm:mt-10 scroll-mt-24">
+                        <AnimatedPanel key={activeOffice}>
+                            <div
+                                role="tabpanel"
+                                aria-label={activeOfficeData.name}
+                                className="relative rounded-2xl border border-[#E5E0D3] bg-white overflow-hidden shadow-[0_35px_70px_-35px_rgba(10,46,24,0.25)]"
+                            >
+                                {/* Gilded top seam */}
+                                <div className="h-[3px] w-full" style={{ background: 'linear-gradient(90deg, #A97F2E, #E9CE8C 50%, #A97F2E)' }} aria-hidden="true" />
+
+                                {/* Panel Header */}
+                                <div className="relative px-5 sm:px-8 lg:px-10 pt-6 sm:pt-8 pb-6 sm:pb-7 border-b border-[#E5E0D3]">
+                                    {/* Watermark icon */}
+                                    <svg
+                                        className="absolute -right-4 -top-4 h-36 w-36 sm:h-44 sm:w-44 text-[#145A32] opacity-[0.045] pointer-events-none"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"
                                     >
-                                        {/* Subtle inner corner accent */}
-                                        <div
-                                            className="absolute top-0 right-0 w-20 h-20 opacity-10 pointer-events-none transition-opacity duration-500 group-hover:opacity-20"
-                                            style={{
-                                                background: `radial-gradient(circle at top right, ${isActive ? 'var(--vp-gold)' : 'var(--vp-green-700)'}, transparent 70%)`
-                                            }}
-                                            aria-hidden="true"
-                                        />
-                                        {/* Number */}
-                                        <div className="flex items-start justify-between mb-6 relative">
-                                            <span
-                                                className="vp-serif text-5xl font-semibold leading-none"
-                                                style={{ color: isActive ? 'var(--vp-gold)' : 'var(--vp-green-700)' }}
-                                            >
-                                                0{i + 1}
-                                            </span>
-                                            <div
-                                                className="w-12 h-12 rounded-full flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
-                                                style={{
-                                                    background: isActive ? 'rgba(199,154,62,0.15)' : 'var(--vp-sage)',
-                                                    border: `1px solid ${isActive ? 'rgba(199,154,62,0.3)' : '#DEE6DB'}`,
-                                                }}
-                                            >
-                                                <svg
-                                                    className="w-5 h-5"
-                                                    style={{ color: isActive ? 'var(--vp-gold)' : 'var(--vp-green-700)' }}
-                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                                    aria-hidden="true"
+                                        {activeOfficeData.icon}
+                                    </svg>
+
+                                    <div className="relative flex items-start justify-between gap-3 sm:gap-6">
+                                        <div className="flex items-center gap-4 sm:gap-5 min-w-0">
+                                            {/* Medallion */}
+                                            <div className="relative flex-shrink-0">
+                                                <div
+                                                    className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-xl border border-[#D4AF37]/45"
+                                                    style={{ background: 'linear-gradient(145deg, #0A2E18, #145A32)' }}
                                                 >
-                                                    {office.icon}
-                                                </svg>
+                                                    <svg className="h-5 w-5 sm:h-6 sm:w-6 text-[#E5C68A]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                                        {activeOfficeData.icon}
+                                                    </svg>
+                                                </div>
+                                                <span className="absolute -bottom-1.5 -right-1.5 h-3 w-3 rotate-45 bg-[#D4AF37] border-2 border-white shadow" aria-hidden="true" />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-[9px] sm:text-[10px] font-bold tracking-[0.3em] uppercase mb-1" style={{ color: 'var(--vp-gold-dark)' }}>
+                                                    Office {String(OFFICES.findIndex(o => o.id === activeOffice) + 1).padStart(2, '0')} · Academic Cluster
+                                                </p>
+                                                <h3 className="vp-serif text-xl sm:text-2xl md:text-[1.8rem] font-semibold leading-tight tracking-tight" style={{ color: 'var(--vp-green-950)' }}>
+                                                    {activeOfficeData.name}
+                                                </h3>
                                             </div>
                                         </div>
-                                        {/* Abbreviation label */}
-                                        <p
-                                            className="text-[10px] font-bold tracking-[0.25em] uppercase mb-2"
-                                            style={{ color: isActive ? 'var(--vp-gold)' : 'var(--vp-gold-dark)' }}
+
+                                        {/* Back to Offices — desktop */}
+                                        <button
+                                            type="button"
+                                            onClick={handleBackToOffices}
+                                            className="group hidden sm:inline-flex flex-shrink-0 items-center gap-2 self-start rounded-full border border-[#E5E0D3] bg-white px-4 py-2 text-[10px] font-bold tracking-[0.18em] uppercase text-[#145A32] transition-all duration-300 ease-out-expo hover:-translate-y-0.5 hover:border-[#D4AF37] hover:bg-[#0A2E18] hover:text-[#E5C68A] hover:shadow-[0_12px_24px_-10px_rgba(10,46,24,0.5)]"
                                         >
-                                            {office.label}
-                                        </p>
-                                        {/* Office name */}
-                                        <h3
-                                            className="vp-serif text-lg font-semibold mb-4 leading-snug min-h-[3.5rem]"
-                                            style={{ color: isActive ? '#fff' : 'var(--vp-green-950)' }}
-                                        >
-                                            {office.name}
-                                        </h3>
-                                        {/* Gold accent line — animates on hover */}
-                                        <div
-                                            className="h-0.5 w-0 group-hover:w-full transition-all duration-500"
-                                            style={{ background: 'var(--vp-gold)' }}
-                                            aria-hidden="true"
-                                        />
-                                        {/* Explore indicator */}
-                                        <div
-                                            className="mt-5 flex items-center gap-2 text-xs font-semibold"
-                                            style={{ color: isActive ? 'var(--vp-gold)' : 'var(--vp-green-700)' }}
-                                        >
-                                            <span>{isActive ? 'Currently Viewing' : 'Explore Office'}</span>
-                                            <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                            <svg className="h-3 w-3 transition-transform duration-300 group-hover:-translate-y-0.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
                                             </svg>
-                                        </div>
-                                    </button>
-                                </Reveal>
-                            );
-                        })}
-                    </div>
-                </div>
-            </section>
-
-            {/* ===================== 04 — Office Detail Panel ===================== */}
-            <section
-                className="relative vp-sans overflow-hidden"
-                style={{ background: 'var(--vp-sage)' }}
-                aria-label="Office Details"
-            >
-                <div className="absolute top-0 left-0 w-full h-0.5" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
-
-                <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-                    {activeOfficeData && (
-                        <AnimatedPanel key={activeOffice}>
-                            {/* Office Header */}
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-12">
-                                <div className="lg:col-span-8 min-w-0">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <span className="h-px w-8" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
-                                        <span className="text-[10px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-gold-dark)' }}>
-                                            {activeOfficeData.label} · Office Overview
-                                        </span>
+                                            Back to Offices
+                                        </button>
                                     </div>
-                                    <h3 className="vp-serif text-2xl md:text-3xl lg:text-[2.25rem] font-semibold tracking-tight mb-5 leading-tight" style={{ color: 'var(--vp-green-950)' }}>
-                                        {activeOfficeData.name}
-                                    </h3>
-                                    <p className="text-base leading-relaxed text-gray-700 max-w-[65ch]">
+
+                                    <p className="relative mt-4 text-[13px] sm:text-sm text-gray-500 max-w-2xl leading-relaxed">
                                         {activeOfficeData.description}
                                     </p>
                                 </div>
-                                <div className="lg:col-span-4">
-                                    <div
-                                        className="rounded-xl p-6 h-full relative overflow-hidden"
-                                        style={{ background: 'var(--vp-green-950)' }}
-                                    >
-                                        <div className="absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl opacity-20" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
-                                        <div className="relative">
-                                            <div
-                                                className="w-14 h-14 rounded-full flex items-center justify-center mb-5"
-                                                style={{ background: 'rgba(199,154,62,0.15)', border: '1px solid rgba(199,154,62,0.3)' }}
-                                            >
-                                                <svg className="w-6 h-6" style={{ color: 'var(--vp-gold)' }} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                                    {activeOfficeData.icon}
-                                                </svg>
-                                            </div>
-                                            <p className="text-[10px] font-bold tracking-[0.25em] uppercase mb-2" style={{ color: 'var(--vp-gold)' }}>
-                                                Cluster Office
-                                            </p>
-                                            <p className="vp-serif text-lg font-semibold text-white leading-snug mb-3">
-                                                {activeOfficeData.label}
-                                            </p>
-                                            <p className="text-xs text-white/60 leading-relaxed">
-                                                Under the Vice President for Academics.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            {/* Core Functions */}
-                            <div className="mb-16">
-                                <div className="flex items-center gap-3 mb-6">
-                                    <span className="h-px w-8" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
-                                    <p className="text-[10px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-gold-dark)' }}>
-                                        Core Functions
-                                    </p>
-                                </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                                    {activeOfficeData.functions.map((fn, i) => (
+                                {/* Panel Body — Functions full-width on top, Org Chart full-width at the bottom */}
+                                <div className="relative px-5 sm:px-8 lg:px-10 py-7 sm:py-9">
+
+                                    {/* Core Functions — full width */}
+                                    <div className="mb-9">
+                                        <div className="flex items-center gap-3 mb-4 sm:mb-5">
+                                            <span className="h-px w-6 bg-[#A97F2E]/60" aria-hidden="true"></span>
+                                            <h4 className="text-[10px] sm:text-[11px] font-bold tracking-[0.28em] uppercase" style={{ color: 'var(--vp-green-700)' }}>
+                                                Core Functions
+                                            </h4>
+                                        </div>
+                                        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                                            {activeOfficeData.functions.map((fn, i) => (
+                                                <li
+                                                    key={fn}
+                                                    className="flex items-center gap-3 rounded-lg border border-[#EFEAE0] bg-[#FDFCF9] px-3.5 py-2.5 transition-all duration-300 hover:border-[#D4AF37]/50 hover:bg-white hover:shadow-[0_8px_20px_-12px_rgba(169,127,46,0.45)] hover:translate-x-1"
+                                                    style={{ animation: `vpItemIn 0.5s cubic-bezier(0.16,1,0.3,1) ${0.15 + i * 0.06}s both` }}
+                                                >
+                                                    <span className="vp-serif text-sm font-semibold flex-shrink-0 w-6" style={{ color: 'var(--vp-green-700)' }}>
+                                                        {String(i + 1).padStart(2, '0')}
+                                                    </span>
+                                                    <span className="text-[12px] sm:text-[13px] font-medium text-[#3A4A41]">{fn}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    {/* Organizational Structure — full width at the bottom */}
+                                    <div>
+                                        <div className="flex items-center gap-3 mb-4 sm:mb-5">
+                                            <span className="h-px w-6 bg-[#A97F2E]/60" aria-hidden="true"></span>
+                                            <h4 className="text-[10px] sm:text-[11px] font-bold tracking-[0.28em] uppercase" style={{ color: 'var(--vp-green-700)' }}>
+                                                Organizational Structure
+                                            </h4>
+                                        </div>
                                         <div
-                                            key={fn}
-                                            className="group flex items-start gap-4 px-5 py-4 rounded-lg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg bg-white relative overflow-hidden"
-                                            style={{ border: '1px solid #E7E2D6' }}
+                                            className="rounded-xl border p-4 sm:p-6 lg:p-8"
+                                            style={{
+                                                background: 'linear-gradient(180deg, rgba(238,242,236,0.55), rgba(251,249,244,0.4))',
+                                                borderColor: 'rgba(199,154,62,0.18)',
+                                            }}
                                         >
-                                            {/* Left gold accent bar */}
-                                            <div
-                                                className="absolute left-0 top-0 h-full w-0.5 transition-all duration-300 group-hover:w-1"
-                                                style={{ background: 'var(--vp-gold)' }}
-                                                aria-hidden="true"
-                                            />
-                                            <span
-                                                className="vp-serif text-lg font-semibold flex-shrink-0 leading-none pt-1"
-                                                style={{ color: 'var(--vp-green-700)' }}
-                                            >
-                                                {String(i + 1).padStart(2, '0')}
-                                            </span>
-                                            <span className="text-sm text-gray-700 font-medium pt-0.5">{fn}</span>
+                                            {isSupport ? (
+                                                <AcademicSupportOrgChart root={activeOfficeData.orgChart} />
+                                            ) : (
+                                                <OfficeOrgChart root={activeOfficeData.orgChart} />
+                                            )}
                                         </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Organizational Structure */}
-                            <div>
-                                <div className="flex items-center gap-3 mb-8">
-                                    <span className="h-px w-8" style={{ background: 'var(--vp-gold)' }} aria-hidden="true" />
-                                    <p className="text-[10px] font-bold tracking-[0.3em] uppercase" style={{ color: 'var(--vp-gold-dark)' }}>
-                                        Organizational Structure
-                                    </p>
-                                </div>
-                                <div
-                                    className="rounded-xl p-6 md:p-10 overflow-x-auto relative"
-                                    style={{
-                                        background: 'linear-gradient(180deg, rgba(238,242,236,0.6), rgba(251,249,244,0.4))',
-                                        border: '1px solid rgba(199,154,62,0.15)',
-                                    }}
-                                >
-                                    <div className="min-w-[320px] flex justify-center">
-                                        {activeOffice === 'support' ? (
-                                            <AcademicSupportOrgChart root={activeOfficeData.orgChart} />
-                                        ) : (
-                                            <OfficeOrgChart root={activeOfficeData.orgChart} />
-                                        )}
                                     </div>
+                                </div>
+
+                                {/* Panel Footer — mobile back button */}
+                                <div className="sm:hidden border-t border-[#E5E0D3] px-5 py-4 flex justify-center bg-[#FDFCF9]">
+                                    <button
+                                        type="button"
+                                        onClick={handleBackToOffices}
+                                        className="group inline-flex items-center gap-2 rounded-full border border-[#E5E0D3] bg-white px-5 py-2.5 text-[10px] font-bold tracking-[0.18em] uppercase text-[#145A32] transition-all duration-300 active:scale-95"
+                                    >
+                                        <svg className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+                                        </svg>
+                                        Back to Offices
+                                    </button>
                                 </div>
                             </div>
                         </AnimatedPanel>
-                    )}
+                    </div>
                 </div>
             </section>
 
             {/* ===================== Footer spacing ===================== */}
             <div className="h-4" style={{ background: 'var(--vp-paper)' }} aria-hidden="true" />
         </MainLayout>
-    );
-}
-
-function AcademicSupportOrgChart({ root }) {
-    const osas = root.children[0];
-    const supportOffices = root.children[1].children;
-
-    const health = osas.children.find((n) => n.name === 'Head, Health Services');
-    const nurses = osas.children.find((n) => n.name === 'College Physician and Nurses');
-    const dentist = osas.children.find((n) => n.name === 'College Dentist');
-    const osasMain = osas.children.filter((n) => ![health, nurses, dentist].includes(n));
-
-    const LINE = 'bg-[#145A32]/30';
-
-    // Upgraded to match the white card theme of OfficeOrgChart
-    const WhiteCard = ({ name }) => (
-        <div className="relative w-full px-5 py-4 bg-white border border-[#E7E2D6] rounded-xl shadow-sm text-center transition-all duration-500 ease-out-expo group hover:-translate-y-1 hover:border-[#145A32] hover:shadow-xl">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#145A32] to-[#C79A3E] rounded-t-lg transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-            <span className="text-[13px] font-semibold text-gray-800 leading-snug">{name}</span>
-        </div>
-    );
-
-    return (
-        <div className="w-full max-w-[280px] mx-auto flex flex-col items-stretch">
-            {/* Root */}
-            <WhiteCard name={root.name} />
-            <div className={`w-px h-10 mx-auto ${LINE}`} aria-hidden="true" />
-
-            {/* Director */}
-            <WhiteCard name={osas.name} />
-            <div className={`w-px h-10 mx-auto ${LINE}`} aria-hidden="true" />
-
-            {/* Main spine list */}
-            <div className="relative pl-6 pr-6">
-                {/* vertical spine */}
-                <span className={`absolute left-0 top-4 bottom-4 w-px ${LINE}`} aria-hidden="true" />
-
-                {osasMain.map((node) => (
-                    <div key={node.name} className="relative py-2">
-                        <span className={`absolute -left-6 top-1/2 w-6 h-px ${LINE} -translate-y-1/2`} aria-hidden="true" />
-                        <WhiteCard name={node.name} />
-                    </div>
-                ))}
-
-                {/* Health services + nurses + dentist, grouped by a right-side bracket */}
-                <div className="relative mt-2">
-                    <span
-                        className={`absolute -right-6 top-4 bottom-4 w-px ${LINE}`}
-                        aria-hidden="true"
-                    />
-
-                    <div className="relative py-2">
-                        <span className={`absolute -left-6 top-1/2 w-6 h-px ${LINE} -translate-y-1/2`} aria-hidden="true" />
-                        <span className={`absolute -right-6 top-1/2 w-6 h-px ${LINE} -translate-y-1/2`} aria-hidden="true" />
-                        <WhiteCard name={health.name} />
-                    </div>
-                    <div className="relative py-2">
-                        <span className={`absolute -right-6 top-1/2 w-6 h-px ${LINE} -translate-y-1/2`} aria-hidden="true" />
-                        <WhiteCard name={nurses.name} />
-                    </div>
-                    <div className="relative py-2">
-                        <span className={`absolute -right-6 top-1/2 w-6 h-px ${LINE} -translate-y-1/2`} aria-hidden="true" />
-                        <WhiteCard name={dentist.name} />
-                    </div>
-                </div>
-            </div>
-
-            {/* Support offices — stacked block, no spine, just a gap */}
-            <div className="mt-16 flex flex-col gap-3">
-                {supportOffices.map((node) => (
-                    <WhiteCard key={node.name} name={node.name} />
-                ))}
-            </div>
-        </div>
     );
 }

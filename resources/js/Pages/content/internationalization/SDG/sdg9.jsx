@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import sdg1Gif from '../../../../assets/images/sdg gif/1_SDG_MakeEveryDayCount_Gifs_GDU.gif';
-import sdg1Hover from '../../../../assets/images/sdg_01.jpg';
+import sdg9Gif from '../../../../assets/images/sdg gif/9_SDG_MakeEveryDayCount_Gifs_GDU.gif';
+import sdg9Hover from '../../../../assets/images/sdg9.png';
 import collegeLogo from '../../../../assets/logos/ccdoclogo.png';
 import sdg1 from '../../../../assets/images/sdg1.png';
 import sdg2 from '../../../../assets/images/sdg2.jpg';
@@ -99,14 +99,14 @@ const parseSdgNumbers = (value) => {
     return [];
 };
 
-export default function Sdg1({ onBack }) {
+export default function Sdg9({ onBack }) {
     const [articles, setArticles] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const articlesPerPage = 8;
 
-    // SDG 1 color
-    const sdgColor = SDG_COLORS[1];
+    // SDG 9 color
+    const sdgColor = SDG_COLORS[9];
 
     useEffect(() => {
         fetch("/api/news")
@@ -119,12 +119,12 @@ export default function Sdg1({ onBack }) {
             })
             .then((data) => {
                 const normalized = Array.isArray(data) ? data : [];
-                const sdgOneArticles = normalized.filter((item) => {
+                const sdgNineArticles = normalized.filter((item) => {
                     const sdgNumbers = parseSdgNumbers(item.sdg_numbers);
-                    return sdgNumbers.includes(1);
+                    return sdgNumbers.includes(9);
                 });
 
-                setArticles(sdgOneArticles);
+                setArticles(sdgNineArticles);
                 setCurrentPage(1);
                 setIsLoading(false);
             })
@@ -142,21 +142,9 @@ export default function Sdg1({ onBack }) {
         safeCurrentPage * articlesPerPage,
     );
     const maxVisiblePages = 10;
-    const pageWindowStart = Math.max(
-        1,
-        Math.min(
-            safeCurrentPage - Math.floor(maxVisiblePages / 2),
-            totalPages - maxVisiblePages + 1,
-        ),
-    );
-    const pageWindowEnd = Math.min(
-        totalPages,
-        pageWindowStart + maxVisiblePages - 1,
-    );
-    const visiblePages = Array.from(
-        { length: pageWindowEnd - pageWindowStart + 1 },
-        (_, index) => pageWindowStart + index,
-    );
+    const pageWindowStart = Math.max(1, Math.min(safeCurrentPage - Math.floor(maxVisiblePages / 2), totalPages - maxVisiblePages + 1));
+    const pageWindowEnd = Math.min(totalPages, pageWindowStart + maxVisiblePages - 1);
+    const visiblePages = Array.from({ length: pageWindowEnd - pageWindowStart + 1 }, (_, index) => pageWindowStart + index);
 
     useEffect(() => {
         if (currentPage > totalPages) {
@@ -177,7 +165,7 @@ export default function Sdg1({ onBack }) {
         if (pageNumber < 1 || pageNumber > totalPages) return;
         setCurrentPage(pageNumber);
         window.scrollTo({
-            top: document.querySelector(".sdg1-section")?.offsetTop - 80 || 0,
+            top: document.querySelector(".sdg9-section")?.offsetTop - 80 || 0,
             behavior: "smooth",
         });
     };
@@ -200,36 +188,36 @@ export default function Sdg1({ onBack }) {
                     <div className="mt-2 grid grid-cols-1 md:grid-cols-[1fr_minmax(180px,260px)] gap-6 md:gap-8 items-start">
                         <div className="w-full">
                             <img
-                                src={sdg1Hover}
-                                alt="SDG 1 – No Poverty"
+                                src={sdg9Hover}
+                                alt="SDG 9 – Industry, Innovation and Infrastructure"
                                 className="w-full h-auto object-contain rounded-lg shadow-sm bg-white"
                             />
                         </div>
 
                         <div className="w-full">
                             <img
-                                src={sdg1Gif}
-                                alt="SDG 1 – Make Every Day Count"
+                                src={sdg9Gif}
+                                alt="SDG 9 – Make Every Day Count"
                                 className="w-full md:max-w-[260px] h-auto rounded-lg shadow-sm"
                             />
                         </div>
                     </div>
 
-                    <div className="sdg1-section mt-10">
-                        {/* ✅ Centered Title + Description with SDG 1 brand color */}
+                    <div className="sdg9-section mt-10">
+                        {/* ✅ Centered Title + Description with SDG 9 brand color */}
                         <div className="mb-8 text-center">
                             <p
                                 className="text-xs font-semibold uppercase tracking-[0.18em]"
                                 style={{ color: sdgColor }}
                             >
-                                Sustainable Development Goal 1
+                                Sustainable Development Goal 9
                             </p>
 
                             <h2
                                 className="mt-3 text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight"
                                 style={{ color: sdgColor }}
                             >
-                                No Poverty
+                                Industry, Innovation and Infrastructure
                             </h2>
 
                             <div
@@ -240,12 +228,15 @@ export default function Sdg1({ onBack }) {
                             ></div>
 
                             <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
-                                End poverty in all its forms everywhere. SDG 1 aims to eradicate extreme
-                                poverty, reduce at least by half the proportion of men, women, and children
-                                living in poverty, and ensure that all people have equal rights to economic
-                                resources, basic services, and social protection. Explore the initiatives,
-                                programs, and stories from City College of Cagayan de Oro contributing to
-                                this global goal.
+                                Build resilient infrastructure, promote inclusive and sustainable
+                                industrialization, and foster innovation. SDG 9 aims to develop quality,
+                                reliable, sustainable, and resilient infrastructure, promote inclusive and
+                                sustainable industrialization, and increase the access of small-scale
+                                industrial and other enterprises to financial services and markets. It also
+                                seeks to upgrade infrastructure and retrofit industries to make them
+                                sustainable, enhance scientific research, and upgrade the technological
+                                capabilities of industrial sectors. Explore the initiatives, programs, and
+                                stories from City College of Cagayan de Oro contributing to this global goal.
                             </p>
                         </div>
 
@@ -413,8 +404,8 @@ export default function Sdg1({ onBack }) {
                                             />
                                         </svg>
                                     </div>
-                                    <p className="text-lg font-medium text-gray-700">No SDG 1 articles found.</p>
-                                    <p className="mt-1 text-sm text-gray-500">Check back soon for updates on poverty reduction initiatives.</p>
+                                    <p className="text-lg font-medium text-gray-700">No SDG 9 articles found.</p>
+                                    <p className="mt-1 text-sm text-gray-500">Check back soon for updates on industry, innovation, and infrastructure initiatives.</p>
                                 </div>
                             )}
                         </div>

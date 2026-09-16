@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import sdg1Gif from '../../../../assets/images/sdg gif/1_SDG_MakeEveryDayCount_Gifs_GDU.gif';
-import sdg1Hover from '../../../../assets/images/sdg_01.jpg';
+import sdg8Gif from '../../../../assets/images/sdg gif/8_SDG_MakeEveryDayCount_Gifs_GDU.gif';
+import sdg8Hover from '../../../../assets/images/sdg_08.jpg';
 import collegeLogo from '../../../../assets/logos/ccdoclogo.png';
 import sdg1 from '../../../../assets/images/sdg1.png';
 import sdg2 from '../../../../assets/images/sdg2.jpg';
@@ -99,14 +99,14 @@ const parseSdgNumbers = (value) => {
     return [];
 };
 
-export default function Sdg1({ onBack }) {
+export default function Sdg8({ onBack }) {
     const [articles, setArticles] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const articlesPerPage = 8;
 
-    // SDG 1 color
-    const sdgColor = SDG_COLORS[1];
+    // SDG 8 color
+    const sdgColor = SDG_COLORS[8];
 
     useEffect(() => {
         fetch("/api/news")
@@ -119,12 +119,12 @@ export default function Sdg1({ onBack }) {
             })
             .then((data) => {
                 const normalized = Array.isArray(data) ? data : [];
-                const sdgOneArticles = normalized.filter((item) => {
+                const sdgEightArticles = normalized.filter((item) => {
                     const sdgNumbers = parseSdgNumbers(item.sdg_numbers);
-                    return sdgNumbers.includes(1);
+                    return sdgNumbers.includes(8);
                 });
 
-                setArticles(sdgOneArticles);
+                setArticles(sdgEightArticles);
                 setCurrentPage(1);
                 setIsLoading(false);
             })
@@ -142,21 +142,9 @@ export default function Sdg1({ onBack }) {
         safeCurrentPage * articlesPerPage,
     );
     const maxVisiblePages = 10;
-    const pageWindowStart = Math.max(
-        1,
-        Math.min(
-            safeCurrentPage - Math.floor(maxVisiblePages / 2),
-            totalPages - maxVisiblePages + 1,
-        ),
-    );
-    const pageWindowEnd = Math.min(
-        totalPages,
-        pageWindowStart + maxVisiblePages - 1,
-    );
-    const visiblePages = Array.from(
-        { length: pageWindowEnd - pageWindowStart + 1 },
-        (_, index) => pageWindowStart + index,
-    );
+    const pageWindowStart = Math.max(1, Math.min(safeCurrentPage - Math.floor(maxVisiblePages / 2), totalPages - maxVisiblePages + 1));
+    const pageWindowEnd = Math.min(totalPages, pageWindowStart + maxVisiblePages - 1);
+    const visiblePages = Array.from({ length: pageWindowEnd - pageWindowStart + 1 }, (_, index) => pageWindowStart + index);
 
     useEffect(() => {
         if (currentPage > totalPages) {
@@ -177,7 +165,7 @@ export default function Sdg1({ onBack }) {
         if (pageNumber < 1 || pageNumber > totalPages) return;
         setCurrentPage(pageNumber);
         window.scrollTo({
-            top: document.querySelector(".sdg1-section")?.offsetTop - 80 || 0,
+            top: document.querySelector(".sdg8-section")?.offsetTop - 80 || 0,
             behavior: "smooth",
         });
     };
@@ -200,36 +188,36 @@ export default function Sdg1({ onBack }) {
                     <div className="mt-2 grid grid-cols-1 md:grid-cols-[1fr_minmax(180px,260px)] gap-6 md:gap-8 items-start">
                         <div className="w-full">
                             <img
-                                src={sdg1Hover}
-                                alt="SDG 1 – No Poverty"
+                                src={sdg8Hover}
+                                alt="SDG 8 – Decent Work and Economic Growth"
                                 className="w-full h-auto object-contain rounded-lg shadow-sm bg-white"
                             />
                         </div>
 
                         <div className="w-full">
                             <img
-                                src={sdg1Gif}
-                                alt="SDG 1 – Make Every Day Count"
+                                src={sdg8Gif}
+                                alt="SDG 8 – Make Every Day Count"
                                 className="w-full md:max-w-[260px] h-auto rounded-lg shadow-sm"
                             />
                         </div>
                     </div>
 
-                    <div className="sdg1-section mt-10">
-                        {/* ✅ Centered Title + Description with SDG 1 brand color */}
+                    <div className="sdg8-section mt-10">
+                        {/* ✅ Centered Title + Description with SDG 8 brand color */}
                         <div className="mb-8 text-center">
                             <p
                                 className="text-xs font-semibold uppercase tracking-[0.18em]"
                                 style={{ color: sdgColor }}
                             >
-                                Sustainable Development Goal 1
+                                Sustainable Development Goal 8
                             </p>
 
                             <h2
                                 className="mt-3 text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight"
                                 style={{ color: sdgColor }}
                             >
-                                No Poverty
+                                Decent Work and Economic Growth
                             </h2>
 
                             <div
@@ -240,12 +228,16 @@ export default function Sdg1({ onBack }) {
                             ></div>
 
                             <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
-                                End poverty in all its forms everywhere. SDG 1 aims to eradicate extreme
-                                poverty, reduce at least by half the proportion of men, women, and children
-                                living in poverty, and ensure that all people have equal rights to economic
-                                resources, basic services, and social protection. Explore the initiatives,
-                                programs, and stories from City College of Cagayan de Oro contributing to
-                                this global goal.
+                                Promote sustained, inclusive, and sustainable economic growth, full and
+                                productive employment, and decent work for all. SDG 8 aims to sustain
+                                per-capita economic growth, achieve higher levels of economic productivity
+                                through diversification and technological upgrading, and promote
+                                development-oriented policies that support productive activities, decent job
+                                creation, entrepreneurship, creativity, and innovation. It also seeks to
+                                protect labor rights, eradicate forced labor and modern slavery, and
+                                substantially reduce the proportion of youth not in employment, education, or
+                                training. Explore the initiatives, programs, and stories from City College of
+                                Cagayan de Oro contributing to this global goal.
                             </p>
                         </div>
 
@@ -413,8 +405,8 @@ export default function Sdg1({ onBack }) {
                                             />
                                         </svg>
                                     </div>
-                                    <p className="text-lg font-medium text-gray-700">No SDG 1 articles found.</p>
-                                    <p className="mt-1 text-sm text-gray-500">Check back soon for updates on poverty reduction initiatives.</p>
+                                    <p className="text-lg font-medium text-gray-700">No SDG 8 articles found.</p>
+                                    <p className="mt-1 text-sm text-gray-500">Check back soon for updates on decent work and economic growth initiatives.</p>
                                 </div>
                             )}
                         </div>

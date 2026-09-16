@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import MainLayout from '../../../layouts/MainLayout';
 import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
 import sdgBanner from '../../../assets/banner/extension-banner.png';
@@ -35,29 +36,81 @@ import sdg_14 from '../../../assets/images/sdg_14.jpg';
 import sdg_15 from '../../../assets/images/sdg_15.jpg';
 import sdg_17 from '../../../assets/images/sdg_17.jpg';
 
-// ===== Detail components (only SDG 1 for now) =====
+// ===== Detail components =====
 import Sdg1 from './SDG/sdg1';
+import Sdg2 from './SDG/sdg2';
+import Sdg3 from './SDG/sdg3';
+import Sdg4 from './SDG/sdg4';
+import Sdg5 from './SDG/sdg5';
+import Sdg6 from './SDG/sdg6';
+import Sdg7 from './SDG/sdg7';
+import Sdg8 from './SDG/sdg8';
+import Sdg9 from './SDG/sdg9';
+import Sdg10 from './SDG/sdg10';
+import Sdg11 from './SDG/sdg11';
+import Sdg12 from './SDG/sdg12';
+import Sdg13 from './SDG/sdg13';
+import Sdg14 from './SDG/sdg14';
+import Sdg15 from './SDG/sdg15';
+import Sdg16 from './SDG/sdg16';
+import Sdg17 from './SDG/sdg17';
 
 const SDG_IMAGES = [
     { defaultImg: sdg1,  hoverImg: sdg_01, Detail: Sdg1 },
-    { defaultImg: sdg2,  hoverImg: sdg_02, Detail: null },
-    { defaultImg: sdg3,  hoverImg: sdg_03, Detail: null },
-    { defaultImg: sdg4,  hoverImg: sdg_04, Detail: null },
-    { defaultImg: sdg5,  hoverImg: sdg_05, Detail: null },
-    { defaultImg: sdg6,  hoverImg: sdg_06, Detail: null },
-    { defaultImg: sdg7,  hoverImg: sdg_07, Detail: null },
-    { defaultImg: sdg8,  hoverImg: sdg_08, Detail: null },
-    { defaultImg: sdg9,  hoverImg: null,   Detail: null },
-    { defaultImg: sdg10, hoverImg: sdg_10, Detail: null },
-    { defaultImg: sdg11, hoverImg: null,   Detail: null },
-    { defaultImg: sdg12, hoverImg: null,   Detail: null },
-    { defaultImg: sdg13, hoverImg: sdg_13, Detail: null },
-    { defaultImg: sdg14, hoverImg: sdg_14, Detail: null },
-    { defaultImg: sdg15, hoverImg: sdg_15, Detail: null },
-    { defaultImg: sdg16, hoverImg: null,   Detail: null },
-    { defaultImg: sdg17, hoverImg: sdg_17, Detail: null },
-    { defaultImg: sdg,   hoverImg: null,   Detail: null },
+    { defaultImg: sdg2,  hoverImg: sdg_02, Detail: Sdg2 },
+    { defaultImg: sdg3,  hoverImg: sdg_03, Detail: Sdg3 },
+    { defaultImg: sdg4,  hoverImg: sdg_04, Detail: Sdg4 },
+    { defaultImg: sdg5,  hoverImg: sdg_05, Detail: Sdg5 },
+    { defaultImg: sdg6,  hoverImg: sdg_06, Detail: Sdg6 },
+    { defaultImg: sdg7,  hoverImg: sdg_07, Detail: Sdg7 },
+    { defaultImg: sdg8,  hoverImg: sdg_08, Detail: Sdg8 },
+    { defaultImg: sdg9,  hoverImg: null,   Detail: Sdg9 },
+    { defaultImg: sdg10, hoverImg: sdg_10, Detail: Sdg10 },
+    { defaultImg: sdg11, hoverImg: null,   Detail: Sdg11 },
+    { defaultImg: sdg12, hoverImg: null,   Detail: Sdg12 },
+    { defaultImg: sdg13, hoverImg: sdg_13, Detail: Sdg13 },
+    { defaultImg: sdg14, hoverImg: sdg_14, Detail: Sdg14 },
+    { defaultImg: sdg15, hoverImg: sdg_15, Detail: Sdg15 },
+    { defaultImg: sdg16, hoverImg: null,   Detail: Sdg16 },
+    { defaultImg: sdg17, hoverImg: sdg_17, Detail: Sdg17 },
+    { defaultImg: sdg,   hoverImg: null,   Detail: null  }, // college logo tile
 ];
+
+// Animation variants
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: { staggerChildren: 0.05, delayChildren: 0.1 },
+    },
+};
+
+const tileVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        transition: { type: 'spring', stiffness: 260, damping: 20 },
+    },
+};
+
+const fadeUpVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.6, ease: 'easeOut' },
+    },
+};
+
+const paragraphVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.5, ease: 'easeOut' },
+    },
+};
 
 export default function SDG() {
     useEffect(() => {
@@ -107,12 +160,10 @@ export default function SDG() {
     const isDetailView = selectedIndex !== null;
     const selectedItem = isDetailView ? SDG_IMAGES[selectedIndex] : null;
 
-    // In detail view, show the hover (flipped) image if available, otherwise default
     const detailImage = selectedItem
         ? (selectedItem.hoverImg || selectedItem.defaultImg)
         : null;
 
-    // Get the detail component for the selected tile
     const DetailComponent = selectedItem?.Detail;
 
     return (
@@ -129,7 +180,6 @@ export default function SDG() {
                     backgroundImage: `url('${sdgBanner}')`
                 }}
             >
-                {/* Dark Overlay for text readability */}
                 <div className="absolute inset-0 bg-black/50"></div>
 
                 <AnimatedBannerText
@@ -138,160 +188,245 @@ export default function SDG() {
                 />
             </div>
 
-            {/* Two Containers: Left (all SDGs) + Right (text + image) */}
-            <div className="w-full bg-gray-50 px-4 py-6 md:py-10">
-                <div className="mx-auto max-w-7xl flex flex-col lg:flex-row gap-4 lg:gap-6 items-stretch">
-                    {/* LEFT CONTAINER */}
-                    <div className="relative w-full lg:w-1/2 bg-white overflow-hidden flex flex-col">
-                        {!isDetailView ? (
-                            <>
-                                {/* GRID VIEW — 4 columns × 5 rows, aspect ratio locks tile shape so nothing crops */}
-                                <div className="grid w-full grid-cols-4 grid-rows-5 aspect-[4/5]">
-                                    {SDG_IMAGES.map((item, index) => {
-                                        const isAutoFlipped = autoFlippedIndices[index];
-                                        const isHovered = activeHoverIndex === index;
-
-                                        const currentSrc = isHovered && item.hoverImg
-                                            ? item.hoverImg
-                                            : isAutoFlipped && item.hoverImg
-                                                ? item.hoverImg
-                                                : item.defaultImg;
-
-                                        return (
-                                            <img
-                                                key={currentSrc}
-                                                src={currentSrc}
-                                                alt={`SDG ${index + 1}`}
-                                                onClick={() => handleTileClick(index)}
-                                                className={`w-full h-full object-contain bg-white transition-all duration-300 ease-in-out cursor-pointer animate-spin-in ${index === SDG_IMAGES.length - 1 ? 'animate-spin' : ''}`}
-                                                onMouseEnter={() => item.hoverImg && setActiveHoverIndex(index)}
-                                                onMouseLeave={() => setActiveHoverIndex(null)}
-                                            />
-                                        );
-                                    })}
-                                </div>
-
-                                {/* YouTube Video BELOW the SDG grid — centered vertically and horizontally */}
-                                <div className="flex-1 flex items-center justify-center p-4">
-                                    <div className="relative w-full max-w-2xl" style={{ paddingBottom: '56.25%' }}>
-                                        <iframe
-                                            className="absolute top-0 left-0 w-full h-full rounded-lg"
-                                            src="https://www.youtube.com/embed/0XTBYMfZyrM?start=8"
-                                            title="Do you know all 17 SDGs?"
-                                            frameBorder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                            allowFullScreen
-                                        ></iframe>
-                                    </div>
-                                </div>
-                            </>
-                        ) : (
-                            /* DETAIL VIEW — large flipped image only (no video) */
-                            <div className="flex items-center justify-center w-full h-full min-h-[400px] md:min-h-[550px] p-4">
-                                <img
-                                    src={detailImage}
-                                    alt={`SDG ${selectedIndex + 1}`}
-                                    className="w-full h-auto max-h-[600px] object-contain rounded-lg animate-spin-in"
-                                />
-                            </div>
-                        )}
-                    </div>
-
-                    {/* RIGHT CONTAINER */}
-                    <div className="w-full lg:w-1/2 bg-white p-6 md:p-10 flex flex-col justify-center">
-                        {!isDetailView ? (
-                            /* DEFAULT RANKING VIEW */
-                            <div className="text-center">
-                                {/* Badge */}
-                                <span className="mx-auto inline-block w-fit rounded-full border border-green-700 bg-transparent px-3 py-1 text-xs font-semibold uppercase tracking-wider text-green-700">
-                                    Times Higher Education Impact Rankings
-                                </span>
-
-                                {/* Title */}
-                                <h2 className="mt-4 text-2xl md:text-4xl font-extrabold text-green-700 leading-tight text-center">
-                                    CCCDO's Inclusion in the THE Impact Rankings 2025
-                                </h2>
-
-                                {/* Accent bar */}
-                                <div className="mx-auto mt-3 h-1 w-20 rounded-full bg-green-700" />
-
-                                <p className="mt-5 text-sm md:text-base text-gray-700 leading-relaxed text-justify">
-                                    CCCDO participates in the Times Higher Education Impact Rankings to
-                                    assess how effectively its work supports the United Nations
-                                    Sustainable Development Goals. Its inclusion in the 1000–1500 band
-                                    of the <span className="font-semibold text-green-800">THE Impact Rankings 2025</span> marked
-                                    a significant institutional milestone. For a relatively young
-                                    institution, this recognition demonstrates that locally anchored
-                                    programs can compete internationally when supported by clear
-                                    outcomes and strong evidence.
-                                </p>
-
-                                <p className="mt-4 text-sm md:text-base text-gray-700 leading-relaxed text-justify">
-                                    The College views the ranking as an external measure of institutional
-                                    responsibility, not as a competition based on size, age, or resources.
-                                    Participation highlights key areas for a public institution:
-                                    educational access, student well-being, gender inclusion,
-                                    environmental action, public engagement, governance, and
-                                    partnerships. The ranking process has also prompted CCCDO to evaluate
-                                    whether its policies and activities deliver consistent results across
-                                    the institution.
-                                </p>
-
-                                <p className="mt-4 text-sm md:text-base text-gray-700 leading-relaxed text-justify">
-                                    Its strategy centers on improving the quality of evidence behind every
-                                    reported contribution. CCCDO is enhancing coordination among academic
-                                    units, student services, research, extension, quality assurance, and
-                                    internationalization to ensure that all documentation supports a
-                                    unified institutional account. Special attention is given to SDGs
-                                    where the College has significant work and where future interventions
-                                    can achieve greater, measurable impact.
-                                </p>
-
-                                <p className="mt-4 text-sm md:text-base text-gray-700 leading-relaxed text-justify">
-                                    The aim is to build the institutional discipline required to remain
-                                    credible across successive assessment cycles. By refining its
-                                    monitoring systems, widening partnerships, and directing resources
-                                    toward documented social needs, CCCDO intends to make international
-                                    recognition a consequence of sustained public service—not a substitute
-                                    for it.
-                                </p>
-
-                                {/* Rank image moved BELOW the text */}
-                                <div className="mt-7">
-                                    <img
-                                        src={sdgRank}
-                                        alt="SDG Rank 2026"
-                                        className="w-full h-auto object-contain mx-auto rounded-lg"
-                                    />
-                                </div>
-
-                                <p className="mt-6 text-xs md:text-sm text-gray-500 italic text-center">
-                                    Together, we continue to move forward — one goal at a time.
-                                </p>
-                            </div>
-                        ) : (
-                            /* SDG DETAIL COMPONENT */
-                            DetailComponent ? (
-                                <DetailComponent onBack={handleBack} />
-                            ) : (
-                                <div className="text-center text-gray-500">
-                                    <p>No content available for this SDG.</p>
-                                    <button
-                                        type="button"
-                                        onClick={handleBack}
-                                        className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-green-700 transition-colors"
+            {/* ===== SINGLE FULL-WIDTH CONTAINER (DETAIL VIEW) ===== */}
+            {isDetailView && DetailComponent ? (
+                <div className="w-full bg-gray-50 px-4 py-6 md:py-10">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.4, ease: 'easeOut' }}
+                        className="mx-auto w-full max-w-[80rem] bg-white rounded-lg shadow-sm p-6 md:p-10"
+                    >
+                        <DetailComponent onBack={handleBack} />
+                    </motion.div>
+                </div>
+            ) : (
+                /* ===== TWO CONTAINERS (GRID VIEW + FALLBACK DETAIL) ===== */
+                <div className="w-full bg-gray-50 px-4 py-6 md:py-10">
+                    <div className="mx-auto max-w-7xl flex flex-col lg:flex-row gap-4 lg:gap-6 items-stretch">
+                        {/* LEFT CONTAINER */}
+                        <motion.div
+                            initial={{ opacity: 0, x: -40 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.6, ease: 'easeOut' }}
+                            className="relative w-full lg:w-1/2 bg-white overflow-hidden flex flex-col"
+                        >
+                            <AnimatePresence mode="wait">
+                                {!isDetailView ? (
+                                    <motion.div
+                                        key="grid-view"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="flex flex-col h-full"
                                     >
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                        </svg>
-                                        Back to all SDGs
-                                    </button>
-                                </div>
-                            )
-                        )}
+                                        {/* GRID VIEW */}
+                                        <motion.div
+                                            variants={containerVariants}
+                                            initial="hidden"
+                                            animate="visible"
+                                            className="grid w-full grid-cols-4 grid-rows-5 aspect-[4/5]"
+                                        >
+                                            {SDG_IMAGES.map((item, index) => {
+                                                const isAutoFlipped = autoFlippedIndices[index];
+                                                const isHovered = activeHoverIndex === index;
+
+                                                const currentSrc = isHovered && item.hoverImg
+                                                    ? item.hoverImg
+                                                    : isAutoFlipped && item.hoverImg
+                                                        ? item.hoverImg
+                                                        : item.defaultImg;
+
+                                                return (
+                                                    <motion.div
+                                                        key={index}
+                                                        variants={tileVariants}
+                                                        whileHover={{ scale: 1.08, zIndex: 10 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                        onClick={() => handleTileClick(index)}
+                                                        className="relative w-full h-full bg-white border-2 border-white transition-all duration-300 ease-in-out cursor-pointer overflow-hidden"
+                                                        onMouseEnter={() => item.hoverImg && setActiveHoverIndex(index)}
+                                                        onMouseLeave={() => setActiveHoverIndex(null)}
+                                                    >
+                                                        <img
+                                                            key={currentSrc}
+                                                            src={currentSrc}
+                                                            alt={`SDG ${index + 1}`}
+                                                            className="absolute inset-0 w-full h-full object-contain animate-spin-in"
+                                                        />
+                                                    </motion.div>
+                                                );
+                                            })}
+                                        </motion.div>
+
+                                        {/* YouTube Video */}
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.6, delay: 0.3 }}
+                                            className="flex-1 flex items-center justify-center p-4"
+                                        >
+                                            <div className="relative w-full max-w-2xl" style={{ paddingBottom: '56.25%' }}>
+                                                <iframe
+                                                    className="absolute top-0 left-0 w-full h-full rounded-lg"
+                                                    src="https://www.youtube.com/embed/0XTBYMfZyrM?start=8"
+                                                    title="Do you know all 17 SDGs?"
+                                                    frameBorder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                    allowFullScreen
+                                                ></iframe>
+                                            </div>
+                                        </motion.div>
+                                    </motion.div>
+                                ) : (
+                                    /* DETAIL VIEW (fallback for SDGs without Detail component) */
+                                    <motion.div
+                                        key="detail-view"
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        transition={{ duration: 0.4, ease: 'easeOut' }}
+                                        className="flex items-center justify-center w-full h-full min-h-[400px] md:min-h-[550px] p-4"
+                                    >
+                                        <img
+                                            src={detailImage}
+                                            alt={`SDG ${selectedIndex + 1}`}
+                                            className="w-full h-auto max-h-[600px] object-contain rounded-lg animate-spin-in"
+                                        />
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </motion.div>
+
+                        {/* RIGHT CONTAINER */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 40 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.6, ease: 'easeOut' }}
+                            className="w-full lg:w-1/2 bg-white p-6 md:p-10 flex flex-col justify-center"
+                        >
+                            {!isDetailView ? (
+                                <motion.div
+                                    variants={containerVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    className="text-center"
+                                >
+                                    {/* Title */}
+                                    <motion.h2
+                                        variants={fadeUpVariants}
+                                        className="text-2xl md:text-4xl font-extrabold text-green-700 leading-tight text-center"
+                                    >
+                                        Localizing the Global Goals: <span className="text-green-700">CCCDO's SDG Journey</span>
+                                    </motion.h2>
+
+                                    {/* Accent bar */}
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{ width: 80 }}
+                                        transition={{ duration: 0.8, delay: 0.3 }}
+                                        className="mx-auto mt-3 h-1 rounded-full bg-green-700"
+                                    />
+
+                                    <motion.p variants={paragraphVariants} className="mt-5 text-sm md:text-base text-gray-700 leading-relaxed text-justify">
+                                        City College of Cagayan de Oro uses the <span className="text-green-700 font-semibold">Sustainable Development Goals</span> as a
+                                        framework for <span className="text-green-700 font-semibold">institutional decision-making</span> rather than as a set of occasional
+                                        advocacy activities. The College aims to ensure that <span className="text-green-700 font-semibold">teaching, research, student
+                                        development, community engagement, and campus operations</span> address the needs of
+                                        Cagayan de Oro communities. This approach aligns with the College's public
+                                        mandate to <span className="text-green-700 font-semibold">expand educational access</span> and deliver knowledge and services with
+                                        clear social value.
+                                    </motion.p>
+
+                                    <motion.p variants={paragraphVariants} className="mt-4 text-sm md:text-base text-gray-700 leading-relaxed text-justify">
+                                        The College's SDG efforts are evident in programs linking education to <span className="text-green-700 font-semibold">poverty
+                                        reduction, health, inclusion, environmental responsibility, and partnerships</span>.
+                                        Notable initiatives include the <span className="text-green-700 font-semibold">Technical and Vocational Scholarship Program</span>,
+                                        which provided <span className="text-green-700 font-semibold">₱900,548 in assistance to 44 scholars</span>; disaster-preparedness
+                                        activities with about <span className="text-green-700 font-semibold">500 participants</span>; an <span className="text-green-700 font-semibold">Indigenous Peoples Roadshow</span>; and an
+                                        inclusion caravan reaching approximately <span className="text-green-700 font-semibold">1,200 individuals</span>. Environmental
+                                        initiatives, such as <span className="text-green-700 font-semibold">mangrove activities and improved waste management</span>, further
+                                        show that sustainability is addressed through measurable campus and community
+                                        practices.
+                                    </motion.p>
+
+                                    <motion.p variants={paragraphVariants} className="mt-4 text-sm md:text-base text-gray-700 leading-relaxed text-justify">
+                                        CCCDO's strategy is to <span className="text-green-700 font-semibold">integrate SDG alignment at the outset of every
+                                        institutional initiative</span>. Programs, research, extension activities, and
+                                        international engagements are expected to identify their <span className="text-green-700 font-semibold">beneficiaries,
+                                        relevant SDGs, measurable outcomes, and supporting evidence</span>. This approach
+                                        enables the College to assess whether its interventions <span className="text-green-700 font-semibold">improve access,
+                                        strengthen participation, reduce barriers, or deliver sustainable community
+                                        benefits</span>.
+                                    </motion.p>
+
+                                    <motion.p variants={paragraphVariants} className="mt-4 text-sm md:text-base text-gray-700 leading-relaxed text-justify">
+                                        The College plans to develop a more <span className="text-green-700 font-semibold">integrated SDG evidence system</span> that
+                                        connects offices, academic programs, research units, and community partners.
+                                        The goal is to provide a credible account of how a young local college
+                                        translates <span className="text-green-700 font-semibold">global commitments into local outcomes</span>, rather than seeking
+                                        visibility for its own sake. For CCCDO, <span className="text-green-700 font-semibold">international recognition should
+                                        result from the depth and impact of its work</span> in the city it serves.
+                                    </motion.p>
+
+                                    {/* Rank image */}
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 30 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.6, delay: 0.5 }}
+                                        className="mt-7"
+                                    >
+                                        <img
+                                            src={sdgRank}
+                                            alt="SDG Rank 2026"
+                                            className="w-full h-auto object-contain mx-auto rounded-lg"
+                                        />
+                                    </motion.div>
+
+                                    <motion.p
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ duration: 0.6, delay: 0.7 }}
+                                        className="mt-6 text-xs md:text-sm text-gray-500 italic text-center"
+                                    >
+                                        Together, we continue to move forward — <span className="text-green-700 font-semibold">one goal at a time</span>.
+                                    </motion.p>
+                                </motion.div>
+                            ) : (
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key="detail-component"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -20 }}
+                                        transition={{ duration: 0.4 }}
+                                    >
+                                        {DetailComponent ? (
+                                            <DetailComponent onBack={handleBack} />
+                                        ) : (
+                                            <div className="text-center text-gray-500">
+                                                <p>No content available for this SDG.</p>
+                                                <button
+                                                    type="button"
+                                                    onClick={handleBack}
+                                                    className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-green-700 transition-colors"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                                    </svg>
+                                                    Back to all SDGs
+                                                </button>
+                                            </div>
+                                        )}
+                                    </motion.div>
+                                </AnimatePresence>
+                            )}
+                        </motion.div>
                     </div>
                 </div>
-            </div>
+            )}
 
             {/* Empty Main Content */}
             <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">

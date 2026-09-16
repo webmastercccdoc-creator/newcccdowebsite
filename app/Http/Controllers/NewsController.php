@@ -56,7 +56,7 @@ class NewsController extends Controller
             ->orderByDesc('na.id')
             ->get();
 
-        return Inertia::render('content/News/LatestNews', [
+        return Inertia::render('content/news/LatestNews', [
             'newsArticles' => $newsArticles,
         ]);
     }
@@ -111,7 +111,7 @@ class NewsController extends Controller
             ->select([
                 'na.*',
                 DB::raw('(SELECT ai.image_path FROM article_images ai WHERE ai.article_id = na.id ORDER BY ai.sort_order ASC, ai.id ASC LIMIT 1) as image_path'),
-                DB::raw('(SELECT ai.alt_text FROM article_images ai WHERE ai.article_id = na.id ORDER BY ai.sort_order ASC, ai.id ASC LIMIT 1) as article_alt_text'),
+                DB::raw('(SELECT ai.alt_text FROM article_images ai WHERE ai._id = na.id ORDER BY ai.sort_order ASC, ai.id ASC LIMIT 1) as article_alt_text'),
                 DB::raw('(SELECT GROUP_CONCAT(DISTINCT asa.sdg_number ORDER BY asa.sdg_number SEPARATOR ",") FROM article_sdg_associations asa WHERE asa.article_id = na.id) as sdg_numbers'),
             ])
             ->where('na.id', $id)
@@ -144,7 +144,7 @@ class NewsController extends Controller
                 ];
             });
 
-        return Inertia::render('content/News/ViewArticle', [
+        return Inertia::render('content/news/ViewArticle', [
             'article' => $article,
             'articleImages' => $images,
         ]);

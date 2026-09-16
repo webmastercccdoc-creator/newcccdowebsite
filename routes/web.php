@@ -174,19 +174,19 @@ Route::get('/internationalization/wuri', function () {
 // NEWS PAGES
 // ============================================
 Route::get('/news/latest', function () {
-    return Inertia::render('content/news/LatestNews');
+    return Inertia::render('content/News/LatestNews');
 })->name('news.latest');
 
 Route::get('/news/events', function () {
-    return Inertia::render('content/news/UpcomingEvents');
+    return Inertia::render('content/News/UpcomingEvents');
 })->name('news.events');
 
 Route::get('/news/news-letters', function () {
-    return Inertia::render('content/news/NewsLetters');
+    return Inertia::render('content/News/NewsLetters');
 })->name('news.news-letters');
 
 Route::get('/events/{id}', function ($id) {
-    return Inertia::render('content/news/ViewEvents', ['id' => $id]);
+    return Inertia::render('content/News/ViewEvents', ['id' => $id]);
 })->name('events.view');
 
 // ============================================
@@ -220,7 +220,7 @@ Route::get('/apply', function () {
 // ============================================
 // NEWS API ROUTES (Public)
 // ============================================
-Route::get('/news/{id}', [NewsController::class, 'show'])->name('article.show');
+Route::get('/news/{id}', [NewsController::class, 'show'])->name('news.show');
 Route::get('/api/news', [NewsController::class, 'apiIndex']);
 Route::get('/api/news/{id}', [NewsController::class, 'apiShow']);
 
@@ -277,21 +277,21 @@ Route::middleware(['auth'])->group(function () {
     // ============================================
     // ARTICLES MANAGEMENT ROUTES
     // ============================================
-    Route::get('/admin/news', [ArticlesController::class, 'index'])->name('admin.articles');
+    Route::get('/admin/articles', [ArticlesController::class, 'index'])->name('admin.articles');
     Route::get('/admin/approve-articles', [ArticlesController::class, 'approve'])->name('admin.approve-articles');
 
     // SDG Suggestion Route - Now using SDGController
-    Route::post('/admin/news/suggest-sdgs', [SDGController::class, 'suggestSDGs'])->name('admin.articles.suggest-sdgs');
+    Route::post('/admin/articles/suggest-sdgs', [SDGController::class, 'suggestSDGs'])->name('admin.articles.suggest-sdgs');
 
     // Article CRUD Routes
-    Route::post('/admin/news', [ArticlesController::class, 'store'])->name('admin.articles.store');
-    Route::get('/admin/news/status-counts', [ArticlesController::class, 'articleStatusCounts'])->name('admin.articles.status-counts');
-    Route::get('/admin/news/{article}', [ArticlesController::class, 'show'])->name('admin.articles.show');
-    Route::put('/admin/news/{article}', [ArticlesController::class, 'update'])->name('admin.articles.update');
-    Route::delete('/admin/news/{article}', [ArticlesController::class, 'destroy'])->name('admin.articles.destroy');
-    Route::put('/admin/news/{article}/approve', [ArticlesController::class, 'approveArticle'])->name('admin.articles.approve');
-    Route::put('/admin/news/{article}/reject', [ArticlesController::class, 'rejectArticle'])->name('admin.articles.reject');
-    Route::put('/admin/news/{article}/archive', [ArticlesController::class, 'archiveArticle'])->name('admin.articles.archive');
+    Route::post('/admin/articles', [ArticlesController::class, 'store'])->name('admin.articles.store');
+    Route::get('/admin/articles/status-counts', [ArticlesController::class, 'articleStatusCounts'])->name('admin.articles.status-counts');
+    Route::get('/admin/articles/{article}', [ArticlesController::class, 'show'])->name('admin.articles.show');
+    Route::put('/admin/articles/{article}', [ArticlesController::class, 'update'])->name('admin.articles.update');
+    Route::delete('/admin/articles/{article}', [ArticlesController::class, 'destroy'])->name('admin.articles.destroy');
+    Route::put('/admin/articles/{article}/approve', [ArticlesController::class, 'approveArticle'])->name('admin.articles.approve');
+    Route::put('/admin/articles/{article}/reject', [ArticlesController::class, 'rejectArticle'])->name('admin.articles.reject');
+    Route::put('/admin/articles/{article}/archive', [ArticlesController::class, 'archiveArticle'])->name('admin.articles.archive');
 
     // ============================================
     // PROMOTIONS MANAGEMENT ROUTES (Admin)
@@ -364,7 +364,7 @@ Route::middleware(['auth'])->group(function () {
     // USER ACCESS CONTROL ROUTES
     // ============================================
     Route::get('/user/departments', [UserAccessController::class, 'getUserAccessibleDepartments']);
-    Route::get('/user/news', [UserAccessController::class, 'getUserArticles']);
+    Route::get('/user/articles', [UserAccessController::class, 'getUserArticles']);
     Route::get('/user/permissions', [UserAccessController::class, 'getUserPermissions']);
     Route::get('/user/profile', [UserAccessController::class, 'getUserProfile']);
     Route::get('/user/check-menu/{menuId}', [UserAccessController::class, 'checkMenuAccess']);

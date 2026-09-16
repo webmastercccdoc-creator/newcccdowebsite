@@ -51,6 +51,22 @@ Route::get('/url-shortener', function () {
     return Inertia::render('content/Quicklinks/UrlShortener');
 })->name('url.shortener');
 
+Route::get('/guidance', function () {
+    return Inertia::render('content/Quicklinks/GuidanceOffice');
+})->name('quicklinks.guidance');
+
+Route::get('/library', function () {
+    return Inertia::render('content/Quicklinks/LibraryServices');
+})->name('quicklinks.library');
+
+Route::get('/ollpd', function () {
+    return Inertia::render('content/Quicklinks/OLLPD');
+})->name('quicklinks.ollpd');
+
+Route::get('/osas', function () {
+    return Inertia::render('content/Quicklinks/OSAS');
+})->name('quicklinks.osas');
+
 // API endpoints for URL Shortener
 Route::post('/shorten-url', [UrlShortenerController::class, 'shorten'])->name('url.shorten');
 Route::post('/lookup-url', [UrlShortenerController::class, 'lookup'])->name('url.lookup');

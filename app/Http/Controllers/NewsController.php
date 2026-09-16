@@ -56,7 +56,7 @@ class NewsController extends Controller
             ->orderByDesc('na.id')
             ->get();
 
-        return Inertia::render('content/news/LatestNews', [
+        return Inertia::render('content/News/LatestNews', [
             'newsArticles' => $newsArticles,
         ]);
     }
@@ -144,7 +144,7 @@ class NewsController extends Controller
                 ];
             });
 
-        return Inertia::render('content/news/ViewArticle', [
+        return Inertia::render('content/News/ViewArticle', [
             'article' => $article,
             'articleImages' => $images,
         ]);

@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
-import MainLayout from '../../../layouts/MainLayout';
-import ExtensionComingSoon from '../Extension/ExtensionComingSoon';
-import theImg from '../../../assets/banner/the-banner.png';
-import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
+import { useEffect } from "react";
+import MainLayout from "../../../layouts/MainLayout";
+import ExtensionComingSoon from "../Extension/ExtensionComingSoon";
+import theImg from "../../../assets/banner/the-banner.png";
+import AnimatedBannerText from "../../../components/content/AnimatedBannerText";
 
 export default function THE() {
     useEffect(() => {
@@ -12,7 +12,7 @@ export default function THE() {
     return (
         <ExtensionComingSoon
             title="THE"
-            description="Transdisciplinary Higher Education at CC de Oro."
+            description="Times Higher Education at City College of Cagayan de Oro."
             bannerImage={theImg}
         />
     );
@@ -28,13 +28,16 @@ export default function THE() {
             <div
                 className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
                 style={{
-                    backgroundImage: `url('${theImg}')`
+                    backgroundImage: `url('${theImg}')`,
                 }}
             >
                 {/* Dark Overlay for text readability */}
                 <div className="absolute inset-0 bg-black/50"></div>
 
-                <AnimatedBannerText title="THE" description="Transdisciplinary Higher Education at CC de Oro." />
+                <AnimatedBannerText
+                    title="THE"
+                    description="TTimes Higher Education at City College of Cagayan de Oro."
+                />
             </div>
 
             {/* Empty Main Content */}

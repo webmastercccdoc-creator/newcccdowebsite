@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
-import MainLayout from '../../../layouts/MainLayout';
-import ExtensionComingSoon from '../Extension/ExtensionComingSoon';
-import wuriImg from '../../../assets/banner/wuri-banner.png';
-import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
+import { useEffect } from "react";
+import MainLayout from "../../../layouts/MainLayout";
+import ExtensionComingSoon from "../Extension/ExtensionComingSoon";
+import wuriImg from "../../../assets/banner/wuri-banner.png";
+import AnimatedBannerText from "../../../components/content/AnimatedBannerText";
 
 export default function WURI() {
     useEffect(() => {
@@ -12,7 +12,7 @@ export default function WURI() {
     return (
         <ExtensionComingSoon
             title="WURI"
-            description="World University Rankings for Innovation - CC de Oro's commitment to innovation and excellence."
+            description="World University Rankings for Innovation - City College of Cagayan de Oro's commitment to innovation and excellence."
             bannerImage={wuriImg}
         />
     );
@@ -28,13 +28,16 @@ export default function WURI() {
             <div
                 className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
                 style={{
-                    backgroundImage: `url('${wuriImg}')`
+                    backgroundImage: `url('${wuriImg}')`,
                 }}
             >
                 {/* Dark Overlay for text readability */}
                 <div className="absolute inset-0 bg-black/50"></div>
 
-                <AnimatedBannerText title="WURI" description="World University Rankings for Innovation - CC de Oro's commitment to innovation and excellence." />
+                <AnimatedBannerText
+                    title="WURI"
+                    description="World University Rankings for Innovation - City College of Cagayan de Oro's commitment to innovation and excellence."
+                />
             </div>
 
             {/* Empty Main Content */}

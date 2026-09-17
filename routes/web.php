@@ -397,6 +397,11 @@ Route::post('/api/contact', [ContactController::class, 'send'])
 // ============================================
 require __DIR__.'/auth.php';
 
+// Downloadable Forms
+Route::get('/downloadable-forms', function () {
+    return Inertia::render('content/Quicklinks/DownloadableForms');
+})->name('downloadable-forms');
+
 // Public short URL redirect. Keep this after auth routes so /login is not captured as a short code.
 Route::get('/s/{shortCode}', [UrlShortenerController::class, 'redirect'])
     ->where('shortCode', '[A-Za-z0-9_-]+')

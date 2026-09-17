@@ -59,13 +59,13 @@ Route::get('/library', function () {
     return Inertia::render('content/Quicklinks/LibraryServices');
 })->name('quicklinks.library');
 
-Route::get('/ollpd', function () {
-    return Inertia::render('content/Quicklinks/OLLPD');
-})->name('quicklinks.ollpd');
+Route::get('/pdo', function () {
+    return Inertia::render('content/Quicklinks/PDO');
+})->name('quicklinks.pdo');
 
-Route::get('/osas', function () {
-    return Inertia::render('content/Quicklinks/OSAS');
-})->name('quicklinks.osas');
+Route::get('/sas', function () {
+    return Inertia::render('content/Quicklinks/SAS');
+})->name('quicklinks.sas');
 
 // API endpoints for URL Shortener
 Route::post('/shorten-url', [UrlShortenerController::class, 'shorten'])->name('url.shorten');

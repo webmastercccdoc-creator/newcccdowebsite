@@ -1,17 +1,27 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Document, Page, pdfjs } from "react-pdf";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
+
 import MainLayout from "../../../layouts/MainLayout";
 
+// ============ PDF.js worker setup ============
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+    "pdfjs-dist/build/pdf.worker.min.mjs",
+    import.meta.url
+).toString();
+
+// ============ Auto-load all PDFs ============
 const pdfModules = import.meta.glob(
-    '../../../assets/Downloadable Fiile/Internationalization/*.pdf',
+    "../../../assets/Downloadable Fiile/Internationalization/*.pdf",
     { eager: true }
 );
-
-console.log("PDF Modules Found:", pdfModules);
 
 const INTERNATIONALIZATION_CATEGORIES = ["Internationalization"];
 const FORMS_PER_PAGE = 6;
 
+// ============ Helpers ============
 const formatTitle = (fileName) =>
     fileName
         .replace(/\.pdf$/i, "")
@@ -21,7 +31,14 @@ const formatTitle = (fileName) =>
         .trim()
         .replace(/\b\w/g, (c) => c.toUpperCase());
 
-// ============ Animation Variants ============
+const formatBytes = (bytes) => {
+    if (!bytes || Number.isNaN(bytes)) return "—";
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+    return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+};
+
+// ===================== Motion variants =====================
 const heroVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
@@ -84,10 +101,16 @@ export default function DownloadableForms() {
 
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
-    const [sortOrder, setSortOrder] = useState("newest");
+    const [sortOrder, setSortOrder] = useState("alphabetical");
     const [currentPage, setCurrentPage] = useState(1);
 
-    const [forms] = useState(() => {
+    // ----- Modal / Viewer state -----
+    const [openPdf, setOpenPdf] = useState(null);
+    const [numPages, setNumPages] = useState(null);
+    const [viewerPage, setViewerPage] = useState(1);
+
+    // ----- Build forms from discovered PDFs -----
+    const [forms, setForms] = useState(() => {
         const fileKeys = Object.keys(pdfModules);
         if (fileKeys.length === 0) return [];
 
@@ -95,9 +118,7 @@ export default function DownloadableForms() {
             .map((path, index) => {
                 const fileName = path.split("/").pop() || "Unknown.pdf";
                 const title = formatTitle(fileName);
-                const uploadDate = new Date(2024, 0, index + 1)
-                    .toISOString()
-                    .split("T")[0];
+                const url = pdfModules[path].default || pdfModules[path];
 
                 return {
                     id: index + 1,
@@ -105,18 +126,51 @@ export default function DownloadableForms() {
                     description: `Download the ${title} report.`,
                     category: "Internationalization",
                     fileType: "PDF",
-                    fileSize: "1.2 MB",
-                    uploadDate,
-                    downloads: Math.floor(Math.random() * 5000) + 100,
-                    fileUrl: pdfModules[path].default || pdfModules[path],
-                    thumbnail: null,
+                    fileSize: "…", // filled after HEAD fetch
+                    fileUrl: url,
                 };
             })
             .sort((a, b) => a.title.localeCompare(b.title));
     });
 
+    // ============ Enrich with real file size via HEAD ============
+    useEffect(() => {
+        let cancelled = false;
+
+        const enrich = async () => {
+            const updated = await Promise.all(
+                forms.map(async (form) => {
+                    try {
+                        const res = await fetch(form.fileUrl, {
+                            method: "HEAD",
+                        });
+                        if (!res.ok) return form;
+
+                        const len = res.headers.get("content-length");
+                        return {
+                            ...form,
+                            fileSize: len ? formatBytes(parseInt(len, 10)) : "—",
+                        };
+                    } catch {
+                        return form;
+                    }
+                })
+            );
+            if (!cancelled) setForms(updated);
+        };
+
+        if (forms.length > 0 && forms[0].fileSize === "…") {
+            enrich();
+        }
+        return () => {
+            cancelled = true;
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     const categories = ["All", ...INTERNATIONALIZATION_CATEGORIES];
 
+    // ----- Filter + sort -----
     const filteredForms = useMemo(() => {
         let result = [...forms];
 
@@ -135,14 +189,10 @@ export default function DownloadableForms() {
 
         result.sort((a, b) => {
             switch (sortOrder) {
-                case "newest":
-                    return new Date(b.uploadDate) - new Date(a.uploadDate);
-                case "oldest":
-                    return new Date(a.uploadDate) - new Date(b.uploadDate);
-                case "popular":
-                    return b.downloads - a.downloads;
                 case "alphabetical":
                     return a.title.localeCompare(b.title);
+                case "alphabetical-desc":
+                    return b.title.localeCompare(a.title);
                 default:
                     return 0;
             }
@@ -155,10 +205,14 @@ export default function DownloadableForms() {
         setCurrentPage(1);
     }, [searchTerm, selectedCategory, sortOrder]);
 
+    // ----- Pagination -----
     const totalPages = Math.max(1, Math.ceil(filteredForms.length / FORMS_PER_PAGE));
     const safePage = Math.min(currentPage, totalPages);
     const startIndex = (safePage - 1) * FORMS_PER_PAGE;
-    const paginatedForms = filteredForms.slice(startIndex, startIndex + FORMS_PER_PAGE);
+    const paginatedForms = filteredForms.slice(
+        startIndex,
+        startIndex + FORMS_PER_PAGE
+    );
 
     const getPageNumbers = () => {
         const pages = [];
@@ -183,14 +237,49 @@ export default function DownloadableForms() {
         window.scrollTo({ top: 400, behavior: "smooth" });
     };
 
-    const formatDate = (dateString) => {
-        const options = { year: "numeric", month: "short", day: "numeric" };
-        return new Date(dateString).toLocaleDateString(undefined, options);
+    // ----- Actions -----
+    const handleDownload = (form) => {
+        const link = document.createElement("a");
+        link.href = form.fileUrl;
+        link.download = `${form.title}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     };
 
-    const handleDownload = (form) => {
-        window.open(form.fileUrl, "_blank", "noopener,noreferrer");
+    const openViewer = (form) => {
+        setOpenPdf(form);
+        setViewerPage(1);
+        setNumPages(null);
     };
+
+    const closeViewer = useCallback(() => {
+        setOpenPdf(null);
+        setViewerPage(1);
+        setNumPages(null);
+    }, []);
+
+    // Keyboard controls inside modal
+    useEffect(() => {
+        if (!openPdf) return;
+        const onKey = (e) => {
+            if (e.key === "Escape") closeViewer();
+            if (e.key === "ArrowRight" && numPages && viewerPage < numPages)
+                setViewerPage((p) => p + 1);
+            if (e.key === "ArrowLeft" && viewerPage > 1)
+                setViewerPage((p) => p - 1);
+        };
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    }, [openPdf, numPages, viewerPage, closeViewer]);
+
+    // Lock body scroll when modal open
+    useEffect(() => {
+        document.body.style.overflow = openPdf ? "hidden" : "";
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [openPdf]);
 
     return (
         <MainLayout
@@ -199,7 +288,7 @@ export default function DownloadableForms() {
             mainClassName="py-0"
             className="overflow-hidden pb-0"
         >
-            {/* ==================== HERO / TITLE + SEARCH ==================== */}
+            {/* ==================== HERO ==================== */}
             <motion.section
                 className="w-full bg-[#f5f7fb] pt-16 md:pt-20 pb-12 md:pb-16"
                 variants={heroVariants}
@@ -207,7 +296,6 @@ export default function DownloadableForms() {
                 animate="visible"
             >
                 <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-                    {/* Title */}
                     <motion.h1
                         className="font-extrabold text-[#1a1a1a] leading-[1.1] tracking-tight mb-4"
                         style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
@@ -217,7 +305,6 @@ export default function DownloadableForms() {
                         <span className="text-[#157d3c]">Forms You Need</span>
                     </motion.h1>
 
-                    {/* Subtitle */}
                     <motion.p
                         className="mx-auto max-w-2xl text-[#4b5563] text-base sm:text-lg leading-relaxed mb-8"
                         variants={titleVariants}
@@ -226,13 +313,11 @@ export default function DownloadableForms() {
                         institutional documents — all in one place.
                     </motion.p>
 
-                    {/* Green divider */}
                     <motion.div
                         className="mx-auto w-24 h-1 bg-[#157d3c] rounded-full mb-10 origin-center"
                         variants={dividerVariants}
                     />
 
-                    {/* Search bar with yellow circular button */}
                     <motion.div
                         className="relative mx-auto max-w-3xl"
                         variants={searchVariants}
@@ -272,9 +357,9 @@ export default function DownloadableForms() {
                 </div>
             </motion.section>
 
-            {/* ==================== MAIN CONTENT ==================== */}
+            {/* ==================== MAIN ==================== */}
             <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10 md:py-14">
-                {/* Filters row */}
+                {/* Filters */}
                 <motion.div
                     className="flex flex-col lg:flex-row gap-4 mb-4 justify-end"
                     initial={{ opacity: 0, y: 15 }}
@@ -299,10 +384,8 @@ export default function DownloadableForms() {
                             onChange={(e) => setSortOrder(e.target.value)}
                             className="w-full sm:w-auto px-4 py-3 border-2 border-gray-200 rounded-lg text-sm bg-white cursor-pointer outline-none focus:border-[#157d3c]"
                         >
-                            <option value="newest">Newest First</option>
-                            <option value="oldest">Oldest First</option>
-                            <option value="popular">Most Downloaded</option>
-                            <option value="alphabetical">A-Z</option>
+                            <option value="alphabetical">A – Z</option>
+                            <option value="alphabetical-desc">Z – A</option>
                         </select>
                     </div>
                 </motion.div>
@@ -354,7 +437,6 @@ export default function DownloadableForms() {
                     </motion.div>
                 ) : (
                     <>
-                        {/* Grid with animated cards */}
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={`page-${safePage}`}
@@ -375,51 +457,87 @@ export default function DownloadableForms() {
                                         }}
                                         className="flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden transition-shadow duration-200 hover:shadow-xl"
                                     >
-                                        <div className="relative w-full h-44 bg-gray-100 overflow-hidden">
-                                            {form.thumbnail ? (
-                                                <img
-                                                    src={form.thumbnail}
-                                                    alt={form.title}
-                                                    loading="lazy"
-                                                    className="w-full h-full object-cover"
+                                        {/* THUMBNAIL */}
+                                        <div
+                                            className="relative w-full h-48 bg-gray-100 overflow-hidden flex items-start justify-center cursor-pointer"
+                                            onClick={() => openViewer(form)}
+                                        >
+                                            <Document
+                                                file={form.fileUrl}
+                                                loading={
+                                                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                                                        <div className="animate-pulse flex flex-col items-center gap-2">
+                                                            <div className="w-10 h-14 bg-gray-300 rounded-sm" />
+                                                            <span className="text-[0.6rem] font-semibold text-gray-400 tracking-widest">
+                                                                LOADING
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                error={
+                                                    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#157d3c]/10 to-[#157d3c]/25">
+                                                        <span className="text-sm font-semibold text-[#157d3c] tracking-wide">
+                                                            PDF
+                                                        </span>
+                                                    </div>
+                                                }
+                                            >
+                                                <Page
+                                                    pageNumber={1}
+                                                    width={340}
+                                                    renderAnnotationLayer={false}
+                                                    renderTextLayer={false}
+                                                    className="shadow-sm"
                                                 />
-                                            ) : (
-                                                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#157d3c]/10 to-[#157d3c]/20">
-                                                    <span className="text-sm font-semibold text-[#157d3c] tracking-wide">
-                                                        {form.fileType}
-                                                    </span>
-                                                </div>
-                                            )}
-                                            <span className="absolute top-3 left-3 px-2.5 py-1 bg-white/90 backdrop-blur-sm text-[0.7rem] font-semibold text-[#0f5c2c] rounded-full shadow-sm">
+                                            </Document>
+
+                                            {/* Category pill — top-right */}
+                                            <span className="absolute top-3 right-3 z-10 px-2.5 py-1 bg-white/90 backdrop-blur-sm text-[0.7rem] font-semibold text-[#0f5c2c] rounded-full shadow-sm">
                                                 {form.category}
                                             </span>
+
+                                            {/* Hover overlay */}
+                                            <div className="absolute inset-0 z-10 bg-black/0 hover:bg-black/30 transition-colors duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
+                                                <span className="bg-white/95 text-[#0f5c2c] text-xs font-bold px-4 py-2 rounded-full shadow-lg">
+                                                    Preview PDF
+                                                </span>
+                                            </div>
+
+                                            <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white to-transparent" />
                                         </div>
 
+                                        {/* BODY */}
                                         <div className="flex-1 p-5">
-                                            <h3 className="m-0 mb-2 text-lg font-semibold text-gray-900 leading-snug">
+                                            <h3 className="m-0 mb-2 text-lg font-semibold text-gray-900 leading-snug line-clamp-2">
                                                 {form.title}
                                             </h3>
-                                            <p className="m-0 mb-4 text-sm text-gray-500 leading-relaxed">
+                                            <p className="m-0 mb-4 text-sm text-gray-500 leading-relaxed line-clamp-2">
                                                 {form.description}
                                             </p>
                                             <div className="flex flex-wrap gap-3 text-xs text-gray-500">
                                                 <span>{form.fileSize}</span>
                                                 <span>•</span>
-                                                <span>{formatDate(form.uploadDate)}</span>
-                                                <span>•</span>
-                                                <span>
-                                                    {form.downloads.toLocaleString()} downloads
-                                                </span>
+                                                <span>{form.fileType}</span>
                                             </div>
                                         </div>
 
-                                        <div className="px-5 py-4 border-t border-gray-200">
+                                        {/* FOOTER */}
+                                        <div className="px-5 py-4 border-t border-gray-200 flex gap-2">
+                                            <motion.button
+                                                type="button"
+                                                onClick={() => openViewer(form)}
+                                                whileHover={{ scale: 1.02 }}
+                                                whileTap={{ scale: 0.97 }}
+                                                className="flex-1 flex items-center justify-center px-4 py-2.5 bg-white hover:bg-gray-50 text-[#157d3c] border-2 border-[#157d3c] rounded-lg text-sm font-semibold cursor-pointer transition-colors duration-200"
+                                            >
+                                                Preview
+                                            </motion.button>
                                             <motion.button
                                                 type="button"
                                                 onClick={() => handleDownload(form)}
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.97 }}
-                                                className="w-full flex items-center justify-center px-4 py-2.5 bg-[#157d3c] hover:bg-[#0f5c2c] text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors duration-200"
+                                                className="flex-1 flex items-center justify-center px-4 py-2.5 bg-[#157d3c] hover:bg-[#0f5c2c] text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors duration-200"
                                             >
                                                 Download
                                             </motion.button>
@@ -489,6 +607,122 @@ export default function DownloadableForms() {
                     </>
                 )}
             </div>
+
+            {/* ==================== PDF MODAL VIEWER ==================== */}
+            <AnimatePresence>
+                {openPdf && (
+                    <motion.div
+                        className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-6 bg-black/80 backdrop-blur-sm"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.25 }}
+                    >
+                        <div
+                            className="absolute inset-0"
+                            onClick={closeViewer}
+                            aria-hidden="true"
+                        />
+
+                        <motion.div
+                            className="relative w-full h-full md:max-w-5xl md:h-[92vh] bg-white md:rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+                            initial={{ scale: 0.95, y: 20, opacity: 0 }}
+                            animate={{ scale: 1, y: 0, opacity: 1 }}
+                            exit={{ scale: 0.95, y: 20, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                            <div className="flex items-center justify-between gap-4 px-5 py-3 bg-gradient-to-r from-[#0f5c2c] to-[#157d3c] text-white">
+                                <div className="min-w-0">
+                                    <h2 className="font-bold truncate text-base md:text-lg">
+                                        {openPdf.title}
+                                    </h2>
+                                    <p className="text-xs text-green-100 truncate">
+                                        {openPdf.category}
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0">
+                                    <button
+                                        onClick={() => handleDownload(openPdf)}
+                                        className="hidden md:inline-flex items-center gap-1.5 bg-[#f5c518] hover:bg-[#e6b800] text-[#1a1a1a] text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors"
+                                    >
+                                        ⬇ Download
+                                    </button>
+                                    <button
+                                        onClick={closeViewer}
+                                        className="bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors"
+                                        aria-label="Close viewer"
+                                    >
+                                        Close ✕
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="flex-1 overflow-auto bg-gray-200 flex justify-center p-4">
+                                <Document
+                                    file={openPdf.fileUrl}
+                                    onLoadSuccess={({ numPages }) =>
+                                        setNumPages(numPages)
+                                    }
+                                    loading={
+                                        <div className="flex items-center justify-center h-full">
+                                            <div className="animate-spin rounded-full h-10 w-10 border-4 border-[#157d3c] border-t-transparent" />
+                                        </div>
+                                    }
+                                    error={
+                                        <div className="text-red-600 font-semibold p-8">
+                                            Failed to load PDF.
+                                        </div>
+                                    }
+                                >
+                                    <Page
+                                        pageNumber={viewerPage}
+                                        width={Math.min(
+                                            900,
+                                            typeof window !== "undefined"
+                                                ? window.innerWidth - 80
+                                                : 900
+                                        )}
+                                        renderAnnotationLayer={false}
+                                        renderTextLayer={false}
+                                        className="shadow-xl bg-white"
+                                    />
+                                </Document>
+                            </div>
+
+                            {numPages && (
+                                <div className="flex items-center justify-between px-5 py-3 border-t bg-white">
+                                    <button
+                                        onClick={() =>
+                                            setViewerPage((p) =>
+                                                Math.max(1, p - 1)
+                                            )
+                                        }
+                                        disabled={viewerPage <= 1}
+                                        className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        ← Prev
+                                    </button>
+                                    <span className="text-sm text-gray-600">
+                                        Page <strong>{viewerPage}</strong> of{" "}
+                                        {numPages}
+                                    </span>
+                                    <button
+                                        onClick={() =>
+                                            setViewerPage((p) =>
+                                                Math.min(numPages, p + 1)
+                                            )
+                                        }
+                                        disabled={viewerPage >= numPages}
+                                        className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        Next →
+                                    </button>
+                                </div>
+                            )}
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </MainLayout>
     );
 }

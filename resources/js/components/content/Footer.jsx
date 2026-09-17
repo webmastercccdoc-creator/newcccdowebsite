@@ -94,18 +94,18 @@ const Footer = () => {
                             </li>
                             <li>
                                 <Link
-                                    href="/ollpd"
+                                    href="/pdo"
                                     className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300"
                                 >
-                                    Office of Lifelong Learning and Professional Development
+                                    Personal Development Office
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    href="/osas"
+                                    href="/sas"
                                     className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300"
                                 >
-                                    Office of Student Affairs and Services
+                                    Student Affairs and Services
                                 </Link>
                             </li>
                         </ul>

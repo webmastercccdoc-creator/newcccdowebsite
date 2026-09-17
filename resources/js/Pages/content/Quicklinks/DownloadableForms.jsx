@@ -5,6 +5,7 @@ import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
 import MainLayout from "../../../layouts/MainLayout";
+import formsBannerImg from "../../../assets/banner/News Banner.png";
 
 // ============ PDF.js worker setup ============
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
@@ -36,6 +37,12 @@ const formatBytes = (bytes) => {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
     return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+};
+
+const formatDate = (dateString) => {
+    if (!dateString) return "—";
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
 // ===================== Motion variants =====================
@@ -94,6 +101,34 @@ const cardVariants = {
     },
 };
 
+// ============ Banner text (in-file so no extra import is needed) ============
+function AnimatedBannerText({ title, description }) {
+    return (
+        <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
+            <motion.h1
+                className="text-4xl md:text-6xl font-extrabold text-white drop-shadow-lg tracking-tight"
+                initial={{ opacity: 0, y: 25 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            >
+                {title}
+            </motion.h1>
+            <motion.p
+                className="mt-4 text-white/90 text-sm md:text-lg leading-relaxed drop-shadow"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                    duration: 0.7,
+                    ease: [0.22, 1, 0.36, 1],
+                    delay: 0.15,
+                }}
+            >
+                {description}
+            </motion.p>
+        </div>
+    );
+}
+
 export default function DownloadableForms() {
     useEffect(() => {
         document.title = "Downloadable Forms - City College of Cagayan de Oro";
@@ -101,7 +136,7 @@ export default function DownloadableForms() {
 
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
-    const [sortOrder, setSortOrder] = useState("alphabetical");
+    const [sortOrder, setSortOrder] = useState("newest");
     const [currentPage, setCurrentPage] = useState(1);
 
     // ----- Modal / Viewer state -----
@@ -127,13 +162,14 @@ export default function DownloadableForms() {
                     category: "Internationalization",
                     fileType: "PDF",
                     fileSize: "…", // filled after HEAD fetch
+                    uploadDate: null, // filled after HEAD fetch
                     fileUrl: url,
                 };
             })
             .sort((a, b) => a.title.localeCompare(b.title));
     });
 
-    // ============ Enrich with real file size via HEAD ============
+    // ============ Enrich with real size + Last-Modified via HEAD ============
     useEffect(() => {
         let cancelled = false;
 
@@ -147,9 +183,16 @@ export default function DownloadableForms() {
                         if (!res.ok) return form;
 
                         const len = res.headers.get("content-length");
+                        const lastMod = res.headers.get("last-modified");
+
                         return {
                             ...form,
-                            fileSize: len ? formatBytes(parseInt(len, 10)) : "—",
+                            fileSize: len
+                                ? formatBytes(parseInt(len, 10))
+                                : "—",
+                            uploadDate: lastMod
+                                ? new Date(lastMod).toISOString().split("T")[0]
+                                : null,
                         };
                     } catch {
                         return form;
@@ -189,6 +232,14 @@ export default function DownloadableForms() {
 
         result.sort((a, b) => {
             switch (sortOrder) {
+                case "newest":
+                    if (!a.uploadDate) return 1;
+                    if (!b.uploadDate) return -1;
+                    return new Date(b.uploadDate) - new Date(a.uploadDate);
+                case "oldest":
+                    if (!a.uploadDate) return 1;
+                    if (!b.uploadDate) return -1;
+                    return new Date(a.uploadDate) - new Date(b.uploadDate);
                 case "alphabetical":
                     return a.title.localeCompare(b.title);
                 case "alphabetical-desc":
@@ -288,7 +339,22 @@ export default function DownloadableForms() {
             mainClassName="py-0"
             className="overflow-hidden pb-0"
         >
-            {/* ==================== HERO ==================== */}
+            {/* ==================== BANNER (restored) ==================== */}
+            <div
+                className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
+                style={{
+                    backgroundImage: `url('${formsBannerImg}')`,
+                }}
+            >
+                <div className="absolute inset-0 bg-black/50"></div>
+
+                <AnimatedBannerText
+                    title="Downloadable Forms"
+                    description="Access and download commonly used forms and templates at City College of Cagayan de Oro."
+                />
+            </div>
+
+            {/* ==================== HERO / TITLE + SEARCH ==================== */}
             <motion.section
                 className="w-full bg-[#f5f7fb] pt-16 md:pt-20 pb-12 md:pb-16"
                 variants={heroVariants}
@@ -359,7 +425,7 @@ export default function DownloadableForms() {
 
             {/* ==================== MAIN ==================== */}
             <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10 md:py-14">
-                {/* Filters */}
+                {/* Filters — sort options restored */}
                 <motion.div
                     className="flex flex-col lg:flex-row gap-4 mb-4 justify-end"
                     initial={{ opacity: 0, y: 15 }}
@@ -370,7 +436,11 @@ export default function DownloadableForms() {
                         <select
                             value={selectedCategory}
                             onChange={(e) => setSelectedCategory(e.target.value)}
-                            className="w-full sm:w-auto px-4 py-3 border-2 border-gray-200 rounded-lg text-sm bg-white cursor-pointer outline-none focus:border-[#157d3c]"
+                            className="w-full sm:w-auto pl-4 pr-10 py-3 border-2 border-gray-200 rounded-lg text-sm bg-white cursor-pointer outline-none focus:border-[#157d3c] appearance-none bg-no-repeat bg-[right_0.75rem_center]"
+                            style={{
+                                backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                                backgroundSize: "1.1rem",
+                            }}
                         >
                             {categories.map((c) => (
                                 <option key={c} value={c}>
@@ -382,12 +452,17 @@ export default function DownloadableForms() {
                         <select
                             value={sortOrder}
                             onChange={(e) => setSortOrder(e.target.value)}
-                            className="w-full sm:w-auto px-4 py-3 border-2 border-gray-200 rounded-lg text-sm bg-white cursor-pointer outline-none focus:border-[#157d3c]"
+                            className="w-full sm:w-auto pl-4 pr-10 py-3 border-2 border-gray-200 rounded-lg text-sm bg-white cursor-pointer outline-none focus:border-[#157d3c] appearance-none bg-no-repeat bg-[right_0.75rem_center]"
+                            style={{
+                                backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
+                                backgroundSize: "1.1rem",
+                            }}
                         >
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
                             <option value="alphabetical">A – Z</option>
                             <option value="alphabetical-desc">Z – A</option>
-                        </select>
-                    </div>
+                        </select>                    </div>
                 </motion.div>
 
                 {/* Stats */}
@@ -516,6 +591,8 @@ export default function DownloadableForms() {
                                             </p>
                                             <div className="flex flex-wrap gap-3 text-xs text-gray-500">
                                                 <span>{form.fileSize}</span>
+                                                <span>•</span>
+                                                <span>{formatDate(form.uploadDate)}</span>
                                                 <span>•</span>
                                                 <span>{form.fileType}</span>
                                             </div>

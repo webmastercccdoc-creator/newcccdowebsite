@@ -227,7 +227,7 @@ export default function Sdg8({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 Promote sustained, inclusive, and sustainable economic growth, full and
                                 productive employment, and decent work for all. SDG 8 aims to sustain
                                 per-capita economic growth, achieve higher levels of economic productivity

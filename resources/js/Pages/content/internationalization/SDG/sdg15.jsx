@@ -227,7 +227,7 @@ export default function Sdg15({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 Protect, restore, and promote sustainable use of terrestrial ecosystems,
                                 sustainably manage forests, combat desertification, and halt and reverse
                                 land degradation and halt biodiversity loss. SDG 15 aims to ensure the

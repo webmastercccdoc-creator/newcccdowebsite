@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useAnimationControls } from "framer-motion";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
@@ -13,24 +13,47 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     import.meta.url
 ).toString();
 
-// ============ Auto-load all PDFs ============
+// ============ Auto-load all PDFs (all folders) ============
 const pdfModules = import.meta.glob(
-    "../../../assets/Downloadable Fiile/Internationalization/*.pdf",
+    "../../../assets/Downloadable Fiile/**/*.pdf",
     { eager: true }
 );
 
-const INTERNATIONALIZATION_CATEGORIES = ["Internationalization"];
+// ============ Category configuration ============
+const FOLDER_TO_CATEGORY = {
+    "Internationalization": "Internationalization",
+    "Code Of Ethics": "Code of Ethics",
+    "Data Privacy": "Data Privacy",
+    "Financial Report": "Financial Report",
+};
+
+const CATEGORY_ORDER = [
+    "Internationalization",
+    "Code of Ethics",
+    "Data Privacy",
+    "Financial Report",
+];
+
 const FORMS_PER_PAGE = 6;
 
 // ============ Helpers ============
-const formatTitle = (fileName) =>
-    fileName
+const getCategoryFromPath = (path) => {
+    for (const [folder, category] of Object.entries(FOLDER_TO_CATEGORY)) {
+        if (path.includes(`/${folder}/`)) return category;
+    }
+    return "Uncategorized";
+};
+
+const formatTitle = (fileName) => {
+    return fileName
         .replace(/\.pdf$/i, "")
+        .replace(/^CCCDO[_-]/i, "CCCDO ")
         .replace(/^SDG(\d+)/, "SDG $1 - ")
-        .replace(/-/g, " ")
+        .replace(/[_-]/g, " ")
         .replace(/\s+/g, " ")
         .trim()
         .replace(/\b\w/g, (c) => c.toUpperCase());
+};
 
 const formatBytes = (bytes) => {
     if (!bytes || Number.isNaN(bytes)) return "—";
@@ -101,7 +124,7 @@ const cardVariants = {
     },
 };
 
-// ============ Banner text (in-file so no extra import is needed) ============
+// ============ Banner text ============
 function AnimatedBannerText({ title, description }) {
     return (
         <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
@@ -144,6 +167,19 @@ export default function DownloadableForms() {
     const [numPages, setNumPages] = useState(null);
     const [viewerPage, setViewerPage] = useState(1);
 
+    // ----- Search button animation controls -----
+    const searchControls = useAnimationControls();
+
+    const handleSearchClick = () => {
+        document.activeElement?.blur?.();
+        // Play the "move" animation: nudge right, swing left, settle back
+        searchControls.start({
+            x: [0, 10, -8, 6, -3, 0],
+            rotate: [0, -10, 8, -5, 2, 0],
+            transition: { duration: 0.55, ease: "easeInOut" },
+        });
+    };
+
     // ----- Build forms from discovered PDFs -----
     const [forms, setForms] = useState(() => {
         const fileKeys = Object.keys(pdfModules);
@@ -154,15 +190,16 @@ export default function DownloadableForms() {
                 const fileName = path.split("/").pop() || "Unknown.pdf";
                 const title = formatTitle(fileName);
                 const url = pdfModules[path].default || pdfModules[path];
+                const category = getCategoryFromPath(path);
 
                 return {
                     id: index + 1,
                     title,
-                    description: `Download the ${title} report.`,
-                    category: "Internationalization",
+                    description: `Download the ${title}.`,
+                    category,
                     fileType: "PDF",
-                    fileSize: "…", // filled after HEAD fetch
-                    uploadDate: null, // filled after HEAD fetch
+                    fileSize: "…",
+                    uploadDate: null,
                     fileUrl: url,
                 };
             })
@@ -211,7 +248,15 @@ export default function DownloadableForms() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const categories = ["All", ...INTERNATIONALIZATION_CATEGORIES];
+    // Build category list: "All" + only categories that actually have files
+    const categories = useMemo(() => {
+        const present = new Set(forms.map((f) => f.category));
+        const ordered = CATEGORY_ORDER.filter((c) => present.has(c));
+        const extras = [...present].filter(
+            (c) => !CATEGORY_ORDER.includes(c) && c !== "Uncategorized"
+        );
+        return ["All", ...ordered, ...extras];
+    }, [forms]);
 
     // ----- Filter + sort -----
     const filteredForms = useMemo(() => {
@@ -339,7 +384,7 @@ export default function DownloadableForms() {
             mainClassName="py-0"
             className="overflow-hidden pb-0"
         >
-            {/* ==================== BANNER (restored) ==================== */}
+            {/* ==================== BANNER ==================== */}
             <div
                 className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
                 style={{
@@ -397,13 +442,14 @@ export default function DownloadableForms() {
                             className="w-full pl-8 pr-20 py-5 rounded-full bg-white text-gray-700 text-base placeholder-gray-400 shadow-[0_8px_30px_rgba(0,0,0,0.06)] outline-none transition-all duration-200 focus:shadow-[0_10px_40px_rgba(21,125,60,0.15)]"
                         />
 
+                        {/* Search button — no hover effect, moves on click */}
                         <motion.button
                             type="button"
                             aria-label="Search"
-                            onClick={() => document.activeElement?.blur?.()}
-                            whileHover={{ scale: 1.08 }}
+                            onClick={handleSearchClick}
+                            animate={searchControls}
                             whileTap={{ scale: 0.92 }}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-[#f5c518] hover:bg-[#e6b800] text-[#1a1a1a] flex items-center justify-center shadow-md transition-colors duration-200"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-[#f5c518] text-[#1a1a1a] flex items-center justify-center shadow-md"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -425,62 +471,87 @@ export default function DownloadableForms() {
 
             {/* ==================== MAIN ==================== */}
             <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10 md:py-14">
-                {/* Filters — sort options restored */}
+                {/* Filters and Stats (leveled on same row) */}
                 <motion.div
-                    className="flex flex-col lg:flex-row gap-4 mb-4 justify-end"
+                    className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.55 }}
                 >
-                    <div className="flex gap-3 flex-col sm:flex-row">
-                        <select
-                            value={selectedCategory}
-                            onChange={(e) => setSelectedCategory(e.target.value)}
-                            className="w-full sm:w-auto pl-4 pr-10 py-3 border-2 border-gray-200 rounded-lg text-sm bg-white cursor-pointer outline-none focus:border-[#157d3c] appearance-none bg-no-repeat bg-[right_0.75rem_center]"
-                            style={{
-                                backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
-                                backgroundSize: "1.1rem",
-                            }}
-                        >
-                            {categories.map((c) => (
-                                <option key={c} value={c}>
-                                    {c}
-                                </option>
-                            ))}
-                        </select>
+                    {/* Stats (Left side) */}
+                    <p className="text-sm text-gray-600">
+                        Showing <strong>{paginatedForms.length}</strong> of{" "}
+                        <strong>{filteredForms.length}</strong> forms
+                        {totalPages > 1 && (
+                            <>
+                                {" "}
+                                • Page <strong>{safePage}</strong> of{" "}
+                                <strong>{totalPages}</strong>
+                            </>
+                        )}
+                    </p>
 
-                        <select
-                            value={sortOrder}
-                            onChange={(e) => setSortOrder(e.target.value)}
-                            className="w-full sm:w-auto pl-4 pr-10 py-3 border-2 border-gray-200 rounded-lg text-sm bg-white cursor-pointer outline-none focus:border-[#157d3c] appearance-none bg-no-repeat bg-[right_0.75rem_center]"
-                            style={{
-                                backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
-                                backgroundSize: "1.1rem",
-                            }}
-                        >
-                            <option value="newest">Newest First</option>
-                            <option value="oldest">Oldest First</option>
-                            <option value="alphabetical">A – Z</option>
-                            <option value="alphabetical-desc">Z – A</option>
-                        </select>                    </div>
-                </motion.div>
+                    {/* Filters (Right side) */}
+                    <div className="flex flex-wrap items-center justify-end gap-3">
+                        {/* Category Filter - Green Border */}
+                        <div className="relative">
+                            <select
+                                value={selectedCategory}
+                                onChange={(e) =>
+                                    setSelectedCategory(e.target.value)
+                                }
+                                aria-label="Filter forms by category"
+                                className="appearance-none rounded-md border-2 border-green-600 bg-white py-2 pl-4 pr-10 text-sm font-medium text-gray-700 shadow-sm transition-colors duration-200 hover:border-green-700 focus:border-green-700 focus:outline-none focus:ring-2 focus:ring-green-600/20"
+                            >
+                                {categories.map((c) => (
+                                    <option key={c} value={c}>
+                                        {c}
+                                    </option>
+                                ))}
+                            </select>
+                            <svg
+                                className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M19 9l-7 7-7-7"
+                                />
+                            </svg>
+                        </div>
 
-                {/* Stats */}
-                <motion.div
-                    className="mb-5 text-gray-500 text-sm"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.65 }}
-                >
-                    Showing <strong>{paginatedForms.length}</strong> of{" "}
-                    <strong>{filteredForms.length}</strong> forms
-                    {totalPages > 1 && (
-                        <>
-                            {" "}
-                            • Page <strong>{safePage}</strong> of{" "}
-                            <strong>{totalPages}</strong>
-                        </>
-                    )}
+                        {/* Sort Filter - Gray Border */}
+                        <div className="relative">
+                            <select
+                                value={sortOrder}
+                                onChange={(e) => setSortOrder(e.target.value)}
+                                aria-label="Sort forms"
+                                className="appearance-none rounded-md border border-gray-200 bg-white py-2 pl-4 pr-10 text-sm font-medium text-gray-700 shadow-sm transition-colors duration-200 hover:border-gray-300 focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600/20"
+                            >
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="alphabetical">A – Z</option>
+                                <option value="alphabetical-desc">Z – A</option>
+                            </select>
+                            <svg
+                                className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M19 9l-7 7-7-7"
+                                />
+                            </svg>
+                        </div>
+                    </div>
                 </motion.div>
 
                 {/* Grid / Empty */}
@@ -566,7 +637,7 @@ export default function DownloadableForms() {
                                                 />
                                             </Document>
 
-                                            {/* Category pill — top-right */}
+                                            {/* Category pill */}
                                             <span className="absolute top-3 right-3 z-10 px-2.5 py-1 bg-white/90 backdrop-blur-sm text-[0.7rem] font-semibold text-[#0f5c2c] rounded-full shadow-sm">
                                                 {form.category}
                                             </span>

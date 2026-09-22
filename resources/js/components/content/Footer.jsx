@@ -163,7 +163,7 @@ const Footer = () => {
                         <ul className="space-y-3 text-sm">
                             <li>
                                 <a
-                                    href="http://www.ched.gov.ph/"
+                                    href="https://ched.gov.ph/home"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300"

@@ -15,12 +15,15 @@ export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [menus, setMenus] = useState(cachedMenus || []);
   const [articleCounts, setArticleCounts] = useState({ pending: 0, rejected: 0 });
+  const [urlCounts, setUrlCounts] = useState({ pending: 0, rejected: 0 });
   const [shake, setShake] = useState(false);
   const [user, setUser] = useState(cachedUser || initialUser || null);
   const [isLoading, setIsLoading] = useState(!cachedMenus);
 
   const effectivePendingCount = Number(articleCounts.pending || 0);
   const hasPendingArticles = effectivePendingCount > 0;
+  const effectivePendingUrlCount = Number(urlCounts.pending || 0);
+  const hasPendingUrls = effectivePendingUrlCount > 0;
 
   const handleLogout = async () => {
     try {
@@ -116,6 +119,7 @@ export default function Sidebar() {
     if (!menus.length) return;
     
     const hasApprovePermission = menus.some(menu => menu.id === 'approve_articles');
+    const hasShortenUrlPermission = menus.some(menu => menu.id === 'shorten_url');
     
     if (hasApprovePermission) {
       const fetchArticleCounts = async () => {
@@ -133,6 +137,24 @@ export default function Sidebar() {
       };
 
       fetchArticleCounts();
+    }
+
+    if (hasShortenUrlPermission) {
+      const fetchUrlCounts = async () => {
+        try {
+          const response = await axios.get('/admin/shorten-url/status-counts');
+          const counts = response?.data?.counts || { pending: 0, rejected: 0 };
+          setUrlCounts({
+            pending: Number(counts.pending || 0),
+            rejected: Number(counts.rejected || 0),
+          });
+        } catch (error) {
+          console.error('Failed to load shortened URL counts:', error);
+          setUrlCounts({ pending: 0, rejected: 0 });
+        }
+      };
+
+      fetchUrlCounts();
     }
   }, [menus]);
 
@@ -396,6 +418,35 @@ export default function Sidebar() {
                     ${shake ? 'animate-shake' : ''}
                   `}>
                     {effectivePendingCount > 99 ? '99+' : effectivePendingCount}
+                  </span>
+                )}
+
+                {/* Bell Icon for pending shortened URLs with count badge */}
+                {item.id === 'shorten_url' && hasPendingUrls && !isCollapsed && (
+                  <div className="ml-auto flex items-center gap-1.5">
+                    <svg
+                      className={`w-5 h-5 text-amber-500 flex-shrink-0 ${shake ? 'animate-shake' : 'animate-pulse'}`}
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9" />
+                    </svg>
+                    <span className={`
+                      inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold shadow-lg
+                      ${shake ? 'animate-shake' : ''}
+                    `}>
+                      {effectivePendingUrlCount > 99 ? '99+' : effectivePendingUrlCount}
+                    </span>
+                  </div>
+                )}
+
+                {/* Show badge for pending shortened URLs in collapsed mode */}
+                {item.id === 'shorten_url' && hasPendingUrls && isCollapsed && (
+                  <span className={`
+                    absolute -right-1 -top-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[8px] text-white font-bold shadow-lg ring-2 ring-white
+                    ${shake ? 'animate-shake' : ''}
+                  `}>
+                    {effectivePendingUrlCount > 99 ? '99+' : effectivePendingUrlCount}
                   </span>
                 )}
               </NavItem>;

@@ -44,6 +44,20 @@ class UrlShortenerController extends Controller
     }
 
     /**
+     * Return shortened URL counts by status for admin notifications.
+     */
+    public function urlStatusCounts()
+    {
+        return response()->json([
+            'success' => true,
+            'counts' => [
+                'pending' => Url::where('status', 'pending')->count(),
+                'rejected' => Url::where('status', 'rejected')->count(),
+            ],
+        ]);
+    }
+
+    /**
      * Delete a shortened URL from the admin page.
      */
     public function destroy($id)

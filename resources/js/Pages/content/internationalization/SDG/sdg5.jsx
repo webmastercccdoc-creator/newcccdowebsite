@@ -227,7 +227,7 @@ export default function Sdg5({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 Achieve gender equality and empower all women and girls. SDG 5 aims to end all
                                 forms of discrimination and violence against women and girls, eliminate harmful
                                 practices such as child marriage and female genital mutilation, and recognize

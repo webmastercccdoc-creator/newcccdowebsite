@@ -227,7 +227,7 @@ export default function Sdg2({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 End hunger, achieve food security and improved nutrition, and promote sustainable
                                 agriculture. SDG 2 aims to ensure that all people, especially the poor and vulnerable,
                                 have access to safe, nutritious, and sufficient food year-round. It also seeks to

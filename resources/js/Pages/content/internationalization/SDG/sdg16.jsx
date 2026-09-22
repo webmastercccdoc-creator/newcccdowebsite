@@ -227,7 +227,7 @@ export default function Sdg16({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 Promote peaceful and inclusive societies for sustainable development,
                                 provide access to justice for all, and build effective, accountable, and
                                 inclusive institutions at all levels. SDG 16 aims to significantly reduce

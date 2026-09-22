@@ -227,7 +227,7 @@ export default function Sdg3({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 Ensure healthy lives and promote well-being for all at all ages. SDG 3 aims to
                                 reduce maternal and child mortality, end epidemics of AIDS, tuberculosis, malaria
                                 and other communicable diseases, and combat hepatitis, water-borne diseases and

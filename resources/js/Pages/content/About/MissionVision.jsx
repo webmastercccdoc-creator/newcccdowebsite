@@ -84,7 +84,7 @@ function SealMedallion({ className = '' }) {
 /* ==================================================================== */
 export default function MissionVision() {
   useEffect(() => {
-    document.title = 'Mission & Vision - City College of Cagayan de Oro';
+    document.title = 'Vision & Mission - City College of Cagayan de Oro';
   }, []);
 
   return (
@@ -115,12 +115,12 @@ export default function MissionVision() {
         <div className="absolute inset-0 bg-black/50"></div>
 
         <AnimatedBannerText
-          title="Mission & Vision"
-          description="Our purpose, guiding principles, and long-term aspirations for the City College of Cagayan de Oro."
+          title="Vision & Mission"
+          description="Our long-term aspirations, guiding principles, and purpose for the City College of Cagayan de Oro."
         />
       </div>
 
-      {/* ============ THE DIPTYCH — MISSION & VISION ============ */}
+      {/* ============ THE DIPTYCH — VISION & MISSION (SWAPPED) ============ */}
       <section className="paper-bg">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-16 md:py-24">
 
@@ -132,52 +132,8 @@ export default function MissionVision() {
               <SealMedallion className="w-32 h-32 xl:w-36 xl:h-36" />
             </div>
 
-            {/* ---------- LEFT PLAQUE: MISSION (deep green) ---------- */}
+            {/* ---------- LEFT PLAQUE: VISION (ivory) — was Mission ---------- */}
             <Reveal className="h-full">
-              <div className="relative h-full overflow-hidden rounded-3xl bg-[#0C3B2E] shadow-[0_40px_90px_-30px_rgba(12,59,46,0.55)] transition-shadow duration-500 hover:shadow-[0_50px_110px_-30px_rgba(12,59,46,0.65)] min-h-[480px] md:min-h-[560px]">
-                {/* Corner brackets */}
-                <span className="absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-[#E9BE2C]/70 pointer-events-none" />
-                <span className="absolute top-3 right-3 w-5 h-5 border-t-2 border-r-2 border-[#E9BE2C]/70 pointer-events-none" />
-                <span className="absolute bottom-3 left-3 w-5 h-5 border-b-2 border-l-2 border-[#E9BE2C]/70 pointer-events-none" />
-                <span className="absolute bottom-3 right-3 w-5 h-5 border-b-2 border-r-2 border-[#E9BE2C]/70 pointer-events-none" />
-
-                {/* Decorative glows */}
-                <div className="absolute -top-24 -right-24 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-[#E9BE2C]/10 rounded-full blur-3xl pointer-events-none" />
-
-                {/* Ghost numeral */}
-                <span aria-hidden="true" className="pointer-events-none select-none absolute -top-10 right-2 font-title text-[9rem] md:text-[13rem] leading-none text-white/[0.06]">
-                  I
-                </span>
-
-                {/* Inner-side clearance (lg:pr) keeps text clear of the center seal */}
-                <div className="relative z-10 h-full flex flex-col justify-center p-8 md:p-14 lg:p-16 lg:pr-[8.5rem]">
-                  <p className="text-[10px] md:text-xs uppercase tracking-[0.45em] text-[#E9BE2C]/90">
-                    What We Do
-                  </p>
-                  <h2 className="mt-4 font-title text-4xl md:text-5xl lg:text-6xl text-[#F7F3E8]">
-                    Our Mission
-                  </h2>
-                  <OrnamentDivider align="left" className="mt-6" />
-
-                  <p className="mt-8 font-display text-xl md:text-2xl lg:text-[1.7rem] leading-relaxed text-white/95">
-                    <span aria-hidden="true" className="font-display text-6xl leading-none text-[#F7DE8B] align-[-0.35rem] mr-2">&ldquo;</span>
-                    To provide transformative and inclusive learning driven by cutting-edge technologies,
-                    including artificial intelligence, that equip the institution and community to create
-                    innovative, relevant, and data-driven solutions for local and global impact.
-                    <span aria-hidden="true" className="font-display text-6xl leading-none text-[#F7DE8B] align-[-0.35rem] ml-2">&rdquo;</span>
-                  </p>
-                </div>
-              </div>
-            </Reveal>
-
-            {/* Mobile-only seal medallion between the stacked plaques */}
-            <div className="lg:hidden relative z-10 -my-7 flex justify-center">
-              <SealMedallion className="w-24 h-24 md:w-28 md:h-28" />
-            </div>
-
-            {/* ---------- RIGHT PLAQUE: VISION (ivory) ---------- */}
-            <Reveal delay={150} className="h-full">
               <div className="relative h-full overflow-hidden rounded-3xl bg-white ring-1 ring-[#D9AC2B]/40 shadow-[0_40px_90px_-30px_rgba(12,59,46,0.3)] transition-shadow duration-500 hover:shadow-[0_50px_110px_-30px_rgba(12,59,46,0.4)] min-h-[480px] md:min-h-[560px]">
                 {/* Corner brackets */}
                 <span className="absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-[#B8912A]/70 pointer-events-none" />
@@ -191,24 +147,68 @@ export default function MissionVision() {
 
                 {/* Ghost numeral */}
                 <span aria-hidden="true" className="pointer-events-none select-none absolute -top-10 left-2 font-title text-[9rem] md:text-[13rem] leading-none text-[#0C3B2E]/[0.05]">
-                  II
+                  I
                 </span>
 
-                {/* Inner-side clearance (lg:pl) keeps text clear of the center seal */}
-                <div className="relative z-10 h-full flex flex-col justify-center p-8 md:p-14 lg:p-16 lg:pl-[8.5rem] lg:text-right">
+                {/* Inner-side clearance (lg:pr) keeps text clear of the center seal */}
+                <div className="relative z-10 h-full flex flex-col justify-center p-8 md:p-14 lg:p-16 lg:pr-[8.5rem]">
                   <p className="text-[10px] md:text-xs uppercase tracking-[0.45em] text-[#B8912A]">
                     Where We're Going
                   </p>
                   <h2 className="mt-4 font-title text-4xl md:text-5xl lg:text-6xl text-[#0C3B2E]">
                     Our Vision
                   </h2>
-                  <OrnamentDivider align="right" className="mt-6" />
+                  <OrnamentDivider align="left" className="mt-6" />
 
                   <p className="mt-8 font-display text-xl md:text-2xl lg:text-[1.7rem] leading-relaxed text-[#33312C]">
                     <span aria-hidden="true" className="font-display text-6xl leading-none text-[#B8912A] align-[-0.35rem] mr-2">&ldquo;</span>
                     A City College that nurtures and produces global citizens supported by cutting-edge
                     technologies for innovation and excellence by 2033.
                     <span aria-hidden="true" className="font-display text-6xl leading-none text-[#B8912A] align-[-0.35rem] ml-2">&rdquo;</span>
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Mobile-only seal medallion between the stacked plaques */}
+            <div className="lg:hidden relative z-10 -my-7 flex justify-center">
+              <SealMedallion className="w-24 h-24 md:w-28 md:h-28" />
+            </div>
+
+            {/* ---------- RIGHT PLAQUE: MISSION (deep green) — was Vision ---------- */}
+            <Reveal delay={150} className="h-full">
+              <div className="relative h-full overflow-hidden rounded-3xl bg-[#0C3B2E] shadow-[0_40px_90px_-30px_rgba(12,59,46,0.55)] transition-shadow duration-500 hover:shadow-[0_50px_110px_-30px_rgba(12,59,46,0.65)] min-h-[480px] md:min-h-[560px]">
+                {/* Corner brackets */}
+                <span className="absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-[#E9BE2C]/70 pointer-events-none" />
+                <span className="absolute top-3 right-3 w-5 h-5 border-t-2 border-r-2 border-[#E9BE2C]/70 pointer-events-none" />
+                <span className="absolute bottom-3 left-3 w-5 h-5 border-b-2 border-l-2 border-[#E9BE2C]/70 pointer-events-none" />
+                <span className="absolute bottom-3 right-3 w-5 h-5 border-b-2 border-r-2 border-[#E9BE2C]/70 pointer-events-none" />
+
+                {/* Decorative glows */}
+                <div className="absolute -top-24 -right-24 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-[#E9BE2C]/10 rounded-full blur-3xl pointer-events-none" />
+
+                {/* Ghost numeral */}
+                <span aria-hidden="true" className="pointer-events-none select-none absolute -top-10 right-2 font-title text-[9rem] md:text-[13rem] leading-none text-white/[0.06]">
+                  II
+                </span>
+
+                {/* Inner-side clearance (lg:pl) keeps text clear of the center seal */}
+                <div className="relative z-10 h-full flex flex-col justify-center p-8 md:p-14 lg:p-16 lg:pl-[8.5rem] lg:text-right">
+                  <p className="text-[10px] md:text-xs uppercase tracking-[0.45em] text-[#E9BE2C]/90">
+                    What We Do
+                  </p>
+                  <h2 className="mt-4 font-title text-4xl md:text-5xl lg:text-6xl text-[#F7F3E8]">
+                    Our Mission
+                  </h2>
+                  <OrnamentDivider align="right" className="mt-6" />
+
+                  <p className="mt-8 font-display text-xl md:text-2xl lg:text-[1.7rem] leading-relaxed text-white/95">
+                    <span aria-hidden="true" className="font-display text-6xl leading-none text-[#F7DE8B] align-[-0.35rem] mr-2">&ldquo;</span>
+                    To provide transformative and inclusive learning driven by cutting-edge technologies,
+                    including artificial intelligence, that equip the institution and community to create
+                    innovative, relevant, and data-driven solutions for local and global impact.
+                    <span aria-hidden="true" className="font-display text-6xl leading-none text-[#F7DE8B] align-[-0.35rem] ml-2">&rdquo;</span>
                   </p>
                 </div>
               </div>
@@ -225,7 +225,7 @@ export default function MissionVision() {
             City College of Cagayan de Oro
           </p>
           <p className="mt-3 text-[10px] md:text-xs uppercase tracking-[0.35em] text-[#E9BE2C]/80">
-            Mission &amp; Vision &middot; Cagayan de Oro City
+            Vision &amp; Mission &middot; Cagayan de Oro City
           </p>
         </div>
       </footer>

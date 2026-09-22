@@ -484,7 +484,7 @@ export default function VPAcademics() {
     const officeDetailsRef = useRef(null);
 
     useEffect(() => {
-        document.title = "Vice President for Academic Affair - City College of Cagayan de Oro";
+        document.title = "Vice President for Academic Affairs - City College of Cagayan de Oro";
         const handleScroll = () => {
             const top = window.pageYOffset;
             const height = document.documentElement.scrollHeight - window.innerHeight;
@@ -689,7 +689,7 @@ export default function VPAcademics() {
             >
                 <div className="absolute inset-0 bg-black/50"></div>
                 <AnimatedBannerText
-                    title="Vice President for Academic Affair"
+                    title="Vice President for Academic Affairs"
                     description="Academic leadership, quality instruction, and student success at the City College of Cagayan de Oro."
                 />
             </div>
@@ -715,7 +715,7 @@ export default function VPAcademics() {
                         </Reveal>
                         <Reveal delay={300}>
                             <p className="text-base sm:text-lg md:text-xl text-white/60 max-w-xl mb-8 sm:mb-12">
-                                Vice President for Academic Affair at the City College of Cagayan de Oro.
+                                Vice President for Academic Affairs at the City College of Cagayan de Oro.
                             </p>
                         </Reveal>
 
@@ -746,7 +746,7 @@ export default function VPAcademics() {
                             <div className="relative rounded-2xl overflow-hidden shadow-2xl group border border-white/10">
                                 <img
                                     src={helmaeTapananImage}
-                                    alt="Dr. Helmae E. Tapanan"
+                                    alt="Dr. Helmae E. Tapanan, LPT"
                                     className="w-full aspect-[4/5] object-cover transition-transform duration-[1.5s] ease-out-expo group-hover:scale-105"
                                 />
                                 {/* Gradient Overlay */}

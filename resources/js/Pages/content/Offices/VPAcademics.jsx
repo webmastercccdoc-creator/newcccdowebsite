@@ -484,7 +484,7 @@ export default function VPAcademics() {
     const officeDetailsRef = useRef(null);
 
     useEffect(() => {
-        document.title = "Vice President for Academics - City College of Cagayan de Oro";
+        document.title = "Vice President for Academic Affair - City College of Cagayan de Oro";
         const handleScroll = () => {
             const top = window.pageYOffset;
             const height = document.documentElement.scrollHeight - window.innerHeight;
@@ -689,7 +689,7 @@ export default function VPAcademics() {
             >
                 <div className="absolute inset-0 bg-black/50"></div>
                 <AnimatedBannerText
-                    title="Vice President for Academics"
+                    title="Vice President for Academic Affair"
                     description="Academic leadership, quality instruction, and student success at the City College of Cagayan de Oro."
                 />
             </div>
@@ -710,12 +710,12 @@ export default function VPAcademics() {
                         </Reveal>
                         <Reveal delay={150}>
                             <h1 className="vp-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium leading-[1.05] tracking-tight mb-4 sm:mb-6">
-                                Dr. Helmae E. <br />Tapanan
+                                Dr. Helmae E. <br />Tapanan, LPT
                             </h1>
                         </Reveal>
                         <Reveal delay={300}>
                             <p className="text-base sm:text-lg md:text-xl text-white/60 max-w-xl mb-8 sm:mb-12">
-                                Vice President for Academics at the City College of Cagayan de Oro.
+                                Vice President for Academic Affair at the City College of Cagayan de Oro.
                             </p>
                         </Reveal>
 

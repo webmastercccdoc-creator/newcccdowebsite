@@ -227,7 +227,7 @@ export default function Sdg14({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 Conserve and sustainably use the oceans, seas, and marine resources for
                                 sustainable development. SDG 14 aims to prevent and significantly reduce
                                 marine pollution of all kinds, sustainably manage and protect marine and

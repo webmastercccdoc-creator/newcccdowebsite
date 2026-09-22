@@ -62,65 +62,12 @@ const sdgImages = {
     17: sdg17,
 };
 
-// Placeholder news items for the carousel
-const PLACEHOLDER_ARTICLES = [
-    {
-        id: "placeholder-1",
-        title: "City College of Cagayan de Oro Launches New Research Center for Sustainable Development",
-        date: "August 20, 2026",
-        content:
-            "City College of Cagayan de Oro proudly announces the establishment of its new Research Center for Sustainable Development, aimed at addressing pressing environmental and social challenges.",
-        image_path:
-            "https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=600&auto=format&fit=crop",
-        sdg_numbers: [4, 11, 17],
-    },
-    {
-        id: "placeholder-2",
-        title: "Student Leaders Shine at National Youth Conference 2026",
-        date: "August 18, 2026",
-        content:
-            "A delegation of student leaders from City College of Cagayan de Oro represented the institution at the National Youth Conference, showcasing their innovative ideas and leadership skills.",
-        image_path:
-            "https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=600&auto=format&fit=crop",
-        sdg_numbers: [5, 16],
-    },
-    {
-        id: "placeholder-3",
-        title: "Groundbreaking Partnership with Local Government for Community Development",
-        date: "August 15, 2026",
-        content:
-            "City College of Cagayan de Oro signs a landmark partnership agreement with the local government to implement community development programs that benefit underserved communities.",
-        image_path:
-            "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=600&auto=format&fit=crop",
-        sdg_numbers: [1, 8, 10],
-    },
-    {
-        id: "placeholder-4",
-        title: "Faculty Researchers Win International Award for Innovative Study",
-        date: "August 12, 2026",
-        content:
-            "A team of faculty researchers from City College of Cagayan de Oro has been recognized with an international award for their groundbreaking study on educational technology integration.",
-        image_path:
-            "https://images.unsplash.com/photo-1532094349884-543bc11b234d?q=80&w=600&auto=format&fit=crop",
-        sdg_numbers: [4, 9],
-    },
-    {
-        id: "placeholder-5",
-        title: "New Scholarship Program Opens Doors for Underprivileged Students",
-        date: "August 10, 2026",
-        content:
-            "City College of Cagayan de Oro announces a new scholarship program that will provide full tuition support to underprivileged students, making quality education accessible to all.",
-        image_path:
-            "https://images.unsplash.com/photo-1523050854058-8df90110c7f1?q=80&w=600&auto=format&fit=crop",
-        sdg_numbers: [1, 4, 10],
-    },
-];
-
 export default function LatestNews({ newsArticles: initialArticles = [] }) {
     const { props, url } = usePage();
     const [newsArticles, setNewsArticles] = useState(initialArticles);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedYear, setSelectedYear] = useState("");
+    const [sortOrder, setSortOrder] = useState("newest"); // "newest" or "oldest"
     const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const articlesPerPage = 12;
@@ -154,9 +101,9 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
         }
     }, []);
 
-    // Simple search across title and content
+    // Simple search across title and content + sorting
     const filteredArticles = useMemo(() => {
-        return newsArticles.filter((item) => {
+        let result = newsArticles.filter((item) => {
             const searchLower = searchQuery.toLowerCase().trim();
             const matchesSearch =
                 !searchLower ||
@@ -174,7 +121,16 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
 
             return matchesSearch && matchesYear;
         });
-    }, [newsArticles, searchQuery, selectedYear]);
+
+        // Apply sorting
+        result.sort((a, b) => {
+            const dateA = a.date ? new Date(a.date).getTime() : 0;
+            const dateB = b.date ? new Date(b.date).getTime() : 0;
+            return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
+        });
+
+        return result;
+    }, [newsArticles, searchQuery, selectedYear, sortOrder]);
 
     const availableYears = useMemo(() => {
         return [
@@ -222,13 +178,14 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
     const clearAllFilters = () => {
         setSearchQuery("");
         setSelectedYear("");
+        setSortOrder("newest");
         setCurrentPage(1);
     };
 
     // Reset to page 1 when search or filter changes
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchQuery, selectedYear]);
+    }, [searchQuery, selectedYear, sortOrder]);
 
     return (
         <MainLayout
@@ -307,9 +264,115 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                 </div>
             </div>
 
-            {/* Main Content - static coverflow-style cards in a 4x3 grid without carousel */}
+            {/* Main Content */}
             <section className="news-section">
                 <div className="news-container">
+                    {/* ===== Filter Bar (above the cards, aligned right) ===== */}
+                    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        {/* Results count (left) */}
+                        <p className="text-sm text-gray-600">
+                            {isLoading ? (
+                                "Loading articles…"
+                            ) : (
+                                <>
+                                    Showing{" "}
+                                    <span className="font-semibold text-gray-900">
+                                        {currentArticles.length}
+                                    </span>{" "}
+                                    of{" "}
+                                    <span className="font-semibold text-gray-900">
+                                        {filteredArticles.length}
+                                    </span>{" "}
+                                    {filteredArticles.length === 1 ? "article" : "articles"}
+                                </>
+                            )}
+                        </p>
+
+                        {/* Filters (right) */}
+                        <div className="flex flex-wrap items-center justify-end gap-3">
+                            {/* Year Filter Dropdown - Green Border */}
+                            <div className="relative">
+                                <select
+                                    value={selectedYear}
+                                    onChange={(e) => setSelectedYear(e.target.value)}
+                                    aria-label="Filter articles by year"
+                                    className="appearance-none rounded-md border-2 border-green-600 bg-white py-2 pl-4 pr-10 text-sm font-medium text-gray-700 shadow-sm transition-colors duration-200 hover:border-green-700 focus:border-green-700 focus:outline-none focus:ring-2 focus:ring-green-600/20"
+                                >
+                                    <option value="">All</option>
+                                    {availableYears.map((year) => (
+                                        <option key={year} value={year}>
+                                            {year}
+                                        </option>
+                                    ))}
+                                </select>
+                                <svg
+                                    className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M19 9l-7 7-7-7"
+                                    />
+                                </svg>
+                            </div>
+
+                            {/* Sort Order Dropdown - Gray Border & Shadow */}
+                            <div className="relative">
+                                <select
+                                    value={sortOrder}
+                                    onChange={(e) => setSortOrder(e.target.value)}
+                                    aria-label="Sort articles"
+                                    className="appearance-none rounded-md border border-gray-200 bg-white py-2 pl-4 pr-10 text-sm font-medium text-gray-700 shadow-sm transition-colors duration-200 hover:border-gray-300 focus:border-green-600 focus:outline-none focus:ring-2 focus:ring-green-600/20"
+                                >
+                                    <option value="newest">Newest First</option>
+                                    <option value="oldest">Oldest First</option>
+                                </select>
+                                <svg
+                                    className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="M19 9l-7 7-7-7"
+                                    />
+                                </svg>
+                            </div>
+
+                            {/* Clear Filters Button (shows only when active) */}
+                            {(searchQuery || selectedYear) && (
+                                <button
+                                    type="button"
+                                    onClick={clearAllFilters}
+                                    className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-600 transition-colors duration-200 hover:border-gray-400 hover:text-gray-900"
+                                >
+                                    <svg
+                                        className="h-3.5 w-3.5"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth="2"
+                                            d="M6 18L18 6M6 6l12 12"
+                                        />
+                                    </svg>
+                                    Clear
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                    {/* ===== End Filter Bar ===== */}
+
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
                         {isLoading ? (
                             Array.from({ length: 8 }).map((_, index) => (
@@ -598,4 +661,4 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
             </section>
         </MainLayout>
     );
-}
+}   

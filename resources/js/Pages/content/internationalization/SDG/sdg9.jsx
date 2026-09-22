@@ -227,7 +227,7 @@ export default function Sdg9({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 Build resilient infrastructure, promote inclusive and sustainable
                                 industrialization, and foster innovation. SDG 9 aims to develop quality,
                                 reliable, sustainable, and resilient infrastructure, promote inclusive and

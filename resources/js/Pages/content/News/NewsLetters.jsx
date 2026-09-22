@@ -1,257 +1,94 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState, useCallback } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
 import MainLayout from "../../../layouts/MainLayout";
+import NewsLetterBanner from '../../../assets/banner/News Banner.png';
+import ExtensionComingSoon from "../Extension/ExtensionComingSoon";
 
-// ============ PDF.js worker setup (same pattern as NewsLetters.jsx) ============
+// PDFs
+import Pdf1 from "../../../assets/newsletters/CCCDO-Newsletter_Vol-1-Issue-1.pdf";
+import Pdf2 from "../../../assets/newsletters/City-College-of-CDO-Newsletter-Vol-1-Issue-2-2025.pdf";
+
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     "pdfjs-dist/build/pdf.worker.min.mjs",
     import.meta.url
 ).toString();
 
-// ============ Auto-load all PDFs in the folder ============
-const pdfModules = import.meta.glob(
-    "../../../assets/Downloadable Fiile/Internationalization/*.pdf",
-    { eager: true }
-);
-
-console.log("PDF Modules Found:", pdfModules);
-
-const INTERNATIONALIZATION_CATEGORIES = ["Internationalization"];
-const FORMS_PER_PAGE = 6;
-
-const formatTitle = (fileName) =>
-    fileName
-        .replace(/\.pdf$/i, "")
-        .replace(/^SDG(\d+)/, "SDG $1 - ")
-        .replace(/-/g, " ")
-        .replace(/\s+/g, " ")
-        .trim()
-        .replace(/\b\w/g, (c) => c.toUpperCase());
-
-// ===================== Motion variants =====================
-const heroVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+const NEWSLETTERS = [
+    {
+        id: 1,
+        badge: "Vol. 1 · Issue 1",
+        title: "HANDURAW 1st Issue 2025",
+        publisher: "City College of Cagayan de Oro",
+        edition: "Quarter 1 · 2025 Edition",
+        description:
+            "Featuring the LGU-CDO Monday Convocation, Women's Month celebration, and the college's milestone in the Times Higher Education Impact Rankings 2025.",
+        file: Pdf1,
+        accent: "from-green-700 to-emerald-500",
     },
-};
-
-const titleVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    {
+        id: 2,
+        badge: "Vol. 1 · Issue 2",
+        title: "HANDURAW 2nd Issue 2025",
+        publisher: "City College of Cagayan de Oro",
+        edition: "Quarter 2 · 2025 Edition",
+        description:
+            "Continued stories of academic excellence, community engagement, and the college's ongoing journey toward sustainable and inclusive education.",
+        file: Pdf2,
+        accent: "from-yellow-500 to-amber-400",
     },
-};
+];
 
-const dividerVariants = {
-    hidden: { scaleX: 0, opacity: 0 },
-    visible: {
-        scaleX: 1,
-        opacity: 1,
-        transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.35 },
-    },
-};
-
-const searchVariants = {
-    hidden: { opacity: 0, y: 20, scale: 0.98 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 0.45 },
-    },
-};
-
-const gridContainerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: { staggerChildren: 0.08, delayChildren: 0.05 },
-    },
-};
-
-const cardVariants = {
-    hidden: { opacity: 0, y: 25 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-        exit: { opacity: 0, y: -15, transition: { duration: 0.25 } },
-    },
-};
-
-export default function DownloadableForms() {
+export default function NewsLetters() {
     useEffect(() => {
-        document.title = "Downloadable Forms - City College of Cagayan de Oro";
+        document.title = "Newsletters - City College of Cagayan de Oro";
     }, []);
 
-    const [searchTerm, setSearchTerm] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState("All");
-    const [sortOrder, setSortOrder] = useState("newest");
-    const [currentPage, setCurrentPage] = useState(1);
-
-    // ----- Modal / Viewer state -----
     const [openPdf, setOpenPdf] = useState(null);
     const [numPages, setNumPages] = useState(null);
-    const [viewerPage, setViewerPage] = useState(1);
+    const [pageNumber, setPageNumber] = useState(1);
 
-    // ----- Build forms from discovered PDFs -----
-    const [forms] = useState(() => {
-        const fileKeys = Object.keys(pdfModules);
-        if (fileKeys.length === 0) return [];
+    // ============================================================
+    // ⚠️ PAGE VISIBILITY FLAG
+    // ============================================================
+    const COMING_SOON = false;
 
-        return fileKeys
-            .map((path, index) => {
-                const fileName = path.split("/").pop() || "Unknown.pdf";
-                const title = formatTitle(fileName);
-                const uploadDate = new Date(2024, 0, index + 1)
-                    .toISOString()
-                    .split("T")[0];
+    if (COMING_SOON) {
+        return (
+            <ExtensionComingSoon
+                title="Newsletters"
+                description="Stay updated with the latest news and announcements from the City College of Cagayan de Oro."
+                bannerImage={NewsLetterBanner}
+            />
+        );
+    }
 
-                return {
-                    id: index + 1,
-                    title,
-                    description: `Download the ${title} report.`,
-                    category: "Internationalization",
-                    fileType: "PDF",
-                    fileSize: "1.2 MB",
-                    uploadDate,
-                    downloads: Math.floor(Math.random() * 5000) + 100,
-                    fileUrl: pdfModules[path].default || pdfModules[path],
-                };
-            })
-            .sort((a, b) => a.title.localeCompare(b.title));
-    });
-
-    const categories = ["All", ...INTERNATIONALIZATION_CATEGORIES];
-
-    // ----- Filter + sort -----
-    const filteredForms = useMemo(() => {
-        let result = [...forms];
-
-        if (searchTerm) {
-            const q = searchTerm.toLowerCase();
-            result = result.filter(
-                (form) =>
-                    form.title.toLowerCase().includes(q) ||
-                    form.description.toLowerCase().includes(q)
-            );
-        }
-
-        if (selectedCategory !== "All") {
-            result = result.filter((form) => form.category === selectedCategory);
-        }
-
-        result.sort((a, b) => {
-            switch (sortOrder) {
-                case "newest":
-                    return new Date(b.uploadDate) - new Date(a.uploadDate);
-                case "oldest":
-                    return new Date(a.uploadDate) - new Date(b.uploadDate);
-                case "popular":
-                    return b.downloads - a.downloads;
-                case "alphabetical":
-                    return a.title.localeCompare(b.title);
-                default:
-                    return 0;
-            }
-        });
-
-        return result;
-    }, [forms, searchTerm, selectedCategory, sortOrder]);
-
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [searchTerm, selectedCategory, sortOrder]);
-
-    // ----- Pagination -----
-    const totalPages = Math.max(1, Math.ceil(filteredForms.length / FORMS_PER_PAGE));
-    const safePage = Math.min(currentPage, totalPages);
-    const startIndex = (safePage - 1) * FORMS_PER_PAGE;
-    const paginatedForms = filteredForms.slice(
-        startIndex,
-        startIndex + FORMS_PER_PAGE
-    );
-
-    const getPageNumbers = () => {
-        const pages = [];
-        const maxVisible = 5;
-        if (totalPages <= maxVisible) {
-            for (let i = 1; i <= totalPages; i++) pages.push(i);
-        } else {
-            pages.push(1);
-            if (safePage > 3) pages.push("...");
-            const start = Math.max(2, safePage - 1);
-            const end = Math.min(totalPages - 1, safePage + 1);
-            for (let i = start; i <= end; i++) pages.push(i);
-            if (safePage < totalPages - 2) pages.push("...");
-            pages.push(totalPages);
-        }
-        return pages;
-    };
-
-    const goToPage = (page) => {
-        if (page < 1 || page > totalPages) return;
-        setCurrentPage(page);
-        window.scrollTo({ top: 400, behavior: "smooth" });
-    };
-
-    const formatDate = (dateString) => {
-        const options = { year: "numeric", month: "short", day: "numeric" };
-        return new Date(dateString).toLocaleDateString(undefined, options);
-    };
-
-    // ----- Actions -----
-    const handleDownload = (form) => {
-        const link = document.createElement("a");
-        link.href = form.fileUrl;
-        link.download = `${form.title}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
-    const openViewer = (form) => {
-        setOpenPdf(form);
-        setViewerPage(1);
+    const openViewer = (item) => {
+        setOpenPdf(item);
+        setPageNumber(1);
         setNumPages(null);
     };
 
     const closeViewer = useCallback(() => {
         setOpenPdf(null);
-        setViewerPage(1);
+        setPageNumber(1);
         setNumPages(null);
     }, []);
 
-    // Keyboard controls inside modal
     useEffect(() => {
         if (!openPdf) return;
         const onKey = (e) => {
             if (e.key === "Escape") closeViewer();
-            if (e.key === "ArrowRight" && numPages && viewerPage < numPages)
-                setViewerPage((p) => p + 1);
-            if (e.key === "ArrowLeft" && viewerPage > 1)
-                setViewerPage((p) => p - 1);
+            if (e.key === "ArrowRight" && numPages && pageNumber < numPages)
+                setPageNumber((p) => p + 1);
+            if (e.key === "ArrowLeft" && pageNumber > 1)
+                setPageNumber((p) => p - 1);
         };
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
-    }, [openPdf, numPages, viewerPage, closeViewer]);
-
-    // Lock body scroll when modal open
-    useEffect(() => {
-        document.body.style.overflow = openPdf ? "hidden" : "";
-        return () => {
-            document.body.style.overflow = "";
-        };
-    }, [openPdf]);
+    }, [openPdf, numPages, pageNumber, closeViewer]);
 
     return (
         <MainLayout
@@ -260,452 +97,245 @@ export default function DownloadableForms() {
             mainClassName="py-0"
             className="overflow-hidden pb-0"
         >
-            {/* ==================== HERO / TITLE + SEARCH ==================== */}
-            <motion.section
-                className="w-full bg-[#f5f7fb] pt-16 md:pt-20 pb-12 md:pb-16"
-                variants={heroVariants}
-                initial="hidden"
-                animate="visible"
+            {/* ==================== BANNER (UNCHANGED) ==================== */}
+            <div
+                className="relative w-full bg-cover bg-center bg-no-repeat shadow-lg min-h-[350px] md:min-h-[450px] lg:min-h-[550px] flex items-center justify-center"
+                style={{
+                    backgroundImage: `url(${NewsLetterBanner})`,
+                }}
             >
-                <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-                    <motion.h1
-                        className="font-extrabold text-[#1a1a1a] leading-[1.1] tracking-tight mb-4"
-                        style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}
-                        variants={titleVariants}
-                    >
-                        Find the{" "}
-                        <span className="text-[#157d3c]">Forms You Need</span>
-                    </motion.h1>
-
-                    <motion.p
-                        className="mx-auto max-w-2xl text-[#4b5563] text-base sm:text-lg leading-relaxed mb-8"
-                        variants={titleVariants}
-                    >
-                        Browse, search, and download official forms, reports, and
-                        institutional documents — all in one place.
-                    </motion.p>
-
-                    <motion.div
-                        className="mx-auto w-24 h-1 bg-[#157d3c] rounded-full mb-10 origin-center"
-                        variants={dividerVariants}
-                    />
-
-                    <motion.div
-                        className="relative mx-auto max-w-3xl"
-                        variants={searchVariants}
-                    >
-                        <input
-                            type="text"
-                            placeholder="Search forms and documents…"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            aria-label="Search forms"
-                            className="w-full pl-8 pr-20 py-5 rounded-full bg-white text-gray-700 text-base placeholder-gray-400 shadow-[0_8px_30px_rgba(0,0,0,0.06)] outline-none transition-all duration-200 focus:shadow-[0_10px_40px_rgba(21,125,60,0.15)]"
-                        />
-
-                        <motion.button
-                            type="button"
-                            aria-label="Search"
-                            onClick={() => document.activeElement?.blur?.()}
-                            whileHover={{ scale: 1.08 }}
-                            whileTap={{ scale: 0.92 }}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-[#f5c518] hover:bg-[#e6b800] text-[#1a1a1a] flex items-center justify-center shadow-md transition-colors duration-200"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="w-6 h-6"
-                            >
-                                <circle cx="11" cy="11" r="7" />
-                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                            </svg>
-                        </motion.button>
-                    </motion.div>
-                </div>
-            </motion.section>
-
-            {/* ==================== MAIN CONTENT ==================== */}
-            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10 md:py-14">
-                {/* Filters */}
-                <motion.div
-                    className="flex flex-col lg:flex-row gap-4 mb-4 justify-end"
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.55 }}
-                >
-                    <div className="flex gap-3 flex-col sm:flex-row">
-                        <select
-                            value={selectedCategory}
-                            onChange={(e) => setSelectedCategory(e.target.value)}
-                            className="w-full sm:w-auto px-4 py-3 border-2 border-gray-200 rounded-lg text-sm bg-white cursor-pointer outline-none focus:border-[#157d3c]"
-                        >
-                            {categories.map((c) => (
-                                <option key={c} value={c}>
-                                    {c}
-                                </option>
-                            ))}
-                        </select>
-
-                        <select
-                            value={sortOrder}
-                            onChange={(e) => setSortOrder(e.target.value)}
-                            className="w-full sm:w-auto px-4 py-3 border-2 border-gray-200 rounded-lg text-sm bg-white cursor-pointer outline-none focus:border-[#157d3c]"
-                        >
-                            <option value="newest">Newest First</option>
-                            <option value="oldest">Oldest First</option>
-                            <option value="popular">Most Downloaded</option>
-                            <option value="alphabetical">A-Z</option>
-                        </select>
-                    </div>
-                </motion.div>
-
-                {/* Stats */}
-                <motion.div
-                    className="mb-5 text-gray-500 text-sm"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.65 }}
-                >
-                    Showing <strong>{paginatedForms.length}</strong> of{" "}
-                    <strong>{filteredForms.length}</strong> forms
-                    {totalPages > 1 && (
-                        <>
-                            {" "}
-                            • Page <strong>{safePage}</strong> of{" "}
-                            <strong>{totalPages}</strong>
-                        </>
-                    )}
-                </motion.div>
-
-                {/* Grid / Empty */}
-                {filteredForms.length === 0 ? (
-                    <motion.div
-                        className="text-center py-16 px-5 text-gray-500"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        <h3 className="m-0 mb-2 text-gray-700 text-lg font-semibold">
-                            No forms found
-                        </h3>
-                        <p className="m-0 mb-5">
-                            Try adjusting your search or filter criteria
-                        </p>
-                        <motion.button
-                            type="button"
-                            whileHover={{ scale: 1.03 }}
-                            whileTap={{ scale: 0.97 }}
-                            onClick={() => {
-                                setSearchTerm("");
-                                setSelectedCategory("All");
-                            }}
-                            className="px-6 py-2.5 bg-[#157d3c] hover:bg-[#0f5c2c] text-white border-none rounded-lg font-semibold cursor-pointer transition-colors duration-200"
-                        >
-                            Reset Filters
-                        </motion.button>
-                    </motion.div>
-                ) : (
-                    <>
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={`page-${safePage}`}
-                                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
-                                variants={gridContainerVariants}
-                                initial="hidden"
-                                animate="visible"
-                                exit="hidden"
-                            >
-                                {paginatedForms.map((form) => (
-                                    <motion.div
-                                        key={form.id}
-                                        layout
-                                        variants={cardVariants}
-                                        whileHover={{
-                                            y: -6,
-                                            transition: { duration: 0.25 },
-                                        }}
-                                        className="flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden transition-shadow duration-200 hover:shadow-xl"
-                                    >
-                                        {/* ---------- PDF THUMBNAIL ---------- */}
-                                        <div
-                                            className="relative w-full h-48 bg-gray-100 overflow-hidden flex items-start justify-center cursor-pointer"
-                                            onClick={() => openViewer(form)}
-                                        >
-                                            <Document
-                                                file={form.fileUrl}
-                                                loading={
-                                                    <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                                                        <div className="animate-pulse flex flex-col items-center gap-2">
-                                                            <div className="w-10 h-14 bg-gray-300 rounded-sm" />
-                                                            <span className="text-[0.6rem] font-semibold text-gray-400 tracking-widest">
-                                                                LOADING
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                }
-                                                error={
-                                                    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#157d3c]/10 to-[#157d3c]/25">
-                                                        <span className="text-sm font-semibold text-[#157d3c] tracking-wide">
-                                                            PDF
-                                                        </span>
-                                                    </div>
-                                                }
-                                            >
-                                                <Page
-                                                    pageNumber={1}
-                                                    width={340}
-                                                    renderAnnotationLayer={false}
-                                                    renderTextLayer={false}
-                                                    className="shadow-sm"
-                                                />
-                                            </Document>
-
-                                            {/* Category pill */}
-                                            <span className="absolute top-3 left-3 z-10 px-2.5 py-1 bg-white/90 backdrop-blur-sm text-[0.7rem] font-semibold text-[#0f5c2c] rounded-full shadow-sm">
-                                                {form.category}
-                                            </span>
-
-                                            {/* Preview hint on hover */}
-                                            <div className="absolute inset-0 z-10 bg-black/0 hover:bg-black/30 transition-colors duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
-                                                <span className="bg-white/95 text-[#0f5c2c] text-xs font-bold px-4 py-2 rounded-full shadow-lg">
-                                                    Preview PDF
-                                                </span>
-                                            </div>
-
-                                            {/* Soft bottom fade */}
-                                            <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white to-transparent" />
-                                        </div>
-
-                                        {/* ---------- BODY ---------- */}
-                                        <div className="flex-1 p-5">
-                                            <h3 className="m-0 mb-2 text-lg font-semibold text-gray-900 leading-snug line-clamp-2">
-                                                {form.title}
-                                            </h3>
-                                            <p className="m-0 mb-4 text-sm text-gray-500 leading-relaxed line-clamp-2">
-                                                {form.description}
-                                            </p>
-                                            <div className="flex flex-wrap gap-3 text-xs text-gray-500">
-                                                <span>{form.fileSize}</span>
-                                                <span>•</span>
-                                                <span>{formatDate(form.uploadDate)}</span>
-                                                <span>•</span>
-                                                <span>
-                                                    {form.downloads.toLocaleString()}{" "}
-                                                    downloads
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {/* ---------- FOOTER (two buttons) ---------- */}
-                                        <div className="px-5 py-4 border-t border-gray-200 flex gap-2">
-                                            <motion.button
-                                                type="button"
-                                                onClick={() => openViewer(form)}
-                                                whileHover={{ scale: 1.02 }}
-                                                whileTap={{ scale: 0.97 }}
-                                                className="flex-1 flex items-center justify-center px-4 py-2.5 bg-white hover:bg-gray-50 text-[#157d3c] border-2 border-[#157d3c] rounded-lg text-sm font-semibold cursor-pointer transition-colors duration-200"
-                                            >
-                                                Preview
-                                            </motion.button>
-                                            <motion.button
-                                                type="button"
-                                                onClick={() => handleDownload(form)}
-                                                whileHover={{ scale: 1.02 }}
-                                                whileTap={{ scale: 0.97 }}
-                                                className="flex-1 flex items-center justify-center px-4 py-2.5 bg-[#157d3c] hover:bg-[#0f5c2c] text-white border-none rounded-lg text-sm font-semibold cursor-pointer transition-colors duration-200"
-                                            >
-                                                Download
-                                            </motion.button>
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </motion.div>
-                        </AnimatePresence>
-
-                        {/* Pagination */}
-                        {totalPages > 1 && (
-                            <motion.div
-                                className="mt-10 flex flex-wrap items-center justify-center gap-2"
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.4, delay: 0.2 }}
-                            >
-                                <motion.button
-                                    type="button"
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => goToPage(safePage - 1)}
-                                    disabled={safePage === 1}
-                                    className="px-4 py-2 text-sm font-semibold rounded-lg border-2 transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed border-gray-200 text-gray-700 hover:border-[#157d3c] hover:text-[#157d3c] bg-white"
-                                >
-                                    ← Prev
-                                </motion.button>
-
-                                {getPageNumbers().map((page, idx) =>
-                                    page === "..." ? (
-                                        <span
-                                            key={`e-${idx}`}
-                                            className="px-2 text-gray-400 select-none"
-                                        >
-                                            …
-                                        </span>
-                                    ) : (
-                                        <motion.button
-                                            key={page}
-                                            type="button"
-                                            whileHover={{ scale: 1.08 }}
-                                            whileTap={{ scale: 0.92 }}
-                                            onClick={() => goToPage(page)}
-                                            className={`min-w-[40px] h-10 px-3 text-sm font-semibold rounded-lg border-2 transition-colors duration-200 ${
-                                                page === safePage
-                                                    ? "bg-[#157d3c] border-[#157d3c] text-white shadow-sm"
-                                                    : "bg-white border-gray-200 text-gray-700 hover:border-[#157d3c] hover:text-[#157d3c]"
-                                            }`}
-                                        >
-                                            {page}
-                                        </motion.button>
-                                    )
-                                )}
-
-                                <motion.button
-                                    type="button"
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => goToPage(safePage + 1)}
-                                    disabled={safePage === totalPages}
-                                    className="px-4 py-2 text-sm font-semibold rounded-lg border-2 transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed border-gray-200 text-gray-700 hover:border-[#157d3c] hover:text-[#157d3c] bg-white"
-                                >
-                                    Next →
-                                </motion.button>
-                            </motion.div>
-                        )}
-                    </>
-                )}
+                <div className="absolute inset-0 bg-black/50"></div>
+                <AnimatedBannerText
+                    title="Newsletters"
+                    description="Stay updated with the latest news and announcements from the City College of Cagayan de Oro."
+                />
             </div>
 
-            {/* ==================== PDF MODAL VIEWER ==================== */}
-            <AnimatePresence>
-                {openPdf && (
-                    <motion.div
-                        className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-6 bg-black/80 backdrop-blur-sm"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.25 }}
-                    >
-                        <div
-                            className="absolute inset-0"
-                            onClick={closeViewer}
-                            aria-hidden="true"
-                        />
+            {/* ==================== HANDURAW SECTION ==================== */}
+            <section className="bg-gray-100 py-16 px-4 md:px-8">
+                <div className="max-w-6xl mx-auto">
+                    {/* Section header */}
+                    <div className="text-center mb-12">
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-green-900 text-yellow-300 font-semibold text-xs tracking-widest uppercase shadow-md">
+                            Official Publication
+                        </span>
+                        <h2 className="mt-5 text-4xl md:text-5xl font-extrabold text-green-900 tracking-tight">
+                            HANDURAW
+                        </h2>
+                        <p className="mt-2 text-yellow-600 italic text-base md:text-lg font-medium">
+                            "Reflection · Growth · Innovation"
+                        </p>
+                        <p className="mt-4 max-w-2xl mx-auto text-gray-600 text-sm md:text-base leading-relaxed">
+                            The Official Newsletter of the City College of Cagayan de Oro.
+                            Explore our quarterly issues below.
+                        </p>
+                        {/* Decorative divider */}
+                        <div className="mt-6 flex items-center justify-center gap-3">
+                            <span className="h-px w-16 bg-gradient-to-r from-transparent to-green-700" />
+                            <span className="w-2 h-2 rounded-full bg-green-700" />
+                            <span className="w-2 h-2 rounded-full bg-yellow-500" />
+                            <span className="w-2 h-2 rounded-full bg-green-700" />
+                            <span className="h-px w-16 bg-gradient-to-l from-transparent to-green-700" />
+                        </div>
+                    </div>
 
-                        <motion.div
-                            className="relative w-full h-full md:max-w-5xl md:h-[92vh] bg-white md:rounded-2xl shadow-2xl flex flex-col overflow-hidden"
-                            initial={{ scale: 0.95, y: 20, opacity: 0 }}
-                            animate={{ scale: 1, y: 0, opacity: 1 }}
-                            exit={{ scale: 0.95, y: 20, opacity: 0 }}
-                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                        >
-                            {/* Header */}
-                            <div className="flex items-center justify-between gap-4 px-5 py-3 bg-gradient-to-r from-[#0f5c2c] to-[#157d3c] text-white">
-                                <div className="min-w-0">
-                                    <h2 className="font-bold truncate text-base md:text-lg">
-                                        {openPdf.title}
-                                    </h2>
-                                    <p className="text-xs text-green-100 truncate">
-                                        {openPdf.category}
-                                    </p>
-                                </div>
-                                <div className="flex items-center gap-2 shrink-0">
-                                    <button
-                                        onClick={() => handleDownload(openPdf)}
-                                        className="hidden md:inline-flex items-center gap-1.5 bg-[#f5c518] hover:bg-[#e6b800] text-[#1a1a1a] text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors"
-                                    >
-                                        ⬇ Download
-                                    </button>
-                                    <button
-                                        onClick={closeViewer}
-                                        className="bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors"
-                                        aria-label="Close viewer"
-                                    >
-                                        Close ✕
-                                    </button>
-                                </div>
+                    {/* Cards grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        {NEWSLETTERS.map((item) => (
+                            <NewsletterCard
+                                key={item.id}
+                                item={item}
+                                onOpen={() => openViewer(item)}
+                            />
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ==================== PDF MODAL ==================== */}
+            {openPdf && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-6 bg-black/80 backdrop-blur-sm">
+                    <div
+                        className="absolute inset-0"
+                        onClick={closeViewer}
+                        aria-hidden="true"
+                    />
+
+                    <div className="relative w-full h-full md:max-w-5xl md:h-[92vh] bg-white md:rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+                        {/* Modal header */}
+                        <div className="flex items-center justify-between gap-4 px-5 py-3 bg-gradient-to-r from-green-900 to-emerald-700 text-white">
+                            <div className="min-w-0">
+                                <h2 className="font-bold truncate">{openPdf.title}</h2>
+                                <p className="text-xs text-green-100 truncate">
+                                    {openPdf.edition}
+                                </p>
                             </div>
-
-                            {/* PDF body */}
-                            <div className="flex-1 overflow-auto bg-gray-200 flex justify-center p-4">
-                                <Document
-                                    file={openPdf.fileUrl}
-                                    onLoadSuccess={({ numPages }) =>
-                                        setNumPages(numPages)
-                                    }
-                                    loading={
-                                        <div className="flex items-center justify-center h-full">
-                                            <div className="animate-spin rounded-full h-10 w-10 border-4 border-[#157d3c] border-t-transparent" />
-                                        </div>
-                                    }
-                                    error={
-                                        <div className="text-red-600 font-semibold p-8">
-                                            Failed to load PDF.
-                                        </div>
-                                    }
+                            <div className="flex items-center gap-2 shrink-0">
+                                <a
+                                    href={openPdf.file}
+                                    download
+                                    className="hidden md:inline-flex items-center gap-1.5 bg-yellow-400 hover:bg-yellow-300 text-green-900 text-sm font-semibold px-3 py-1.5 rounded-lg transition"
                                 >
-                                    <Page
-                                        pageNumber={viewerPage}
-                                        width={Math.min(
-                                            900,
-                                            typeof window !== "undefined"
-                                                ? window.innerWidth - 80
-                                                : 900
-                                        )}
-                                        renderAnnotationLayer={false}
-                                        renderTextLayer={false}
-                                        className="shadow-xl bg-white"
-                                    />
-                                </Document>
+                                    ⬇ Download
+                                </a>
+                                <button
+                                    onClick={closeViewer}
+                                    className="bg-red-600 hover:bg-red-700 px-3 py-1.5 rounded-lg text-sm font-semibold transition"
+                                    aria-label="Close viewer"
+                                >
+                                    Close ✕
+                                </button>
                             </div>
+                        </div>
 
-                            {/* Footer — page navigation */}
-                            {numPages && (
-                                <div className="flex items-center justify-between px-5 py-3 border-t bg-white">
-                                    <button
-                                        onClick={() =>
-                                            setViewerPage((p) =>
-                                                Math.max(1, p - 1)
-                                            )
-                                        }
-                                        disabled={viewerPage <= 1}
-                                        className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                                    >
-                                        ← Prev
-                                    </button>
-                                    <span className="text-sm text-gray-600">
-                                        Page <strong>{viewerPage}</strong> of{" "}
-                                        {numPages}
-                                    </span>
-                                    <button
-                                        onClick={() =>
-                                            setViewerPage((p) =>
-                                                Math.min(numPages, p + 1)
-                                            )
-                                        }
-                                        disabled={viewerPage >= numPages}
-                                        className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                                    >
-                                        Next →
-                                    </button>
-                                </div>
-                            )}
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                        {/* PDF body */}
+                        <div className="flex-1 overflow-auto bg-gray-200 flex justify-center p-4">
+                            <Document
+                                file={openPdf.file}
+                                onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+                                loading={
+                                    <div className="flex items-center justify-center h-full">
+                                        <div className="animate-spin rounded-full h-10 w-10 border-4 border-green-700 border-t-transparent" />
+                                    </div>
+                                }
+                                error={
+                                    <div className="text-red-600 font-semibold p-8">
+                                        Failed to load PDF.
+                                    </div>
+                                }
+                            >
+                                <Page
+                                    pageNumber={pageNumber}
+                                    width={Math.min(900, window.innerWidth - 80)}
+                                    renderAnnotationLayer={false}
+                                    renderTextLayer={false}
+                                    className="shadow-xl"
+                                />
+                            </Document>
+                        </div>
+
+                        {/* Modal footer — pagination */}
+                        {numPages && (
+                            <div className="flex items-center justify-between px-5 py-3 border-t bg-white">
+                                <button
+                                    onClick={() =>
+                                        setPageNumber((p) => Math.max(1, p - 1))
+                                    }
+                                    disabled={pageNumber <= 1}
+                                    className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition"
+                                >
+                                    ← Prev
+                                </button>
+                                <span className="text-sm text-gray-600">
+                                    Page <strong>{pageNumber}</strong> of {numPages}
+                                </span>
+                                <button
+                                    onClick={() =>
+                                        setPageNumber((p) =>
+                                            Math.min(numPages, p + 1)
+                                        )
+                                    }
+                                    disabled={pageNumber >= numPages}
+                                    className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition"
+                                >
+                                    Next →
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </MainLayout>
+    );
+}
+
+/* ================================================================== */
+/*                              CARD                                  */
+/* ================================================================== */
+function NewsletterCard({ item, onOpen }) {
+    return (
+        <article className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col transform hover:-translate-y-1">
+            <div className={`h-1.5 w-full bg-gradient-to-r ${item.accent}`} />
+
+            <div className="absolute top-4 left-4 z-10">
+                <span
+                    className={`inline-block px-3 py-1 rounded-full text-xs font-bold text-white bg-gradient-to-r ${item.accent} shadow-md`}
+                >
+                    {item.badge}
+                </span>
+            </div>
+
+            <div className="relative w-full bg-gradient-to-br from-gray-100 to-gray-200 flex justify-center items-start overflow-hidden h-[380px]">
+                <Document
+                    file={item.file}
+                    loading={
+                        <div className="flex flex-col items-center justify-center h-full text-gray-500 gap-3">
+                            <div className="animate-spin rounded-full h-8 w-8 border-4 border-green-700 border-t-transparent" />
+                            <span className="text-xs">Loading preview…</span>
+                        </div>
+                    }
+                    error={
+                        <div className="flex flex-col items-center justify-center h-full text-red-500 gap-2 p-6 text-center">
+                            <span className="text-3xl">⚠️</span>
+                            <span className="text-sm">
+                                Failed to load PDF preview.
+                            </span>
+                        </div>
+                    }
+                >
+                    <Page
+                        pageNumber={1}
+                        width={460}
+                        renderAnnotationLayer={false}
+                        renderTextLayer={false}
+                        className="shadow-md mt-4 group-hover:scale-[1.02] transition-transform duration-500"
+                    />
+                </Document>
+
+                <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent" />
+            </div>
+
+            <div className="p-6 flex-1 flex flex-col">
+                <h3 className="text-2xl font-extrabold text-green-900 leading-tight">
+                    {item.title}
+                </h3>
+                <p className="text-gray-700 mt-1 font-medium">
+                    {item.publisher}
+                </p>
+                <p className="text-gray-500 text-sm mt-1">{item.edition}</p>
+
+                <p className="text-gray-600 text-sm mt-4 leading-relaxed line-clamp-3">
+                    {item.description}
+                </p>
+
+                <div className="flex-1" />
+
+                <button
+                    onClick={onOpen}
+                    className="mt-6 w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-green-900 font-extrabold py-3.5 rounded-xl transition-all duration-300 shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center gap-2"
+                >
+                    <span>ACCESS THE FULL VERSION</span>
+                    <span className="transition-transform group-hover:translate-x-1">
+                        →
+                    </span>
+                </button>
+            </div>
+        </article>
+    );
+}
+
+/* ================================================================== */
+/*                         ANIMATED BANNER TEXT                       */
+/* ================================================================== */
+function AnimatedBannerText({ title, description }) {
+    return (
+        <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
+            <h1 className="text-4xl md:text-6xl font-extrabold text-white drop-shadow-lg tracking-tight">
+                {title}
+            </h1>
+            <p className="mt-4 text-white/90 text-sm md:text-lg leading-relaxed drop-shadow">
+                {description}
+            </p>
+        </div>
     );
 }

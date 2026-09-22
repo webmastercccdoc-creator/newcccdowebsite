@@ -227,7 +227,7 @@ export default function Sdg6({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 Ensure availability and sustainable management of water and sanitation for
                                 all. SDG 6 aims to achieve universal and equitable access to safe and
                                 affordable drinking water, adequate and equitable sanitation and hygiene, and

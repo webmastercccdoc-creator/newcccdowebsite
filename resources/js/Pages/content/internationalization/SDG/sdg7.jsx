@@ -227,7 +227,7 @@ export default function Sdg7({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 Ensure access to affordable, reliable, sustainable, and modern energy for
                                 all. SDG 7 aims to ensure universal access to affordable, reliable, and
                                 modern energy services, increase substantially the share of renewable energy

@@ -227,7 +227,7 @@ export default function Sdg11({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 Make cities and human settlements inclusive, safe, resilient, and
                                 sustainable. SDG 11 aims to ensure access for all to adequate, safe, and
                                 affordable housing and basic services, and upgrade slums. It also seeks to

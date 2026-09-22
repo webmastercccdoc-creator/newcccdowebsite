@@ -59,13 +59,13 @@ Route::get('/library', function () {
     return Inertia::render('content/Quicklinks/LibraryServices');
 })->name('quicklinks.library');
 
-Route::get('/pdo', function () {
-    return Inertia::render('content/Quicklinks/PDO');
-})->name('quicklinks.pdo');
+Route::get('/ollpd', function () {
+    return Inertia::render('content/Quicklinks/OLLPD');
+})->name('quicklinks.ollpd');
 
-Route::get('/sas', function () {
-    return Inertia::render('content/Quicklinks/SAS');
-})->name('quicklinks.sas');
+Route::get('/osas', function () {
+    return Inertia::render('content/Quicklinks/OSAS');
+})->name('quicklinks.osas');
 
 // API endpoints for URL Shortener
 Route::post('/shorten-url', [UrlShortenerController::class, 'shorten'])->name('url.shorten');
@@ -275,6 +275,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/settings', [SettingsController::class, 'index'])->name('admin.settings');
     Route::get('/admin/shorten-url', [UrlShortenerController::class, 'index'])->name('admin.shorten-url');
     Route::get('/admin/shorten-url/list', [UrlShortenerController::class, 'list'])->name('admin.shorten-url.list');
+    Route::get('/admin/shorten-url/status-counts', [UrlShortenerController::class, 'urlStatusCounts'])->name('admin.shorten-url.status-counts');
     Route::post('/admin/shorten-url', [UrlShortenerController::class, 'shorten'])->name('admin.shorten-url.store');
     Route::put('/admin/shorten-url/{id}', [UrlShortenerController::class, 'update'])->name('admin.shorten-url.update');
     Route::put('/admin/shorten-url/{id}/status', [UrlShortenerController::class, 'updateStatus'])->name('admin.shorten-url.status');

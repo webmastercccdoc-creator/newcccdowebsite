@@ -227,7 +227,7 @@ export default function Sdg12({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 Ensure sustainable consumption and production patterns. SDG 12 aims to
                                 implement the 10-Year Framework of Programmes on Sustainable Consumption and
                                 Production, achieve the sustainable management and efficient use of natural

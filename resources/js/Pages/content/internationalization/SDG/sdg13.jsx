@@ -227,7 +227,7 @@ export default function Sdg13({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 Take urgent action to combat climate change and its impacts. SDG 13 aims to
                                 strengthen resilience and adaptive capacity to climate-related hazards and
                                 natural disasters in all countries, integrate climate change measures into

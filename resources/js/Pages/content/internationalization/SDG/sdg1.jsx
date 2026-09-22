@@ -239,7 +239,7 @@ export default function Sdg1({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 End poverty in all its forms everywhere. SDG 1 aims to eradicate extreme
                                 poverty, reduce at least by half the proportion of men, women, and children
                                 living in poverty, and ensure that all people have equal rights to economic

@@ -227,7 +227,7 @@ export default function Sdg4({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 Ensure inclusive and equitable quality education and promote lifelong learning
                                 opportunities for all. SDG 4 aims to ensure that all girls and boys complete
                                 free, equitable, and quality primary and secondary education, and have access to

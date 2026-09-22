@@ -227,7 +227,7 @@ export default function Sdg10({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 Reduce inequality within and among countries. SDG 10 aims to progressively
                                 achieve and sustain income growth of the bottom 40 percent of the population
                                 at a rate higher than the national average, empower and promote the social,

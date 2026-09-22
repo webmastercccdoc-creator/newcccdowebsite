@@ -227,7 +227,7 @@ export default function Sdg17({ onBack }) {
                                 }}
                             ></div>
 
-                            <p className="mt-5 mx-auto max-w-3xl text-base md:text-lg leading-relaxed text-gray-600">
+                            <p className="hidden">
                                 Strengthen the means of implementation and revitalize the Global
                                 Partnership for Sustainable Development. SDG 17 aims to strengthen domestic
                                 resource mobilization, implement official development assistance

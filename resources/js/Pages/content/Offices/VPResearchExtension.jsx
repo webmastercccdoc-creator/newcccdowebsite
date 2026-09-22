@@ -557,7 +557,7 @@ export default function VPResearchExtension() {
                             <div className="relative rounded-2xl overflow-hidden shadow-2xl group border border-white/10">
                                 <img
                                     src={drMahinayImage}
-                                    alt="Dr. Ray Butch D. Mahinay"
+                                    alt="Dr. Ray Butch D. Mahinay, LPT"
                                     className="w-full aspect-[4/5] object-cover transition-transform duration-[1.5s] ease-out-expo group-hover:scale-105"
                                 />
                                 {/* Gradient Overlay */}

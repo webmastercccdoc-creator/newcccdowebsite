@@ -4,7 +4,7 @@ import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Import SVG images
-import OrgChartImage from '../../../assets/OrgChart/OrgChart.svg';
+import OrgChartImage from '../../../assets/OrgChart/OrgChartgit pou.png';
 import PresidentsUnit from '../../../assets/OrgChart/PresidentsUnit.svg';
 import AdministrationFinance from '../../../assets/OrgChart/AdministrationFinance.svg';
 import AcademicAffairs from '../../../assets/OrgChart/AcademicAffairs.svg';

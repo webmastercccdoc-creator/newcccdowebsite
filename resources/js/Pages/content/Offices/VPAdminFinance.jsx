@@ -738,7 +738,7 @@ export default function VPAdminFinance() {
                         </Reveal>
                         <Reveal delay={150}>
                             <h1 className="vp-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium leading-[1.05] tracking-tight mb-4 sm:mb-6">
-                                Dr. Kurt S. <br />Candilas
+                                Dr. Kurt S. <br />Candilas, LPT
                             </h1>
                         </Reveal>
                         <Reveal delay={300}>

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import MainLayout from "../../../layouts/MainLayout";
 import guidanceBannerImg from '../../../assets/banner/ovpacads-banner.png';
-import guidanceLogo from '../../../assets/logos/osas-logo.png';
+import colarteImage from '../../../assets/images/colarte-image.png';
 import sdg1 from '../../../assets/images/sdg1.png';
 import sdg2 from '../../../assets/images/sdg2.jpg';
 import sdg3 from '../../../assets/images/sdg3.png';
@@ -45,6 +45,38 @@ const tabPanelVariants = {
         transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
     },
 };
+
+// ===================== Slideshow Data =====================
+const SLIDES = [
+    {
+        id: "office-1",
+        image: guidanceBannerImg,
+        title: "A Welcoming Space for Every Student",
+        description:
+            "Our office provides a safe, confidential, and supportive environment where students can freely express their concerns and receive professional guidance.",
+    },
+    {
+        id: "office-2",
+        image: guidanceBannerImg,
+        title: "Counseling & Consultation Rooms",
+        description:
+            "Private and comfortable counseling spaces designed to ensure confidentiality and foster meaningful conversations between students and counselors.",
+    },
+    {
+        id: "office-3",
+        image: guidanceBannerImg,
+        title: "Assessment & Testing Area",
+        description:
+            "Equipped with standardized tools and materials for comprehensive psychological assessment and evaluation services.",
+    },
+    {
+        id: "office-4",
+        image: guidanceBannerImg,
+        title: "Programs & Activities",
+        description:
+            "The office hosts seminars, workshops, and group dynamics activities that promote student wellness, personal growth, and career readiness.",
+    },
+];
 
 const stripHtml = (html = "") => html.replace(/<[^>]*>/g, "").trim();
 
@@ -181,7 +213,7 @@ const TABS = [
             </>
         ),
     },
-            {
+    {
         id: "electronic-forms",
         label: "Electronic Forms",
         shortLabel: "E-Forms",
@@ -199,27 +231,27 @@ const TABS = [
                     {[
                         {
                             title: "CCAT Admission Form",
-                            link: "https://docs.google.com/forms/d/e/1FAIpQLSf5jxpis5cLCQzexIF0OOrEduZjdpKmxOGEkg9-bvjLJ2rhBg/viewform",
+                            link: "https://docs.google.com/forms/d/e/1FAIpQLSdN5frmvaS_-cUYmraeucqoM2gIS7XeJafOyp_xwG7sYHsW4Q/closedform",
                         },
                         {
                             title: "Appointment Request Form",
-                            link: "https://docs.google.com/forms/d/e/1FAIpQLScQl87WDvcjxtTJf5ssLhptolfjCaaIrIsPBlmHB1FTd0-x_g/viewform",
+                            link: "https://docs.google.com/forms/d/e/1FAIpQLSf5jxpis5cLCQzexIF0OOrEduZjdpKmxOGEkg9-bvjLJ2rhBg/viewform",
                         },
                         {
                             title: "Referral Form",
-                            link: "https://docs.google.com/forms/d/e/1FAIpQLScKBi47fyzMKclLg4Y23469GwYSdnCIJKkOKuYqJd9OKeZcQA/viewform",
+                            link: "https://docs.google.com/forms/d/e/1FAIpQLScQl87WDvcjxtTJf5ssLhptolfjCaaIrIsPBlmHB1FTd0-x_g/viewform",
                         },
                         {
                             title: "Psychosocial and Mental Health Services Intake Form",
-                            link: "https://docs.google.com/forms/d/1VNl6lLunD8jm5Sajx9WA1t4fC9nHxaYokVZFm7SpmGI/viewform?pli=1&pli=1&edit_requested=true",
+                            link: "https://docs.google.com/forms/d/e/1FAIpQLScKBi47fyzMKclLg4Y23469GwYSdnCIJKkOKuYqJd9OKeZcQA/viewform",
                         },
                         {
                             title: "Client Counselor Feedback",
-                            link: "#",
+                            link: "https://docs.google.com/forms/d/e/1FAIpQLSeAg8TXIuWJh00KK8DePaH6M94DetGTkRJ1kUNKsTBdzvK0dQ/viewform",
                         },
                         {
                             title: "School Counseling Services Intake Form",
-                            link: "#",
+                            link: "https://docs.google.com/forms/d/1VNl6lLunD8jm5Sajx9WA1t4fC9nHxaYokVZFm7SpmGI/viewform?pli=1&pli=1&edit_requested=true",
                         },
                     ].map((form, index) => {
                         const isHighlighted = index === 0;
@@ -649,6 +681,161 @@ function AnimatedBannerText({ title, description }) {
     );
 }
 
+// ============ Office Slideshow ============
+function OfficeSlideshow() {
+    const [current, setCurrent] = useState(0);
+    const [isPaused, setIsPaused] = useState(false);
+
+    useEffect(() => {
+        if (isPaused) return;
+        const timer = setInterval(() => {
+            setCurrent((prev) => (prev + 1) % SLIDES.length);
+        }, 5000);
+        return () => clearInterval(timer);
+    }, [isPaused]);
+
+    const goTo = (index) => setCurrent(index);
+    const goPrev = () =>
+        setCurrent((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+    const goNext = () => setCurrent((prev) => (prev + 1) % SLIDES.length);
+
+    const slide = SLIDES[current];
+
+    return (
+        <motion.div
+            className="mt-14 md:mt-20 bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-xl transition-shadow duration-300 overflow-hidden"
+            variants={contentVariants}
+            initial="hidden"
+            animate="visible"
+        >
+            {/* Section heading */}
+            <div className="border-b border-gray-200 bg-[#f0f7f2] px-6 sm:px-8 md:px-10 lg:px-14 py-6 text-center">
+                <h2 className="m-0 text-2xl md:text-3xl font-extrabold text-[#1a1a1a] tracking-tight">
+                    Our{" "}
+                    <span className="text-[#157d3c]">Office</span>
+                </h2>
+                <div className="w-16 h-1 bg-[#f5c518] rounded-full mt-3 mx-auto" />
+                <p className="mt-3 text-sm md:text-base text-gray-600 max-w-2xl mx-auto">
+                    Take a look inside the Guidance, Counseling, and Assessment Office
+                    — a space built for student care, wellness, and growth.
+                </p>
+            </div>
+
+            <div
+                className="relative w-full overflow-hidden"
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+            >
+                {/* Slides */}
+                <div className="relative w-full aspect-[16/9] md:aspect-[21/9] bg-gray-100">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={slide.id}
+                            className="absolute inset-0"
+                            initial={{ opacity: 0, scale: 1.03 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 1.02 }}
+                            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                            <img
+                                src={slide.image}
+                                alt={slide.title}
+                                className="h-full w-full object-cover"
+                                onError={(e) => {
+                                    e.currentTarget.style.opacity = "0";
+                                }}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                        </motion.div>
+                    </AnimatePresence>
+
+                    {/* Prev / Next buttons */}
+                    <button
+                        type="button"
+                        onClick={goPrev}
+                        aria-label="Previous slide"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors duration-200 hover:bg-[#157d3c] focus:outline-none"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="h-5 w-5"
+                        >
+                            <path d="m15 18-6-6 6-6" />
+                        </svg>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={goNext}
+                        aria-label="Next slide"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors duration-200 hover:bg-[#157d3c] focus:outline-none"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="h-5 w-5"
+                        >
+                            <path d="m9 18 6-6-6-6" />
+                        </svg>
+                    </button>
+
+                    {/* Counter */}
+                    <div className="absolute top-4 right-4 z-20 rounded-full bg-black/50 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+                        {current + 1} / {SLIDES.length}
+                    </div>
+                </div>
+
+                {/* Text content below the image */}
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={slide.id}
+                        className="px-6 sm:px-8 md:px-10 lg:px-14 py-8 md:py-10 text-center md:text-left"
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                        <h3 className="m-0 mb-3 text-xl md:text-2xl font-extrabold text-[#1a1a1a] tracking-tight">
+                            {slide.title}
+                        </h3>
+                        <div className="w-12 h-1 bg-[#f5c518] rounded-full mb-4 mx-auto md:mx-0" />
+                        <p className="text-justify md:text-left leading-relaxed text-gray-700 max-w-3xl">
+                            {slide.description}
+                        </p>
+                    </motion.div>
+                </AnimatePresence>
+
+                {/* Dots */}
+                <div className="pb-6 flex items-center justify-center gap-2">
+                    {SLIDES.map((s, i) => (
+                        <button
+                            key={s.id}
+                            type="button"
+                            onClick={() => goTo(i)}
+                            aria-label={`Go to slide ${i + 1}`}
+                            className={`h-2.5 rounded-full transition-all duration-300 focus:outline-none ${
+                                i === current
+                                    ? "w-8 bg-[#157d3c]"
+                                    : "w-2.5 bg-gray-300 hover:bg-[#f5c518]"
+                            }`}
+                        />
+                    ))}
+                </div>
+            </div>
+        </motion.div>
+    );
+}
+
 export default function GuidanceOffice() {
     const [activeTab, setActiveTab] = useState(TABS[0].id);
     const [activeDirectorTab, setActiveDirectorTab] = useState(DIRECTOR_TABS[0].id);
@@ -871,30 +1058,25 @@ export default function GuidanceOffice() {
                         {/* ================= LEFT COLUMN: Image + Contact Us ================= */}
                         <div className="w-full shrink-0 md:w-80 lg:w-96 mx-auto md:mx-0 flex flex-col gap-8">
                             {/* Director Image */}
-                            <div className="relative flex flex-col items-center justify-center aspect-[4/5] rounded-xl border-2 border-dashed border-[#157d3c] bg-[#f0f7f2] shadow-sm">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="#157d3c"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="w-20 h-20"
-                                >
-                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                    <circle cx="12" cy="7" r="4" />
-                                </svg>
+                            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                                {/* Image */}
+                                <div className="w-full aspect-[4/5] flex items-center justify-center bg-white p-2">
+                                    <img
+                                        src={colarteImage}
+                                        alt="Faith Q. Colarte"
+                                        className="h-full w-full object-contain"
+                                        onError={(e) => {
+                                            e.currentTarget.style.opacity = "0";
+                                        }}
+                                    />
+                                </div>
 
-                                <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-[#157d3c]">
-                                    Photo Coming Soon
-                                </p>
-
-                                <div className="absolute bottom-3 left-4 right-4 text-center">
-                                    <p className="text-sm sm:text-base md:text-lg font-bold tracking-wide uppercase text-[#0f5c2c]">
+                                {/* Name + Position panel */}
+                                <div className="border-t-4 border-[#f5c518] bg-white px-4 py-4 text-center">
+                                    <p className="m-0 text-sm sm:text-base md:text-lg font-bold tracking-wide uppercase text-[#157d3c]">
                                         Faith Q. Colarte, RGC
                                     </p>
-                                    <p className="mt-0.5 text-sm sm:text-base font-semibold text-[#1a1a1a] leading-tight">
+                                    <p className="mt-1 text-xs sm:text-sm md:text-base font-semibold text-[#1a1a1a] leading-tight">
                                         Guidance Counselor
                                     </p>
                                 </div>
@@ -985,7 +1167,7 @@ export default function GuidanceOffice() {
                             </div>
                         </div>
 
-                        {/* ================= RIGHT COLUMN: Tabs on top, then Logo, then Content ================= */}
+                        {/* ================= RIGHT COLUMN: Tabs on top, then Content ================= */}
                         <div className="flex-1 w-full">
                             {/* ===== Upper Tab Switcher — at the top of the content area ===== */}
                             <div className="-mx-8 md:-mx-10 lg:-mx-14 -mt-8 md:-mt-10 lg:-mt-14 mb-8 border-b border-gray-200 bg-[#f0f7f2]">
@@ -1034,15 +1216,6 @@ export default function GuidanceOffice() {
                                 </div>
                             </div>
 
-                            {/* Logo centered */}
-                            <div className="flex justify-center mb-5">
-                                <img
-                                    src={guidanceLogo}
-                                    alt="Guidance, Counseling, and Assessment Office Logo"
-                                    className="h-20 w-20 md:h-24 md:w-24 object-contain"
-                                />
-                            </div>
-
                             {/* ===== Tab Panel ===== */}
                             <AnimatePresence mode="wait">
                                 <motion.div
@@ -1081,6 +1254,9 @@ export default function GuidanceOffice() {
                         </div>
                     </div>
                 </motion.div>
+
+                {/* ==================== OFFICE SLIDESHOW ==================== */}
+                <OfficeSlideshow />
 
                 {/* ==================== LOWER TABS SECTION ==================== */}
                 <motion.div

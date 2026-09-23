@@ -839,8 +839,8 @@ function OfficeSlideshow() {
 export default function GuidanceOffice() {
     const [activeTab, setActiveTab] = useState(TABS[0].id);
     const [activeDirectorTab, setActiveDirectorTab] = useState(DIRECTOR_TABS[0].id);
-    const [osasNews, setOsasNews] = useState([]);
-    const [isLoadingOsasNews, setIsLoadingOsasNews] = useState(true);
+    const [guidanceNews, setGuidanceNews] = useState([]);
+    const [isLoadingGuidanceNews, setIsLoadingGuidanceNews] = useState(true);
 
     const tabStripRef = useRef(null);
 
@@ -852,27 +852,27 @@ export default function GuidanceOffice() {
     useEffect(() => {
         let isMounted = true;
 
-        fetch("/api/news?department=OSAS")
+        fetch("/api/news?department=GUIDANCE")
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error("Failed to fetch OSAS news");
+                    throw new Error("Failed to fetch Guidance news");
                 }
 
                 return response.json();
             })
             .then((data) => {
                 if (isMounted) {
-                    setOsasNews(Array.isArray(data) ? data : []);
+                    setGuidanceNews(Array.isArray(data) ? data : []);
                 }
             })
             .catch(() => {
                 if (isMounted) {
-                    setOsasNews([]);
+                    setGuidanceNews([]);
                 }
             })
             .finally(() => {
                 if (isMounted) {
-                    setIsLoadingOsasNews(false);
+                    setIsLoadingGuidanceNews(false);
                 }
             });
 
@@ -898,7 +898,7 @@ export default function GuidanceOffice() {
     const activeDirectorTabData = DIRECTOR_TABS.find((t) => t.id === activeDirectorTab);
 
     const renderNewsTabContent = () => {
-        if (isLoadingOsasNews) {
+        if (isLoadingGuidanceNews) {
             return (
                 <div className="flex items-center justify-center rounded-xl border border-dashed border-gray-300 bg-gray-50 px-6 py-10 text-sm text-gray-600">
                     Loading news...
@@ -906,7 +906,7 @@ export default function GuidanceOffice() {
             );
         }
 
-        if (!osasNews.length) {
+        if (!guidanceNews.length) {
             return (
                 <div className="rounded-xl border border-dashed border-gray-300 bg-gray-50 px-6 py-10 text-center text-sm text-gray-600">
                     No news articles are available at the moment.
@@ -916,7 +916,7 @@ export default function GuidanceOffice() {
 
         return (
             <div className="space-y-6">
-                {osasNews.map((article) => {
+                {guidanceNews.map((article) => {
                     const excerpt = stripHtml(article.content || "");
                     const imageUrl = normalizeImagePath(article.image_path || article.image || article.image_url);
                     const sdgNumbers = Array.isArray(article.sdg_numbers)

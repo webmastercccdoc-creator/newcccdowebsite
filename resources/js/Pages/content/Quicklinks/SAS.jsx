@@ -246,26 +246,19 @@ const DIRECTOR_TABS = [
         content: (
             <>
                 <p className="mb-4 text-justify leading-relaxed text-gray-700">
-                    <strong>Dr. Mark Raymond S. Tan</strong> serves as the
-                    Director of Student Affairs and Services at the City College
-                    of Cagayan de Oro. He brings with him years of experience in
-                    student development, academic leadership, and
-                    institutional program management.
+                    Dr. Mark Raymond S. Tan brings a wealth of experience and academic distinction to his role as Director for Student Affairs and Services and Associate Professor V at the City College of Cagayan de Oro. His educational journey began at Capitol University, where he earned a Bachelor of Secondary Education with a major in Mathematics and subsequently a Master of Arts in Education with a major in Educational Administration. Throughout his undergraduate and graduate studies, he was recognized with several prestigious awards, including the Presidential Leadership Award, Excellence Award in Research, and Outstanding Student Teacher of the Year Award, highlighting his early commitment to excellence in education.
                 </p>
                 <p className="mb-4 text-justify leading-relaxed text-gray-700">
-                    Throughout his career, Dr. Tan has championed initiatives
-                    focused on student welfare, leadership formation, and
-                    holistic development. He has led numerous programs that
-                    empower students to excel academically, socially, and
-                    personally — aligning with the institution's commitment to
-                    producing globally competitive and socially responsible
-                    graduates.
+                    Following his master's degree, Dr. Tan embarked on doctoral studies at Liceo de Cagayan University, where he earned his Doctor of Education in Leadership and Management. His doctoral work culminated in the receipt of the first-ever Benemeritus Award, underscoring his exceptional academic performance and research contributions. This award is a testament to his dedication to scholarly inquiry and his capacity to make meaningful contributions to the field of education.
+                </p>
+                <p className="mb-4 text-justify leading-relaxed text-gray-700">
+                    In his professional career, Dr. Tan has made significant contributions to student affairs and services in higher education. He served as the Director for Student Affairs and Services and Professor 1 at Capitol University for 12 years, where he played a pivotal role in enhancing the institution's SAS department. Under his leadership, the department achieved recognition as a Regional Quality Awardee by the Commission on Higher Education in 2020 and 2023 for its Outstanding Implementation of Student Affairs and Services. Dr. Tan's commitment to research and publication is evident through his numerous papers featured in esteemed international journals, such as the Asian Scientific Journal and the International Journal of Advanced Research.
+                </p>
+                <p className="mb-4 text-justify leading-relaxed text-gray-700">
+                    His involvement extends beyond Capitol University; he has served as an Appointee of the Commission on Higher Education as a member of the Regional Evaluation Committee for Region X, reviewing and validating documents of faculty applicants for Instructor to Associate Professor positions. Additionally, he has taken on the role of External Reviewer of Student Affairs and Services Materials for other Higher Education Institutions in Region X, including Northwestern Mindanao State College of Science and Technology.
                 </p>
                 <p className="text-justify leading-relaxed text-gray-700">
-                    His vision for the SAS office centers on creating a
-                    supportive and inclusive environment where every student
-                    has access to the services, opportunities, and guidance
-                    they need to succeed.
+                    Dr. Tan's active engagement in professional organizations further underscores his commitment to the advancement of student affairs and services in the region. He currently serves as the President of the Council of Student Affairs and Services Practitioners in Region X and the Philippine Association of Practitioners of Student Affairs and Services – Region X Chapter. His affiliations also extend to the Capitol University Alumni Association, where he holds the position of Treasurer, and the Asia Pacific Student Services Association.
                 </p>
             </>
         ),

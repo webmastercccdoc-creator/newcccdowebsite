@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import MainLayout from "../../../layouts/MainLayout";
-import guidanceBannerImg from '../../../assets/banner/ovpacads-banner.png';
+import guidanceBannerImg from '../../../assets/banner/guidance-banner.png';
 import colarteImage from '../../../assets/images/colarte-image.png';
 import sdg1 from '../../../assets/images/sdg1.png';
 import sdg2 from '../../../assets/images/sdg2.jpg';
@@ -231,7 +231,7 @@ const TABS = [
                     {[
                         {
                             title: "CCAT Admission Form",
-                            link: "https://docs.google.com/forms/d/e/1FAIpQLSdN5frmvaS_-cUYmraeucqoM2gIS7XeJafOyp_xwG7sYHsW4Q/closedform",
+                            link: "https://docs.google.com/forms/d/1PvU3HKTnVRqIdB5CUNHBANHB4k9qnzVokld8o6mof8M/viewform?edit_requested=true",
                         },
                         {
                             title: "Appointment Request Form",
@@ -951,7 +951,7 @@ export default function GuidanceOffice() {
                                     <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-500">
                                         <div className="flex flex-wrap items-center gap-2">
                                             <span className="rounded-full bg-[#e6f2ea] px-2.5 py-1 font-medium text-[#157d3c]">
-                                                GCAO
+                                                GUIDANCE
                                             </span>
                                             <span>{formatDate(article.date)}</span>
                                         </div>

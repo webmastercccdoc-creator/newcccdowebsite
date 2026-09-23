@@ -1,4 +1,5 @@
 import '../css/app.css';
+import '../css/global.css';
 import './bootstrap';
 
 import { createInertiaApp } from '@inertiajs/react';

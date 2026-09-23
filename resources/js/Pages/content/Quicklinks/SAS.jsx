@@ -143,7 +143,7 @@ const UnderDevelopment = () => (
     </div>
 );
 
-// ===================== Tabs Data (5 items — added News) =====================
+// ===================== Lower Tabs Data =====================
 const TABS = [
     {
         id: "sws",
@@ -185,7 +185,6 @@ const TABS = [
                 </p>
 
                 <div className="space-y-6">
-                    {/* News item 1 */}
                     <div className="border-l-4 border-[#157d3c] pl-4 py-1">
                         <h4 className="font-bold text-[#1a1a1a] mb-1">
                             SAS Office Hours for the New Semester
@@ -201,7 +200,6 @@ const TABS = [
                         </p>
                     </div>
 
-                    {/* News item 2 */}
                     <div className="border-l-4 border-[#f5c518] pl-4 py-1">
                         <h4 className="font-bold text-[#1a1a1a] mb-1">
                             Student Leadership Training Workshop
@@ -218,7 +216,6 @@ const TABS = [
                         </p>
                     </div>
 
-                    {/* News item 3 */}
                     <div className="border-l-4 border-[#157d3c] pl-4 py-1">
                         <h4 className="font-bold text-[#1a1a1a] mb-1">
                             Scholarship Applications Now Open
@@ -235,6 +232,77 @@ const TABS = [
                         </p>
                     </div>
                 </div>
+            </>
+        ),
+    },
+];
+
+// ===================== Upper (Director) Tabs Data =====================
+const DIRECTOR_TABS = [
+    {
+        id: "bionote",
+        label: "Bionote",
+        shortLabel: "Bionote",
+        content: (
+            <>
+                <p className="mb-4 text-justify leading-relaxed text-gray-700">
+                    <strong>Dr. Mark Raymond S. Tan</strong> serves as the
+                    Director of Student Affairs and Services at the City College
+                    of Cagayan de Oro. He brings with him years of experience in
+                    student development, academic leadership, and
+                    institutional program management.
+                </p>
+                <p className="mb-4 text-justify leading-relaxed text-gray-700">
+                    Throughout his career, Dr. Tan has championed initiatives
+                    focused on student welfare, leadership formation, and
+                    holistic development. He has led numerous programs that
+                    empower students to excel academically, socially, and
+                    personally — aligning with the institution's commitment to
+                    producing globally competitive and socially responsible
+                    graduates.
+                </p>
+                <p className="text-justify leading-relaxed text-gray-700">
+                    His vision for the SAS office centers on creating a
+                    supportive and inclusive environment where every student
+                    has access to the services, opportunities, and guidance
+                    they need to succeed.
+                </p>
+            </>
+        ),
+    },
+    {
+        id: "general-functions",
+        label: "General Functions",
+        shortLabel: "General Functions",
+        content: (
+            <>
+                <p className="mb-5 text-justify leading-relaxed text-gray-700">
+                    The Student Affairs and Services (SAS) encompass the
+                    services and programs in higher education institutions that
+                    focus on supporting students' academic experiences in order
+                    to achieve holistic student development. The cluster is led
+                    by the Vice President for Student Affairs and Services
+                    (VPSAS) and is comprised of three main divisions: Student
+                    Welfare Services (SWS), Student Development Services (SDS),
+                    and Institutional Student Programs and Services (ISPS).
+                </p>
+                <p className="text-justify leading-relaxed text-gray-700">
+                    SWS encompass fundamental services and programs essential
+                    for ensuring and promoting the welfare of students. SDS
+                    pertains to services and programs specifically tailored for
+                    the exploration, enhancement, and realization of students'
+                    complete potential for personal growth, leadership, and
+                    social responsibility through institutional or
+                    student-initiated activities. ISPS include services and
+                    programs designed to proactively address the fundamental
+                    health, nutrition, housing, and safety needs of students,
+                    including those with special needs and disabilities within
+                    the school community. Each division will be under the
+                    management of a Director, who will be responsible for
+                    overseeing various student support units. The organizational
+                    structure provided below delineates the chain of command
+                    and associated responsibilities.
+                </p>
             </>
         ),
     },
@@ -270,12 +338,11 @@ function AnimatedBannerText({ title, description }) {
 
 export default function SAS() {
     const [activeTab, setActiveTab] = useState(TABS[0].id);
+    const [activeDirectorTab, setActiveDirectorTab] = useState(DIRECTOR_TABS[0].id);
     const [osasNews, setOsasNews] = useState([]);
     const [isLoadingOsasNews, setIsLoadingOsasNews] = useState(true);
 
     const tabStripRef = useRef(null);
-    const [canScrollLeft, setCanScrollLeft] = useState(false);
-    const [canScrollRight, setCanScrollRight] = useState(false);
 
     useEffect(() => {
         document.title =
@@ -314,32 +381,6 @@ export default function SAS() {
         };
     }, []);
 
-    const updateScrollButtons = () => {
-        const el = tabStripRef.current;
-        if (!el) return;
-        const { scrollLeft, scrollWidth, clientWidth } = el;
-        setCanScrollLeft(scrollLeft > 2);
-        setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 2);
-    };
-
-    useEffect(() => {
-        updateScrollButtons();
-        const el = tabStripRef.current;
-        if (!el) return;
-
-        el.addEventListener("scroll", updateScrollButtons);
-        window.addEventListener("resize", updateScrollButtons);
-
-        const resizeObserver = new ResizeObserver(updateScrollButtons);
-        resizeObserver.observe(el);
-
-        return () => {
-            el.removeEventListener("scroll", updateScrollButtons);
-            window.removeEventListener("resize", updateScrollButtons);
-            resizeObserver.disconnect();
-        };
-    }, []);
-
     useEffect(() => {
         const el = tabStripRef.current;
         if (!el) return;
@@ -353,17 +394,8 @@ export default function SAS() {
         }
     }, [activeTab]);
 
-    const scrollTabs = (direction) => {
-        const el = tabStripRef.current;
-        if (!el) return;
-        const amount = el.clientWidth * 0.7;
-        el.scrollBy({
-            left: direction === "left" ? -amount : amount,
-            behavior: "smooth",
-        });
-    };
-
     const activeTabData = TABS.find((t) => t.id === activeTab);
+    const activeDirectorTabData = DIRECTOR_TABS.find((t) => t.id === activeDirectorTab);
 
     const renderNewsTabContent = () => {
         if (isLoadingOsasNews) {
@@ -515,16 +547,16 @@ export default function SAS() {
 
 
             {/* ==================== MAIN CONTENT ==================== */}
-            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10 md:py-14">
+            <div className="mx-auto w-full max-w-[1600px] px-6 sm:px-10 lg:px-16 xl:px-20 py-14 md:py-20">
                 <motion.div
                     className="bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-xl transition-shadow duration-300 overflow-hidden"
                     variants={contentVariants}
                     initial="hidden"
                     animate="visible"
                 >
-                    <div className="flex flex-col md:flex-row gap-8 lg:gap-10 p-6 md:p-8 lg:p-10 items-center">
+                    <div className="flex flex-col md:flex-row gap-10 lg:gap-14 p-8 md:p-10 lg:p-14 items-start">
                         {/* ================= LEFT COLUMN: Image + Contact Us ================= */}
-                        <div className="w-full shrink-0 md:w-80 lg:w-96 mx-auto md:mx-0 flex flex-col gap-6">
+                        <div className="w-full shrink-0 md:w-80 lg:w-96 mx-auto md:mx-0 flex flex-col gap-8">
                             {/* Director Image */}
                             <div className="relative flex flex-col items-center justify-center aspect-[4/5] rounded-xl border-2 border-dashed border-[#157d3c] bg-[#f0f7f2] shadow-sm">
                                 <svg
@@ -556,9 +588,8 @@ export default function SAS() {
                             </div>
 
                             {/* ===== Contact Us — below the director image ===== */}
-                            <div className="rounded-xl border border-[#157d3c] bg-[#157d3c] p-5 shadow-sm">
-                                {/* Centered title + divider */}
-                                <div className="flex flex-col items-left text-left mb-4">
+                            <div className="rounded-xl border border-[#157d3c] bg-[#157d3c] p-6 shadow-sm">
+                                <div className="flex flex-col items-left text-left mb-5">
                                     <h3 className="m-0 text-lg font-extrabold text-white tracking-tight">
                                         Contact{" "}
                                         <span className="text-[#f5c518]">
@@ -568,7 +599,7 @@ export default function SAS() {
                                     <div className="w-12 h-1 bg-[#f5c518] rounded-full mt-2" />
                                 </div>
 
-                                <ul className="space-y-2.5 text-sm text-white">
+                                <ul className="space-y-3.5 text-sm text-white">
                                     <li className="flex items-start gap-2.5">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -641,10 +672,57 @@ export default function SAS() {
                             </div>
                         </div>
 
-                        {/* ================= RIGHT COLUMN: General Functions ================= */}
-                        <div className="flex-1">
-                            {/* ===== Logo centered ===== */}
-                            <div className="flex justify-center mb-4">
+                        {/* ================= RIGHT COLUMN: Tabs on top, then Logo, then Content ================= */}
+                        <div className="flex-1 w-full">
+                            {/* ===== Upper Tab Switcher — at the top of the content area ===== */}
+                            <div className="-mx-8 md:-mx-10 lg:-mx-14 -mt-8 md:-mt-10 lg:-mt-14 mb-8 border-b border-gray-200 bg-[#f0f7f2]">
+                                <div
+                                    role="tablist"
+                                    aria-label="Director information tabs"
+                                    className="flex w-full items-stretch overflow-x-auto"
+                                >
+                                    {DIRECTOR_TABS.map((tab) => {
+                                        const isActive = activeDirectorTab === tab.id;
+                                        return (
+                                            <button
+                                                key={tab.id}
+                                                role="tab"
+                                                id={`director-tab-${tab.id}`}
+                                                aria-selected={isActive}
+                                                aria-controls={`director-panel-${tab.id}`}
+                                                onClick={() => setActiveDirectorTab(tab.id)}
+                                                className={`relative flex-1 shrink-0 px-6 py-5 text-sm font-semibold tracking-wide whitespace-nowrap transition-colors duration-200 focus:outline-none ${
+                                                    isActive
+                                                        ? "text-white bg-[#157d3c]"
+                                                        : "text-gray-600 bg-transparent hover:bg-[#f5c518] hover:text-[#1a1a1a]"
+                                                }`}
+                                            >
+                                                <span className="hidden lg:inline">
+                                                    {tab.label}
+                                                </span>
+                                                <span className="lg:hidden">
+                                                    {tab.shortLabel}
+                                                </span>
+
+                                                {isActive && (
+                                                    <motion.span
+                                                        layoutId="activeDirectorTabIndicator"
+                                                        className="absolute bottom-0 left-0 right-0 h-1 bg-[#f5c518] rounded-t-full"
+                                                        transition={{
+                                                            type: "spring",
+                                                            stiffness: 380,
+                                                            damping: 30,
+                                                        }}
+                                                    />
+                                                )}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Logo centered */}
+                            <div className="flex justify-center mb-5">
                                 <img
                                     src={osasLogo}
                                     alt="Student Affairs and Services Logo"
@@ -652,161 +730,102 @@ export default function SAS() {
                                 />
                             </div>
 
-                            {/* ===== Title centered ===== */}
-                            <h2 className="m-0 mb-4 text-2xl md:text-3xl font-extrabold text-[#1a1a1a] tracking-tight text-center">
-                                General{" "}
-                                <span className="text-[#157d3c]">
-                                    Functions
-                                </span>
-                            </h2>
+                            {/* ===== Tab Panel ===== */}
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={activeDirectorTab}
+                                    role="tabpanel"
+                                    id={`director-panel-${activeDirectorTab}`}
+                                    aria-labelledby={`director-tab-${activeDirectorTab}`}
+                                    variants={tabPanelVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    exit="exit"
+                                >
+                                    <h2 className="m-0 mb-4 text-2xl md:text-3xl font-extrabold text-[#1a1a1a] tracking-tight text-center">
+                                        {activeDirectorTab === "bionote" ? (
+                                            <>
+                                                Bio{" "}
+                                                <span className="text-[#157d3c]">
+                                                    Note
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                General{" "}
+                                                <span className="text-[#157d3c]">
+                                                    Functions
+                                                </span>
+                                            </>
+                                        )}
+                                    </h2>
 
-                            {/* ===== Divider centered ===== */}
-                            <div className="w-16 h-1 bg-[#f5c518] rounded-full mb-5 mx-auto" />
+                                    <div className="w-16 h-1 bg-[#f5c518] rounded-full mb-6 mx-auto" />
 
-                            <p className="mb-4 text-justify leading-relaxed text-gray-700">
-                                The Student Affairs and Services (SAS) encompass
-                                the services and programs in higher education
-                                institutions that focus on supporting students'
-                                academic experiences in order to achieve
-                                holistic student development. The cluster is
-                                led by the Vice President for Student Affairs
-                                and Services (VPSAS) and is comprised of three
-                                main divisions: Student Welfare Services (SWS),
-                                Student Development Services (SDS), and
-                                Institutional Student Programs and Services
-                                (ISPS).
-                            </p>
-                            <p className="text-justify leading-relaxed text-gray-700">
-                                SWS encompass fundamental services and programs
-                                essential for ensuring and promoting the
-                                welfare of students. SDS pertains to services
-                                and programs specifically tailored for the
-                                exploration, enhancement, and realization of
-                                students' complete potential for personal
-                                growth, leadership, and social responsibility
-                                through institutional or student-initiated
-                                activities. ISPS include services and programs
-                                designed to proactively address the fundamental
-                                health, nutrition, housing, and safety needs of
-                                students, including those with special needs
-                                and disabilities within the school community.
-                                Each division will be under the management of a
-                                Director, who will be responsible for
-                                overseeing various student support units. The
-                                organizational structure provided below
-                                delineates the chain of command and associated
-                                responsibilities.
-                            </p>
+                                    {activeDirectorTabData.content}
+                                </motion.div>
+                            </AnimatePresence>
                         </div>
                     </div>
                 </motion.div>
 
-                {/* ==================== TABS SECTION ==================== */}
+                {/* ==================== LOWER TABS SECTION ==================== */}
                 <motion.div
-                    className="mt-10 md:mt-14 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden"
+                    className="mt-14 md:mt-20 bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden"
                     variants={contentVariants}
                     initial="hidden"
                     animate="visible"
                 >
                     {/* Tab Header Bar */}
                     <div className="border-b border-gray-200 bg-[#f0f7f2]">
-                        <div className="flex items-center">
-                            {/* Left scroll button */}
-                            <div className="flex w-12 shrink-0 items-center justify-center self-stretch">
-                                <button
-                                    type="button"
-                                    aria-label="Scroll tabs left"
-                                    onClick={() => scrollTabs("left")}
-                                    className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 bg-white text-[#157d3c] shadow-sm transition-colors hover:bg-[#157d3c] hover:text-white hover:border-[#157d3c]"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2.5"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="w-4 h-4"
+                        <div
+                            ref={tabStripRef}
+                            role="tablist"
+                            aria-label="Student Affairs and Services divisions"
+                            className="sas-tab-strip flex w-full items-stretch overflow-x-auto"
+                        >
+                            {TABS.map((tab) => {
+                                const isActive = activeTab === tab.id;
+                                return (
+                                    <button
+                                        key={tab.id}
+                                        role="tab"
+                                        id={`tab-${tab.id}`}
+                                        aria-selected={isActive}
+                                        aria-controls={`panel-${tab.id}`}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={`relative flex-1 shrink-0 px-6 py-5 text-sm font-semibold tracking-wide whitespace-nowrap transition-colors duration-200 focus:outline-none ${
+                                            isActive
+                                                ? "text-white bg-[#157d3c]"
+                                                : "text-gray-600 bg-transparent hover:bg-[#f5c518] hover:text-[#1a1a1a]"
+                                        }`}
                                     >
-                                        <polyline points="15 18 9 12 15 6" />
-                                    </svg>
-                                </button>
-                            </div>
+                                        <span className="hidden lg:inline">
+                                            {tab.label}
+                                        </span>
+                                        <span className="lg:hidden">
+                                            {tab.shortLabel}
+                                        </span>
 
-                            {/* Tab strip */}
-                            <div
-                                ref={tabStripRef}
-                                role="tablist"
-                                aria-label="Student Affairs and Services divisions"
-                                className="sas-tab-strip flex flex-1 min-w-0 items-stretch overflow-x-auto"
-                            >
-                                {TABS.map((tab) => {
-                                    const isActive = activeTab === tab.id;
-                                    return (
-                                        <button
-                                            key={tab.id}
-                                            role="tab"
-                                            id={`tab-${tab.id}`}
-                                            aria-selected={isActive}
-                                            aria-controls={`panel-${tab.id}`}
-                                            onClick={() => setActiveTab(tab.id)}
-                                            className={`relative shrink-0 px-5 py-4 text-sm font-semibold tracking-wide whitespace-nowrap transition-colors duration-200 focus:outline-none ${
-                                                isActive
-                                                    ? "text-white bg-[#157d3c]"
-                                                    : "text-gray-600 bg-transparent hover:bg-[#f5c518] hover:text-[#1a1a1a]"
-                                            }`}
-                                        >
-                                            <span className="hidden lg:inline">
-                                                {tab.label}
-                                            </span>
-                                            <span className="lg:hidden">
-                                                {tab.shortLabel}
-                                            </span>
-
-                                            {isActive && (
-                                                <motion.span
-                                                    layoutId="activeTabIndicator"
-                                                    className="absolute bottom-0 left-0 right-0 h-1 bg-[#f5c518] rounded-t-full"
-                                                    transition={{
-                                                        type: "spring",
-                                                        stiffness: 380,
-                                                        damping: 30,
-                                                    }}
-                                                />
-                                            )}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-
-                            {/* Right scroll button */}
-                            <div className="flex w-12 shrink-0 items-center justify-center self-stretch">
-                                <button
-                                    type="button"
-                                    aria-label="Scroll tabs right"
-                                    onClick={() => scrollTabs("right")}
-                                    className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 bg-white text-[#157d3c] shadow-sm transition-colors hover:bg-[#157d3c] hover:text-white hover:border-[#157d3c]"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2.5"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="w-4 h-4"
-                                    >
-                                        <polyline points="9 18 15 12 9 6" />
-                                    </svg>
-                                </button>
-                            </div>
+                                        {isActive && (
+                                            <motion.span
+                                                layoutId="activeTabIndicator"
+                                                className="absolute bottom-0 left-0 right-0 h-1 bg-[#f5c518] rounded-t-full"
+                                                transition={{
+                                                    type: "spring",
+                                                    stiffness: 380,
+                                                    damping: 30,
+                                                }}
+                                            />
+                                        )}
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 
                     {/* Tab Panel */}
-                    <div className="p-6 md:p-8 lg:p-10 min-h-[260px]">
+                    <div className="p-8 md:p-10 lg:p-14 min-h-[260px]">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={activeTab}
@@ -821,7 +840,7 @@ export default function SAS() {
                                 <h3 className="m-0 mb-2 text-xl md:text-2xl font-extrabold text-[#1a1a1a] tracking-tight">
                                     {activeTabData.label}
                                 </h3>
-                                <div className="w-16 h-1 bg-[#f5c518] rounded-full mb-5" />
+                                <div className="w-16 h-1 bg-[#f5c518] rounded-full mb-6" />
                                 {tabContent}
                             </motion.div>
                         </AnimatePresence>

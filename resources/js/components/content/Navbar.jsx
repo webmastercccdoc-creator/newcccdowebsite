@@ -159,7 +159,7 @@ const Navbar = () => {
                 { name: 'Cagayan De Oro City', href: '/about/cagayan-de-oro-city', description: 'Discover the city of golden friendship' },
                 { name: 'Message of the Mayor', href: '/about/mayors-message', description: 'A message from our city mayor' },
                 { name: 'Vision & Mission', href: '/about/mission-vision', description: 'Our guiding principles and aspirations' },
-                { name: 'Goals & Core Values', href: '/about/goals-core-values', description: 'The values that drive our institution' },
+                { name: 'Goals & Objectives', href: '/about/goals-core-values', description: 'The values that drive our institution' },
                 // { name: 'Graduate Attributes', href: '/about/graduate-attributes', description: 'Characteristics expected of our graduates' },
                 { name: 'Governing Board', href: '/about/governing-board', description: 'Meet our board of directors' },
                 { name: 'Organizational Chart', href: '/about/organizational-chart', description: 'View our organizational structure' },

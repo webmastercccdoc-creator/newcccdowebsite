@@ -336,7 +336,7 @@ export default function ViewArticle({ article: initialArticle = null, articleIma
                             </div>
 
                             <div
-                                className="prose prose-lg max-w-none text-gray-700"
+                                className="article-content prose prose-lg max-w-none text-gray-700"
                                 dangerouslySetInnerHTML={contentHtml}
                             />
                         </div>

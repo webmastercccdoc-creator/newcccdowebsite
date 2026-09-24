@@ -3,18 +3,18 @@ import MainLayout from '../../../layouts/MainLayout';
 import vpAcademicsBanner from '../../../assets/banner/ovpacads-banner.png';
 import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
 import ccdologo from '../../../assets/logos/ccdologo.png';
-import helmaeTapananImage from '../../../assets/images/Dr_Helmae_Tapanan.png';
+import kurtCandilasImage from '../../../assets/images/Dr_Kurt_Candilas.png';
 
 /* ============================================================================
    DATA CONTENT
    ============================================================================ */
 const BIONOTE_PARAGRAPHS = [
-    <>Dr. Helmae E. Tapanan, LPT, is a distinguished academic leader, recognized for her extensive experience and profound commitment to educational excellence and research. With a Doctor of Education major in Instructional System and Resource Management from the University of San Jose&ndash;Recoletos (2019) and a Master of Arts in Education major in Mathematics from the University of the Philippines Cebu (2011), Dr. Tapanan possesses a robust academic foundation.</>,
-    <>Her Magna Cum Laude, Best in Mathematics, and Extra-curricular awards from La Salle University Ozamiz City of her Bachelor&rsquo;s degree, underscore her dedication to both scholarly achievement and professional standards. Her recognition as the Most Outstanding Principal of the Year by International School Awards in Bangkok, Thailand in 2023 and the given distinction as the Soft Skills Ambassador of the Philippines by Soft Skills A.H.A. USA, further attests to her exemplary leadership and administrative prowess.</>,
-    <>Throughout her career, Dr. Tapanan has consistently championed excellent quality in education. As Principal of the University of San Jose&ndash;Recoletos Senior High School Department since 2019, she has overseen curriculum implementation and school operations, ensuring high standards. Her role as a TEI Curriculum Quality Audit (CQA) Specialist since 2017 demonstrates her expertise in evaluating and enhancing educational programs, a critical skill for maintaining and elevating tertiary education standards.</>,
-    <>Furthermore, her experience as a Faculty Researcher and Research Peer Reviewer for the Recoletos Multidisciplinary Research Journal&mdash;a Scopus-indexed Journal&mdash;highlights her commitment to evidence-based practices and scholarly rigor, which are foundational to a thriving academic environment and students&rsquo; growth towards success. At present, Dr. Tapanan is the Vice President for Academic Affairs at City College of Cagayan de Oro, Philippines, a World University Ranking for Innovation (WURI) Top 56 and Times Higher Education Impact Ranking of 1001-1500 ranks.</>,
-    <>Dr. Tapanan&apos;s dedication to academic advancement extends beyond her institutional roles. She has published 13 international and 2 Scopus-indexed research journals and has presented her findings at numerous national and international conferences, showcasing her active contribution to the academic discourse. Her involvement in developing assessment and learning modules, coupled with her work as a Language Evaluator in MTB-MLE, reflects her comprehensive understanding of pedagogical best practices.</>,
-    <>Having conducted diverse community and research projects in partnership with CHED, USAID, Ramon Aboitiz Foundation, research grant by Meralco Foundation, Region VII Department of Education, LGUs, and as consultant of the Set Forth Philippines Foundation, Dr. Tapanan brings a wealth of experience in fostering collaborative initiatives that can significantly benefit the academic and community engagement goals of education sectors in the country.</>,
+    <>Dr. Kurt S. Candilas, PhD, LPT is the Vice President for Administration at the City College of Cagayan de Oro, Philippines, and former College Dean of Lourdes College, Inc. In his current capacity, he provides administrative and financial leadership and oversees key institutional offices and services, including Human Resources, the Technology Innovation and Data Management Center, and Physical Plant Services. He earned his Bachelor of Arts in English from Bukidnon State University, his Master&rsquo;s in Education majoring in Teaching English Communication Arts from Lourdes College, and his Doctor of Philosophy in English majoring in Literature from the University of San Jose&ndash;Recoletos, Cebu City. He also holds an advanced TESOL certification from the American TESOL Institute of the Philippines.</>,
+    <>With his expertise in English communication arts, Dr. Candilas was designated by the Commission on Higher Education (CHED) as a regional trainer for Purposive Communication, a General Education subject in the higher education curriculum. He is the lead author of Purposive Communication with Sustainable Development Goals Integration, published by Mindshapers Co., Inc. in 2025, and the author of Qualitative Research Design: Concepts, Methods, and Applications, published by Unlimited Books Library Services &amp; Publishing Inc. His scholarly work focuses on communication, education, qualitative research methodology, literature, linguistics, and related interdisciplinary fields.</>,
+    <>Dr. Candilas has received several international and national research distinctions, including Best Paper Presentation at the 2nd International Conference on Languages, Linguistics, and Society (Malaysia, 2018), the 7th OpenTESOL International Conference (Vietnam, 2019), and the Best Research Paper and Best Presenter Awards at the 2023 International Conference on Education, Business, and Science and Technology (Philippines). In 2025, he received the Best Session Paper Award during the 5th International Conference and 2025 NOTED National Convention. In 2026, he received the Best Research Paper and Best Research Presentation Awards during the Research Congress of St. Michael&rsquo;s College of Iligan, Inc.</>,
+    <>He has also served as a Judge in Regional and Division School Press Conferences in Northern Mindanao and as an Internal Auditor for ISO 9001:2015. He serves as an Advisory Board Member of the International Conference in TESOL and Education and as a peer reviewer for various academic journals and conference proceedings in the Philippines and Vietnam. He also serves as an Editorial Board Member of the International Review of Social Science Research and has undertaken peer-review engagements in Indigenous Studies, Social Development, Multidisciplinary Research, TESOL, and Education.</>,
+    <>His professional affiliations include Associate Member of the National Research Council of the Philippines (NRCP); Associate Member of the International Conference of TESOL &amp; Education; Regular Member of the Professional Organization of Researchers and Educators of the Philippines (POREP); and membership in the Rotary Club of Cagayan de Oro Torch.</>,
+    <>His research interests include communication, literature, linguistics, education, qualitative research methodology, and interdisciplinary studies.</>,
 ];
 
 const BIONOTE_PREVIEW_COUNT = 2;
@@ -22,7 +22,7 @@ const BIONOTE_PREVIEW_COUNT = 2;
 const CREDENTIALS = [
     {
         title: 'Academic Background',
-        lines: ['Doctor of Education (EdD)', 'MA in Education | Mathematics'],
+        lines: ['PhD in English (Literature)', 'MA in Education (English)'],
         icon: (
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
                 d="M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
@@ -30,7 +30,7 @@ const CREDENTIALS = [
     },
     {
         title: 'Research & Publications',
-        lines: ['13 International Journals', '2 Scopus-Indexed Papers'],
+        lines: ['Lead Author, Purposive Communication', 'Author, Qualitative Research Design'],
         icon: (
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
                 d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -38,7 +38,7 @@ const CREDENTIALS = [
     },
     {
         title: 'Leadership & Awards',
-        lines: ['Most Outstanding Principal (2023)', 'Soft Skills Ambassador PH'],
+        lines: ['Best Paper, OpenTESOL (Vietnam)', 'Best Research Paper (2023)'],
         icon: (
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
                 d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
@@ -46,7 +46,7 @@ const CREDENTIALS = [
     },
     {
         title: 'Academic Certifications',
-        lines: ['TEI Curriculum Quality Audit', 'Language Evaluator (MTB-MLE)'],
+        lines: ['CHED Regional Trainer', 'ISO 9001:2015 Internal Auditor'],
         icon: (
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -484,7 +484,7 @@ export default function VPAcademics() {
     const officeDetailsRef = useRef(null);
 
     useEffect(() => {
-        document.title = "Vice President for Academic Affairs - City College of Cagayan de Oro";
+        document.title = "Vice President for Administration - City College of Cagayan de Oro";
         const handleScroll = () => {
             const top = window.pageYOffset;
             const height = document.documentElement.scrollHeight - window.innerHeight;
@@ -689,8 +689,8 @@ export default function VPAcademics() {
             >
                 <div className="absolute inset-0 bg-black/50"></div>
                 <AnimatedBannerText
-                    title="Vice President for Academic Affairs"
-                    description="Academic leadership, quality instruction, and student success at the City College of Cagayan de Oro."
+                    title="Vice President for Administration"
+                    description="Administrative leadership, institutional support, and operational excellence at the City College of Cagayan de Oro."
                 />
             </div>
 
@@ -710,12 +710,12 @@ export default function VPAcademics() {
                         </Reveal>
                         <Reveal delay={150}>
                             <h1 className="vp-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium leading-[1.05] tracking-tight mb-4 sm:mb-6">
-                                Dr. Helmae E. <br />Tapanan, LPT
+                                Dr. Kurt S. <br />Candilas, PhD, LPT
                             </h1>
                         </Reveal>
                         <Reveal delay={300}>
                             <p className="text-base sm:text-lg md:text-xl text-white/60 max-w-xl mb-8 sm:mb-12">
-                                Vice President for Academic Affairs at the City College of Cagayan de Oro.
+                                Vice President for Administration at the City College of Cagayan de Oro.
                             </p>
                         </Reveal>
 
@@ -745,8 +745,8 @@ export default function VPAcademics() {
 
                             <div className="relative rounded-2xl overflow-hidden shadow-2xl group border border-white/10">
                                 <img
-                                    src={helmaeTapananImage}
-                                    alt="Dr. Helmae E. Tapanan"
+                                    src={kurtCandilasImage}
+                                    alt="Dr. Kurt S. Candilas"
                                     className="w-full aspect-[4/5] object-cover transition-transform duration-[1.5s] ease-out-expo group-hover:scale-105"
                                 />
                                 {/* Gradient Overlay */}
@@ -759,7 +759,7 @@ export default function VPAcademics() {
                                     </div>
                                     <div>
                                         <p className="text-[10px] sm:text-xs text-[#D4AF37] tracking-widest uppercase">City College of Cagayan de Oro</p>
-                                        <p className="text-xs sm:text-sm font-semibold text-white">Dr. Helmae E. Tapanan, LPT</p>
+                                        <p className="text-xs sm:text-sm font-semibold text-white">Dr. Kurt S. Candilas, PhD, LPT</p>
                                     </div>
                                 </div>
                             </div>

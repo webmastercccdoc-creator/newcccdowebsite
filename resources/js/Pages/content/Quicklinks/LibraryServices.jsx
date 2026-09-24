@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import MainLayout from "../../../layouts/MainLayout";
 import libraryBannerImg from "../../../assets/banner/ovpacads-banner.png";
 import libraryLogo from "../../../assets/logos/osas-logo.png";
+import melodyImage from "../../../assets/images/melody-image.png";
 import sdg1 from "../../../assets/images/sdg1.png";
 import sdg2 from "../../../assets/images/sdg2.jpg";
 import sdg3 from "../../../assets/images/sdg3.png";
@@ -140,6 +141,7 @@ const CONTACT_ITEMS = [
     {
         label: "Office",
         value: "Library Services, City College of Cagayan de Oro",
+        link: null,
         icon: (
             <>
                 <path d="M3 21h18" />
@@ -155,7 +157,8 @@ const CONTACT_ITEMS = [
     },
     {
         label: "Email",
-        value: "---------",
+        value: "library.citycollege@gmail.com",
+        link: "mailto:library.citycollege@gmail.com",
         icon: (
             <>
                 <rect width="20" height="16" x="2" y="4" rx="2" />
@@ -164,8 +167,9 @@ const CONTACT_ITEMS = [
         ),
     },
     {
-        label: "Phone",
-        value: "---------",
+        label: "Facebook",
+        value: "www.facebook.com/cccdolibrary",
+        link: "https://www.facebook.com/profile.php?id=61580317454211",
         icon: (
             <>
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
@@ -185,78 +189,55 @@ const TOP_LIBRARY_USER = {
 
 // ===================== Org Chart Data =====================
 const ORG_CHART = {
-    head: {
-        role: "College Librarian",
-        name: "Dr. Melody R. Agcito",
+    top: {
+        role: "FOR ACADEMIC AFFAIRS",
     },
-    sections: [
+    head: {
+        role: "HEAD LIBRARIAN",
+    },
+    branches: [
         {
-            title: "Technical Services",
-            description:
-                "Acquisition, cataloging, classification, and physical processing of library materials.",
-            icon: (
-                <>
-                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
-                </>
-            ),
+            title: "Reference & User Services Librarian",
+            children: [
+                { title: "Reference & User Services Assistant" },
+            ],
         },
         {
-            title: "Reader Services",
-            description:
-                "Circulation, shelving, reader assistance, and library orientation programs.",
-            icon: (
-                <>
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                </>
-            ),
-        },
-        {
-            title: "Reference & Information",
-            description:
-                "Research assistance, information literacy, and user education services.",
-            icon: (
-                <>
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="m21 21-4.3-4.3" />
-                </>
-            ),
-        },
-        {
-            title: "Periodicals & E-Resources",
-            description:
-                "Management of journals, databases, and digital collections.",
-            icon: (
-                <>
-                    <rect width="20" height="14" x="2" y="3" rx="2" />
-                    <line x1="8" x2="16" y1="21" y2="21" />
-                    <line x1="12" x2="12" y1="17" y2="21" />
-                </>
-            ),
+            title: "Collections and Processing Librarian",
+            children: [
+                { title: "Collections and Processing Clerk" },
+            ],
         },
     ],
 };
 
 // ============ Org Chart Component ============
 function OrgChart() {
-    const { head, sections } = ORG_CHART;
+    const { top, head, branches } = ORG_CHART;
 
     return (
         <div className="relative">
-            {/* Head card */}
+            {/* Top Level Card (FOR ACADEMIC AFFAIRS) */}
             <div className="flex justify-center">
                 <div className="relative w-full max-w-xs overflow-hidden rounded-2xl border-2 border-[#157d3c] bg-gradient-to-br from-[#157d3c] to-[#0b3d1e] p-5 text-center text-white shadow-lg shadow-[#157d3c]/25">
                     <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[#f5c518]/15 blur-2xl" />
-                    <p className="relative font-mono text-[9px] font-bold uppercase tracking-[0.28em] text-[#f5c518]">
-                        Library Services Office
+                    <p className="relative text-sm font-black uppercase leading-tight tracking-wide">
+                        {top.role}
                     </p>
-                    <p className="relative mt-2 text-base font-black leading-tight">
+                </div>
+            </div>
+
+            {/* Vertical connector from top to head */}
+            <div className="flex justify-center">
+                <div className="h-8 w-px bg-[#157d3c]/30" />
+            </div>
+
+            {/* Head Card (HEAD LIBRARIAN) */}
+            <div className="flex justify-center">
+                <div className="relative w-full max-w-xs overflow-hidden rounded-2xl border-2 border-[#157d3c] bg-gradient-to-br from-[#157d3c] to-[#0b3d1e] p-5 text-center text-white shadow-lg shadow-[#157d3c]/25">
+                    <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[#f5c518]/15 blur-2xl" />
+                    <p className="relative text-sm font-black uppercase leading-tight tracking-wide">
                         {head.role}
-                    </p>
-                    <p className="relative mt-1 text-xs font-medium text-white/75">
-                        {head.name}
                     </p>
                 </div>
             </div>
@@ -266,43 +247,46 @@ function OrgChart() {
                 <div className="h-8 w-px bg-[#157d3c]/30" />
             </div>
 
-            {/* Sections with connectors */}
+            {/* Branches with nested children */}
             <div className="relative pt-6">
                 {/* Horizontal connector (desktop) */}
-                <div className="absolute top-0 hidden h-px bg-[#157d3c]/30 md:left-[calc(12.5%_-_0.375rem)] md:right-[calc(12.5%_-_0.375rem)] md:block" />
+                <div className="absolute top-0 hidden h-px bg-[#157d3c]/30 md:left-[25%] md:right-[25%] md:block" />
 
-                <div className="grid gap-4 md:grid-cols-4">
-                    {sections.map((section) => (
-                        <div key={section.title} className="relative">
+                <div className="grid gap-8 md:grid-cols-2 md:gap-12">
+                    {branches.map((branch) => (
+                        <div
+                            key={branch.title}
+                            className="relative flex flex-col items-center"
+                        >
                             {/* Vertical drop from horizontal line (desktop) */}
                             <div className="absolute -top-6 left-1/2 hidden h-6 w-px -translate-x-1/2 bg-[#157d3c]/30 md:block" />
 
-                            <div className="h-full rounded-2xl border border-gray-200 bg-white p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#f5c518] hover:shadow-md">
-                                <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-[#e6f2ea]">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="#157d3c"
-                                        strokeWidth="1.9"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="h-5 w-5"
-                                    >
-                                        {section.icon}
-                                    </svg>
-                                </div>
-
+                            {/* Branch card */}
+                            <div className="w-full max-w-xs rounded-2xl border-2 border-[#157d3c] bg-white p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#f5c518] hover:shadow-md">
                                 <p className="m-0 text-sm font-black leading-snug text-[#1a1a1a]">
-                                    {section.title}
-                                </p>
-
-                                <div className="mx-auto mt-3 h-0.5 w-8 rounded-full bg-[#f5c518]" />
-
-                                <p className="mt-3 text-xs leading-relaxed text-gray-500">
-                                    {section.description}
+                                    {branch.title}
                                 </p>
                             </div>
+
+                            {/* Connector down to children */}
+                            {branch.children?.length > 0 && (
+                                <>
+                                    <div className="h-6 w-px bg-[#157d3c]/30" />
+
+                                    <div className="flex w-full flex-col items-center gap-4">
+                                        {branch.children.map((child) => (
+                                            <div
+                                                key={child.title}
+                                                className="w-full max-w-xs rounded-2xl border border-gray-200 bg-white p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#f5c518] hover:shadow-md"
+                                            >
+                                                <p className="m-0 text-sm font-black leading-snug text-[#1a1a1a]">
+                                                    {child.title}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
                         </div>
                     ))}
                 </div>
@@ -348,13 +332,266 @@ const UnderDevelopment = () => (
     </div>
 );
 
+// ============ About Us : Sub-tabs ============
+const ABOUT_TABS = [
+    {
+        id: "vision",
+        label: "Vision",
+        content: <UnderDevelopment />,
+    },
+    {
+        id: "mission",
+        label: "Mission",
+        content: <UnderDevelopment />,
+    },
+    {
+        id: "personnel",
+        label: "Personnel",
+        content: <UnderDevelopment />,
+    },
+    {
+        id: "service-hours",
+        label: "Service Hours",
+        content: <UnderDevelopment />,
+    },
+];
+
+function AboutUs() {
+    const [subTab, setSubTab] = useState(ABOUT_TABS[0].id);
+    const activeSubTab =
+        ABOUT_TABS.find((t) => t.id === subTab) || ABOUT_TABS[0];
+
+    return (
+        <div className="space-y-8">
+            {/* Sub-tab strip */}
+            <div
+                role="tablist"
+                aria-label="About Us sub-sections"
+                className="inline-flex flex-wrap gap-2 rounded-full border border-gray-200 bg-[#f7fbf8] p-1.5"
+            >
+                {ABOUT_TABS.map((t) => {
+                    const isActive = subTab === t.id;
+                    return (
+                        <button
+                            key={t.id}
+                            role="tab"
+                            id={`about-subtab-${t.id}`}
+                            aria-selected={isActive}
+                            aria-controls={`about-subpanel-${t.id}`}
+                            onClick={() => setSubTab(t.id)}
+                            className={`relative shrink-0 rounded-full px-5 py-2 text-sm font-semibold transition-colors duration-200 focus:outline-none ${
+                                isActive
+                                    ? "text-white"
+                                    : "text-gray-600 hover:text-[#1a1a1a]"
+                            }`}
+                        >
+                            {isActive && (
+                                <motion.span
+                                    layoutId="aboutSubPillTab"
+                                    className="absolute inset-0 rounded-full bg-[#157d3c] shadow-md shadow-[#157d3c]/25"
+                                    transition={{
+                                        type: "spring",
+                                        stiffness: 420,
+                                        damping: 34,
+                                    }}
+                                />
+                            )}
+                            <span className="relative z-10">{t.label}</span>
+                        </button>
+                    );
+                })}
+            </div>
+
+            {/* Sub-panel */}
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={subTab}
+                    role="tabpanel"
+                    id={`about-subpanel-${subTab}`}
+                    aria-labelledby={`about-subtab-${subTab}`}
+                    variants={panelSwitch}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="relative"
+                >
+                    {activeSubTab.content}
+                </motion.div>
+            </AnimatePresence>
+        </div>
+    );
+}
+
+// ============ Electronic Resources Links ============
+const RESOURCE_LINKS = [
+    {
+        id: "lam",
+        title: "Library Access Module (LAM)",
+        description:
+            "Access the Library Access Module for online resources, account management, and digital library services.",
+        url: "https://bit.ly/CLSO_LAM",
+    },
+    {
+        id: "bas",
+        title: "Book Acquisition System (BAS)",
+        description:
+            "Submit book requests, track acquisitions, and manage library collection recommendations.",
+        url: "https://bit.ly/CLSO_BAS",
+    },
+    {
+        id: "s2s",
+        title: "Student to Student (S2S)",
+        description:
+            "Peer-to-peer learning support, study group coordination, and student resource sharing platform.",
+        url: "https://bit.ly/CLSO_S2S",
+    },
+];
+
+const ElectronicResources = () => (
+    <div className="grid gap-5 md:grid-cols-3">
+        {RESOURCE_LINKS.map((resource) => (
+            <a
+                key={resource.id}
+                href={resource.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#157d3c]/40 hover:shadow-lg"
+            >
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#e6f2ea] transition-colors duration-300 group-hover:bg-[#157d3c]">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#157d3c"
+                        strokeWidth="1.9"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-6 w-6 transition-colors duration-300 group-hover:stroke-white"
+                    >
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                    </svg>
+                </div>
+
+                <h4 className="mb-2 text-base font-black leading-snug text-[#1a1a1a] transition-colors duration-300 group-hover:text-[#157d3c]">
+                    {resource.title}
+                </h4>
+
+                <div className="mb-3 h-0.5 w-8 rounded-full bg-[#f5c518]" />
+
+                <p className="mb-5 flex-1 text-sm leading-relaxed text-gray-600">
+                    {resource.description}
+                </p>
+
+                <span className="inline-flex items-center gap-2 text-sm font-semibold text-[#157d3c] transition-all duration-200 group-hover:gap-3">
+                    Open Link
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-4 w-4"
+                    >
+                        <path d="M5 12h14" />
+                        <path d="m12 5 7 7-7 7" />
+                    </svg>
+                </span>
+            </a>
+        ))}
+    </div>
+);
+
+// ============ Library Resources (sub-tabs) ============
+const LIBRARY_RESOURCES_SUBTABS = [
+    {
+        id: "e-resources",
+        label: "Electronic Resources",
+        content: <ElectronicResources />,
+    },
+    {
+        id: "holdings",
+        label: "Library Holdings",
+        content: <UnderDevelopment />,
+    },
+];
+
+function LibraryResources() {
+    const [subTab, setSubTab] = useState(LIBRARY_RESOURCES_SUBTABS[0].id);
+    const activeSubTab =
+        LIBRARY_RESOURCES_SUBTABS.find((t) => t.id === subTab) ||
+        LIBRARY_RESOURCES_SUBTABS[0];
+
+    return (
+        <div className="space-y-6">
+            {/* Sub-tab strip */}
+            <div
+                role="tablist"
+                aria-label="Library Resources sub-sections"
+                className="inline-flex flex-wrap gap-2 rounded-full border border-gray-200 bg-[#f7fbf8] p-1.5"
+            >
+                {LIBRARY_RESOURCES_SUBTABS.map((t) => {
+                    const isActive = subTab === t.id;
+                    return (
+                        <button
+                            key={t.id}
+                            role="tab"
+                            id={`subtab-${t.id}`}
+                            aria-selected={isActive}
+                            aria-controls={`subpanel-${t.id}`}
+                            onClick={() => setSubTab(t.id)}
+                            className={`relative shrink-0 rounded-full px-5 py-2 text-sm font-semibold transition-colors duration-200 focus:outline-none ${
+                                isActive
+                                    ? "text-white"
+                                    : "text-gray-600 hover:text-[#1a1a1a]"
+                            }`}
+                        >
+                            {isActive && (
+                                <motion.span
+                                    layoutId="librarySubPillTab"
+                                    className="absolute inset-0 rounded-full bg-[#157d3c] shadow-md shadow-[#157d3c]/25"
+                                    transition={{
+                                        type: "spring",
+                                        stiffness: 420,
+                                        damping: 34,
+                                    }}
+                                />
+                            )}
+                            <span className="relative z-10">{t.label}</span>
+                        </button>
+                    );
+                })}
+            </div>
+
+            {/* Sub-panel */}
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={subTab}
+                    role="tabpanel"
+                    id={`subpanel-${subTab}`}
+                    aria-labelledby={`subtab-${subTab}`}
+                    variants={panelSwitch}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="relative"
+                >
+                    {activeSubTab.content}
+                </motion.div>
+            </AnimatePresence>
+        </div>
+    );
+}
+
 // ===================== Lower Tabs Data =====================
 const TABS = [
     {
-        id: "collections",
-        label: "Library Collections",
-        shortLabel: "Collections",
-        content: <UnderDevelopment />,
+        id: "about",
+        label: "About Us",
+        shortLabel: "About",
+        content: <AboutUs />,
     },
     {
         id: "services",
@@ -363,9 +600,15 @@ const TABS = [
         content: <UnderDevelopment />,
     },
     {
-        id: "e-resources",
-        label: "Electronic Resources",
-        shortLabel: "E-Resources",
+        id: "resources",
+        label: "Library Resources",
+        shortLabel: "Resources",
+        content: <LibraryResources />,
+    },
+    {
+        id: "online-forms",
+        label: "Online Forms",
+        shortLabel: "Forms",
         content: <UnderDevelopment />,
     },
     {
@@ -390,7 +633,12 @@ const DIRECTOR_TABS = [
         content: (
             <>
                 <p className="mb-4 text-justify leading-relaxed text-gray-700">
-                    <strong>Dr. Melody R. Agcito</strong> Melody Retazo Agcito is the College Librarian of City College of Cagayan de Oro. She received her PhD in Educational Management (Capitol University) in March 2019. Currently, she is the President of PLAI-Northern Mindanao Region Librarians Council and has been in the profession for 13 years.
+                    <strong>Dr. Melody R. Agcito</strong> is the College
+                    Librarian of City College of Cagayan de Oro. She received
+                    her PhD in Educational Management (Capitol University) in
+                    March 2019. Currently, she is the President of
+                    PLAI-Northern Mindanao Region Librarians Council and has
+                    been in the profession for 13 years.
                 </p>
             </>
         ),
@@ -1128,32 +1376,24 @@ export default function LibraryServices() {
                             <div className="pointer-events-none absolute -left-3 -top-3 h-full w-full rounded-2xl border-2 border-[#f5c518]" />
 
                             <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl shadow-black/10">
-                                <div className="relative flex aspect-[4/5] w-full items-center justify-center bg-gradient-to-br from-[#f0f7f2] to-white p-2">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="#157d3c"
-                                        strokeWidth="1.25"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        className="h-20 w-20 opacity-70"
-                                    >
-                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                        <circle cx="12" cy="7" r="4" />
-                                    </svg>
-
-                                    <p className="absolute bottom-4 left-4 right-4 text-center font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-[#157d3c]">
-                                        Photo Coming Soon
-                                    </p>
+                                <div className="relative flex aspect-[4/5] w-full items-center justify-center bg-gradient-to-br from-[#f0f7f2] to-white">
+                                    <img
+                                        src={melodyImage}
+                                        alt="Dr. Melody R. Agcito"
+                                        className="h-full w-full object-contain"
+                                        onError={(e) => {
+                                            e.currentTarget.style.display =
+                                                "none";
+                                        }}
+                                    />
                                 </div>
 
                                 <div className="bg-[#157d3c] px-4 py-5 text-center">
                                     <p className="m-0 text-sm font-bold uppercase tracking-wide text-white sm:text-base">
-                                        Dr. Melody R. Agcito"
+                                        Dr. Melody R. Agcito
                                     </p>
                                     <p className="mt-1 text-xs font-semibold text-[#f5c518] sm:text-sm">
-                                        College Librarian
+                                        Head, Library Services
                                     </p>
                                 </div>
                             </div>
@@ -1292,9 +1532,20 @@ export default function LibraryServices() {
                                     <p className="mb-1 font-mono text-[9px] font-bold uppercase tracking-[0.28em] text-white/45">
                                         {item.label}
                                     </p>
-                                    <p className="text-sm font-semibold leading-snug text-white">
-                                        {item.value}
-                                    </p>
+                                    {item.link ? (
+                                        <a
+                                            href={item.link}
+                                            target={item.link.startsWith("http") ? "_blank" : undefined}
+                                            rel={item.link.startsWith("http") ? "noopener noreferrer" : undefined}
+                                            className="break-all text-sm font-semibold leading-snug text-white transition-colors duration-200 hover:text-[#f5c518] hover:underline"
+                                        >
+                                            {item.value}
+                                        </a>
+                                    ) : (
+                                        <p className="break-all text-sm font-semibold leading-snug text-white">
+                                            {item.value}
+                                        </p>
+                                    )}
                                 </div>
                             ))}
                         </div>

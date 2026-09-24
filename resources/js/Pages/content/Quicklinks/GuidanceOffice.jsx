@@ -323,27 +323,54 @@ const DIRECTOR_TABS = [
         content: (
             <>
                 <p className="mb-4 text-justify leading-relaxed text-gray-700">
-                    <strong>Faith Q. Colarte</strong>, a highly qualified
-                    guidance counselor, serves the City College of Cagayan de
-                    Oro. With a Master's degree from Capitol University and
-                    currently pursuing a Doctorate from Ateneo de Davao
-                    University, she has dedicated over a decade to helping
-                    students navigate academic and personal challenges.
+                    <strong>Faith Quinal-Colarte</strong> is a Registered
+                    Guidance Counselor with extensive experience in guidance and
+                    counseling, psychological assessment, psychosocial support,
+                    career development, and student services. She currently
+                    serves at the City College of Cagayan de Oro and is pursuing
+                    her Doctorate in Psychology at Ateneo de Davao University.
+                    She earned her master&rsquo;s degree from Capitol University
+                    and has devoted more than a decade to promoting the academic,
+                    personal, social, and career development of learners and
+                    young adults.
                 </p>
+
                 <p className="mb-4 text-justify leading-relaxed text-gray-700">
-                    Throughout her career, she has championed initiatives
-                    focused on student mental health, personal growth, and
-                    holistic well-being. She has led numerous programs that
-                    empower students to achieve personal growth and academic
-                    success — aligning with the institution's commitment to
-                    producing globally competitive and socially responsible
-                    graduates.
+                    Her professional and research interests include mental health
+                    and wellness, career assessment and development, personality
+                    and vocational interests, stress and coping, life
+                    satisfaction, student well-being, and holistic development.
+                    She has helped develop and implement guidance programs,
+                    psychological and career assessments, individual and group
+                    counseling interventions, psychosocial support initiatives,
+                    and research addressing concerns relevant to educational
+                    settings.
                 </p>
+
+                <p className="mb-4 text-justify leading-relaxed text-gray-700">
+                    Ms. Quinal-Colarte is affiliated with professional
+                    organizations such as the Philippine Guidance and Counseling
+                    Association, Inc. (PGCA), the Council of Student Affairs and
+                    Services Practitioners&ndash;Region X (CSASP-X), and the
+                    Philippine Mental Health Association (PMHA), where she has
+                    also contributed as a remote psychosocial support volunteer.
+                    She is likewise an accredited member of the Psychological
+                    Resources Center.
+                </p>
+
                 <p className="text-justify leading-relaxed text-gray-700">
-                    Her vision for the Guidance Office centers on creating a
-                    supportive and inclusive environment where every student
-                    has access to the counseling, assessment, and guidance
-                    services they need to thrive.
+                    Committed to continuing professional development, she has
+                    pursued advanced training in mental health, counseling
+                    methodologies, human rights education, leadership, Eye
+                    Movement Desensitization and Reprocessing (EMDR) techniques,
+                    and compassion fatigue education and practice. Her
+                    professional work is anchored in ethical practice, empathy,
+                    evidence-informed intervention, and collaborative engagement.
+                    As a practitioner and emerging scholar, she advocates for
+                    accessible and responsive mental health and guidance services
+                    that foster resilience, informed career decision-making,
+                    academic success, and the holistic well-being of students and
+                    communities.
                 </p>
             </>
         ),

@@ -136,6 +136,48 @@ const sdgImages = {
     17: sdg17,
 };
 
+// ===================== Top Library Users (dynamic from assets folder) =====================
+const topUserImageModules = import.meta.glob(
+    "../../../assets/Library Users/*.{png,PNG,jpg,JPG,jpeg,JPEG,webp,WEBP,avif,AVIF}",
+    { eager: true, import: "default" }
+);
+
+const formatNameFromFilename = (filename = "") => {
+    const base = filename.replace(/\.[^.]+$/, "");
+    const cleaned = base
+        .replace(/[_\-]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    return cleaned
+        .split(" ")
+        .map((word) =>
+            word.length > 1 && word === word.toUpperCase()
+                ? word
+                : word.charAt(0).toUpperCase() + word.slice(1)
+        )
+        .join(" ");
+};
+
+const TOP_LIBRARY_USERS = Object.entries(topUserImageModules)
+    .map(([path, image]) => {
+        const filename = path.split("/").pop() || "";
+        const name = formatNameFromFilename(filename);
+        return {
+            id: path,
+            name: name || "Top Library User",
+            image,
+        };
+    })
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+const TOP_LIBRARY_USER_FALLBACK = {
+    name: "Andrea Mae B. Salvador",
+    program: "BTLED",
+    yearLevel: "3rd Year",
+    visits: 214,
+    borrowed: 48,
+};
+
 // ===================== Contact data =====================
 const CONTACT_ITEMS = [
     {
@@ -177,15 +219,6 @@ const CONTACT_ITEMS = [
         ),
     },
 ];
-
-// ===================== Top Library User Data =====================
-const TOP_LIBRARY_USER = {
-    name: "Andrea Mae B. Salvador",
-    program: "BTLED",
-    yearLevel: "3rd Year",
-    visits: 214,
-    borrowed: 48,
-};
 
 // ===================== Org Chart Data =====================
 const ORG_CHART = {
@@ -2038,9 +2071,9 @@ function OfficeSlideshow() {
     );
 }
 
-// ============ Top Library User ============
-function TopLibraryUser() {
-    const user = TOP_LIBRARY_USER;
+// ============ Top Library Users (dynamic gallery) ============
+function TopLibraryUsers() {
+    const hasImages = TOP_LIBRARY_USERS.length > 0;
 
     return (
         <motion.section
@@ -2050,6 +2083,7 @@ function TopLibraryUser() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.1 }}
         >
+            {/* Section header */}
             <div className="mb-8 flex flex-wrap items-end gap-x-6 gap-y-4 md:mb-10">
                 <div>
                     <p className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-[#157d3c]">
@@ -2057,16 +2091,17 @@ function TopLibraryUser() {
                     </p>
                     <h2 className="m-0 text-3xl font-black leading-none tracking-tight text-[#1a1a1a] md:text-5xl">
                         Top{" "}
-                        <span className="text-[#157d3c]">Library User</span>
+                        <span className="text-[#157d3c]">Library Users</span>
                     </h2>
                 </div>
                 <div className="hidden h-px flex-1 bg-gradient-to-r from-gray-300 to-transparent md:block" />
                 <p className="max-w-md text-sm leading-relaxed text-gray-500">
-                    Celebrating the student who made the most of the Library's
+                    Celebrating the students who made the most of the Library's
                     collections, spaces, and services.
                 </p>
             </div>
 
+            {/* Period badge */}
             <div className="mb-6 flex flex-wrap items-center gap-3">
                 <span className="inline-flex items-center gap-2 rounded-full border border-[#157d3c]/25 bg-[#f0f7f2] px-4 py-2">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#157d3c]" />
@@ -2076,87 +2111,153 @@ function TopLibraryUser() {
                 </span>
             </div>
 
-            <motion.div
-                variants={riseIn}
-                className="relative overflow-hidden rounded-3xl border border-[#f5c518]/60 bg-gradient-to-b from-[#fffdf3] to-white shadow-sm"
-            >
-                <div className="pointer-events-none absolute -top-20 left-1/2 h-52 w-52 -translate-x-1/2 rounded-full bg-[#f5c518]/20 blur-3xl" />
+            {hasImages ? (
+                <>
+                    {/* Gallery of top users */}
+                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {TOP_LIBRARY_USERS.map((user, index) => (
+                            <motion.div
+                                key={user.id}
+                                variants={riseIn}
+                                className="group relative flex aspect-[4/5] flex-col overflow-hidden rounded-2xl border border-[#f5c518]/60 bg-[#f0f7f2] shadow-sm transition-all duration-500 hover:-translate-y-2 hover:border-[#f5c518] hover:shadow-[0_24px_48px_-16px_rgba(245,197,24,0.35)]"
+                            >
+                                {/* Top gold accent */}
+                                <div className="absolute left-0 right-0 top-0 z-10 h-1 bg-gradient-to-r from-[#157d3c] via-[#f5c518] to-[#157d3c]" />
 
-                <div className="relative grid gap-8 p-8 md:grid-cols-[auto_minmax(0,1fr)] md:items-center md:p-10 lg:p-12">
-                    <div className="flex justify-center md:justify-start">
-                        <div className="relative">
-                            <div className="flex h-32 w-32 items-center justify-center rounded-full border-4 border-[#f5c518] bg-[#f0f7f2] text-4xl font-black text-[#157d3c] shadow-lg shadow-[#f5c518]/30 md:h-36 md:w-36 md:text-5xl">
-                                {getInitials(user.name)}
-                            </div>
+                                {/* Number badge */}
+                                <span className="absolute right-4 top-4 z-10 rounded-full bg-[#f5c518] px-2.5 py-1 font-mono text-[9px] font-black uppercase tracking-[0.15em] text-[#7a5c00] shadow-md">
+                                    {String(index + 1).padStart(2, "0")}
+                                </span>
 
-                            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#f5c518] px-3 py-1 font-mono text-[9px] font-black uppercase tracking-[0.2em] text-[#7a5c00] shadow-sm">
-                                Top User
-                            </span>
-                        </div>
+                                {/* Image fills the entire card */}
+                                <img
+                                    src={user.image}
+                                    alt={user.name}
+                                    loading="lazy"
+                                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-105"
+                                    onError={(e) => {
+                                        e.currentTarget.style.display = "none";
+                                    }}
+                                />
+                            </motion.div>
+                        ))}
                     </div>
 
-                    <div className="text-center md:text-left">
-                        <h3 className="m-0 text-2xl font-black leading-snug tracking-tight text-[#1a1a1a] md:text-3xl">
-                            {user.name}
-                        </h3>
-
-                        <p className="mt-2 text-sm font-semibold text-gray-500">
-                            {user.program}
+                    {/* Disclaimer */}
+                    <div className="mt-6 flex items-start gap-3 rounded-2xl border border-dashed border-[#f5c518]/60 bg-[#fffdf3] px-5 py-4">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#b8860b"
+                            strokeWidth="1.9"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="mt-0.5 h-4 w-4 shrink-0"
+                        >
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 16v-4" />
+                            <path d="M12 8h.01" />
+                        </svg>
+                        <p className="m-0 text-xs leading-relaxed text-gray-600">
+                            <strong className="font-bold text-[#1a1a1a]">
+                                Top users gallery.
+                            </strong>{" "}
+                            Images are automatically loaded from the
+                            &ldquo;Library Users&rdquo; folder.
                         </p>
-                        <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#157d3c]">
-                            {user.yearLevel}
-                        </p>
+                    </div>
+                </>
+            ) : (
+                <>
+                    {/* Fallback featured card */}
+                    <motion.div
+                        variants={riseIn}
+                        className="relative overflow-hidden rounded-3xl border border-[#f5c518]/60 bg-gradient-to-b from-[#fffdf3] to-white shadow-sm"
+                    >
+                        <div className="pointer-events-none absolute -top-20 left-1/2 h-52 w-52 -translate-x-1/2 rounded-full bg-[#f5c518]/20 blur-3xl" />
 
-                        <div className="mx-auto mt-6 h-px w-20 bg-gray-200 md:mx-0" />
+                        <div className="relative grid gap-8 p-8 md:grid-cols-[auto_minmax(0,1fr)] md:items-center md:p-10 lg:p-12">
+                            <div className="flex justify-center md:justify-start">
+                                <div className="relative">
+                                    <div className="flex h-32 w-32 items-center justify-center rounded-full border-4 border-[#f5c518] bg-[#f0f7f2] text-4xl font-black text-[#157d3c] shadow-lg shadow-[#f5c518]/30 md:h-36 md:w-36 md:text-5xl">
+                                        {getInitials(TOP_LIBRARY_USER_FALLBACK.name)}
+                                    </div>
 
-                        <div className="mt-6 flex items-center justify-center gap-10 md:justify-start">
-                            <div>
-                                <p className="m-0 font-mono text-3xl font-black text-[#157d3c]">
-                                    {user.visits}
-                                </p>
-                                <p className="m-0 font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-gray-400">
-                                    Visits
-                                </p>
+                                    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#f5c518] px-3 py-1 font-mono text-[9px] font-black uppercase tracking-[0.2em] text-[#7a5c00] shadow-sm">
+                                        Top User
+                                    </span>
+                                </div>
                             </div>
 
-                            <span className="h-10 w-px bg-gray-200" />
+                            <div className="text-center md:text-left">
+                                <h3 className="m-0 text-2xl font-black leading-snug tracking-tight text-[#1a1a1a] md:text-3xl">
+                                    {TOP_LIBRARY_USER_FALLBACK.name}
+                                </h3>
 
-                            <div>
-                                <p className="m-0 font-mono text-3xl font-black text-[#157d3c]">
-                                    {user.borrowed}
+                                <p className="mt-2 text-sm font-semibold text-gray-500">
+                                    {TOP_LIBRARY_USER_FALLBACK.program}
                                 </p>
-                                <p className="m-0 font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-gray-400">
-                                    Books Borrowed
+                                <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#157d3c]">
+                                    {TOP_LIBRARY_USER_FALLBACK.yearLevel}
                                 </p>
+
+                                <div className="mx-auto mt-6 h-px w-20 bg-gray-200 md:mx-0" />
+
+                                <div className="mt-6 flex items-center justify-center gap-10 md:justify-start">
+                                    <div>
+                                        <p className="m-0 font-mono text-3xl font-black text-[#157d3c]">
+                                            {TOP_LIBRARY_USER_FALLBACK.visits}
+                                        </p>
+                                        <p className="m-0 font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-gray-400">
+                                            Visits
+                                        </p>
+                                    </div>
+
+                                    <span className="h-10 w-px bg-gray-200" />
+
+                                    <div>
+                                        <p className="m-0 font-mono text-3xl font-black text-[#157d3c]">
+                                            {TOP_LIBRARY_USER_FALLBACK.borrowed}
+                                        </p>
+                                        <p className="m-0 font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-gray-400">
+                                            Books Borrowed
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </motion.div>
+                    </motion.div>
 
-            <div className="mt-6 flex items-start gap-3 rounded-2xl border border-dashed border-[#f5c518]/60 bg-[#fffdf3] px-5 py-4">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#b8860b"
-                    strokeWidth="1.9"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="mt-0.5 h-4 w-4 shrink-0"
-                >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 16v-4" />
-                    <path d="M12 8h.01" />
-                </svg>
-                <p className="m-0 text-xs leading-relaxed text-gray-600">
-                    <strong className="font-bold text-[#1a1a1a]">
-                        Sample profile.
-                    </strong>{" "}
-                    The name and figures shown are placeholders for layout
-                    purposes.
-                </p>
-            </div>
+                    <div className="mt-6 flex items-start gap-3 rounded-2xl border border-dashed border-[#f5c518]/60 bg-[#fffdf3] px-5 py-4">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#b8860b"
+                            strokeWidth="1.9"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="mt-0.5 h-4 w-4 shrink-0"
+                        >
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 16v-4" />
+                            <path d="M12 8h.01" />
+                        </svg>
+                        <p className="m-0 text-xs leading-relaxed text-gray-600">
+                            <strong className="font-bold text-[#1a1a1a]">
+                                Sample profile.
+                            </strong>{" "}
+                            No images found in{" "}
+                            <code className="rounded bg-white px-1.5 py-0.5 text-[10px] text-[#157d3c]">
+                                resources/js/assets/Library Users
+                            </code>
+                            . Add top-user photos to that folder to display them
+                            automatically.
+                        </p>
+                    </div>
+                </>
+            )}
         </motion.section>
     );
 }
@@ -2648,7 +2749,7 @@ export default function LibraryServicesPage() {
             {/* ==================== MAIN CONTENT ==================== */}
             <div className="mx-auto w-full max-w-[1600px] px-6 py-16 sm:px-10 md:py-20 lg:px-16 xl:px-20">
                 <OfficeSlideshow />
-                <TopLibraryUser />
+                <TopLibraryUsers />
 
                 <motion.section
                     className="mt-20 md:mt-28"

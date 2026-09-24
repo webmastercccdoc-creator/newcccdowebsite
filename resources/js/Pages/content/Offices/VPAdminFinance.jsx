@@ -32,7 +32,7 @@ const BIONOTE_PREVIEW_COUNT = 2;
 const CREDENTIALS = [
     {
         title: 'Academic Background',
-        lines: ['PhD in English Literature', 'MA in Education | BA in English'],
+        lines: ['PhD in English', 'MAED in English | BA in English'],
         icon: (
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
                 d="M12 14l9-5-9-5-9 5 9 5z M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
@@ -56,7 +56,7 @@ const CREDENTIALS = [
     },
     {
         title: 'Published Author',
-        lines: ['Purposive Communication with', 'SDG Integration (2025)'],
+        lines: ['Purposive Communication with','SDG Integration (2025)', 'Qualitative Research Design:','Concepts, Methods & Applications (2027)'],
         icon: (
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
                 d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
@@ -781,7 +781,7 @@ export default function VPAdminFinance() {
                             <div className="relative rounded-2xl overflow-hidden shadow-2xl group border border-white/10">
                                 <img
                                     src={kurtCandilasImage}
-                                    alt="Dr. Kurt S. Candilas, LPT"
+                                    alt="Dr. Kurt S. Candilas"
                                     className="w-full aspect-[4/5] object-cover transition-transform duration-[1.5s] ease-out-expo group-hover:scale-105"
                                 />
                                 {/* Gradient Overlay */}
@@ -794,7 +794,7 @@ export default function VPAdminFinance() {
                                     </div>
                                     <div>
                                         <p className="text-[10px] sm:text-xs text-[#D4AF37] tracking-widest uppercase">City College of Cagayan de Oro</p>
-                                        <p className="text-xs sm:text-sm font-semibold text-white">Dr. Kurt S. Candilas</p>
+                                        <p className="text-xs sm:text-sm font-semibold text-white">Dr. Kurt S. Candilas, LPT</p>
                                     </div>
                                 </div>
                             </div>

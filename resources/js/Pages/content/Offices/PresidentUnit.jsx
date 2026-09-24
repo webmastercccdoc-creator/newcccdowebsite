@@ -793,7 +793,7 @@ export default function PresidentUnit() {
                             <div className="relative rounded-2xl overflow-hidden shadow-2xl group border border-white/10">
                                 <img
                                     src={presidentImage}
-                                    alt="Dr. Jestoni P. Babia, LPT"
+                                    alt="Dr. Jestoni P. Babia"
                                     className="w-full aspect-[4/5] object-cover transition-transform duration-[1.5s] ease-out-expo group-hover:scale-105"
                                 />
                                 {/* Gradient Overlay */}
@@ -806,7 +806,7 @@ export default function PresidentUnit() {
                                     </div>
                                     <div>
                                         <p className="text-[10px] sm:text-xs text-[#D4AF37] tracking-widest uppercase">City College of Cagayan de Oro</p>
-                                        <p className="text-xs sm:text-sm font-semibold text-white">Dr. Jestoni P. Babia</p>
+                                        <p className="text-xs sm:text-sm font-semibold text-white">Dr. Jestoni P. Babia, LPT</p>
                                     </div>
                                 </div>
                             </div>

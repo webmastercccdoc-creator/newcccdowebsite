@@ -270,14 +270,14 @@ export default function CollegeBusinessManagement() {
     const programs = [
         {
             name: "Entrepreneurship",
-            degree: "Bachelor of Science",
+            degree: "Bachelor of Science in",
             desc: "Designed to develop innovative, opportunity-driven individuals capable of creating, managing, and growing sustainable business ventures. Emphasizes entrepreneurial mindset development, business planning, marketing, financial management, innovation, and strategic decision-making.",
             tags: ["Business Planning", "Financial Management", "Innovation", "Strategic Decision Making"],
             careers: ["Startup Founder", "Business Consultant", "Intrapreneur", "Product Manager"]
         },
         {
             name: "Office Administration",
-            degree: "Bachelor of Science",
+            degree: "Bachelor of Science in",
             desc: "A four-year degree program that develops highly competent administrative professionals equipped with strong organizational, communication, and managerial skills. Focuses on office management, records management, business correspondence, IT, customer relations, and workplace ethics.",
             tags: ["Office Management", "Records Management", "IT", "Customer Relations"],
             careers: ["Admin Executive", "Office Manager", "Records Officer", "HR Assistant"]

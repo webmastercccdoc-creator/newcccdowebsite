@@ -746,7 +746,7 @@ export default function VPAcademics() {
                             <div className="relative rounded-2xl overflow-hidden shadow-2xl group border border-white/10">
                                 <img
                                     src={helmaeTapananImage}
-                                    alt="Dr. Helmae E. Tapanan, LPT"
+                                    alt="Dr. Helmae E. Tapanan"
                                     className="w-full aspect-[4/5] object-cover transition-transform duration-[1.5s] ease-out-expo group-hover:scale-105"
                                 />
                                 {/* Gradient Overlay */}
@@ -759,7 +759,7 @@ export default function VPAcademics() {
                                     </div>
                                     <div>
                                         <p className="text-[10px] sm:text-xs text-[#D4AF37] tracking-widest uppercase">City College of Cagayan de Oro</p>
-                                        <p className="text-xs sm:text-sm font-semibold text-white">Dr. Helmae E. Tapanan</p>
+                                        <p className="text-xs sm:text-sm font-semibold text-white">Dr. Helmae E. Tapanan, LPT</p>
                                     </div>
                                 </div>
                             </div>

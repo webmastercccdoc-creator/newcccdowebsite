@@ -217,7 +217,6 @@ function OrgChart() {
 
     return (
         <div className="relative">
-            {/* Top Level Card (FOR ACADEMIC AFFAIRS) */}
             <div className="flex justify-center">
                 <div className="relative w-full max-w-xs overflow-hidden rounded-2xl border-2 border-[#157d3c] bg-gradient-to-br from-[#157d3c] to-[#0b3d1e] p-5 text-center text-white shadow-lg shadow-[#157d3c]/25">
                     <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[#f5c518]/15 blur-2xl" />
@@ -227,12 +226,10 @@ function OrgChart() {
                 </div>
             </div>
 
-            {/* Vertical connector from top to head */}
             <div className="flex justify-center">
                 <div className="h-8 w-px bg-[#157d3c]/30" />
             </div>
 
-            {/* Head Card (HEAD LIBRARIAN) */}
             <div className="flex justify-center">
                 <div className="relative w-full max-w-xs overflow-hidden rounded-2xl border-2 border-[#157d3c] bg-gradient-to-br from-[#157d3c] to-[#0b3d1e] p-5 text-center text-white shadow-lg shadow-[#157d3c]/25">
                     <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[#f5c518]/15 blur-2xl" />
@@ -242,14 +239,11 @@ function OrgChart() {
                 </div>
             </div>
 
-            {/* Vertical connector from head to branch */}
             <div className="flex justify-center">
                 <div className="h-8 w-px bg-[#157d3c]/30" />
             </div>
 
-            {/* Branches with nested children */}
             <div className="relative pt-6">
-                {/* Horizontal connector (desktop) */}
                 <div className="absolute top-0 hidden h-px bg-[#157d3c]/30 md:left-[25%] md:right-[25%] md:block" />
 
                 <div className="grid gap-8 md:grid-cols-2 md:gap-12">
@@ -258,17 +252,14 @@ function OrgChart() {
                             key={branch.title}
                             className="relative flex flex-col items-center"
                         >
-                            {/* Vertical drop from horizontal line (desktop) */}
                             <div className="absolute -top-6 left-1/2 hidden h-6 w-px -translate-x-1/2 bg-[#157d3c]/30 md:block" />
 
-                            {/* Branch card */}
                             <div className="w-full max-w-xs rounded-2xl border-2 border-[#157d3c] bg-white p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#f5c518] hover:shadow-md">
                                 <p className="m-0 text-sm font-black leading-snug text-[#1a1a1a]">
                                     {branch.title}
                                 </p>
                             </div>
 
-                            {/* Connector down to children */}
                             {branch.children?.length > 0 && (
                                 <>
                                     <div className="h-6 w-px bg-[#157d3c]/30" />
@@ -336,7 +327,6 @@ const UnderDevelopment = () => (
 function AboutVision() {
     return (
         <div className="space-y-6">
-            {/* Vision card */}
             <div className="relative overflow-hidden rounded-2xl border border-[#157d3c]/25 bg-white p-6 shadow-sm md:p-8">
                 <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#157d3c]/5" />
                 <div className="pointer-events-none absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-[#f5c518]/10" />
@@ -524,7 +514,6 @@ function AboutGoals() {
                         key={goal.title}
                         className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-[#157d3c]/40 hover:shadow-lg"
                     >
-                        {/* Number watermark */}
                         <span className="pointer-events-none absolute right-4 top-3 font-mono text-4xl font-black text-[#157d3c]/[0.06] transition-colors duration-500 group-hover:text-[#f5c518]/20">
                             {String(i + 1).padStart(2, "0")}
                         </span>
@@ -560,6 +549,259 @@ function AboutGoals() {
     );
 }
 
+// ============ About Us : Personnel ============
+const PERSONNEL = [
+    {
+        name: "Melody R. Agcito",
+        role: "Head Librarian",
+        unit: "Library Services Office",
+        accent: "green",
+    },
+    {
+        name: "April Grace S. Almahan",
+        role: "Reference & User Services Assistant",
+        unit: "Reference & User Services",
+        accent: "gold",
+    },
+    {
+        name: "Marie Fe S. Cagasan",
+        role: "Collections & Processing Clerk",
+        unit: "Collections & Processing",
+        accent: "green",
+    },
+];
+
+function Personnel() {
+    return (
+        <div className="space-y-6">
+            <div className="rounded-2xl border border-[#157d3c]/20 bg-[#f0f7f2] px-6 py-5">
+                <p className="m-0 text-sm leading-relaxed text-gray-700">
+                    The Library Services Office is staffed by a dedicated team of
+                    library personnel who manage the collections, deliver
+                    reference and user services, and ensure the smooth day-to-day
+                    operations of the Library.
+                </p>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {PERSONNEL.map((person) => {
+                    const isGold = person.accent === "gold";
+                    return (
+                        <div
+                            key={person.name}
+                            className="group relative flex flex-col items-center overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-[#157d3c]/40 hover:shadow-lg"
+                        >
+                            <div
+                                className={`pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full blur-2xl transition-all duration-500 ${
+                                    isGold ? "bg-[#f5c518]/15" : "bg-[#157d3c]/10"
+                                }`}
+                            />
+
+                            <div className="relative mb-4">
+                                <div
+                                    className={`flex h-20 w-20 items-center justify-center rounded-full border-4 shadow-lg transition-transform duration-500 group-hover:scale-105 ${
+                                        isGold
+                                            ? "border-[#f5c518] bg-[#fffdf3] text-[#b8860b] shadow-[#f5c518]/25"
+                                            : "border-[#157d3c] bg-[#f0f7f2] text-[#157d3c] shadow-[#157d3c]/25"
+                                    }`}
+                                >
+                                    <span className="text-2xl font-black">
+                                        {getInitials(person.name)}
+                                    </span>
+                                </div>
+
+                                <span
+                                    className={`absolute -bottom-1 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-2 border-white shadow ${
+                                        isGold ? "bg-[#f5c518]" : "bg-[#157d3c]"
+                                    }`}
+                                    aria-hidden="true"
+                                />
+                            </div>
+
+                            <h4 className="mb-1 text-base font-black leading-snug text-[#1a1a1a] transition-colors duration-300 group-hover:text-[#157d3c]">
+                                {person.name}
+                            </h4>
+
+                            <div className="mb-3 h-0.5 w-10 rounded-full bg-[#f5c518] transition-all duration-500 group-hover:w-16" />
+
+                            <p className="m-0 text-sm font-bold text-[#1a1a1a]">
+                                {person.role}
+                            </p>
+
+                            <p className="m-0 mt-2 font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-gray-400">
+                                {person.unit}
+                            </p>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
+
+// ============ About Us : Service Hours ============
+function ServiceHours() {
+    return (
+        <div className="space-y-6">
+            <div className="rounded-2xl border border-[#157d3c]/20 bg-[#f0f7f2] px-6 py-5">
+                <p className="m-0 text-sm leading-relaxed text-gray-700">
+                    The Library follows the official academic calendar of the
+                    City College of Cagayan de Oro. Schedules may be adjusted
+                    during examinations, semestral breaks, and special
+                    institutional activities.
+                </p>
+            </div>
+
+            <div className="grid gap-5 md:grid-cols-2">
+                <div className="group relative overflow-hidden rounded-2xl border border-[#157d3c]/25 bg-white p-6 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-[#157d3c]/50 hover:shadow-lg md:p-7">
+                    <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-[#157d3c]/5" />
+
+                    <div className="mb-4 flex items-center gap-4">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#157d3c] to-[#0b3d1e] shadow-lg shadow-[#157d3c]/25">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#f5c518"
+                                strokeWidth="1.9"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="h-6 w-6"
+                            >
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 6v6l4 2" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p className="m-0 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#157d3c]">
+                                Library Hours
+                            </p>
+                            <h4 className="m-0 text-lg font-black tracking-tight text-[#1a1a1a]">
+                                Open
+                            </h4>
+                        </div>
+                    </div>
+
+                    <div className="mb-4 h-1 w-14 rounded-full bg-[#f5c518]" />
+
+                    <p className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-gray-400">
+                        Monday – Friday
+                    </p>
+                    <p className="m-0 text-3xl font-black tracking-tight text-[#157d3c] md:text-4xl">
+                        8:00 AM
+                        <span className="mx-2 text-xl font-bold text-gray-300">
+                            –
+                        </span>
+                        5:00 PM
+                    </p>
+
+                    <div className="mt-5 flex items-center gap-2 rounded-lg border border-[#157d3c]/15 bg-[#f0f7f2] px-3 py-2">
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#157d3c]" />
+                        <p className="m-0 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#157d3c]">
+                            Regular Service Schedule
+                        </p>
+                    </div>
+                </div>
+
+                <div className="group relative overflow-hidden rounded-2xl border border-dashed border-[#f5c518]/60 bg-[#fffdf3] p-6 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-[#f5c518] hover:shadow-lg md:p-7">
+                    <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-[#f5c518]/15" />
+
+                    <div className="mb-4 flex items-center gap-4">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#f5c518] shadow-lg shadow-[#f5c518]/30">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#7a5c00"
+                                strokeWidth="1.9"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="h-6 w-6"
+                            >
+                                <rect x="3" y="4" width="18" height="18" rx="2" />
+                                <path d="M16 2v4" />
+                                <path d="M8 2v4" />
+                                <path d="M3 10h18" />
+                                <path d="m9 16 3-3" />
+                                <path d="m12 16-3-3" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p className="m-0 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#b8860b]">
+                                Library Hours
+                            </p>
+                            <h4 className="m-0 text-lg font-black tracking-tight text-[#1a1a1a]">
+                                Closed
+                            </h4>
+                        </div>
+                    </div>
+
+                    <div className="mb-4 h-1 w-14 rounded-full bg-[#157d3c]" />
+
+                    <div className="space-y-3">
+                        {[
+                            { label: "Saturday", note: "No library service" },
+                            { label: "Sunday", note: "No library service" },
+                            { label: "Public Holidays", note: "Per official proclamation" },
+                        ].map((day) => (
+                            <div
+                                key={day.label}
+                                className="flex items-center justify-between rounded-lg border border-[#157d3c]/10 bg-white px-4 py-3"
+                            >
+                                <div>
+                                    <p className="m-0 text-sm font-black text-[#1a1a1a]">
+                                        {day.label}
+                                    </p>
+                                    <p className="m-0 mt-0.5 text-[11px] text-gray-500">
+                                        {day.note}
+                                    </p>
+                                </div>
+                                <span className="rounded-full bg-gray-100 px-2.5 py-1 font-mono text-[9px] font-black uppercase tracking-[0.15em] text-gray-500">
+                                    Closed
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            <div className="relative overflow-hidden rounded-2xl border border-[#f5c518]/50 bg-[#fffdf3] p-6 md:p-7">
+                <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-[#f5c518]/15" />
+
+                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-[#f5c518]">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#7a5c00"
+                        strokeWidth="1.9"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-5 w-5"
+                    >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 6v6l4 2" />
+                    </svg>
+                </div>
+
+                <p className="mb-1 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#b8860b]">
+                    Online Resources
+                </p>
+
+                <p className="mt-3 text-sm leading-relaxed text-gray-700">
+                    Electronic resources — including e-books, e-journals, and
+                    online databases — remain accessible{" "}
+                    <strong className="text-[#1a1a1a]">
+                        24 hours a day, 7 days a week
+                    </strong>{" "}
+                    via the Library Access Module (LAM), even when the physical
+                    library is closed.
+                </p>
+            </div>
+        </div>
+    );
+}
+
 // ============ About Us : Sub-tabs ============
 const ABOUT_TABS = [
     {
@@ -580,12 +822,12 @@ const ABOUT_TABS = [
     {
         id: "personnel",
         label: "Personnel",
-        content: <UnderDevelopment />,
+        content: <Personnel />,
     },
     {
         id: "service-hours",
         label: "Service Hours",
-        content: <UnderDevelopment />,
+        content: <ServiceHours />,
     },
 ];
 
@@ -596,7 +838,6 @@ function AboutUs() {
 
     return (
         <div className="space-y-8">
-            {/* Sub-tab strip */}
             <div
                 role="tablist"
                 aria-label="About Us sub-sections"
@@ -635,7 +876,6 @@ function AboutUs() {
                 })}
             </div>
 
-            {/* Sub-panel */}
             <AnimatePresence mode="wait">
                 <motion.div
                     key={subTab}
@@ -789,17 +1029,436 @@ const OnlineForms = () => (
     </div>
 );
 
+// ============ Library Holdings ============
+const HOLDINGS_GROUPS = [
+    {
+        id: "cas",
+        college: "College of Arts & Sciences",
+        shortLabel: "CAS",
+        programs: [
+            {
+                title: "Bachelor of Arts in Communication",
+                url: "https://drive.google.com/drive/folders/1-Rv99-02A7MYMdnDK7QVi28kqOlnMaMm?usp=drive_link",
+            },
+            {
+                title: "Bachelor of Science in Social Work",
+                url: "https://drive.google.com/drive/folders/1-t9Y8pdfK-yWg-q2Um97CtZyWt1n0J4M?usp=drive_link",
+            },
+            {
+                title: "General Education",
+                url: "https://drive.google.com/drive/folders/1-t9Y8pdfK-yWg-q2Um97CtZyWt1n0J4M?usp=drive_link",
+            },
+        ],
+    },
+    {
+        id: "cbm",
+        college: "College of Business Management",
+        shortLabel: "CBM",
+        programs: [
+            {
+                title: "Bachelor of Science in Entrepreneurship",
+                url: "https://drive.google.com/drive/folders/1kktN2cBSNMz_ZmtUC2UrtgXhCogbUzWm?usp=drive_link",
+            },
+            {
+                title: "Bachelor of Science in Office Administration",
+                url: "https://drive.google.com/drive/folders/1b7pqsC4PVFts1O50s6gywfampAX4tYEd?usp=drive_link",
+            },
+        ],
+    },
+    {
+        id: "coe",
+        college: "College of Education",
+        shortLabel: "COE",
+        programs: [
+            {
+                title: "Bachelor of Technology and Livelihood Education",
+                url: "https://drive.google.com/drive/folders/1bBjN3EpRAxcRFNNuUeAa4PGnQ1ta_qn3?usp=drive_link",
+            },
+            {
+                title: "Bachelor of Technical Vocational Teacher Education",
+                url: "https://drive.google.com/drive/folders/1XcPIEoQwo2GhmNo-RpGr72SOJ_9-MWKE?usp=drive_link",
+            },
+            {
+                title: "Professional Education",
+                url: "https://drive.google.com/drive/folders/1wuGyTCZuIZhJK8m0nIssxSpV5DWsPzS9?usp=drive_link",
+            },
+        ],
+    },
+];
+
+function LibraryHoldings() {
+    return (
+        <div className="space-y-8">
+            <div className="relative overflow-hidden rounded-2xl border border-[#157d3c]/25 bg-gradient-to-br from-[#f0f7f2] to-white p-6 md:p-7">
+                <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#f5c518]/10" />
+                <div className="pointer-events-none absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-[#157d3c]/5" />
+
+                <div className="relative mb-4 flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#157d3c] to-[#0b3d1e] shadow-lg shadow-[#157d3c]/25">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#f5c518"
+                            strokeWidth="1.9"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="h-6 w-6"
+                        >
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p className="m-0 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#157d3c]">
+                            Learning Resources
+                        </p>
+                        <h4 className="m-0 text-xl font-black tracking-tight text-[#1a1a1a] md:text-2xl">
+                            Explore by Program
+                        </h4>
+                    </div>
+                </div>
+
+                <div className="relative mb-4 h-1 w-14 rounded-full bg-[#f5c518]" />
+
+                <p className="relative text-sm leading-relaxed text-gray-700">
+                    Looking for library resources for your program or subject
+                    area? Explore the Library Holdings to view available learning
+                    resources organized according to academic program and subject
+                    area.
+                </p>
+            </div>
+
+            <div className="space-y-6">
+                {HOLDINGS_GROUPS.map((group, groupIndex) => (
+                    <div
+                        key={group.id}
+                        className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
+                    >
+                        <div className="relative flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 bg-gradient-to-r from-[#f0f7f2] to-white px-5 py-4 md:px-6">
+                            <div className="flex items-center gap-3">
+                                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-[#157d3c] to-[#0b3d1e] font-mono text-[10px] font-black tracking-wider text-[#f5c518] shadow-sm">
+                                    {group.shortLabel}
+                                </span>
+                                <div>
+                                    <p className="m-0 font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-[#157d3c]/70">
+                                        College {String(groupIndex + 1).padStart(2, "0")}
+                                    </p>
+                                    <h4 className="m-0 text-base font-black tracking-tight text-[#1a1a1a] md:text-lg">
+                                        {group.college}
+                                    </h4>
+                                </div>
+                            </div>
+
+                            <span className="rounded-full border border-[#157d3c]/20 bg-white px-3 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-[#157d3c]">
+                                {group.programs.length} {group.programs.length === 1 ? "Program" : "Programs"}
+                            </span>
+                        </div>
+
+                        <ul className="divide-y divide-gray-100">
+                            {group.programs.map((program) => (
+                                <li key={program.title}>
+                                    <a
+                                        href={program.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="group/program flex items-center gap-4 px-5 py-4 transition-all duration-300 hover:bg-[#f7fbf8] md:px-6"
+                                    >
+                                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#157d3c]/15 bg-[#f0f7f2] transition-all duration-300 group-hover/program:border-[#f5c518] group-hover/program:bg-[#157d3c]">
+                                            <span className="h-2 w-2 rotate-45 bg-[#157d3c] transition-colors duration-300 group-hover/program:bg-[#f5c518]" />
+                                        </span>
+
+                                        <span className="flex-1 text-sm font-bold text-[#1a1a1a] transition-colors duration-300 group-hover/program:text-[#157d3c] md:text-[15px]">
+                                            {program.title}
+                                        </span>
+
+                                        <span className="hidden items-center gap-2 text-xs font-bold text-[#157d3c] transition-all duration-300 group-hover/program:gap-3 sm:inline-flex">
+                                            View Resources
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2.5"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                className="h-4 w-4 transition-transform duration-300 group-hover/program:translate-x-0.5"
+                                            >
+                                                <path d="M5 12h14" />
+                                                <path d="m12 5 7 7-7 7" />
+                                            </svg>
+                                        </span>
+
+                                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#157d3c]/20 bg-white text-[#157d3c] transition-all duration-500 group-hover/program:border-[#f5c518] group-hover/program:bg-[#f5c518] group-hover/program:text-[#0b3d1e] sm:hidden">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2.5"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                className="h-3.5 w-3.5"
+                                            >
+                                                <path d="M5 12h14" />
+                                                <path d="m12 5 7 7-7 7" />
+                                            </svg>
+                                        </span>
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ))}
+            </div>
+
+            <div className="flex items-start gap-3 rounded-2xl border border-dashed border-[#f5c518]/60 bg-[#fffdf3] px-5 py-4">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#b8860b"
+                    strokeWidth="1.9"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="mt-0.5 h-4 w-4 shrink-0"
+                >
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 16v-4" />
+                    <path d="M12 8h.01" />
+                </svg>
+                <p className="m-0 text-xs leading-relaxed text-gray-600">
+                    <strong className="font-bold text-[#1a1a1a]">
+                        External link notice.
+                    </strong>{" "}
+                    Program holdings open in Google Drive. Sign in with your
+                    institutional account if prompted.
+                </p>
+            </div>
+        </div>
+    );
+}
+
+// ============ Electronic Resources ============
+const ELECTRONIC_RESOURCES = [
+    {
+        id: "bccampus",
+        title: "BCcampus Open Education",
+        description:
+            "Access open textbooks and other teaching and learning resources.",
+        url: "https://bccampus.ca/",
+        icon: (
+            <>
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </>
+        ),
+    },
+    {
+        id: "digital-commons",
+        title: "Digital Commons Network",
+        description:
+            "Discover freely available scholarly works and research from universities and academic institutions.",
+        url: "https://network.bepress.com/#/social-and-behavioral-sciences/",
+        icon: (
+            <>
+                <circle cx="12" cy="12" r="10" />
+                <path d="M2 12h20" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+            </>
+        ),
+    },
+    {
+        id: "doab",
+        title: "Directory of Open Access Books (DOAB)",
+        description:
+            "Search peer-reviewed academic books that are freely available online.",
+        url: "https://www.doabooks.org/en",
+        icon: (
+            <>
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+            </>
+        ),
+    },
+    {
+        id: "filipinas-heritage",
+        title: "Filipinas Heritage Library – Online Library",
+        description:
+            "Explore digitized materials and collections related to Philippine history, culture, and heritage.",
+        url: "https://www.filipinaslibrary.org.ph/online-library/",
+        icon: (
+            <>
+                <path d="M3 21h18" />
+                <path d="M5 21V7l7-4 7 4v14" />
+                <path d="M9 9h.01" />
+                <path d="M9 12h.01" />
+                <path d="M9 15h.01" />
+                <path d="M15 9h.01" />
+                <path d="M15 12h.01" />
+                <path d="M15 15h.01" />
+            </>
+        ),
+    },
+    {
+        id: "libretexts",
+        title: "LibreTexts",
+        description:
+            "Access free textbooks and learning materials across multiple academic disciplines.",
+        url: "https://socialsci.libretexts.org/",
+        icon: (
+            <>
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                <path d="M8 7h8" />
+                <path d="M8 11h8" />
+            </>
+        ),
+    },
+];
+
+function ElectronicResources() {
+    return (
+        <div className="space-y-8">
+            <div className="relative overflow-hidden rounded-2xl border border-[#157d3c]/25 bg-gradient-to-br from-[#f0f7f2] to-white p-6 md:p-7">
+                <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#f5c518]/10" />
+                <div className="pointer-events-none absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-[#157d3c]/5" />
+
+                <div className="relative mb-4 flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#157d3c] to-[#0b3d1e] shadow-lg shadow-[#157d3c]/25">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#f5c518"
+                            strokeWidth="1.9"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="h-6 w-6"
+                        >
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M2 12h20" />
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p className="m-0 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#157d3c]">
+                            Free Online Resources
+                        </p>
+                        <h4 className="m-0 text-xl font-black tracking-tight text-[#1a1a1a] md:text-2xl">
+                            Open Access Collections
+                        </h4>
+                    </div>
+                </div>
+
+                <div className="relative mb-4 h-1 w-14 rounded-full bg-[#f5c518]" />
+
+                <p className="relative mb-3 text-sm leading-relaxed text-gray-700">
+                    Looking for free books, textbooks, research materials, and
+                    other learning resources online?
+                </p>
+
+                <p className="relative text-sm leading-relaxed text-gray-700">
+                    Explore these freely accessible electronic resources offering
+                    open textbooks, e-books, scholarly works, educational
+                    materials, and digital collections to support learning,
+                    teaching, and research.
+                </p>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {ELECTRONIC_RESOURCES.map((resource, index) => (
+                    <a
+                        key={resource.id}
+                        href={resource.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group relative flex flex-col overflow-hidden rounded-2xl border border-[#157d3c]/20 bg-gradient-to-b from-[#f7fbf8] via-white to-white p-6 shadow-[0_8px_24px_-12px_rgba(21,125,60,0.15)] transition-all duration-500 ease-out hover:-translate-y-2 hover:border-[#f5c518] hover:shadow-[0_24px_48px_-16px_rgba(21,125,60,0.35)]"
+                    >
+                        <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-[#157d3c] via-[#f5c518] to-[#157d3c] opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
+                        <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-[#f5c518]/10 blur-2xl transition-all duration-500 group-hover:bg-[#f5c518]/20" />
+
+                        <span className="absolute right-5 top-5 font-mono text-[10px] font-black tracking-[0.2em] text-[#157d3c]/30 transition-colors duration-500 group-hover:text-[#f5c518]">
+                            {String(index + 1).padStart(2, "0")}
+                        </span>
+
+                        <div className="relative mb-5 flex h-14 w-14 items-center justify-center rounded-xl border border-[#157d3c]/20 bg-gradient-to-br from-[#e6f2ea] to-white shadow-sm transition-all duration-500 group-hover:border-[#f5c518] group-hover:from-[#157d3c] group-hover:to-[#0b3d1e] group-hover:shadow-lg group-hover:shadow-[#157d3c]/30">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#157d3c"
+                                strokeWidth="1.9"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="h-6 w-6 transition-colors duration-500 group-hover:stroke-[#f5c518]"
+                            >
+                                {resource.icon}
+                            </svg>
+                        </div>
+
+                        <h4 className="relative mb-3 text-base font-black leading-snug text-[#1a1a1a] transition-colors duration-300 group-hover:text-[#157d3c]">
+                            {resource.title}
+                        </h4>
+
+                        <div className="mb-3 h-0.5 w-10 rounded-full bg-[#f5c518] transition-all duration-500 group-hover:w-16" />
+
+                        <p className="relative mb-5 flex-1 text-sm leading-relaxed text-gray-600">
+                            {resource.description}
+                        </p>
+
+                        <div className="relative mt-auto flex items-center justify-between border-t border-dashed border-[#157d3c]/15 pt-4">
+                            <span className="inline-flex items-center gap-2 text-sm font-bold text-[#157d3c] transition-all duration-300 group-hover:gap-3 group-hover:text-[#0b3d1e]">
+                                Visit Site
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
+                                >
+                                    <path d="M5 12h14" />
+                                    <path d="m12 5 7 7-7 7" />
+                                </svg>
+                            </span>
+
+                            <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[#157d3c]/20 bg-white text-[#157d3c] transition-all duration-500 group-hover:border-[#f5c518] group-hover:bg-[#f5c518] group-hover:text-[#0b3d1e]">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="h-3.5 w-3.5"
+                                >
+                                    <path d="M7 17 17 7" />
+                                    <path d="M7 7h10v10" />
+                                </svg>
+                            </span>
+                        </div>
+                    </a>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 // ============ Library Resources (sub-tabs) ============
 const LIBRARY_RESOURCES_SUBTABS = [
     {
         id: "e-resources",
         label: "Electronic Resources",
-        content: <UnderDevelopment />,
+        content: <ElectronicResources />,
     },
     {
         id: "holdings",
         label: "Library Holdings",
-        content: <UnderDevelopment />,
+        content: <LibraryHoldings />,
     },
 ];
 
@@ -868,6 +1527,184 @@ function LibraryResources() {
     );
 }
 
+// ============ Library Services Tab Content ============
+const LIBRARY_SERVICES = [
+    {
+        id: "bibliographic",
+        title: "Bibliographic Assistance",
+        lead: "Looking for books and resources on a specific subject?",
+        description:
+            "The Library provides bibliographic assistance by preparing a list of available books and other learning resources on selected subject areas upon request of faculty members.",
+        icon: (
+            <>
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                <path d="M8 7h8" />
+                <path d="M8 11h6" />
+            </>
+        ),
+    },
+    {
+        id: "circulation",
+        title: "Circulation Services",
+        lead: "Need to borrow or return a book?",
+        description:
+            "Eligible library users may borrow materials from the Library's circulating collection upon presentation of a valid identification card.",
+        icon: (
+            <>
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                <path d="m9 12 2 2 4-4" />
+            </>
+        ),
+    },
+    {
+        id: "printing",
+        title: "Free Printing",
+        lead: "Need to print your academic requirements?",
+        description:
+            "The Library offers free printing services to support students in their academic needs. Simply bring your own paper and visit the Library during service hours.",
+        note: "Printing is available on a first-come, first-served basis and is subject to the Library's printing guidelines and available resources.",
+        icon: (
+            <>
+                <path d="M6 9V2h12v7" />
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                <rect x="6" y="14" width="12" height="8" rx="1" />
+            </>
+        ),
+    },
+    {
+        id: "orientation",
+        title: "Library Orientation & Tour",
+        lead: "New to the Library? Let us show you around!",
+        description:
+            "Library Orientation and Tour sessions introduce users to the Library's spaces, collections, services, resources, and guidelines. These sessions are especially designed for new students, transferees, and newly hired faculty and personnel.",
+        icon: (
+            <>
+                <path d="M3 21h18" />
+                <path d="M5 21V7l7-4 7 4v14" />
+                <path d="M9 9h.01" />
+                <path d="M9 12h.01" />
+                <path d="M9 15h.01" />
+                <path d="M15 9h.01" />
+                <path d="M15 12h.01" />
+                <path d="M15 15h.01" />
+            </>
+        ),
+    },
+    {
+        id: "net-hub",
+        title: "Net Hub",
+        lead: "Need a computer or internet access for your academic work?",
+        description:
+            "The Net Hub provides Wi-Fi connectivity and ten (10) computer workstations to support students and other library users in research, academic work, and access to online learning resources.",
+        icon: (
+            <>
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <path d="M8 21h8" />
+                <path d="M12 17v4" />
+            </>
+        ),
+    },
+];
+
+function LibraryServices() {
+    return (
+        <div className="space-y-8">
+            <div className="relative overflow-hidden rounded-2xl border border-[#157d3c]/25 bg-gradient-to-br from-[#f0f7f2] to-white p-6 md:p-7">
+                <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#f5c518]/10" />
+                <div className="pointer-events-none absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-[#157d3c]/5" />
+
+                <div className="relative mb-4 flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#157d3c] to-[#0b3d1e] shadow-lg shadow-[#157d3c]/25">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#f5c518"
+                            strokeWidth="1.9"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="h-6 w-6"
+                        >
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 6v6l4 2" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p className="m-0 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#157d3c]">
+                            What We Offer
+                        </p>
+                        <h4 className="m-0 text-xl font-black tracking-tight text-[#1a1a1a] md:text-2xl">
+                            Services
+                        </h4>
+                    </div>
+                </div>
+
+                <div className="relative mb-4 h-1 w-14 rounded-full bg-[#f5c518]" />
+
+                <p className="relative text-sm leading-relaxed text-gray-700">
+                    The Library Services Office offers a range of services
+                    designed to support the teaching, learning, and research
+                    needs of the academic community.
+                </p>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {LIBRARY_SERVICES.map((service, index) => (
+                    <div
+                        key={service.id}
+                        className="group relative flex flex-col overflow-hidden rounded-2xl border border-[#157d3c]/20 bg-gradient-to-b from-[#f7fbf8] via-white to-white p-6 shadow-[0_8px_24px_-12px_rgba(21,125,60,0.15)] transition-all duration-500 ease-out hover:-translate-y-2 hover:border-[#f5c518] hover:shadow-[0_24px_48px_-16px_rgba(21,125,60,0.35)]"
+                    >
+                        <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-[#157d3c] via-[#f5c518] to-[#157d3c] opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
+                        <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-[#f5c518]/10 blur-2xl transition-all duration-500 group-hover:bg-[#f5c518]/20" />
+                        <div className="pointer-events-none absolute -bottom-16 -left-12 h-40 w-40 rounded-full bg-[#157d3c]/[0.05] blur-2xl transition-all duration-500 group-hover:bg-[#157d3c]/10" />
+
+                        <span className="absolute right-5 top-5 font-mono text-[10px] font-black tracking-[0.2em] text-[#157d3c]/30 transition-colors duration-500 group-hover:text-[#f5c518]">
+                            {String(index + 1).padStart(2, "0")}
+                        </span>
+
+                        <div className="relative mb-5 flex h-14 w-14 items-center justify-center rounded-xl border border-[#157d3c]/20 bg-gradient-to-br from-[#e6f2ea] to-white shadow-sm transition-all duration-500 group-hover:border-[#f5c518] group-hover:from-[#157d3c] group-hover:to-[#0b3d1e] group-hover:shadow-lg group-hover:shadow-[#157d3c]/30">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#157d3c"
+                                strokeWidth="1.9"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="h-6 w-6 transition-colors duration-500 group-hover:stroke-[#f5c518]"
+                            >
+                                {service.icon}
+                            </svg>
+                        </div>
+
+                        <h4 className="relative mb-2 text-base font-black leading-snug text-[#1a1a1a] transition-colors duration-300 group-hover:text-[#157d3c]">
+                            {service.title}
+                        </h4>
+
+                        <div className="mb-3 h-0.5 w-10 rounded-full bg-[#f5c518] transition-all duration-500 group-hover:w-16" />
+
+                        <p className="relative mb-2 text-sm font-bold italic leading-snug text-[#157d3c]">
+                            {service.lead}
+                        </p>
+
+                        <p className="relative flex-1 text-sm leading-relaxed text-gray-600">
+                            {service.description}
+                        </p>
+
+                        {service.note && (
+                            <p className="relative mt-3 rounded-lg border border-dashed border-[#f5c518]/60 bg-[#fffdf3] px-3 py-2 text-[11px] italic leading-relaxed text-gray-500">
+                                {service.note}
+                            </p>
+                        )}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 // ===================== Lower Tabs Data =====================
 const TABS = [
     {
@@ -880,7 +1717,7 @@ const TABS = [
         id: "services",
         label: "Library Services",
         shortLabel: "Services",
-        content: <UnderDevelopment />,
+        content: <LibraryServices />,
     },
     {
         id: "resources",
@@ -1325,7 +2162,7 @@ function TopLibraryUser() {
 }
 
 // ===================== Page =====================
-export default function LibraryServices() {
+export default function LibraryServicesPage() {
     const [activeTab, setActiveTab] = useState(TABS[0].id);
     const [activeDirectorTab, setActiveDirectorTab] = useState(
         DIRECTOR_TABS[0].id

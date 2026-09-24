@@ -332,17 +332,250 @@ const UnderDevelopment = () => (
     </div>
 );
 
+// ============ About Us : Vision ============
+function AboutVision() {
+    return (
+        <div className="space-y-6">
+            {/* Vision card */}
+            <div className="relative overflow-hidden rounded-2xl border border-[#157d3c]/25 bg-white p-6 shadow-sm md:p-8">
+                <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#157d3c]/5" />
+                <div className="pointer-events-none absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-[#f5c518]/10" />
+
+                <div className="relative mb-4 flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#157d3c] to-[#0b3d1e] shadow-lg shadow-[#157d3c]/25">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#f5c518"
+                            strokeWidth="1.9"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="h-6 w-6"
+                        >
+                            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p className="m-0 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#157d3c]">
+                            Our Vision
+                        </p>
+                        <h4 className="m-0 text-xl font-black tracking-tight text-[#1a1a1a] md:text-2xl">
+                            A Steadfast Library
+                        </h4>
+                    </div>
+                </div>
+
+                <div className="relative mb-4 h-1 w-14 rounded-full bg-[#f5c518]" />
+
+                <p className="relative text-justify text-[15px] leading-relaxed text-gray-700 md:text-base">
+                    In support of the vision and mission of City College of
+                    Cagayan de Oro, the library is steadfast in providing access
+                    to information resources using cutting-edge technologies,
+                    facilitating their use in the learning process, and
+                    reinforcing the College values of academic excellence and
+                    lifelong learning.
+                </p>
+            </div>
+        </div>
+    );
+}
+
+// ============ About Us : Mission ============
+const MISSION_GOALS = [
+    "Provide access to information resources that meet the teaching and learning needs of students, faculty, staff, and others in the community.",
+    "Provide access, both on and off campus, to networked information resources.",
+    "Provide reference services and a program of instruction that will help empower independent inquiry.",
+    "Provide a physical environment conducive to study and learning.",
+    "Remain current in the fields of librarianship and information science.",
+];
+
+function AboutMission() {
+    return (
+        <div className="space-y-6">
+            <div className="relative overflow-hidden rounded-2xl border border-[#f5c518]/50 bg-[#fffdf3] p-6 shadow-sm md:p-8">
+                <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#f5c518]/15" />
+
+                <div className="relative mb-4 flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#f5c518] shadow-lg shadow-[#f5c518]/30">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#7a5c00"
+                            strokeWidth="1.9"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="h-6 w-6"
+                        >
+                            <circle cx="12" cy="12" r="10" />
+                            <circle cx="12" cy="12" r="6" />
+                            <circle cx="12" cy="12" r="2" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p className="m-0 font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#b8860b]">
+                            Our Mission
+                        </p>
+                        <h4 className="m-0 text-xl font-black tracking-tight text-[#1a1a1a] md:text-2xl">
+                            Long-Term Goals
+                        </h4>
+                    </div>
+                </div>
+
+                <div className="relative mb-4 h-1 w-14 rounded-full bg-[#157d3c]" />
+
+                <p className="relative mb-5 text-justify text-[15px] leading-relaxed text-gray-700 md:text-base">
+                    To this end, the library pursues the following long-term
+                    goals:
+                </p>
+
+                <ol className="relative space-y-3">
+                    {MISSION_GOALS.map((goal, i) => (
+                        <li
+                            key={i}
+                            className="flex items-start gap-4 rounded-xl border border-[#157d3c]/15 bg-white p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#f5c518] hover:shadow-md"
+                        >
+                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#157d3c] font-mono text-[11px] font-black text-[#f5c518]">
+                                {String(i + 1).padStart(2, "0")}
+                            </span>
+                            <span className="text-sm leading-relaxed text-gray-700">
+                                {goal}
+                            </span>
+                        </li>
+                    ))}
+                </ol>
+            </div>
+        </div>
+    );
+}
+
+// ============ About Us : Goals ============
+const STRATEGIC_GOALS = [
+    {
+        title: "Resource Development",
+        description:
+            "To develop and enhance the capability of the library resources and services in meeting the demands of the curricular, instructional, informational, and research programs of the academic community by providing regular funding for the yearly acquisition of print, non-print, and digital library resources.",
+        icon: (
+            <>
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </>
+        ),
+    },
+    {
+        title: "Collaborative Learning Spaces",
+        description:
+            "To establish collaborative learning spaces and information commons that provide interactive, seamless access to various digital resources and a scholarly atmosphere for learning.",
+        icon: (
+            <>
+                <path d="M3 21h18" />
+                <path d="M5 21V7l7-4 7 4v14" />
+                <path d="M9 9h.01" />
+                <path d="M9 12h.01" />
+                <path d="M9 15h.01" />
+                <path d="M15 9h.01" />
+                <path d="M15 12h.01" />
+                <path d="M15 15h.01" />
+            </>
+        ),
+    },
+    {
+        title: "Institutional Linkages",
+        description:
+            "To establish a strong library linkage with other institutions and agencies in the country and explore possible linkages with organizations and agencies from foreign countries.",
+        icon: (
+            <>
+                <circle cx="12" cy="12" r="10" />
+                <path d="M2 12h20" />
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+            </>
+        ),
+    },
+    {
+        title: "Knowledge Services",
+        description:
+            "To provide services that enhance the quest for knowledge and intellectual activity.",
+        icon: (
+            <>
+                <path d="M9 18h6" />
+                <path d="M10 22h4" />
+                <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14" />
+            </>
+        ),
+    },
+];
+
+function AboutGoals() {
+    return (
+        <div className="space-y-6">
+            <div className="rounded-2xl border border-[#157d3c]/20 bg-[#f0f7f2] px-6 py-5">
+                <p className="m-0 text-sm leading-relaxed text-gray-700">
+                    The Library Services Office pursues the following
+                    strategic goals in support of the College&rsquo;s academic
+                    and research programs.
+                </p>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2">
+                {STRATEGIC_GOALS.map((goal, i) => (
+                    <div
+                        key={goal.title}
+                        className="group relative flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-[#157d3c]/40 hover:shadow-lg"
+                    >
+                        {/* Number watermark */}
+                        <span className="pointer-events-none absolute right-4 top-3 font-mono text-4xl font-black text-[#157d3c]/[0.06] transition-colors duration-500 group-hover:text-[#f5c518]/20">
+                            {String(i + 1).padStart(2, "0")}
+                        </span>
+
+                        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#e6f2ea] transition-colors duration-500 group-hover:bg-[#157d3c]">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#157d3c"
+                                strokeWidth="1.9"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="h-6 w-6 transition-colors duration-500 group-hover:stroke-[#f5c518]"
+                            >
+                                {goal.icon}
+                            </svg>
+                        </div>
+
+                        <h4 className="mb-2 text-base font-black leading-snug text-[#1a1a1a] transition-colors duration-300 group-hover:text-[#157d3c]">
+                            {goal.title}
+                        </h4>
+
+                        <div className="mb-3 h-0.5 w-8 rounded-full bg-[#f5c518]" />
+
+                        <p className="m-0 flex-1 text-sm leading-relaxed text-gray-600">
+                            {goal.description}
+                        </p>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 // ============ About Us : Sub-tabs ============
 const ABOUT_TABS = [
     {
         id: "vision",
         label: "Vision",
-        content: <UnderDevelopment />,
+        content: <AboutVision />,
     },
     {
         id: "mission",
         label: "Mission",
-        content: <UnderDevelopment />,
+        content: <AboutMission />,
+    },
+    {
+        id: "goals",
+        label: "Goals",
+        content: <AboutGoals />,
     },
     {
         id: "personnel",
@@ -422,42 +655,77 @@ function AboutUs() {
     );
 }
 
-// ============ Electronic Resources Links ============
-const RESOURCE_LINKS = [
+// ============ Online Forms Links ============
+const FORM_LINKS = [
     {
-        id: "lam",
-        title: "Library Access Module (LAM)",
+        id: "book-a-spot",
+        title: "Book-A-Spot: Library Facility Reservation Service",
         description:
-            "Access the Library Access Module for online resources, account management, and digital library services.",
-        url: "https://bit.ly/CLSO_LAM",
-    },
-    {
-        id: "bas",
-        title: "Book Acquisition System (BAS)",
-        description:
-            "Submit book requests, track acquisitions, and manage library collection recommendations.",
+            "Need a space for a meeting, class, group activity or other academic and non-academic activities? Reserve an available library space conveniently through our Book-A-Spot service.",
         url: "https://bit.ly/CLSO_BAS",
+        icon: (
+            <>
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <path d="M16 2v4" />
+                <path d="M8 2v4" />
+                <path d="M3 10h18" />
+                <path d="m9 16 2 2 4-4" />
+            </>
+        ),
     },
     {
-        id: "s2s",
-        title: "Student to Student (S2S)",
+        id: "attendance",
+        title: "Library Attendance Monitoring",
         description:
-            "Peer-to-peer learning support, study group coordination, and student resource sharing platform.",
+            "Visiting the library today? Register your visit through the Library Attendance Monitoring system upon entering the library.",
+        url: "https://bit.ly/CLSO_LAM",
+        icon: (
+            <>
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+                <rect x="9" y="3" width="6" height="4" rx="1" />
+                <path d="m9 12 2 2 4-4" />
+            </>
+        ),
+    },
+    {
+        id: "shelf2screen",
+        title: "Shelf2Screen Request",
+        description:
+            "Need access to a portion of a library resource? Request a digital copy of selected portions of available library materials for educational, teaching, research, or personal study purposes.",
         url: "https://bit.ly/CLSO_S2S",
+        icon: (
+            <>
+                <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+                <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+                <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+                <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+                <path d="M7 12h10" />
+                <path d="M7 8h10" />
+                <path d="M7 16h6" />
+            </>
+        ),
     },
 ];
 
-const ElectronicResources = () => (
-    <div className="grid gap-5 md:grid-cols-3">
-        {RESOURCE_LINKS.map((resource) => (
+const OnlineForms = () => (
+    <div className="grid gap-6 md:grid-cols-3">
+        {FORM_LINKS.map((form, index) => (
             <a
-                key={resource.id}
-                href={resource.url}
+                key={form.id}
+                href={form.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex flex-col rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#157d3c]/40 hover:shadow-lg"
+                className="group relative flex flex-col overflow-hidden rounded-2xl border border-[#157d3c]/20 bg-gradient-to-b from-[#f7fbf8] via-white to-white p-6 shadow-[0_8px_24px_-12px_rgba(21,125,60,0.15)] transition-all duration-500 ease-out hover:-translate-y-2 hover:border-[#f5c518] hover:shadow-[0_24px_48px_-16px_rgba(21,125,60,0.35)]"
             >
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#e6f2ea] transition-colors duration-300 group-hover:bg-[#157d3c]">
+                <div className="absolute left-0 right-0 top-0 h-1 bg-gradient-to-r from-[#157d3c] via-[#f5c518] to-[#157d3c] opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full bg-[#f5c518]/10 blur-2xl transition-all duration-500 group-hover:bg-[#f5c518]/20" />
+                <div className="pointer-events-none absolute -bottom-16 -left-12 h-40 w-40 rounded-full bg-[#157d3c]/[0.05] blur-2xl transition-all duration-500 group-hover:bg-[#157d3c]/10" />
+
+                <span className="absolute right-5 top-5 font-mono text-[10px] font-black tracking-[0.2em] text-[#157d3c]/30 transition-colors duration-500 group-hover:text-[#f5c518]">
+                    {String(index + 1).padStart(2, "0")}
+                </span>
+
+                <div className="relative mb-5 flex h-14 w-14 items-center justify-center rounded-xl border border-[#157d3c]/20 bg-gradient-to-br from-[#e6f2ea] to-white shadow-sm transition-all duration-500 group-hover:border-[#f5c518] group-hover:from-[#157d3c] group-hover:to-[#0b3d1e] group-hover:shadow-lg group-hover:shadow-[#157d3c]/30">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
@@ -466,39 +734,56 @@ const ElectronicResources = () => (
                         strokeWidth="1.9"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        className="h-6 w-6 transition-colors duration-300 group-hover:stroke-white"
+                        className="h-6 w-6 transition-colors duration-500 group-hover:stroke-[#f5c518]"
                     >
-                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                        {form.icon}
                     </svg>
                 </div>
 
-                <h4 className="mb-2 text-base font-black leading-snug text-[#1a1a1a] transition-colors duration-300 group-hover:text-[#157d3c]">
-                    {resource.title}
+                <h4 className="relative mb-3 text-base font-black leading-snug text-[#1a1a1a] transition-colors duration-300 group-hover:text-[#157d3c]">
+                    {form.title}
                 </h4>
 
-                <div className="mb-3 h-0.5 w-8 rounded-full bg-[#f5c518]" />
+                <div className="mb-3 h-0.5 w-10 rounded-full bg-[#f5c518] transition-all duration-500 group-hover:w-16" />
 
-                <p className="mb-5 flex-1 text-sm leading-relaxed text-gray-600">
-                    {resource.description}
+                <p className="relative mb-5 flex-1 text-sm leading-relaxed text-gray-600">
+                    {form.description}
                 </p>
 
-                <span className="inline-flex items-center gap-2 text-sm font-semibold text-[#157d3c] transition-all duration-200 group-hover:gap-3">
-                    Open Link
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="h-4 w-4"
-                    >
-                        <path d="M5 12h14" />
-                        <path d="m12 5 7 7-7 7" />
-                    </svg>
-                </span>
+                <div className="relative mt-auto flex items-center justify-between border-t border-dashed border-[#157d3c]/15 pt-4">
+                    <span className="inline-flex items-center gap-2 text-sm font-bold text-[#157d3c] transition-all duration-300 group-hover:gap-3 group-hover:text-[#0b3d1e]">
+                        Open Form
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
+                        >
+                            <path d="M5 12h14" />
+                            <path d="m12 5 7 7-7 7" />
+                        </svg>
+                    </span>
+
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[#157d3c]/20 bg-white text-[#157d3c] transition-all duration-500 group-hover:border-[#f5c518] group-hover:bg-[#f5c518] group-hover:text-[#0b3d1e]">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="h-3.5 w-3.5"
+                        >
+                            <path d="M7 17 17 7" />
+                            <path d="M7 7h10v10" />
+                        </svg>
+                    </span>
+                </div>
             </a>
         ))}
     </div>
@@ -509,7 +794,7 @@ const LIBRARY_RESOURCES_SUBTABS = [
     {
         id: "e-resources",
         label: "Electronic Resources",
-        content: <ElectronicResources />,
+        content: <UnderDevelopment />,
     },
     {
         id: "holdings",
@@ -526,7 +811,6 @@ function LibraryResources() {
 
     return (
         <div className="space-y-6">
-            {/* Sub-tab strip */}
             <div
                 role="tablist"
                 aria-label="Library Resources sub-sections"
@@ -565,7 +849,6 @@ function LibraryResources() {
                 })}
             </div>
 
-            {/* Sub-panel */}
             <AnimatePresence mode="wait">
                 <motion.div
                     key={subTab}
@@ -609,7 +892,7 @@ const TABS = [
         id: "online-forms",
         label: "Online Forms",
         shortLabel: "Forms",
-        content: <UnderDevelopment />,
+        content: <OnlineForms />,
     },
     {
         id: "policies",
@@ -621,7 +904,7 @@ const TABS = [
         id: "news",
         label: "News",
         shortLabel: "News",
-        content: null, // rendered dynamically
+        content: null,
     },
 ];
 
@@ -759,7 +1042,6 @@ function OfficeSlideshow() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.15 }}
         >
-            {/* Section header — editorial style */}
             <div className="mb-8 flex flex-wrap items-end gap-x-6 gap-y-4 md:mb-10">
                 <div>
                     <p className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-[#157d3c]">
@@ -776,13 +1058,11 @@ function OfficeSlideshow() {
                 </p>
             </div>
 
-            {/* Split cinema panel */}
             <div
                 className="grid overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm lg:grid-cols-12"
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
             >
-                {/* Image side */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-gray-100 lg:col-span-7 lg:aspect-auto">
                     <AnimatePresence mode="wait">
                         <motion.div
@@ -808,7 +1088,6 @@ function OfficeSlideshow() {
                         </motion.div>
                     </AnimatePresence>
 
-                    {/* Placeholder notice */}
                     <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-start p-5 md:p-7">
                         <div className="rounded-xl border border-[#f5c518]/70 bg-black/55 px-4 py-2.5 backdrop-blur-sm">
                             <p className="m-0 text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#f5c518] sm:text-xs">
@@ -820,7 +1099,6 @@ function OfficeSlideshow() {
                         </div>
                     </div>
 
-                    {/* Slide counter */}
                     <div className="absolute right-5 top-5 z-20 flex items-baseline gap-1 rounded-full bg-black/50 px-3.5 py-1.5 backdrop-blur-sm">
                         <span className="font-mono text-sm font-bold text-[#f5c518]">
                             {String(current + 1).padStart(2, "0")}
@@ -831,7 +1109,6 @@ function OfficeSlideshow() {
                     </div>
                 </div>
 
-                {/* Content side */}
                 <div className="flex flex-col justify-between bg-[#0b3d1e] p-8 text-white md:p-10 lg:col-span-5 lg:p-12">
                     <AnimatePresence mode="wait">
                         <motion.div
@@ -860,7 +1137,6 @@ function OfficeSlideshow() {
                         </motion.div>
                     </AnimatePresence>
 
-                    {/* Controls */}
                     <div className="mt-10 flex items-center justify-between gap-4">
                         <div className="flex items-center gap-2">
                             {SLIDES.map((s, i) => (
@@ -937,7 +1213,6 @@ function TopLibraryUser() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.1 }}
         >
-            {/* Section header */}
             <div className="mb-8 flex flex-wrap items-end gap-x-6 gap-y-4 md:mb-10">
                 <div>
                     <p className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-[#157d3c]">
@@ -955,7 +1230,6 @@ function TopLibraryUser() {
                 </p>
             </div>
 
-            {/* Period badge */}
             <div className="mb-6 flex flex-wrap items-center gap-3">
                 <span className="inline-flex items-center gap-2 rounded-full border border-[#157d3c]/25 bg-[#f0f7f2] px-4 py-2">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#157d3c]" />
@@ -965,16 +1239,13 @@ function TopLibraryUser() {
                 </span>
             </div>
 
-            {/* Featured top user card */}
             <motion.div
                 variants={riseIn}
                 className="relative overflow-hidden rounded-3xl border border-[#f5c518]/60 bg-gradient-to-b from-[#fffdf3] to-white shadow-sm"
             >
-                {/* Decorative glow */}
                 <div className="pointer-events-none absolute -top-20 left-1/2 h-52 w-52 -translate-x-1/2 rounded-full bg-[#f5c518]/20 blur-3xl" />
 
                 <div className="relative grid gap-8 p-8 md:grid-cols-[auto_minmax(0,1fr)] md:items-center md:p-10 lg:p-12">
-                    {/* Avatar */}
                     <div className="flex justify-center md:justify-start">
                         <div className="relative">
                             <div className="flex h-32 w-32 items-center justify-center rounded-full border-4 border-[#f5c518] bg-[#f0f7f2] text-4xl font-black text-[#157d3c] shadow-lg shadow-[#f5c518]/30 md:h-36 md:w-36 md:text-5xl">
@@ -987,7 +1258,6 @@ function TopLibraryUser() {
                         </div>
                     </div>
 
-                    {/* Details */}
                     <div className="text-center md:text-left">
                         <h3 className="m-0 text-2xl font-black leading-snug tracking-tight text-[#1a1a1a] md:text-3xl">
                             {user.name}
@@ -1027,7 +1297,6 @@ function TopLibraryUser() {
                 </div>
             </motion.div>
 
-            {/* Disclaimer */}
             <div className="mt-6 flex items-start gap-3 rounded-2xl border border-dashed border-[#f5c518]/60 bg-[#fffdf3] px-5 py-4">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -1119,7 +1388,6 @@ export default function LibraryServices() {
         (t) => t.id === activeDirectorTab
     );
 
-    // Split the active director tab label: last word gets the green highlight
     const directorLabelParts = activeDirectorTabData.label.split(" ");
     const directorLabelLast =
         directorLabelParts.length > 1 ? directorLabelParts.pop() : null;
@@ -1271,16 +1539,13 @@ export default function LibraryServices() {
 
             {/* ==================== HERO ==================== */}
             <section className="relative isolate flex min-h-[480px] items-center overflow-hidden md:min-h-[560px]">
-                {/* Background image */}
                 <div
                     className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                     style={{ backgroundImage: `url('${libraryBannerImg}')` }}
                 />
 
-                {/* Gradient veil */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-[#05230f]/95 via-[#0b3d1e]/85 to-[#157d3c]/55" />
 
-                {/* Blueprint grid */}
                 <div
                     className="absolute inset-0 opacity-[0.12]"
                     style={{
@@ -1290,11 +1555,9 @@ export default function LibraryServices() {
                     }}
                 />
 
-                {/* Yellow glow */}
                 <div className="pointer-events-none absolute -left-24 top-1/4 h-80 w-80 rounded-full bg-[#f5c518]/20 blur-3xl" />
                 <div className="pointer-events-none absolute -right-20 bottom-0 h-72 w-72 rounded-full bg-[#157d3c]/40 blur-3xl" />
 
-                {/* Content */}
                 <div className="relative z-10 mx-auto w-full max-w-[1600px] px-6 pb-28 pt-28 sm:px-10 md:pb-36 lg:px-16 xl:px-20">
                     <motion.div
                         variants={staggerParent}
@@ -1347,7 +1610,6 @@ export default function LibraryServices() {
                     </motion.div>
                 </div>
 
-                {/* Angled bottom edge */}
                 <div className="pointer-events-none absolute bottom-0 left-0 right-0 z-20 leading-[0]">
                     <svg
                         viewBox="0 0 1440 90"
@@ -1362,7 +1624,6 @@ export default function LibraryServices() {
             {/* ==================== PROFILE + DIRECTOR TABS ==================== */}
             <section className="relative z-10 mx-auto w-full max-w-[1600px] px-6 sm:px-10 lg:px-16 xl:px-20">
                 <div className="grid gap-12 lg:grid-cols-12 lg:gap-14">
-                    {/* -------- Left: Head Librarian card (overlaps hero) -------- */}
                     <div className="lg:col-span-4 xl:col-span-3">
                         <motion.div
                             variants={riseIn}
@@ -1370,7 +1631,6 @@ export default function LibraryServices() {
                             animate="visible"
                             className="relative mx-auto -mt-16 w-full max-w-[300px] md:-mt-24 lg:mx-0 lg:max-w-none lg:-mt-28"
                         >
-                            {/* Offset yellow frame */}
                             <div className="pointer-events-none absolute -left-3 -top-3 h-full w-full rounded-2xl border-2 border-[#f5c518]" />
 
                             <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl shadow-black/10">
@@ -1398,10 +1658,8 @@ export default function LibraryServices() {
                         </motion.div>
                     </div>
 
-                    {/* -------- Right: Vertical tab rail + panel -------- */}
                     <div className="lg:col-span-8 lg:pt-10 xl:col-span-9">
                         <div className="grid gap-8 md:grid-cols-[240px_minmax(0,1fr)] md:gap-10 lg:gap-14">
-                            {/* Vertical rail */}
                             <div
                                 role="tablist"
                                 aria-label="Head Librarian information"
@@ -1452,7 +1710,6 @@ export default function LibraryServices() {
                                 })}
                             </div>
 
-                            {/* Panel */}
                             <div className="min-w-0">
                                 <AnimatePresence mode="wait">
                                     <motion.div
@@ -1489,7 +1746,7 @@ export default function LibraryServices() {
                 </div>
             </section>
 
-            {/* ==================== CONTACT STRIP (full bleed) ==================== */}
+            {/* ==================== CONTACT STRIP ==================== */}
             <section className="relative mt-20 overflow-hidden bg-[#0b3d1e] md:mt-28">
                 <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#157d3c]/50 blur-3xl" />
                 <div className="pointer-events-none absolute -bottom-24 left-1/4 h-64 w-64 rounded-full bg-[#f5c518]/10 blur-3xl" />
@@ -1553,13 +1810,9 @@ export default function LibraryServices() {
 
             {/* ==================== MAIN CONTENT ==================== */}
             <div className="mx-auto w-full max-w-[1600px] px-6 py-16 sm:px-10 md:py-20 lg:px-16 xl:px-20">
-                {/* -------- Slideshow -------- */}
                 <OfficeSlideshow />
-
-                {/* -------- Top Library User -------- */}
                 <TopLibraryUser />
 
-                {/* -------- Lower Tabs -------- */}
                 <motion.section
                     className="mt-20 md:mt-28"
                     variants={riseIn}
@@ -1567,7 +1820,6 @@ export default function LibraryServices() {
                     whileInView="visible"
                     viewport={{ once: true, amount: 0.1 }}
                 >
-                    {/* Section header */}
                     <div className="mb-8 flex flex-wrap items-end gap-x-6 gap-y-4 md:mb-10">
                         <div>
                             <p className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-[#157d3c]">
@@ -1582,7 +1834,6 @@ export default function LibraryServices() {
                     </div>
 
                     <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
-                        {/* Pill tab bar */}
                         <div className="border-b border-gray-100 bg-gradient-to-r from-[#f0f7f2] to-white px-4 py-4 md:px-6 md:py-5">
                             <div
                                 ref={tabStripRef}
@@ -1631,7 +1882,6 @@ export default function LibraryServices() {
                             </div>
                         </div>
 
-                        {/* Panel */}
                         <div className="relative min-h-[280px] p-7 md:p-10 lg:p-14">
                             <AnimatePresence mode="wait">
                                 <motion.div

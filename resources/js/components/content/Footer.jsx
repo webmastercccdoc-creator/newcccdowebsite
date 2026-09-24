@@ -82,10 +82,10 @@ const Footer = () => {
                             </li>
                             <li>
                                 <Link
-                                    href="/pdo"
+                                    href="/nstp"
                                     className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300"
                                 >
-                                    Personal Development Office
+                                    National Service Training Program
                                 </Link>
                             </li>
                             <li>

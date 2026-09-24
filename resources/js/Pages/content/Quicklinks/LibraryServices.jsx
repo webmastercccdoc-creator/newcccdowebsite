@@ -181,7 +181,7 @@ const CONTACT_ITEMS = [
 // ===================== Top Library User Data =====================
 const TOP_LIBRARY_USER = {
     name: "Andrea Mae B. Salvador",
-    program: "BS Information Technology",
+    program: "BTLED",
     yearLevel: "3rd Year",
     visits: 214,
     borrowed: 48,
@@ -190,7 +190,7 @@ const TOP_LIBRARY_USER = {
 // ===================== Org Chart Data =====================
 const ORG_CHART = {
     top: {
-        role: "FOR ACADEMIC AFFAIRS",
+        role: "VP FOR ACADEMIC AFFAIRS",
     },
     head: {
         role: "HEAD LIBRARIAN",
@@ -960,7 +960,7 @@ function TopLibraryUser() {
                 <span className="inline-flex items-center gap-2 rounded-full border border-[#157d3c]/25 bg-[#f0f7f2] px-4 py-2">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#157d3c]" />
                     <span className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-[#157d3c]">
-                        1st Semester · A.Y. 2025–2026
+                        Monthly Recognition · September 2026
                     </span>
                 </span>
             </div>
@@ -1048,9 +1048,7 @@ function TopLibraryUser() {
                         Sample profile.
                     </strong>{" "}
                     The name and figures shown are placeholders for layout
-                    purposes. The official top library user will be announced
-                    by the Library Services Office after the end of the
-                    semester.
+                    purposes.
                 </p>
             </div>
         </motion.section>

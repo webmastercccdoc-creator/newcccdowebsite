@@ -59,9 +59,9 @@ Route::get('/library', function () {
     return Inertia::render('content/Quicklinks/LibraryServices');
 })->name('quicklinks.library');
 
-Route::get('/ollpd', function () {
-    return Inertia::render('content/Quicklinks/OLLPD');
-})->name('quicklinks.ollpd');
+Route::get('/nstp', function () {
+    return Inertia::render('content/Quicklinks/NSTP');
+})->name('quicklinks.nstp');
 
 Route::get('/sas', function () {
     return Inertia::render('content/Quicklinks/SAS');

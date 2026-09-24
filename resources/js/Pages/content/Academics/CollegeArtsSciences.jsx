@@ -1,9 +1,19 @@
 import { useEffect, useState, useRef } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
-import ExtensionComingSoon from '../Extension/ExtensionComingSoon';
 import casBanner from '../../../assets/banner/cas-banner.png';
 import { motion, AnimatePresence } from 'framer-motion';
 import ccdologo from '../../../assets/logos/ccdologo.png';
+import drDonnaCotejoPhoto from '../../../assets/images/DR_DONNA_COTEJO.png';
+import charlieSumiliPhoto from '../../../assets/images/CHARLIE_SUMILI.png';
+import eldinCamposoPhoto from '../../../assets/images/ELDIN_CAMPOSO.png';
+import ergenAbreganaPhoto from '../../../assets/images/ERGEN_ABREGANA.png';
+import jeromeTorresPhoto from '../../../assets/images/JEROME_TORRES.png';
+import jonathanMadroneroPhoto from '../../../assets/images/JONATHAN_MADRONERO.png';
+import julieObriquePhoto from '../../../assets/images/JULIE_OBRIQUE.png';
+import kurtCandilasPhoto from '../../../assets/images/KURT_CANDILAS.png';
+import sheenaAbadPhoto from '../../../assets/images/SHEENA_ABAD.png';
+import trishaDagusPhoto from '../../../assets/images/TRISHA_DAGUS.png';
+import wenefredoDellavaPhoto from '../../../assets/images/Wenefredo_Dellava.png';
 
 // --- Faculty Photo & Background Imports ---
 // Replace these placeholder strings with actual imports (e.g., import deanPhoto from '../../../assets/images/dean_name.jpg';)
@@ -63,13 +73,6 @@ export default function CollegeArtsSciences() {
     const resumeTimerRef = useRef(null);
     const tweenStateRef = useRef({ start: 0, from: 0, to: 0, duration: 600, callback: null });
 
-    // ============================================================
-    // ⚠️ PAGE VISIBILITY FLAG
-    // Set this to `false` when the page content is ready to go live.
-    // All original page code is preserved below — nothing was deleted.
-    // ============================================================
-    const COMING_SOON = true;
-
     const stripHtml = (html = '') => html.replace(/<[^>]*>/g, '').trim();
     const normalizeImagePath = (value) => {
         if (!value) return 'https://placehold.co/600x400/1e3a8a/ffffff?text=No+Image';
@@ -85,9 +88,6 @@ export default function CollegeArtsSciences() {
 
     useEffect(() => {
         document.title = "College of Arts and Sciences - City College of Cagayan de Oro";
-
-        // Skip the news fetch while the page is hidden
-        if (COMING_SOON) return;
 
         let isMounted = true;
         // Fetching specifically for College of Arts and Sciences (CAS - Upperccase to match DB)
@@ -206,22 +206,6 @@ export default function CollegeArtsSciences() {
         };
     }, [isLoadingNews, isNewsVisible, newsItems]);
 
-    // ============================================================
-    // ⚠️ COMING SOON EARLY RETURN
-    // Placed after all hooks to respect React's rules of hooks.
-    // While COMING_SOON is true, the page renders the placeholder
-    // below and skips everything after this block.
-    // ============================================================
-    if (COMING_SOON) {
-        return (
-            <ExtensionComingSoon
-                title="College of Arts and Sciences"
-                description="Advancing knowledge, creativity, and multidisciplinary excellence through arts, sciences, and community engagement."
-                bannerImage={casBanner}
-            />
-        );
-    }
-
     const startTween = (to, duration, callback) => {
         isTweeningRef.current = true;
         tweenStateRef.current = {
@@ -284,32 +268,89 @@ export default function CollegeArtsSciences() {
 
     // Temporary Data Arrays
     const coreValues = [
-        { title: "Excellence", desc: "Coming soon...", icon: "M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-3.492a46.32 46.32 0 012.916.52 6.003 6.003 0 01-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0" },
-        { title: "Integrity", desc: "Coming soon...", icon: "M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" },
-        { title: "Innovation", desc: "Coming soon...", icon: "M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z" },
-        { title: "Adaptability", desc: "Coming soon...", icon: "M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" },
-        { title: "Lifelong Learning", desc: "Coming soon...", icon: "M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" }
+        {
+            title: "Critical Thinking",
+            desc: "Through liberal and applied education, the College cultivates analytical, reflective, and critically minded students across the sciences and humanities.",
+            icon: "M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"
+        },
+        {
+            title: "Creativity",
+            desc: "Students are encouraged to create, innovate, and express ideas with imagination — from communication plans and campaigns to creative materials and multimedia storytelling.",
+            icon: "M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z"
+        },
+        {
+            title: "Ethical Leadership",
+            desc: "The College forms graduates who lead with integrity and exercise ethical and professional responsibility in professional practice and public service.",
+            icon: "M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+        },
+        {
+            title: "Cultural Rootedness",
+            desc: "CAS forms culturally rooted citizens who value heritage and identity while engaging with emerging technologies in the sciences and humanities.",
+            icon: "M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+        },
+        {
+            title: "Responsible Engagement",
+            desc: "Graduates engage responsibly with communities, translating their learning into meaningful professional practice and public service.",
+            icon: "M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
+        }
     ];
 
     const programs = [
         {
-            name: "Program Name",
-            degree: "Bachelor of Arts/Science",
-            desc: "Coming soon. Details about the program will be updated shortly.",
-            tags: ["Coming Soon", "TBD"],
-            careers: ["TBD", "TBD"]
+            name: "Communication",
+            degree: "Bachelor of Arts in",
+            title: "Bachelor of Arts in Communication",
+            desc: "The Bachelor of Arts in Communication is an outcomes-based undergraduate program that develops students' knowledge and skills in communication theory and practice across media, culture, organization, and community contexts.",
+            tags: [
+                "Communication Theory",
+                "Media Production",
+                "Research & Writing",
+                "Public Relations",
+                "Development Communication"
+            ],
+            careers: [
+                "Public Relations Officer",
+                "Journalist",
+                "Social Media Manager",
+                "Development Communication Practitioner"
+            ]
+        },
+        {
+            name: "Social Work",
+            degree: "Bachelor of Science in",
+            title: "Bachelor of Science in Social Work",
+            desc: "The Bachelor of Science in Social Work is a professional undergraduate program that prepares students to promote well-being, justice, and community development through ethical, people-centered social work practice.",
+            tags: [
+                "Community Development",
+                "Social Welfare",
+                "Casework & Group Work",
+                "Human Behavior",
+                "Field Practice"
+            ],
+            careers: [
+                "Social Worker",
+                "Community Development Officer",
+                "Medical Social Worker",
+                "Welfare Program Coordinator"
+            ]
         }
     ];
 
-    const chairpersons = [
-        { name: "Faculty Name", role: "Chairperson", photo: facultyPlaceholder },
+    const bacommFaculty = [
+        { name: "DONNA GRACE I. COTEJO", role: "PROGRAM HEAD,\nBACOMM", photo: drDonnaCotejoPhoto },
+        { name: "ELDIN D. CAMPOSO", role: "FULL-TIME FACULTY,\nBACOMM", photo: eldinCamposoPhoto },
+        { name: "CHARLIE JOB SUMILI", role: "FULL-TIME FACULTY,\nBACOMM", photo: charlieSumiliPhoto },
+        { name: "WENEFREDO DELLAVA", role: "PART-TIME FACULTY,\nBACOMM", photo: wenefredoDellavaPhoto },
+        { name: "KURT S. CANDILAS", role: "PART-TIME FACULTY,\nBACOMM", photo: kurtCandilasPhoto },
+        { name: "JONATHAN MADRONERO", role: "PART-TIME FACULTY,\nBACOMM", photo: jonathanMadroneroPhoto },
+        { name: "JEROME L TORRES", role: "PART-TIME FACULTY,\nBACOMM", photo: jeromeTorresPhoto },
     ];
 
-    const facultyMembers = [
-        { name: "Faculty Name", role: "Faculty Member", photo: facultyPlaceholder },
-        { name: "Faculty Name", role: "Faculty Member", photo: facultyPlaceholder },
-        { name: "Faculty Name", role: "Faculty Member", photo: facultyPlaceholder },
-        { name: "Faculty Name", role: "Faculty Member", photo: facultyPlaceholder },
+    const bsswFaculty = [
+        { name: "SHEENA P. ABAD", role: "PROGRAM HEAD,\nBSSW", photo: sheenaAbadPhoto },
+        { name: "JAN TRISHA S. DAGUS", role: "FULL-TIME FACULTY,\nBSSW", photo: trishaDagusPhoto },
+        { name: "JULIE B. OBRIQUE, RSW, MPSM", role: "FULL-TIME FACULTY,\nBSSW", photo: julieObriquePhoto },
+        { name: "ERGEN A. ABREGANA, RSW, MGM", role: "FULL-TIME FACULTY,\nBSSW", photo: ergenAbreganaPhoto },
     ];
 
     const FacultyCard = ({ member, idx }) => (
@@ -340,7 +381,7 @@ export default function CollegeArtsSciences() {
 
             <div className="mt-8 text-center px-2">
                 <h3 className="text-base font-serif font-bold text-slate-800 tracking-tight leading-tight">{member.name}</h3>
-                <p className="text-[11px] text-emerald-600 font-semibold uppercase tracking-[0.1em] mt-2">{member.role}</p>
+                <p className="text-[11px] text-emerald-600 font-semibold uppercase tracking-[0.1em] mt-2 whitespace-pre-line">{member.role}</p>
                 <div className="mt-3 h-px w-12 bg-slate-200 mx-auto"></div>
             </div>
         </motion.div>
@@ -468,7 +509,7 @@ export default function CollegeArtsSciences() {
                         variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
                         className="mx-auto mt-4 max-w-2xl text-lg text-white/90 drop-shadow-md"
                     >
-                        Fostering critical thinking and holistic development through diverse academic disciplines.
+                        Developing competent communicators and socially responsive professionals through liberal and applied education.
                     </motion.p>
                 </motion.div>
 
@@ -618,9 +659,9 @@ export default function CollegeArtsSciences() {
                                 </svg>
                                 <p className="text-xl md:text-2xl text-white/95 leading-relaxed vp-serif font-medium">
                                     {activeVMO === 'vision' ? (
-                                        "Coming soon..."
+                                        "Transforming students to be digitally proficient and culturally rooted citizens with the emerging technologies in Sciences and Humanities."
                                     ) : (
-                                        "Coming soon..."
+                                        "We commit ourselves to provide contemporary education in the liberal arts that equips undergraduate students in the challenges of modern society."
                                     )}
                                 </p>
                             </motion.div>
@@ -643,16 +684,22 @@ export default function CollegeArtsSciences() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-20 max-w-3xl mx-auto">
-                            {chairpersons.map((member, idx) => (
-                                <FacultyCard key={idx} member={member} idx={idx} />
-                            ))}
-                        </div>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20 max-w-6xl mx-auto">
+                            <div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                                    {bacommFaculty.map((member, idx) => (
+                                        <FacultyCard key={idx} member={member} idx={idx} />
+                                    ))}
+                                </div>
+                            </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {facultyMembers.map((member, idx) => (
-                                <FacultyCard key={idx} member={member} idx={idx} />
-                            ))}
+                            <div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                                    {bsswFaculty.map((member, idx) => (
+                                        <FacultyCard key={idx} member={member} idx={idx} />
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -724,7 +771,7 @@ export default function CollegeArtsSciences() {
                                         <div className="relative z-10">
                                             <p className="text-sm text-amber-500 font-bold uppercase tracking-wider mb-2">Program Overview</p>
                                             <h3 className="text-2xl md:text-3xl font-bold vp-serif text-slate-900 mb-6">
-                                                {programs[activeProg].degree} in {programs[activeProg].name}
+                                                {programs[activeProg].title}
                                             </h3>
                                             <p className="text-slate-600 leading-relaxed mb-8 text-[15px]">
                                                 {programs[activeProg].desc}
@@ -844,7 +891,7 @@ export default function CollegeArtsSciences() {
                             </div>
                         ) : (
                             <div className="news-empty-message text-center text-slate-400 py-20">
-                                No CAS news available at the moment.
+                                No CAS news available at the moment. Please check back later.
                             </div>
                         )}
                     </div>

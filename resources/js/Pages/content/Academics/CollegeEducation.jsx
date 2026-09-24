@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
 import MainLayout from '../../../layouts/MainLayout';
-import ExtensionComingSoon from '../Extension/ExtensionComingSoon';
 import cedBanner from '../../../assets/banner/coe-banner.png';
 import ccdologo from '../../../assets/logos/ccdologo.png';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -62,13 +61,6 @@ export default function CollegeEducation() {
     const resumeTimerRef = useRef(null);
     const tweenStateRef = useRef({ start: 0, from: 0, to: 0, duration: 600, callback: null });
 
-    // ============================================================
-    // ⚠️ PAGE VISIBILITY FLAG
-    // Set this to `false` when the page content is ready to go live.
-    // All original page code is preserved below — nothing was deleted.
-    // ============================================================
-    const COMING_SOON = true;
-
     const stripHtml = (html = '') => html.replace(/<[^>]*>/g, '').trim();
     const normalizeImagePath = (value) => {
         if (!value) return 'https://placehold.co/600x400/1e3a8a/ffffff?text=No+Image';
@@ -84,9 +76,6 @@ export default function CollegeEducation() {
 
     useEffect(() => {
         document.title = "College of Education - City College of Cagayan de Oro";
-
-        // Skip the news fetch while the page is hidden
-        if (COMING_SOON) return;
 
         let isMounted = true;
         // Fetching specifically for College of Education (coe)
@@ -204,22 +193,6 @@ export default function CollegeEducation() {
             if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
         };
     }, [isLoadingNews, isNewsVisible, newsItems]);
-
-    // ============================================================
-    // ⚠️ COMING SOON EARLY RETURN
-    // Placed after all hooks to respect React's rules of hooks.
-    // While COMING_SOON is true, the page renders the placeholder
-    // below and skips everything after this block.
-    // ============================================================
-    if (COMING_SOON) {
-        return (
-            <ExtensionComingSoon
-                title="College of Education"
-                description="Shaping the future of education through excellence in teaching, research, and community engagement."
-                bannerImage={cedBanner}
-            />
-        );
-    }
 
     const startTween = (to, duration, callback) => {
         isTweeningRef.current = true;

@@ -66,7 +66,7 @@ export default function ViewArticle({ article: initialArticle = null, articleIma
         document.title = article?.title ? `${article.title} - City College of Cagayan de Oro` : 'View Article - City College of Cagayan de Oro';
 
         if (!initialArticle && window.location.pathname) {
-            const match = window.location.pathname.match(/\/news\/(\d+)/);
+            const match = window.location.pathname.match(/\/(?:article|news)\/(\d+)/);
             const articleId = match?.[1];
 
             if (articleId) {

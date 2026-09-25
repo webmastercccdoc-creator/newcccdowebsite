@@ -478,7 +478,7 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
                                             {/* Title - 2 lines with ellipsis */}
                                             <h3 className="relative z-10 mb-3 text-lg font-bold leading-snug text-gray-900">
                                                 <a
-                                                    href={`/news/${item.id}`}
+                                                    href={`/article/${item.id}`}
                                                     className="transition-colors duration-200 hover:text-green-700 line-clamp-2"
                                                     style={{
                                                         display: '-webkit-box',
@@ -508,7 +508,7 @@ export default function LatestNews({ newsArticles: initialArticles = [] }) {
 
                                             <div className="flex items-center">
                                                 <a
-                                                    href={`/news/${item.id}`}
+                                                    href={`/article/${item.id}`}
                                                     className="relative z-10 inline-flex items-center gap-2 text-sm font-semibold text-green-700 transition-colors duration-200 hover:text-green-800"
                                                 >
                                                     Read Article

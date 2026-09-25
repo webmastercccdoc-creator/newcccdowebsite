@@ -25,6 +25,19 @@ import shaenaUcatPhoto from '../../../assets/images/SHAENA_UCAT.png';
 import candiceGamayonPhoto from '../../../assets/images/Candice_Gamayon.png';
 import anglouPepinoPhoto from '../../../assets/images/ANGELOU_PEPINO.png';
 import clariceGabitanoPhoto from '../../../assets/images/Clarice_Gabitano.png';
+import tanImage from '../../../assets/images/tan-image.png';
+import aranarImage from '../../../assets/images/HOWARD_ARANAR.png';
+import manasImage from '../../../assets/images/James_Manas.png';
+import colarteImage from '../../../assets/images/colarte-image.png';
+import melodyImage from '../../../assets/images/melody-image.png';
+import joelPotanePhoto from '../../../assets/images/JOEL_POTANE.png';
+import chenessaAguilarPhoto from '../../../assets/images/CHENESSA_AGUILAR.png';
+import rioDalmanPhoto from '../../../assets/images/RIO_DALMAN.png';
+import ghayMagansaPhoto from '../../../assets/images/GHAY_MAGANSA.png';
+import agaMahinayPhoto from '../../../assets/images/AGA_MAHINAY.png';
+import crysvenneBisligPhoto from '../../../assets/images/CRYSVENNE_BISLIG.png';
+import peterPedimentePhoto from '../../../assets/images/PETER_PEDIMENTE.png';
+import shadrachSantoPhoto from '../../../assets/images/SHADRACH_SANTO.png';
 
 // --- Faculty Photo & Background Imports ---
 const deanPhoto = drDonnaCotejoPhoto;
@@ -346,6 +359,7 @@ export default function CollegeArtsSciences() {
         { name: "KURT S. CANDILAS", role: "PART-TIME FACULTY,\nBACOMM", photo: kurtCandilasPhoto },
         { name: "JONATHAN MADRONERO", role: "PART-TIME FACULTY,\nBACOMM", photo: jonathanMadroneroPhoto },
         { name: "JEROME L TORRES", role: "PART-TIME FACULTY,\nBACOMM", photo: jeromeTorresPhoto },
+        { name: "AGA EMM D. MAHINAY, PhD", role: "Faculty", photo: agaMahinayPhoto },
     ];
 
     const bsswFaculty = [
@@ -358,10 +372,23 @@ export default function CollegeArtsSciences() {
     // ✅ NEW — GEN ED Faculty
     const genEdFaculty = [
         { name: "MARK P. JANUBAS", role: "PROGRAM HEAD,\nGEN ED", photo: markJanubasPhoto },
+        { name: "DR. MARK RAYMOND S. TAN", role: "FULL-TIME FACULTY,\nGEN ED", photo: tanImage },
         { name: "MA. KATERINA F. JANUBAS", role: "FULL-TIME FACULTY,\nGEN ED", photo: katerinaJanubasPhoto },
         { name: "PEDRO C. GAMBA", role: "FULL-TIME FACULTY,\nGEN ED", photo: pedroGambaPhoto },
+        { name: "CRYSVENNE P. BISLIG", role: "PART-TIME FACULTY,\nGEN ED", photo: crysvenneBisligPhoto },
+        { name: "HOWARD CHRISTIAN ARANAR", role: "PART-TIME FACULTY,\nGEN ED", photo: aranarImage },
+        { name: "JAMES DELOS SANTOS MANAS", role: "PART-TIME FACULTY,\nGEN ED", photo: manasImage },
+        { name: "FAITH Q. COLARTE, RGC", role: "PART-TIME FACULTY,\nGEN ED", photo: colarteImage },
+        { name: "DR. MELODY R. AGCITO", role: "PART-TIME FACULTY,\nGEN ED", photo: melodyImage },
+        { name: "JOEL D. POTANE, PhD", role: "PART-TIME FACULTY,\nGEN ED", photo: joelPotanePhoto },
+        { name: "MA. AIRA CHENESSA B. AGUILAR, EdD", role: "PART-TIME FACULTY,\nGEN ED", photo: chenessaAguilarPhoto },
+        { name: "MELBOURNE JEKO S. CAGASAN", role: "PART-TIME FACULTY,\nGEN ED" },
+        { name: "SHADRACH MICHAEL S. SANTO", role: "PART-TIME FACULTY,\nGEN ED", photo: shadrachSantoPhoto },
+        { name: "RIO HILLARY P. DALMAN", role: "PART-TIME FACULTY,\nGEN ED", photo: rioDalmanPhoto   },
         { name: "ROSHMOND ENTRINA", role: "PART-TIME FACULTY,\nGEN ED", photo: roshmondEntrinaPhoto },
         { name: "ANDREA ALEXA JOAN V. ERMINO", role: "PART-TIME FACULTY,\nGEN ED", photo: andreaErminoPhoto },
+        { name: "GHAY MARIE PIANAR-MAGANSA, LPT", role: "Faculty", photo: ghayMagansaPhoto },
+        { name: "PETER ARES R. PEDIMENTE", role: "FULL-TIME FACULTY,\nGEN ED", photo: peterPedimentePhoto },
     ];
 
     // ✅ NEW — P.E. Faculty

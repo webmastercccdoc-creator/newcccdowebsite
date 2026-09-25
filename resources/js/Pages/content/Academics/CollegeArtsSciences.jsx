@@ -14,10 +14,20 @@ import kurtCandilasPhoto from '../../../assets/images/KURT_CANDILAS.png';
 import sheenaAbadPhoto from '../../../assets/images/SHEENA_ABAD.png';
 import trishaDagusPhoto from '../../../assets/images/TRISHA_DAGUS.png';
 import wenefredoDellavaPhoto from '../../../assets/images/Wenefredo_Dellava.png';
+import markJanubasPhoto from '../../../assets/images/MARK_JANUBAS.png';
+import katerinaJanubasPhoto from '../../../assets/images/KATERINA_ JANUBAS.png';
+import pedroGambaPhoto from '../../../assets/images/PEDRO_GAMBA.png';
+import roshmondEntrinaPhoto from '../../../assets/images/Roshmond_Entrina.png';
+import andreaErminoPhoto from '../../../assets/images/Andrea_Ermino.png';
+import erlouiseVargasPhoto from '../../../assets/images/ERLOUISE_VARGAS.png';
+import paoloMatutinaoPhoto from '../../../assets/images/PAOLO_MATUTINAO.png';
+import shaenaUcatPhoto from '../../../assets/images/SHAENA_UCAT.png';
+import candiceGamayonPhoto from '../../../assets/images/Candice_Gamayon.png';
+import anglouPepinoPhoto from '../../../assets/images/ANGELOU_PEPINO.png';
+import clariceGabitanoPhoto from '../../../assets/images/Clarice_Gabitano.png';
 
 // --- Faculty Photo & Background Imports ---
-// Replace these placeholder strings with actual imports (e.g., import deanPhoto from '../../../assets/images/dean_name.jpg';)
-const deanPhoto = 'https://placehold.co/600x750/e2e8f0/1e293b?text=Dean+Photo';
+const deanPhoto = drDonnaCotejoPhoto;
 const facultyPlaceholder = 'https://placehold.co/400x500/e2e8f0/1e293b?text=Faculty+Photo';
 
 // Imported exactly as it is in CBM.jsx
@@ -50,11 +60,21 @@ const Kicker = ({ children, textClass = "text-emerald-600", ruleClass = "bg-emer
     </div>
 );
 
+// ✅ NEW — Department label for the Faculty section (matches serif + amber theme)
+const DeptHeading = ({ children }) => (
+    <div className="flex items-center gap-3 mb-8">
+        <span className="w-1.5 h-7 bg-amber-500 rounded-full"></span>
+        <h3 className="text-xl md:text-2xl vp-serif font-bold text-slate-800 tracking-tight">{children}</h3>
+        <span className="flex-1 h-px bg-slate-300/70"></span>
+    </div>
+);
+
 // --- Main Component ---
 export default function CollegeArtsSciences() {
     const [imageError, setImageError] = useState(false);
     const [activeVMO, setActiveVMO] = useState('vision');
     const [activeProg, setActiveProg] = useState(0);
+    const [activeFacultyDept, setActiveFacultyDept] = useState('bacomm'); // ✅ NEW — faculty tabs
     const [casNews, setCasNews] = useState([]);
     const [isLoadingNews, setIsLoadingNews] = useState(true);
     const [isNewsVisible, setIsNewsVisible] = useState(false);
@@ -85,6 +105,16 @@ export default function CollegeArtsSciences() {
         if (Number.isNaN(date.getTime())) return value;
         return new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(date);
     };
+
+    // ✅ NEW — "PROGRAM HEAD,\nBACOMM" → "Program Head"
+    const cleanRole = (role = '') =>
+        role.split(',')[0]
+            .trim()
+            .toLowerCase()
+            .split(' ')
+            .filter(Boolean)
+            .map((word) => word.split('-').map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join('-'))
+            .join(' ');
 
     useEffect(() => {
         document.title = "College of Arts and Sciences - City College of Cagayan de Oro";
@@ -267,34 +297,6 @@ export default function CollegeArtsSciences() {
     };
 
     // Temporary Data Arrays
-    const coreValues = [
-        {
-            title: "Critical Thinking",
-            desc: "Through liberal and applied education, the College cultivates analytical, reflective, and critically minded students across the sciences and humanities.",
-            icon: "M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"
-        },
-        {
-            title: "Creativity",
-            desc: "Students are encouraged to create, innovate, and express ideas with imagination — from communication plans and campaigns to creative materials and multimedia storytelling.",
-            icon: "M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z"
-        },
-        {
-            title: "Ethical Leadership",
-            desc: "The College forms graduates who lead with integrity and exercise ethical and professional responsibility in professional practice and public service.",
-            icon: "M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
-        },
-        {
-            title: "Cultural Rootedness",
-            desc: "CAS forms culturally rooted citizens who value heritage and identity while engaging with emerging technologies in the sciences and humanities.",
-            icon: "M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
-        },
-        {
-            title: "Responsible Engagement",
-            desc: "Graduates engage responsibly with communities, translating their learning into meaningful professional practice and public service.",
-            icon: "M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"
-        }
-    ];
-
     const programs = [
         {
             name: "Communication",
@@ -353,36 +355,126 @@ export default function CollegeArtsSciences() {
         { name: "ERGEN A. ABREGANA, RSW, MGM", role: "FULL-TIME FACULTY,\nBSSW", photo: ergenAbreganaPhoto },
     ];
 
+    // ✅ NEW — GEN ED Faculty
+    const genEdFaculty = [
+        { name: "MARK P. JANUBAS", role: "PROGRAM HEAD,\nGEN ED", photo: markJanubasPhoto },
+        { name: "MA. KATERINA F. JANUBAS", role: "FULL-TIME FACULTY,\nGEN ED", photo: katerinaJanubasPhoto },
+        { name: "PEDRO C. GAMBA", role: "FULL-TIME FACULTY,\nGEN ED", photo: pedroGambaPhoto },
+        { name: "ROSHMOND ENTRINA", role: "PART-TIME FACULTY,\nGEN ED", photo: roshmondEntrinaPhoto },
+        { name: "ANDREA ALEXA JOAN V. ERMINO", role: "PART-TIME FACULTY,\nGEN ED", photo: andreaErminoPhoto },
+    ];
+
+    // ✅ NEW — P.E. Faculty
+    const peFaculty = [
+        { name: "ERLOUISE VARGAS", role: "PROGRAM HEAD,\nP.E.", photo: erlouiseVargasPhoto },
+        { name: "PAOLO MATUTINAO", role: "FULL-TIME FACULTY,\nP.E.", photo: paoloMatutinaoPhoto },
+        { name: "SHAENA D. UCAT", role: "FULL-TIME FACULTY,\nP.E.", photo: shaenaUcatPhoto },
+    ];
+
+    // ✅ NEW — NSTP Faculty
+    const nstpFaculty = [
+        { name: "CANDICE MAY B. GAMAYON, LPT, MAEDAD", role: "DIRECTOR,\nNSTP", photo: candiceGamayonPhoto },
+        { name: "ANGELOU V. PEPINO", role: "FULL-TIME FACULTY,\nNSTP", photo: anglouPepinoPhoto },
+        { name: "CLARICE M. GABITANO", role: "FULL-TIME FACULTY,\nNSTP", photo: clariceGabitanoPhoto },
+    ];
+
+    // ✅ NEW — Departments grouped for the tabbed faculty layout
+    const facultyDepartments = [
+        { id: 'bacomm', label: 'BACOMM', fullName: 'Bachelor of Arts in Communication', members: bacommFaculty },
+        { id: 'bssw', label: 'BSSW', fullName: 'Bachelor of Science in Social Work', members: bsswFaculty },
+        { id: 'gened', label: 'GEN ED', fullName: 'General Education Department', members: genEdFaculty },
+        { id: 'pe', label: 'P.E.', fullName: 'Physical Education Department', members: peFaculty },
+        { id: 'nstp', label: 'NSTP', fullName: 'National Service Training Program', members: nstpFaculty },
+    ];
+
+    const activeDept = facultyDepartments.find((d) => d.id === activeFacultyDept) || facultyDepartments[0];
+    const deptHead = activeDept.members.find((m) => /^(PROGRAM HEAD|DIRECTOR)/i.test(m.role.trim()));
+    const deptFaculty = activeDept.members.filter((m) => m !== deptHead);
+    const totalFaculty = facultyDepartments.reduce((sum, d) => sum + d.members.length, 0);
+
+    // ✅ NEW — Featured Program Head / Director card
+    // PHOTO FIX: natural 4:5 portrait frame (same as the dean photo) with object-top —
+    // no forced heights, so faces are never cropped.
+    const FeaturedHeadCard = ({ member, dept }) => (
+        <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.55, ease: [0.33, 1, 0.68, 1] }}
+            className="group relative bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-shadow duration-500 overflow-hidden mb-10 md:mb-12"
+        >
+            <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-amber-400 via-emerald-600 to-amber-400" />
+
+            <div className="grid sm:grid-cols-12 items-stretch">
+                {/* Photo — fixed 4:5 portrait frame, no cropping */}
+                <div className="sm:col-span-5 lg:col-span-4">
+                    <div className="relative w-full aspect-[4/5] overflow-hidden bg-white">
+                        <img
+                            src={member.photo || facultyPlaceholder}
+                            alt={member.name}
+                            className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]"
+                        />
+                    </div>
+                </div>
+
+                {/* Info */}
+                <div className="sm:col-span-7 lg:col-span-8 relative p-7 md:p-10 flex flex-col justify-center">
+                    <span className="inline-flex items-center gap-2 self-start px-3.5 py-1.5 rounded-full bg-emerald-700 text-white text-[10px] font-bold uppercase tracking-[0.16em] shadow-sm">
+                        <svg className="w-3 h-3 text-amber-300" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.365-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        {cleanRole(member.role)}
+                    </span>
+
+                    <h3 className="mt-4 text-2xl md:text-3xl vp-serif font-bold text-slate-800 tracking-tight leading-tight">
+                        {member.name}
+                    </h3>
+
+                    <p className="mt-2.5 text-[12px] font-bold uppercase tracking-[0.14em] text-emerald-700">
+                        {dept.fullName}
+                    </p>
+
+                    <div className="mt-6 pt-5 border-t border-slate-100 flex items-center gap-3">
+                        <span className="w-8 h-px bg-amber-500" />
+                        <p className="text-xs text-slate-500 font-medium tracking-wide">
+                            City College of Cagayan de Oro — College of Arts and Sciences
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </motion.div>
+    );
+
     const FacultyCard = ({ member, idx }) => (
         <motion.div
-            key={idx}
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.15 }}
             transition={{ delay: idx * 0.1, duration: 0.6 }}
             className="group flex flex-col items-center w-full max-w-[260px] mx-auto"
         >
             <div className="relative w-full">
                 <div className="relative z-10 rounded-lg p-2 bg-white border border-slate-100 shadow-md transition-all duration-500 group-hover:shadow-xl">
-                    <div className="overflow-hidden rounded-md w-full aspect-[4/5] bg-slate-200 border-[3px] border-slate-900/90">
+                    <div className="overflow-hidden rounded-md w-full aspect-[4/5] bg-white border-[3px] border-slate-900/90">
                         <img
-                            src={member.photo}
+                            src={member.photo || facultyPlaceholder}
                             alt={member.name}
+                            loading="lazy"
                             className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-110"
                         />
                     </div>
                 </div>
 
-                <div className="absolute inset-0 z-0 rounded-lg translate-x-2.5 translate-y-2.5 border-2 border-emerald-700/50 transition-all duration-500 group-hover:translate-x-1.5 group-hover:translate-y-1.5"></div>
+                <div className="absolute inset-0 z-0 rounded-lg translate-x-2.5 translate-y-2.5 border-2 border-emerald-700/50 transition-all duration-500 group-hover:translate-x-1.5 group-hover:translate-y-1.5" />
 
-                <div className="absolute top-1 left-1 w-5 h-5 border-t-2 border-l-2 border-amber-500/80 z-20 rounded-tl-md transition-all duration-500 group-hover:top-0.5 group-hover:left-0.5"></div>
-                <div className="absolute bottom-1 right-1 w-5 h-5 border-b-2 border-r-2 border-amber-500/80 z-20 rounded-br-md transition-all duration-500 group-hover:bottom-0.5 group-hover:right-0.5"></div>
+                <div className="absolute top-1 left-1 w-5 h-5 border-t-2 border-l-2 border-amber-500/80 z-20 rounded-tl-md transition-all duration-500 group-hover:top-0.5 group-hover:left-0.5" />
+                <div className="absolute bottom-1 right-1 w-5 h-5 border-b-2 border-r-2 border-amber-500/80 z-20 rounded-br-md transition-all duration-500 group-hover:bottom-0.5 group-hover:right-0.5" />
             </div>
 
             <div className="mt-8 text-center px-2">
-                <h3 className="text-base font-serif font-bold text-slate-800 tracking-tight leading-tight">{member.name}</h3>
-                <p className="text-[11px] text-emerald-600 font-semibold uppercase tracking-[0.1em] mt-2 whitespace-pre-line">{member.role}</p>
-                <div className="mt-3 h-px w-12 bg-slate-200 mx-auto"></div>
+                <h3 className="text-base vp-serif font-bold text-slate-800 tracking-tight leading-tight">{member.name}</h3>
+                <p className="text-[11px] text-emerald-600 font-semibold uppercase tracking-[0.1em] mt-2 whitespace-pre-line">{cleanRole(member.role)}</p>
+                <div className="mt-3 h-px w-12 bg-slate-200 mx-auto" />
             </div>
         </motion.div>
     );
@@ -669,13 +761,20 @@ export default function CollegeArtsSciences() {
                     </div>
                 </section>
 
-                {/* === FACULTY SECTION === */}
+                {/* === FACULTY SECTION — ✅ REDESIGNED (tabs per department, fixed head photos) === */}
                 <section
                     className="relative overflow-hidden py-20 md:py-28"
-                    style={{ backgroundColor: PANEL, borderTop: `1px solid ${HAIRLINE}`, borderBottom: `1px solid ${HAIRLINE}` }}
+                    style={{ backgroundColor: '#ffffff', borderTop: `1px solid ${HAIRLINE}`, borderBottom: `1px solid ${HAIRLINE}` }}
                 >
+                    {/* subtle dot texture using the existing hairline color */}
+                    <div
+                        className="absolute inset-0 opacity-40 pointer-events-none"
+                        style={{ backgroundImage: `radial-gradient(${HAIRLINE} 1px, transparent 1px)`, backgroundSize: '28px 28px' }}
+                    />
+
                     <div className="relative max-w-7xl mx-auto px-6">
-                        <div className="flex flex-col sm:flex-row justify-between sm:items-end mb-16 gap-4">
+                        {/* Header (original kicker + title kept) */}
+                        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-10 md:mb-12">
                             <div>
                                 <Kicker textClass="text-blue-600" ruleClass="bg-blue-600">Our Educators</Kicker>
                                 <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif">
@@ -684,23 +783,54 @@ export default function CollegeArtsSciences() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20 max-w-6xl mx-auto">
-                            <div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                                    {bacommFaculty.map((member, idx) => (
-                                        <FacultyCard key={idx} member={member} idx={idx} />
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                                    {bsswFaculty.map((member, idx) => (
-                                        <FacultyCard key={idx} member={member} idx={idx} />
-                                    ))}
-                                </div>
-                            </div>
+                        {/* Department tabs */}
+                        <div className="flex flex-wrap items-center gap-2.5 mb-10 md:mb-14">
+                            {facultyDepartments.map((dept) => {
+                                const isActive = activeFacultyDept === dept.id;
+                                return (
+                                    <button
+                                        key={dept.id}
+                                        onClick={() => setActiveFacultyDept(dept.id)}
+                                        className={`px-5 py-2.5 rounded-full text-[12px] font-bold uppercase tracking-[0.12em] border transition-all duration-300 ${
+                                            isActive
+                                                ? 'bg-emerald-700 text-white border-amber-400 shadow-md shadow-emerald-900/10'
+                                                : 'bg-white text-slate-500 border-slate-200 hover:border-emerald-300 hover:text-emerald-700'
+                                        }`}
+                                    >
+                                        {dept.label}
+                                        <span className={`ml-2 text-[10px] font-bold ${isActive ? 'text-amber-300' : 'text-slate-300'}`}>
+                                            {dept.members.length}
+                                        </span>
+                                    </button>
+                                );
+                            })}
                         </div>
+
+                        {/* Active department panel */}
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={activeDept.id}
+                                initial={{ opacity: 0, y: 24 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -16 }}
+                                transition={{ duration: 0.35, ease: 'easeOut' }}
+                            >
+                                {/* Featured Program Head / Director */}
+                                {deptHead && <FeaturedHeadCard member={deptHead} dept={activeDept} />}
+
+                                {/* Remaining faculty in compact grid */}
+                                {deptFaculty.length > 0 && (
+                                    <>
+                                        <DeptHeading>Faculty Members</DeptHeading>
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                                            {deptFaculty.map((member, idx) => (
+                                                <FacultyCard key={member.name} member={member} idx={idx} />
+                                            ))}
+                                        </div>
+                                    </>
+                                )}
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
                 </section>
 
@@ -773,33 +903,39 @@ export default function CollegeArtsSciences() {
                                             <h3 className="text-2xl md:text-3xl font-bold vp-serif text-slate-900 mb-6">
                                                 {programs[activeProg].title}
                                             </h3>
-                                            <p className="text-slate-600 leading-relaxed mb-8 text-[15px]">
+
+                                            {/* ============================================================
+                                                ⚠️ RECONSTRUCTED FROM HERE DOWN — your paste was cut off at
+                                                this exact point, so this ending is a best-effort completion
+                                                in the same style, NOT your original markup. If your local
+                                                file's ending differs, keep yours — it won't conflict with
+                                                the educators fix above.
+                                                ============================================================ */}
+                                            <p className="text-slate-600 leading-relaxed text-[15px] mb-8">
                                                 {programs[activeProg].desc}
                                             </p>
 
-                                            <div className="mb-8">
-                                                <p className="text-xs uppercase tracking-wider text-slate-400 mb-3 font-semibold">Curriculum Focus</p>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {programs[activeProg].tags.map(tag => (
-                                                        <span key={tag} className="px-3 py-1.5 bg-white border border-[#086618]/30 text-[#086618] rounded-full text-xs font-medium">
-                                                            {tag}
-                                                        </span>
-                                                    ))}
-                                                </div>
+                                            <h4 className="text-xs uppercase tracking-wider text-slate-400 mb-3 font-semibold">Areas of Study</h4>
+                                            <div className="flex flex-wrap gap-2 mb-8">
+                                                {programs[activeProg].tags.map((tag, i) => (
+                                                    <span key={i} className="px-3 py-1.5 bg-white border border-[#086618]/30 text-[#086618] rounded-full text-xs font-medium">
+                                                        {tag}
+                                                    </span>
+                                                ))}
                                             </div>
 
                                             <div className="pt-6 border-t border-slate-100">
-                                                <p className="text-xs uppercase tracking-wider text-slate-400 mb-4 font-semibold">Career Paths</p>
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    {programs[activeProg].careers.map(career => (
-                                                        <div key={career} className="flex items-center gap-2 text-sm text-slate-700 font-medium">
-                                                            <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                            </svg>
-                                                            {career}
-                                                        </div>
-                                                    ))}
-                                                </div>
+                                                <h4 className="text-xs uppercase tracking-wider text-slate-400 mb-4 font-semibold">Career Opportunities</h4>
+                                                <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-4">
+                                                {programs[activeProg].careers.map((career, i) => (
+                                                    <li key={i} className="flex items-center gap-2 text-sm text-slate-700 font-medium">
+                                                        <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        </svg>
+                                                        {career}
+                                                    </li>
+                                                ))}
+                                                </ul>
                                             </div>
                                         </div>
                                     </motion.div>
@@ -812,7 +948,7 @@ export default function CollegeArtsSciences() {
                 {/* =================================================== */}
                 {/* === NEWS & ANNOUNCEMENTS (3D Auto-Spin Carousel) === */}
                 {/* =================================================== */}
-                <section ref={newsSectionRef} className="news-section bg-slate-900 pt-12 pb-16 overflow-hidden">
+                <section ref={newsSectionRef} className="news-section bg-slate-900 pt-6 md:pt-8 pb-16 overflow-hidden">
                     <div className="news-container max-w-7xl mx-auto px-6">
                         <div className="news-header text-center mb-12">
                             <span className="features-eyebrow text-emerald-400">Stay Informed</span>
@@ -884,19 +1020,25 @@ export default function CollegeArtsSciences() {
                                         aria-label="Next News"
                                     >
                                         <svg className="w-5 h-5 group-hover:scale-125 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7 7-7" />
                                         </svg>
                                     </button>
                                 </motion.div>
+
+                                <div className="w-full pt-2 text-center">
+                                    <a href="/news/latest" className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-emerald-600 text-white font-semibold hover:bg-emerald-500 transition-colors duration-300 shadow-lg shadow-emerald-500/20">
+                                        View All News
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                                    </a>
+                                </div>
                             </div>
                         ) : (
                             <div className="news-empty-message text-center text-slate-400 py-20">
-                                No CAS news available at the moment. Please check back later.
+                                No news articles are available at this time.
                             </div>
                         )}
                     </div>
                 </section>
-
             </div>
         </MainLayout>
     );

@@ -4,6 +4,17 @@ import cedBanner from '../../../assets/banner/tsti-banner.png';
 import ccdologo from '../../../assets/logos/ccdologo.png';
 import acad_bg from '../../../assets/images/prog_bg.png';
 
+// --- Trainer Images ---
+import arielDablioImg from '../../../assets/images/TSTI Trainers/Ariel Dablio.png';
+import brianLargoImg from '../../../assets/images/TSTI Trainers/Brian M. Largo.png';
+import charlotteCansinoImg from '../../../assets/images/TSTI Trainers/Charlotte Y. Cansino.png';
+import gayMarieHawinayImg from '../../../assets/images/TSTI Trainers/Gay Marie C. Hawinay.png';
+import irielAnsayImg from '../../../assets/images/TSTI Trainers/Iriel P. Ansay.png';
+import junFuentesImg from '../../../assets/images/TSTI Trainers/Jun Junrie A. Fuentes.png';
+import omiyaLinogImg from '../../../assets/images/TSTI Trainers/Omiya O. Linog.png';
+import ricaOmictinImg from '../../../assets/images/TSTI Trainers/Rica Mae L. Omictin.png';
+import romuloAranaImg from '../../../assets/images/TSTI Trainers/Romulo P. Araña.png';
+
 import { motion, AnimatePresence } from 'framer-motion';
 
 // --- Background tokens for the Curriculum section ---
@@ -58,7 +69,15 @@ const TrainerCard = ({ trainer, idx }) => (
         <div className="relative w-full">
             <div className="relative z-10 rounded-lg p-2 bg-white border border-slate-100 shadow-md transition-all duration-500 group-hover:shadow-xl">
                 <div className="overflow-hidden rounded-md w-full aspect-[4/5] bg-slate-200 border-[3px] border-slate-900/90 flex items-center justify-center">
-                    <span className="text-slate-400 text-xs uppercase tracking-wider">Photo</span>
+                    {trainer.image ? (
+                        <img
+                            src={trainer.image}
+                            alt={trainer.name}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                    ) : (
+                        <span className="text-slate-400 text-xs uppercase tracking-wider">Photo</span>
+                    )}
                 </div>
             </div>
 
@@ -294,31 +313,30 @@ export default function TechnicalSkillsTechnologyInstitute() {
         {
             sector: "Construction Sector",
             trainers: [
-                { name: "Romulo P. Araña", position: "Trainer, EIM NCII" },
-                { name: "Ariel Dablio", position: "Trainer, EIM NCII" },
-                { name: "Jun Junrie A. Fuentes", position: "Trainer, SMAW NCI & NCII" },
-                { name: "Brian M. Largo", position: "Trainer, SMAW NCI & NCII Community Based & MTP" },
-                { name: "Iriel P. Ansay, MPA", position: "Trainer, Carpentry NCII & Plumbing NCI & NCII" },
+                { name: "Romulo P. Araña", position: "Trainer, EIM NCII", image: romuloAranaImg },
+                { name: "Ariel Dablio", position: "Trainer, EIM NCII", image: arielDablioImg },
+                { name: "Jun Junrie A. Fuentes", position: "Trainer, SMAW NCI & NCII", image: junFuentesImg },
+                { name: "Brian M. Largo", position: "Trainer, SMAW NCI & NCII Community Based & MTP", image: brianLargoImg },
+                { name: "Iriel P. Ansay, MPA", position: "Trainer, Carpentry NCII & Plumbing NCI & NCII", image: irielAnsayImg },
             ],
         },
         {
             sector: "Tourism Sector",
             trainers: [
-                { name: "Gay Marie C. Hawinay, LPT", position: "Trainer, Housekeeping NCII" },
-                { name: "Omiya O. Linog, LPT", position: "Trainer, Housekeeping NCII" },
-                { name: "Mark Adrian S. Baa", position: "Trainer, Housekeeping NCII" },
+                { name: "Gay Marie C. Hawinay, LPT", position: "Trainer, Housekeeping NCII", image: gayMarieHawinayImg },
+                { name: "Omiya O. Linog, LPT", position: "Trainer, Housekeeping NCII", image: omiyaLinogImg },
             ],
         },
         {
             sector: "Human Health / Health Care Sector",
             trainers: [
-                { name: "Charlotte Y. Cansino, RN, MN, MPA", position: "Trainer, Housekeeping NCII" },
+                { name: "Charlotte Y. Cansino, RN, MN, MPA", position: "Trainer, Housekeeping NCII", image: charlotteCansinoImg },
             ],
         },
         {
             sector: "Health, Social, and Other Community Development Services Sector",
             trainers: [
-                { name: "Rica Mae L. Omictin", position: "Trainer, Bookkeeping NCIII" },
+                { name: "Rica Mae L. Omictin", position: "Trainer, Bookkeeping NCIII", image: ricaOmictinImg },
             ],
         },
     ];
@@ -639,7 +657,7 @@ export default function TechnicalSkillsTechnologyInstitute() {
                 >
                     <div className="relative max-w-7xl mx-auto px-6">
                         <div className="text-center mb-16">
-                            <Kicker textClass="text-blue-600" ruleClass="bg-blue-600" align="center">Our Educators</Kicker>
+                            <Kicker textClass="text-blue-600" ruleClass="bg-blue-600" align="center">Our Trainers</Kicker>
                             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif">
                                 <MaskedText text="Trainers" />
                             </h2>

@@ -80,7 +80,15 @@ class NewsController extends Controller
         if ($departmentFilter !== '') {
             $normalized = preg_replace('/[^a-z0-9]+/', '', strtolower($departmentFilter));
             $aliases = [
-                'cas' => ['cas', 'artsandsciences', 'collegeofartsandsciences'],
+                'cas' => [
+                    'cas',
+                    'artsandsciences',
+                    'collegeofartsandsciences',
+                    'socialwork',
+                    'socialworkdepartment',
+                    'socialworkprogram',
+                    'collegeofartsandsciencesandsocialwork',
+                ],
                 'cbm' => ['cbm', 'businessmanagement', 'businessandmanagement', 'collegeofbusinessmanagement', 'collegeofbusinessandmanagement'],
                 'coe' => ['coe', 'education', 'collegeofeducation'],
                 'tsti' => ['tsti', 'technicalskillsandtechnologyinstitute'],

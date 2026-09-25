@@ -4,6 +4,30 @@ import cedBanner from '../../../assets/banner/coe-banner.png';
 import ccdologo from '../../../assets/logos/ccdologo.png';
 import { motion, AnimatePresence } from 'framer-motion';
 import deanPhoto from '../../../assets/images/Dr_Liza_Chua.png';
+import drButchMahinayPhoto from '../../../assets/images/Dr_Butch_Mahinay.png';
+import drHelmaeTapananPhoto from '../../../assets/images/Dr_Helmae_Tapanan.png';
+import jonathanMadroneroPhoto from '../../../assets/images/JONATHAN_MADRONERO.png';
+import markJanubasPhoto from '../../../assets/images/MARK_JANUBAS.png';
+import katerinaJanubasPhoto from '../../../assets/images/KATERINA_ JANUBAS.png';
+import erlouiseVargasPhoto from '../../../assets/images/ERLOUISE_VARGAS.png';
+import paoloMatutinaoPhoto from '../../../assets/images/PAOLO_MATUTINAO.png';
+import shaenaUcatPhoto from '../../../assets/images/SHAENA_UCAT.png';
+import melodyImage from '../../../assets/images/melody-image.png';
+import colarteImage from '../../../assets/images/colarte-image.png';
+import manasImage from '../../../assets/images/James_Manas.png';
+import aranarImage from '../../../assets/images/HOWARD_ARANAR.png';
+import joelPotanePhoto from '../../../assets/images/JOEL_POTANE.png';
+import chenessaAguilarPhoto from '../../../assets/images/CHENESSA_AGUILAR.png';
+import aizaCahansaPhoto from '../../../assets/images/AIZA_CAHANSA.png';
+import charlieCosmianoPhoto from '../../../assets/images/CHARLIE_COSMIANO.png';
+import charlitoCastrodesPhoto from '../../../assets/images/CHARLITO_CASTRODES.png';
+import jamilleDablioPhoto from '../../../assets/images/JAMILLE_DABLIO.png';
+import jasonHerreraPhoto from '../../../assets/images/JASON_HERRERA.png';
+import maryAcenasPhoto from '../../../assets/images/MARY_ ACENAS.png';
+import pancracioSaboridroPhoto from '../../../assets/images/PANCRACIO_SABORIDRO.png';
+import psycheCamboPhoto from '../../../assets/images/PSYCHE_CAMBO.png';
+import jeanLoquillanoPhoto from '../../../assets/images/JEAN_LOQUILLANO.png';
+import ghayMagansaPhoto from '../../../assets/images/GHAY_MAGANSA.png';
 
 // --- Faculty Photo & Background Imports ---
 const facultyPlaceholder = 'https://placehold.co/400x500/e2e8f0/1e293b?text=Faculty+Photo';
@@ -43,9 +67,11 @@ export default function CollegeEducation() {
     const [imageError, setImageError] = useState(false);
     const [activeVMO, setActiveVMO] = useState('vision');
     const [activeProg, setActiveProg] = useState(0);
+    const [activeFacultyDept, setActiveFacultyDept] = useState('btvted');
     const [coeNews, setCoeNews] = useState([]);
     const [isLoadingNews, setIsLoadingNews] = useState(true);
     const [isNewsVisible, setIsNewsVisible] = useState(false);
+    const [isBioExpanded, setIsBioExpanded] = useState(false);
 
     // Refs for 3D Carousel
     const dragRef = useRef(null);
@@ -264,24 +290,114 @@ export default function CollegeEducation() {
 
     const programs = [
         {
-            name: "Program Name",
-            degree: "Bachelor of Science",
-            desc: "Coming soon. Details about the program will be updated shortly.",
-            tags: ["Coming Soon", "TBD"],
-            careers: ["TBD", "TBD"]
+            name: "Technical-Vocational Teacher Education",
+            degree: "Bachelor of",
+            desc: "Prepares future teachers and trainers for vocational and technical education through a balanced foundation in teaching theory, technology, and practical industry experience. Graduates are equipped to teach TLE in Grades 9-10, the TVL track in senior high school, TVET, and related higher education programs.",
+            tags: ["TLE & TVL Instructor", "TVET", "Technical Skills", "Industry Experience"],
+            careers: ["TLE Instructor", "TVL Instructor", "TVET Trainer", "Technical Instructor"]
+        },
+        {
+            name: "Technology and Livelihood Education",
+            degree: "Bachelor of",
+            desc: "Develops competent teachers for Technology and Livelihood Education through integrated theoretical and practical training. The program prepares graduates to teach TLE in Grades 4-8 and support learners in building useful technology, livelihood, and entrepreneurial skills.",
+            tags: ["TLE Instructor", "Technology Education", "Livelihood Skills", "Practical Training"],
+            careers: ["TLE Instructor", "Skills Trainer", "Livelihood Educator", "Learning Facilitator"]
         }
     ];
 
-    const chairpersons = [
-        { name: "Faculty Name", role: "Chairperson", photo: facultyPlaceholder },
+    const btvtedFaculty = [
+        { name: "PSYCHE B. CAMBO, DTE", role: "Program Chairperson", photo: psycheCamboPhoto },
+        { name: "CHARLIE H. COSMIANO, MTTE", role: "Faculty", photo: charlieCosmianoPhoto },
+        { name: "PANCRACIO R. SABORIDRO, MAT-ET", role: "Faculty", photo: pancracioSaboridroPhoto },
+        { name: "JASON HERRERA, MITO", role: "Faculty", photo: jasonHerreraPhoto },
     ];
 
-    const facultyMembers = [
-        { name: "Faculty Name", role: "Faculty Member", photo: facultyPlaceholder },
-        { name: "Faculty Name", role: "Faculty Member", photo: facultyPlaceholder },
-        { name: "Faculty Name", role: "Faculty Member", photo: facultyPlaceholder },
-        { name: "Faculty Name", role: "Faculty Member", photo: facultyPlaceholder },
+    const btledFaculty = [
+        { name: "CHARLITO M. CASTRODES, PhD-TM", role: "Program Chairperson", photo: charlitoCastrodesPhoto },
+        { name: "AIZA MAE D. CAHANSA, MASE", role: "Faculty", photo: aizaCahansaPhoto },
+        { name: "MARY VIL ACENAS, MAED", role: "Faculty", photo: maryAcenasPhoto },
+        { name: "ENGR. JAMILLE DABLIO", role: "Faculty", photo: jamilleDablioPhoto },
     ];
+
+    const professionalEducationFaculty = [
+        { name: "MA. AIRA CHENESSA B. AGUILAR, EdD", role: "Faculty", photo: chenessaAguilarPhoto },
+        { name: "HELMAE E. TAPANAN, EdD", role: "Faculty", photo: drHelmaeTapananPhoto },
+        { name: "RAY BUTCH D. MAGHINAY, PhD", role: "Faculty", photo: drButchMahinayPhoto },
+        { name: "JONATHAN A. MADRONERO, MS", role: "Faculty", photo: jonathanMadroneroPhoto },
+        { name: "AGA EMM D. MAHINAY, PhD", role: "Faculty"},
+        { name: "JEAN T. LOQUILLANO, PhD", role: "Faculty", photo: jeanLoquillanoPhoto },
+        { name: "GHAY MARIE PIANAR-MAGANSA, LPT", role: "Faculty", photo: ghayMagansaPhoto },
+        { name: "JOEL D. POTANE, PhD", role: "Faculty", photo: joelPotanePhoto  },
+    ];
+
+    const generalEducationFaculty = [
+        { name: "MA. KATERINA F. JANUBAS, MAED, LPT", role: "Faculty", photo: katerinaJanubasPhoto },
+        { name: "FAITH COLARTE, RGC", role: "Faculty", photo: colarteImage },
+        { name: "MARK P. JANUBAS, MEd, LPT", role: "Faculty", photo: markJanubasPhoto },
+        { name: "MELODY R. AGITO, PhD", role: "Faculty", photo: melodyImage },
+        { name: "HOWARD CHRISTIAN ARANAR", role: "Faculty", photo: aranarImage  },
+        { name: "JAMES DELOS SANTOS MANAS", role: "Faculty", photo: manasImage  },
+    ];
+
+    const pathfitFaculty = [
+        { name: "ERLOUISE VARGAS, LPT", role: "PATHFIT Faculty", photo: erlouiseVargasPhoto },
+        { name: "PAOLO MARI MATUTINAO, LPT", role: "PATHFIT Faculty", photo: paoloMatutinaoPhoto },
+        { name: "SHAENA DANE UCAT, LPT", role: "PATHFIT Faculty", photo: shaenaUcatPhoto },
+    ];
+
+    const facultyDepartments = [
+        { id: 'btvted', label: 'BTVTED', fullName: 'Bachelor of Technical-Vocational Teacher Education', members: btvtedFaculty },
+        { id: 'btled', label: 'BTLED', fullName: 'Bachelor of Technology and Livelihood Education', members: btledFaculty },
+        { id: 'professional-education', label: 'PROFESSIONAL EDUCATION', fullName: 'Professional Education Department', members: professionalEducationFaculty },
+        { id: 'general-education', label: 'GENERAL EDUCATION', fullName: 'General Education Department', members: generalEducationFaculty },
+        { id: 'pathfit', label: 'PATHFIT', fullName: 'Physical Activities Toward Health and Fitness Department', members: pathfitFaculty },
+    ];
+
+    const activeDept = facultyDepartments.find((department) => department.id === activeFacultyDept) || facultyDepartments[0];
+    const deptHead = activeDept.members.find((member) => member.role === 'Program Chairperson');
+    const deptFaculty = activeDept.members.filter((member) => member !== deptHead);
+
+    const DeptHeading = ({ children }) => (
+        <div className="flex items-center gap-3 mb-8">
+            <span className="w-1.5 h-7 bg-amber-500 rounded-full" />
+            <h3 className="text-xl md:text-2xl vp-serif font-bold text-slate-800 tracking-tight">{children}</h3>
+            <span className="flex-1 h-px bg-slate-300/70" />
+        </div>
+    );
+
+    const FeaturedHeadCard = ({ member, dept }) => (
+        <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.55, ease: [0.33, 1, 0.68, 1] }}
+            className="group relative bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-shadow duration-500 overflow-hidden mb-10 md:mb-12"
+        >
+            <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-amber-400 via-emerald-600 to-amber-400" />
+            <div className="grid sm:grid-cols-12 items-stretch">
+                <div className="sm:col-span-5 lg:col-span-4">
+                    <div className="relative w-full aspect-[4/5] overflow-hidden bg-white">
+                        <img
+                            src={member.photo || facultyPlaceholder}
+                            alt={member.name}
+                            className="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]"
+                        />
+                    </div>
+                </div>
+                <div className="sm:col-span-7 lg:col-span-8 relative p-7 md:p-10 flex flex-col justify-center">
+                    <span className="inline-flex self-start px-3.5 py-1.5 rounded-full bg-emerald-700 text-white text-[10px] font-bold uppercase tracking-[0.16em] shadow-sm">
+                        {member.role}
+                    </span>
+                    <h3 className="mt-4 text-2xl md:text-3xl vp-serif font-bold text-slate-800 tracking-tight leading-tight">{member.name}</h3>
+                    <p className="mt-2.5 text-[12px] font-bold uppercase tracking-[0.14em] text-emerald-700">{dept.fullName}</p>
+                    <div className="mt-6 pt-5 border-t border-slate-100 flex items-center gap-3">
+                        <span className="w-8 h-px bg-amber-500" />
+                        <p className="text-xs text-slate-500 font-medium tracking-wide">City College of Cagayan de Oro — College of Education</p>
+                    </div>
+                </div>
+            </div>
+        </motion.div>
+    );
 
     const FacultyCard = ({ member, idx }) => (
         <motion.div
@@ -294,9 +410,9 @@ export default function CollegeEducation() {
         >
             <div className="relative w-full">
                 <div className="relative z-10 rounded-lg p-2 bg-white border border-slate-100 shadow-md transition-all duration-500 group-hover:shadow-xl">
-                    <div className="overflow-hidden rounded-md w-full aspect-[4/5] bg-slate-200 border-[3px] border-slate-900/90">
+                    <div className="overflow-hidden rounded-md w-full aspect-[4/5] bg-white border-[3px] border-slate-900/90">
                         <img
-                            src={member.photo}
+                            src={member.photo || facultyPlaceholder}
                             alt={member.name}
                             className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-110"
                         />
@@ -515,6 +631,7 @@ export default function CollegeEducation() {
                             </h2>
 
                             <motion.div
+                                id="dean-bionote-details"
                                 className="space-y-4 text-slate-600 leading-relaxed text-[15px]"
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
@@ -524,22 +641,37 @@ export default function CollegeEducation() {
                                 <p>
                                     Dr. Liza L. Chua is the current Dean of the College of Education at the City College of Cagayan de Oro. She previously served as Dean of the College of Teacher Education (CTE) at the University of Cebu–Main Campus for seven years and as College Dean at St. Paul University Surigao from School Year 2022–2024.
                                 </p>
-                                <p>
-                                    Dr. Chua earned her Bachelor of Secondary Education major in Social Science and her Master of Arts in Social Science from Cebu Normal University. She also completed her Diploma in Special Education and Master of Arts in Special Education at Cebu Technological University. She earned her <strong className="text-slate-800">Doctor in Development Education (DevEdD)</strong> from Cebu Technological University and completed her <strong className="text-slate-800">Doctor of Philosophy major in Educational Management</strong> at the University of Bohol in 2017.
-                                </p>
-                                <p>
-                                    An active scholar and researcher, Dr. Chua has written, co-authored, and published articles in international journals since 2015. She has likewise co-authored textbooks and other instructional and printed materials over the past several years, contributing to the advancement of knowledge and practice in education and teacher education.
-                                </p>
-                                <p>
-                                    Dr. Chua has been a <strong className="text-slate-800">PACUCOA Accreditor since 2015</strong>, contributing her expertise to quality assurance and continuous improvement in Philippine higher education. She also serves as a Pre-Service Teacher Education Curriculum Writer under the Results-Based, Inclusive, and Transformative Quality (RITQ) Framework in collaboration with the Teacher Education Council (TEC), where she contributes to curriculum development initiatives that promote quality, relevance, inclusivity, and transformative teacher education.
-                                </p>
-                                <p>
-                                    Demonstrating her commitment to academic leadership and institutional development, Dr. Chua was also among the candidates in the <strong className="text-slate-800">Search for President of the City College of Cagayan de Oro</strong> held on October 25, 2024, at the Tourism Hall, City Hall Compound, Cagayan de Oro City.
-                                </p>
-                                <p>
-                                    With her extensive experience in academic leadership, teacher education, special education, research, curriculum development, and quality assurance, Dr. Chua continues to advocate for inclusive, transformative, and outcomes-based education. Her professional work reflects a sustained commitment to developing competent educators, strengthening educational institutions, advancing research, and contributing to the continuing improvement of Philippine education.
-                                </p>
+                                {isBioExpanded && (
+                                    <>
+                                        <p>
+                                            Dr. Chua earned her Bachelor of Secondary Education major in Social Science and her Master of Arts in Social Science from Cebu Normal University. She also completed her Diploma in Special Education and Master of Arts in Special Education at Cebu Technological University. She earned her <strong className="text-slate-800">Doctor in Development Education (DevEdD)</strong> from Cebu Technological University and completed her <strong className="text-slate-800">Doctor of Philosophy major in Educational Management</strong> at the University of Bohol in 2017.
+                                        </p>
+                                        <p>
+                                            An active scholar and researcher, Dr. Chua has written, co-authored, and published articles in international journals since 2015. She has likewise co-authored textbooks and other instructional and printed materials over the past several years, contributing to the advancement of knowledge and practice in education and teacher education.
+                                        </p>
+                                        <p>
+                                            Dr. Chua has been a <strong className="text-slate-800">PACUCOA Accreditor since 2015</strong>, contributing her expertise to quality assurance and continuous improvement in Philippine higher education. She also serves as a Pre-Service Teacher Education Curriculum Writer under the Results-Based, Inclusive, and Transformative Quality (RITQ) Framework in collaboration with the Teacher Education Council (TEC), where she contributes to curriculum development initiatives that promote quality, relevance, inclusivity, and transformative teacher education.
+                                        </p>
+                                        <p>
+                                            Demonstrating her commitment to academic leadership and institutional development, Dr. Chua was also among the candidates in the <strong className="text-slate-800">Search for President of the City College of Cagayan de Oro</strong> held on October 25, 2024, at the Tourism Hall, City Hall Compound, Cagayan de Oro City.
+                                        </p>
+                                        <p>
+                                            With her extensive experience in academic leadership, teacher education, special education, research, curriculum development, and quality assurance, Dr. Chua continues to advocate for inclusive, transformative, and outcomes-based education. Her professional work reflects a sustained commitment to developing competent educators, strengthening educational institutions, advancing research, and contributing to the continuing improvement of Philippine education.
+                                        </p>
+                                    </>
+                                )}
                             </motion.div>
+
+                            <button
+                                type="button"
+                                onClick={() => setIsBioExpanded((expanded) => !expanded)}
+                                aria-expanded={isBioExpanded}
+                                aria-controls="dean-bionote-details"
+                                className="mt-6 inline-flex items-center gap-2 rounded-full border border-emerald-700 bg-emerald-700 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-emerald-800"
+                            >
+                                {isBioExpanded ? 'View less' : 'View more about Dr. Chua'}
+                                <span aria-hidden="true" className="text-amber-300">{isBioExpanded ? '↑' : '↓'}</span>
+                            </button>
 
                             <motion.div
                                 className="mt-6 flex flex-wrap gap-2"
@@ -607,9 +739,9 @@ export default function CollegeEducation() {
                                 </svg>
                                 <p className="text-xl md:text-2xl text-white/95 leading-relaxed vp-serif font-medium">
                                     {activeVMO === 'vision' ? (
-                                        "Coming soon..."
+                                        "Committed to developing professional and technical educators through quality instruction, innovative research, and community engagement. Guided by excellence, integrity, and social responsibility, it prepares future teachers to become lifelong learners, critical thinkers, and transformative leaders in the service of the community."
                                     ) : (
-                                        "Coming soon..."
+                                        "Devoted to nurturing and empowering future educators through learner-centered instruction, innovative research, and meaningful community engagement. It cultivates students’ passion, competence, and social responsibility, preparing them to become compassionate teachers, critical thinkers, and transformative leaders who inspire change in schools and communities."
                                     )}
                                 </p>
                             </motion.div>
@@ -620,10 +752,15 @@ export default function CollegeEducation() {
                 {/* === FACULTY SECTION === */}
                 <section
                     className="relative overflow-hidden py-20 md:py-28"
-                    style={{ backgroundColor: PANEL, borderTop: `1px solid ${HAIRLINE}`, borderBottom: `1px solid ${HAIRLINE}` }}
+                    style={{ backgroundColor: '#ffffff', borderTop: `1px solid ${HAIRLINE}`, borderBottom: `1px solid ${HAIRLINE}` }}
                 >
+                    <div
+                        className="absolute inset-0 opacity-40 pointer-events-none"
+                        style={{ backgroundImage: `radial-gradient(${HAIRLINE} 1px, transparent 1px)`, backgroundSize: '28px 28px' }}
+                    />
+
                     <div className="relative max-w-7xl mx-auto px-6">
-                        <div className="flex flex-col sm:flex-row justify-between sm:items-end mb-16 gap-4">
+                        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-10 md:mb-12">
                             <div>
                                 <Kicker textClass="text-blue-600" ruleClass="bg-blue-600">Our Educators</Kicker>
                                 <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif">
@@ -632,17 +769,50 @@ export default function CollegeEducation() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-20 max-w-3xl mx-auto">
-                            {chairpersons.map((member, idx) => (
-                                <FacultyCard key={idx} member={member} idx={idx} />
-                            ))}
+                        <div className="flex flex-wrap items-center gap-2.5 mb-10 md:mb-14">
+                            {facultyDepartments.map((department) => {
+                                const isActive = activeFacultyDept === department.id;
+                                return (
+                                    <button
+                                        key={department.id}
+                                        onClick={() => setActiveFacultyDept(department.id)}
+                                        className={`px-5 py-2.5 rounded-full text-[12px] font-bold uppercase tracking-[0.12em] border transition-all duration-300 ${
+                                            isActive
+                                                ? 'bg-emerald-700 text-white border-amber-400 shadow-md shadow-emerald-900/10'
+                                                : 'bg-white text-slate-500 border-slate-200 hover:border-emerald-300 hover:text-emerald-700'
+                                        }`}
+                                    >
+                                        {department.label}
+                                        <span className={`ml-2 text-[10px] font-bold ${isActive ? 'text-amber-300' : 'text-slate-300'}`}>
+                                            {department.members.length}
+                                        </span>
+                                    </button>
+                                );
+                            })}
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {facultyMembers.map((member, idx) => (
-                                <FacultyCard key={idx} member={member} idx={idx} />
-                            ))}
-                        </div>
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={activeDept.id}
+                                initial={{ opacity: 0, y: 24 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -16 }}
+                                transition={{ duration: 0.35, ease: 'easeOut' }}
+                            >
+                                {deptHead && <FeaturedHeadCard member={deptHead} dept={activeDept} />}
+
+                                {deptFaculty.length > 0 && (
+                                    <>
+                                        <DeptHeading>Faculty Members</DeptHeading>
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                                            {deptFaculty.map((member, idx) => (
+                                                <FacultyCard key={member.name} member={member} idx={idx} />
+                                            ))}
+                                        </div>
+                                    </>
+                                )}
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
                 </section>
 
@@ -713,7 +883,7 @@ export default function CollegeEducation() {
                                         <div className="relative z-10">
                                             <p className="text-sm text-amber-500 font-bold uppercase tracking-wider mb-2">Program Overview</p>
                                             <h3 className="text-2xl md:text-3xl font-bold vp-serif text-slate-900 mb-6">
-                                                Bachelor of Science in {programs[activeProg].name}
+                                                {programs[activeProg].degree} {programs[activeProg].name}
                                             </h3>
                                             <p className="text-slate-600 leading-relaxed mb-8 text-[15px]">
                                                 {programs[activeProg].desc}
@@ -754,7 +924,7 @@ export default function CollegeEducation() {
                 {/* =================================================== */}
                 {/* === NEWS & ANNOUNCEMENTS (3D Auto-Spin Carousel) === */}
                 {/* =================================================== */}
-                <section ref={newsSectionRef} className="news-section bg-slate-900 pt-12 pb-16 overflow-hidden">
+                <section ref={newsSectionRef} className="news-section bg-slate-900 pt-6 md:pt-8 pb-16 overflow-hidden">
                     <div className="news-container max-w-7xl mx-auto px-6">
                         <div className="news-header text-center mb-12">
                             <span className="features-eyebrow text-emerald-400">Stay Informed</span>
@@ -809,31 +979,33 @@ export default function CollegeEducation() {
                                         </div>
                                         <div id="ground" ref={groundRef} style={{ position: 'absolute', top: '100%', left: '50%', width: '900px', height: '900px', transform: 'translate(-50%,-50%) rotateX(90deg)', background: '-webkit-radial-gradient(center center, farthest-side , #9993, transparent)' }}></div>
                                     </div>
-                                </motion.div>
 
-                                {/* Carousel Controls */}
-                                {/* ⚠️ RECONSTRUCTED SECTION — your original paste was cut off here.
-                                    Replace this block with your actual prev/next buttons if they differ. */}
-                                <div className="flex items-center justify-center gap-6 mt-2">
                                     <button
                                         onClick={handlePrev}
-                                        className="flex items-center justify-center w-12 h-12 rounded-full border border-emerald-400/40 text-emerald-400 hover:bg-emerald-400 hover:text-slate-900 transition-colors duration-300"
-                                        aria-label="Previous news"
+                                        className="absolute left-4 md:left-12 top-40 z-50 w-12 h-12 rounded-full bg-white/10 hover:bg-emerald-500 border border-white/30 backdrop-blur-md flex items-center justify-center text-white transition-all duration-300 group"
+                                        aria-label="Previous News"
                                     >
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                                        <svg className="w-5 h-5 group-hover:scale-125 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                                         </svg>
                                     </button>
-                                    <span className="text-xs uppercase tracking-[0.2em] text-slate-500">Drag or use arrows</span>
+
                                     <button
                                         onClick={handleNext}
-                                        className="flex items-center justify-center w-12 h-12 rounded-full border border-emerald-400/40 text-emerald-400 hover:bg-emerald-400 hover:text-slate-900 transition-colors duration-300"
-                                        aria-label="Next news"
+                                        className="absolute right-4 md:right-12 top-40 z-50 w-12 h-12 rounded-full bg-white/10 hover:bg-emerald-500 border border-white/30 backdrop-blur-md flex items-center justify-center text-white transition-all duration-300 group"
+                                        aria-label="Next News"
                                     >
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                        <svg className="w-5 h-5 group-hover:scale-125 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                         </svg>
                                     </button>
+                                </motion.div>
+
+                                <div className="w-full pt-2 text-center">
+                                    <a href="/news/latest" className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-emerald-600 text-white font-semibold hover:bg-emerald-500 transition-colors duration-300 shadow-lg shadow-emerald-500/20">
+                                        View All News
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                                    </a>
                                 </div>
                             </div>
                         ) : (

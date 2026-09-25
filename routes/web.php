@@ -190,19 +190,19 @@ Route::get('/internationalization/wuri', function () {
 // NEWS PAGES
 // ============================================
 Route::get('/news/latest', function () {
-    return Inertia::render('content/News/LatestNews');
+    return Inertia::render('content/article/LatestNews');
 })->name('news.latest');
 
 Route::get('/news/events', function () {
-    return Inertia::render('content/News/UpcomingEvents');
+    return Inertia::render('content/article/UpcomingEvents');
 })->name('news.events');
 
 Route::get('/news/news-letters', function () {
-    return Inertia::render('content/News/NewsLetters');
+    return Inertia::render('content/article/NewsLetters');
 })->name('news.news-letters');
 
 Route::get('/events/{id}', function ($id) {
-    return Inertia::render('content/News/ViewEvents', ['id' => $id]);
+    return Inertia::render('content/article/ViewEvents', ['id' => $id]);
 })->name('events.view');
 
 // ============================================

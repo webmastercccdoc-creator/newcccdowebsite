@@ -8,12 +8,16 @@ import acad_bg from '../../../assets/images/prog_bg.png';
 import arielDablioImg from '../../../assets/images/TSTI Trainers/Ariel Dablio.png';
 import brianLargoImg from '../../../assets/images/TSTI Trainers/Brian M. Largo.png';
 import charlotteCansinoImg from '../../../assets/images/TSTI Trainers/Charlotte Y. Cansino.png';
+import elnardCastillonImg from '../../../assets/images/TSTI Trainers/elnard-image.png';
 import gayMarieHawinayImg from '../../../assets/images/TSTI Trainers/Gay Marie C. Hawinay.png';
+import gemmaGonzalesImg from '../../../assets/images/TSTI Trainers/Brian M. Largo.png';
 import irielAnsayImg from '../../../assets/images/TSTI Trainers/Iriel P. Ansay.png';
 import junFuentesImg from '../../../assets/images/TSTI Trainers/Jun Junrie A. Fuentes.png';
 import omiyaLinogImg from '../../../assets/images/TSTI Trainers/Omiya O. Linog.png';
 import ricaOmictinImg from '../../../assets/images/TSTI Trainers/Rica Mae L. Omictin.png';
-import romuloAranaImg from '../../../assets/images/TSTI Trainers/Romulo P. Araña.png';
+import romuloAranaImg from '../../../assets/images/TSTI Trainers/Romulo P. Arana.png';
+import valcyrusMadarietaImg from '../../../assets/images/TSTI Trainers/Brian M. Largo.png';
+import karlImg from '../../../assets/images/TSTI Trainers/karl-image.png';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -58,48 +62,65 @@ const UnderDevelopment = ({ label = "Content" }) => (
 );
 
 // --- Trainer Card Component ---
-const TrainerCard = ({ trainer, idx }) => (
-    <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ delay: idx * 0.08, duration: 0.6 }}
-        className="group flex flex-col items-center w-full max-w-[260px] mx-auto"
-    >
-        <div className="relative w-full">
-            <div className="relative z-10 rounded-lg p-2 bg-white border border-slate-100 shadow-md transition-all duration-500 group-hover:shadow-xl">
-                <div className="overflow-hidden rounded-md w-full aspect-[4/5] bg-slate-200 border-[3px] border-slate-900/90 flex items-center justify-center">
-                    {trainer.image ? (
-                        <img
-                            src={trainer.image}
-                            alt={trainer.name}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                    ) : (
-                        <span className="text-slate-400 text-xs uppercase tracking-wider">Photo</span>
-                    )}
+// `qualification`  — single qualification string (legacy)
+// `qualifications` — array of qualifications (for multi-qualified trainers)
+const TrainerCard = ({ trainer, idx, qualification, qualifications }) => {
+    // Build the list of quals to display under the name.
+    // Prefer the array form when provided; otherwise fall back to a single string.
+    const qualList = Array.isArray(qualifications) && qualifications.length > 0
+        ? qualifications
+        : (qualification || trainer.position ? [qualification || trainer.position] : []);
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: idx * 0.08, duration: 0.6 }}
+            className="group flex flex-col items-center w-full max-w-[260px] mx-auto"
+        >
+            <div className="relative w-full">
+                <div className="relative z-10 rounded-lg p-2 bg-white border border-slate-100 shadow-md transition-all duration-500 group-hover:shadow-xl">
+                    <div className="overflow-hidden rounded-md w-full aspect-[4/5] bg-slate-200 border-[3px] border-slate-900/90 flex items-center justify-center">
+                        {trainer.image ? (
+                            <img
+                                src={trainer.image}
+                                alt={trainer.name}
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                        ) : (
+                            <span className="text-slate-400 text-xs uppercase tracking-wider">Photo</span>
+                        )}
+                    </div>
                 </div>
+
+                <div className="absolute inset-0 z-0 rounded-lg translate-x-2.5 translate-y-2.5 border-2 border-emerald-700/50 transition-all duration-500 group-hover:translate-x-1.5 group-hover:translate-y-1.5"></div>
+
+                <div className="absolute top-1 left-1 w-5 h-5 border-t-2 border-l-2 border-amber-500/80 z-20 rounded-tl-md transition-all duration-500 group-hover:top-0.5 group-hover:left-0.5"></div>
+                <div className="absolute bottom-1 right-1 w-5 h-5 border-b-2 border-r-2 border-amber-500/80 z-20 rounded-br-md transition-all duration-500 group-hover:bottom-0.5 group-hover:right-0.5"></div>
             </div>
 
-            <div className="absolute inset-0 z-0 rounded-lg translate-x-2.5 translate-y-2.5 border-2 border-emerald-700/50 transition-all duration-500 group-hover:translate-x-1.5 group-hover:translate-y-1.5"></div>
-
-            <div className="absolute top-1 left-1 w-5 h-5 border-t-2 border-l-2 border-amber-500/80 z-20 rounded-tl-md transition-all duration-500 group-hover:top-0.5 group-hover:left-0.5"></div>
-            <div className="absolute bottom-1 right-1 w-5 h-5 border-b-2 border-r-2 border-amber-500/80 z-20 rounded-br-md transition-all duration-500 group-hover:bottom-0.5 group-hover:right-0.5"></div>
-        </div>
-
-        <div className="mt-6 text-center px-2">
-            <h3 className="text-base font-serif font-bold text-slate-800 tracking-tight leading-tight">{trainer.name}</h3>
-            <p className="text-[11px] text-emerald-600 font-semibold uppercase tracking-[0.1em] mt-2">{trainer.position}</p>
-            <div className="mt-3 h-px w-12 bg-slate-200 mx-auto"></div>
-        </div>
-    </motion.div>
-);
+            <div className="mt-6 text-center px-2">
+                <h3 className="text-base font-serif font-bold text-slate-800 tracking-tight leading-tight">{trainer.name}</h3>
+                <div className="mt-2 flex flex-col items-center gap-1">
+                    {qualList.map((q, i) => (
+                        <p key={i} className="text-[11px] text-emerald-600 font-semibold uppercase tracking-[0.1em]">
+                            {q}
+                        </p>
+                    ))}
+                </div>
+                <div className="mt-3 h-px w-12 bg-slate-200 mx-auto"></div>
+            </div>
+        </motion.div>
+    );
+};
 
 // --- Main Component ---
 export default function TechnicalSkillsTechnologyInstitute() {
     const [imageError, setImageError] = useState(false);
     const [activeVMO, setActiveVMO] = useState('vision');
     const [activeProg, setActiveProg] = useState(0);
+    const [activeSector, setActiveSector] = useState(0);
     const [tstiNews, setTstiNews] = useState([]);
     const [isLoadingNews, setIsLoadingNews] = useState(true);
     const [isNewsVisible, setIsNewsVisible] = useState(false);
@@ -308,84 +329,229 @@ export default function TechnicalSkillsTechnologyInstitute() {
         }
     };
 
-    // --- Trainer Data by Sector ---
+    // ============================================================
+    // TRAINERS DATA — grouped by SECTOR, each trainer lists the
+    // qualification(s) they hold for that sector.
+    //
+    // A trainer with multiple qualifications appears in EACH
+    // relevant sector tab. The `qualifications` array (or single
+    // `qualification` string) is what gets displayed under the
+    // trainer's name inside that tab.
+    // ============================================================
     const trainersBySector = [
         {
             sector: "Construction Sector",
+            shortLabel: "Construction",
             trainers: [
-                { name: "Romulo P. Araña", position: "Trainer, EIM NCII", image: romuloAranaImg },
-                { name: "Ariel Dablio", position: "Trainer, EIM NCII", image: arielDablioImg },
-                { name: "Jun Junrie A. Fuentes", position: "Trainer, SMAW NCI & NCII", image: junFuentesImg },
-                { name: "Brian M. Largo", position: "Trainer, SMAW NCI & NCII Community Based & MTP", image: brianLargoImg },
-                { name: "Iriel P. Ansay, MPA", position: "Trainer, Carpentry NCII & Plumbing NCI & NCII", image: irielAnsayImg },
+                {
+                    name: "Romulo P. Araña",
+                    image: romuloAranaImg,
+                    qualification: "Trainer, EIM NCII",
+                },
+                {
+                    name: "Ariel Dablio",
+                    image: arielDablioImg,
+                    qualification: "Trainer, EIM NCII",
+                },
+                {
+                    name: "Jun Junrie A. Fuentes",
+                    image: junFuentesImg,
+                    qualification: "Trainer, SMAW NCI & NCII",
+                },
+                {
+                    name: "Brian M. Largo",
+                    image: brianLargoImg,
+                    qualification: "Trainer, SMAW NCI & NCII (CBT & MTP)",
+                },
+                {
+                    // Iriel is dual-qualified: appears here for Carpentry, and again under Plumbing below
+                    name: "Iriel P. Ansay, MPA",
+                    image: irielAnsayImg,
+                    qualification: "Trainer, Carpentry NCII",
+                },
+                {
+                    // NEW TRAINER — Mr. Elnard R. Castillon (multi-qualified)
+                    name: "Mr. Elnard R. Castillon",
+                    image: elnardCastillonImg,
+                    qualifications: [
+                        "Trainer, Carpentry NCII",
+                        "Trainer, SMAW NCI & NCII",
+                        "Trainer, Construction Painting NCII",
+                    ],
+                },
+            ],
+        },
+        {
+            // Separate tab for Plumbing since Iriel handles both Carpentry AND Plumbing
+            sector: "Plumbing",
+            shortLabel: "Plumbing",
+            trainers: [
+                {
+                    name: "Iriel P. Ansay, MPA",
+                    image: irielAnsayImg,
+                    qualification: "Trainer, Plumbing NCI & NCII",
+                },
+            ],
+        },
+        {
+            // Separate tab for Construction Painting — Elnard is the assigned trainer
+            sector: "Construction Painting",
+            shortLabel: "Construction Painting",
+            trainers: [
+                {
+                    name: "Mr. Elnard R. Castillon",
+                    image: elnardCastillonImg,
+                    qualification: "Trainer, Construction Painting NCII",
+                },
             ],
         },
         {
             sector: "Tourism Sector",
+            shortLabel: "Tourism",
             trainers: [
-                { name: "Gay Marie C. Hawinay, LPT", position: "Trainer, Housekeeping NCII", image: gayMarieHawinayImg },
-                { name: "Omiya O. Linog, LPT", position: "Trainer, Housekeeping NCII", image: omiyaLinogImg },
+                {
+                    name: "Gay Marie C. Hawinay, LPT",
+                    image: gayMarieHawinayImg,
+                    qualification: "Trainer, Housekeeping NCII & NCIII",
+                },
+                {
+                    name: "Omiya O. Linog, LPT",
+                    image: omiyaLinogImg,
+                    qualification: "Trainer, Housekeeping NCII",
+                },
+                {
+                    name: "Gemma E. Gonzales",
+                    image: gemmaGonzalesImg,
+                    qualification: "Trainer, Housekeeping NCII (CBT)",
+                },
+                           {
+                    name: "Rica Mae L. Omictin",
+                    image: ricaOmictinImg,
+                    qualification: "Trainer, Events Management Services NCIII",
+                },
             ],
         },
         {
             sector: "Human Health / Health Care Sector",
+            shortLabel: "Health Care",
             trainers: [
-                { name: "Charlotte Y. Cansino, RN, MN, MPA", position: "Trainer, Housekeeping NCII", image: charlotteCansinoImg },
+                {
+                    name: "Charlotte Y. Cansino, RN, MN, MPA",
+                    image: charlotteCansinoImg,
+                    qualification: "Trainer, Barangay Health Services NCII",
+                },
             ],
         },
         {
+            // Tab dedicated to Bookkeeping — Rica Mae is dual-qualified
             sector: "Health, Social, and Other Community Development Services Sector",
+            shortLabel: "Health, Social, and Other...",
             trainers: [
-                { name: "Rica Mae L. Omictin", position: "Trainer, Bookkeeping NCIII", image: ricaOmictinImg },
+                {
+                    name: "Rica Mae L. Omictin",
+                    image: ricaOmictinImg,
+                    qualification: "Trainer, Bookkeeping NCIII",
+                },
+            ],
+        },
+        {
+            sector: "Trainer's Methodology",
+            shortLabel: "Trainer's Methodology",
+            trainers: [
+                {
+                    name: "Valcyrus A. Madarieta",
+                    image: valcyrusMadarietaImg,
+                    qualification: "Trainer, Trainer's Methodology I",
+                },
             ],
         },
     ];
 
-    // --- Programs (aligned with trainer specializations) ---
-    const programs = [
-        {
-            name: "Electrical Installation & Maintenance (EIM) NC II",
-            degree: "Construction Sector",
-            desc: "This program equips learners with the competencies to install, maintain, and troubleshoot electrical wiring systems, fixtures, and equipment in residential, commercial, and industrial settings in accordance with the Philippine Electrical Code and TESDA standards.",
-            tags: ["Electrical Wiring", "Troubleshooting", "PEC Compliance", "Safety Practices"],
-            careers: ["Electrical Technician", "Maintenance Electrician", "Wiring Installer", "Building Maintenance Staff"],
-        },
-        {
-            name: "Shielded Metal Arc Welding (SMAW) NC I & NC II",
-            degree: "Construction Sector",
-            desc: "A hands-on welding program covering arc welding techniques on carbon steel plates and pipes, weld inspection, and safety procedures. Learners are trained for both community-based and institution-based delivery, including the Mobile Training Program (MTP).",
-            tags: ["Arc Welding", "Carbon Steel", "Weld Inspection", "MTP & Community-Based"],
-            careers: ["Welder / Fabricator", "Structural Welder", "Pipe Welder", "Welding Inspector"],
-        },
-        {
-            name: "Carpentry NC II",
-            degree: "Construction Sector",
-            desc: "This program trains learners in layout, cutting, assembling, and installing wooden structures and fixtures using hand and power tools, following occupational health and safety standards for construction sites.",
-            tags: ["Wood Framing", "Layout & Cutting", "Formworks", "Power Tools"],
-            careers: ["Carpenter", "Formwork Builder", "Furniture Maker", "Construction Worker"],
-        },
-        {
-            name: "Plumbing NC I & NC II",
-            degree: "Construction Sector",
-            desc: "Covers the installation, repair, and maintenance of water supply, drainage, and venting systems for residential and commercial buildings, including pipe fitting, fixtures installation, and leak testing.",
-            tags: ["Pipe Fitting", "Water Supply", "Drainage Systems", "Fixture Installation"],
-            careers: ["Plumber", "Pipefitter", "Sanitary Installer", "Maintenance Plumber"],
-        },
-        {
-            name: "Housekeeping NC II",
-            degree: "Tourism Sector",
-            desc: "A tourism-sector program that develops skills in guest room preparation, cleaning, laundry operations, and guest relations. Graduates are equipped for employment in hotels, resorts, and other hospitality establishments.",
-            tags: ["Guest Room Prep", "Laundry Operations", "Guest Relations", "Hospitality Standards"],
-            careers: ["Room Attendant", "Housekeeping Staff", "Laundry Attendant", "Public Area Cleaner"],
-        },
-        {
-            name: "Bookkeeping NC III",
-            degree: "Health, Social, and Other Community Development Services Sector",
-            desc: "This program equips learners with the knowledge and skills to record financial transactions, prepare reports, and maintain books of accounts for small businesses, following the Philippine Financial Reporting Standards (PFRS) for micro and small enterprises.",
-            tags: ["Financial Recording", "Book of Accounts", "Financial Reports", "PFRS Compliance"],
-            careers: ["Bookkeeper", "Accounting Clerk", "Accounts Receivable/Payable Staff", "Small Business Bookkeeper"],
-        },
-    ];
+   // --- Programs (aligned with trainer specializations) ---
+const programs = [
+    {
+        name: "Electrical Installation & Maintenance (EIM) NC II",
+        degree: "Construction Sector",
+        desc: "This program equips learners with the competencies to install, maintain, and troubleshoot electrical wiring systems, fixtures, and equipment in residential, commercial, and industrial settings in accordance with the Philippine Electrical Code and TESDA standards.",
+        tags: ["Electrical Wiring", "Troubleshooting", "PEC Compliance", "Safety Practices"],
+        careers: ["Electrical Technician", "Maintenance Electrician", "Wiring Installer", "Building Maintenance Staff"],
+        trainers: ["Romulo P. Araña", "Ariel Dablio"],
+    },
+    {
+        name: "Shielded Metal Arc Welding (SMAW) NC I & NC II",
+        degree: "Construction Sector",
+        desc: "A hands-on welding program covering arc welding techniques on carbon steel plates and pipes, weld inspection, and safety procedures. Learners are trained for both community-based and institution-based delivery, including the Mobile Training Program (MTP).",
+        tags: ["Arc Welding", "Carbon Steel", "Weld Inspection", "MTP & Community-Based"],
+        careers: ["Welder / Fabricator", "Structural Welder", "Pipe Welder", "Welding Inspector"],
+        trainers: ["Jun Junrie A. Fuentes", "Brian M. Largo", "Mr. Elnard R. Castillon"],
+    },
+    {
+        name: "Carpentry NC II",
+        degree: "Construction Sector",
+        desc: "This program trains learners in layout, cutting, assembling, and installing wooden structures and fixtures using hand and power tools, following occupational health and safety standards for construction sites.",
+        tags: ["Wood Framing", "Layout & Cutting", "Formworks", "Power Tools"],
+        careers: ["Carpenter", "Formwork Builder", "Furniture Maker", "Construction Worker"],
+        trainers: ["Iriel P. Ansay, MPA", "Mr. Elnard R. Castillon"],
+    },
+    {
+        name: "Plumbing NC I & NC II",
+        degree: "Plumbing",
+        desc: "Covers the installation, repair, and maintenance of water supply, drainage, and venting systems for residential and commercial buildings, including pipe fitting, fixtures installation, and leak testing.",
+        tags: ["Pipe Fitting", "Water Supply", "Drainage Systems", "Fixture Installation"],
+        careers: ["Plumber", "Pipefitter", "Sanitary Installer", "Maintenance Plumber"],
+        trainers: ["Iriel P. Ansay, MPA"],
+    },
+    {
+        name: "Construction Painting NC II",
+        degree: "Construction Painting",
+        desc: "This program trains learners in surface preparation, paint mixing, and the application of decorative and protective coatings on interior and exterior building surfaces. It covers the proper use of brushes, rollers, and spray equipment, along with safety and quality standards for construction painting works.",
+        tags: ["Surface Preparation", "Paint Application", "Coating Systems", "Safety Practices"],
+        careers: ["Construction Painter", "Painting Contractor", "Building Finisher", "Maintenance Painter"],
+        trainers: ["Mr. Elnard R. Castillon"],
+    },
+    {
+        name: "Housekeeping NC II & NC III",
+        degree: "Tourism Sector",
+        desc: "A tourism-sector program that develops skills in guest room preparation, cleaning, laundry operations, and guest relations. Graduates are equipped for employment in hotels, resorts, and other hospitality establishments. Offered through both institution-based and community-based (CBT) delivery modes.",
+        tags: ["Guest Room Prep", "Laundry Operations", "Guest Relations", "CBT & Community-Based"],
+        careers: ["Room Attendant", "Housekeeping Staff", "Laundry Attendant", "Public Area Cleaner"],
+        trainers: ["Gay Marie C. Hawinay, LPT", "Omiya O. Linog, LPT", "Gemma E. Gonzales"],
+    },
+    {
+        name: "Barangay Health Services NC II",
+        degree: "Human Health / Health Care Sector",
+        desc: "This program prepares learners to deliver basic health care services at the barangay level, including health promotion, disease prevention, maternal and child care, and first aid. Graduates are equipped to serve as barangay health workers and community health aides in partnership with local government units and rural health units.",
+        tags: ["Community Health", "Maternal & Child Care", "First Aid", "Health Promotion"],
+        careers: ["Barangay Health Worker", "Community Health Aide", "Rural Health Unit Staff", "Health Program Assistant"],
+        trainers: ["Charlotte Y. Cansino, RN, MN, MPA"],
+    },
+    {
+        name: "Events Management Services NC III",
+        degree: "Tourism Sector",
+        desc: "This program equips learners with the competencies to plan, organize, and coordinate events such as conferences, weddings, corporate gatherings, and community activities. It covers client relations, budgeting, logistics, supplier coordination, and on-site event execution following TESDA's Events Management Services NC III standards.",
+        tags: ["Event Planning", "Client Relations", "Logistics & Coordination", "Budgeting"],
+        careers: ["Events Coordinator", "Events Assistant", "Conference Organizer", "Banquet Staff"],
+        trainers: ["Rica Mae L. Omictin"],
+    },
+    {
+        name: "Bookkeeping NC III",
+        degree: "Health, Social, and Other Community Development Services Sector",
+        desc: "This program equips learners with the knowledge and skills to record financial transactions, prepare reports, and maintain books of accounts for small businesses, following the Philippine Financial Reporting Standards (PFRS) for micro and small enterprises. Graduates are prepared for TESDA's Bookkeeping NC III assessment.",
+        tags: ["Financial Recording", "Book of Accounts", "Financial Reports", "PFRS Compliance"],
+        careers: ["Bookkeeper", "Accounting Clerk", "Accounts Receivable/Payable Staff", "Small Business Bookkeeper"],
+        trainers: ["Rica Mae L. Omictin"],
+    },
+    {
+        name: "Trainer's Methodology Level I",
+        degree: "Trainer's Methodology",
+        desc: "This program equips aspiring and practicing TVET trainers with the competencies to plan and prepare training sessions, facilitate learning, maintain training facilities, and assess learner progress. It is a prerequisite qualification for anyone who wants to become a nationally certified TVET trainer under TESDA's Philippine TVET Trainers Qualifications Framework.",
+        tags: ["Training Delivery", "Session Planning", "Competency Assessment", "TVET Standards"],
+        careers: ["TVET Trainer", "Training Coordinator", "Skills Assessor", "In-Company Instructor"],
+        trainers: ["Valcyrus A. Madarieta"],
+    },
+];
+
+    const activeSectorData = trainersBySector[activeSector];
 
     return (
         <MainLayout
@@ -398,6 +564,10 @@ export default function TechnicalSkillsTechnologyInstitute() {
                 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap');
                 body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background-color: #F8FAFC; }
                 .vp-serif { font-family: 'Fraunces', ui-serif, Georgia, serif; }
+
+                /* Hide scrollbar for tab strip */
+                .no-scrollbar::-webkit-scrollbar { display: none; }
+                .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
                 
                 #drag-container, #spin-container {
                   position: relative;
@@ -537,8 +707,12 @@ export default function TechnicalSkillsTechnologyInstitute() {
                         >
                             <div className="relative w-full max-w-sm mx-auto pb-8">
                                 <div className="relative z-10 rounded-xl p-2 bg-white border border-slate-100 shadow-2xl">
-                                    <div className="overflow-hidden rounded-lg w-full aspect-[4/5] bg-slate-101 flex items-center justify-center">
-                                        <span className="text-slate-400 text-xs uppercase tracking-wider">Under Development</span>
+                                    <div className="overflow-hidden rounded-lg w-full aspect-[4/5] bg-slate-100 flex items-center justify-center">
+                                        <img
+                                            src={karlImg}
+                                            alt="Karl Hein M. Pios, LPT"
+                                            className="w-full h-full object-cover"
+                                        />
                                     </div>
                                 </div>
 
@@ -557,12 +731,12 @@ export default function TechnicalSkillsTechnologyInstitute() {
 
                             <div className="text-center mt-8 w-full max-w-xs mx-auto">
                                 <h3 className="text-2xl vp-serif font-semibold tracking-tight text-slate-800">
-                                    Karl Hien M. Pios
+                                    Karl Hein M. Pios
                                 </h3>
                                 <p className="mt-2 text-[12px] font-bold tracking-wider uppercase text-emerald-700">
                                     Vocational School Administrator
                                 </p>
-                                <p className="mt-1 text-sm text-slate-400 font-medium">Credentials</p>
+                                <p className="mt-1 text-sm text-slate-400 font-medium">Licensed Professional Teacher</p>
                                 <div className="mt-5 pt-4 flex items-center justify-center gap-2 text-xs text-slate-500 border-t border-slate-200">
                                     <svg className="w-4 h-4 flex-shrink-0 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z" />
@@ -572,35 +746,6 @@ export default function TechnicalSkillsTechnologyInstitute() {
                                 </div>
                             </div>
                         </motion.div>
-
-                        <div className="md:col-span-7 md:pt-4">
-                            <Kicker textClass="text-emerald-600" ruleClass="bg-emerald-600">Leadership & Excellence</Kicker>
-                            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif mb-6">
-                                <MaskedText text="Bionote" />
-                            </h2>
-
-                            <motion.div
-                                className="space-y-4 text-slate-600 leading-relaxed text-[15px]"
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.6, delay: 0.2 }}
-                            >
-                                <UnderDevelopment label="Bionote content" />
-                            </motion.div>
-
-                            <motion.div
-                                className="mt-6 flex flex-wrap gap-2"
-                                initial={{ opacity: 0 }}
-                                whileInView={{ opacity: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.4 }}
-                            >
-                                <span className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-xs font-medium text-slate-400 shadow-sm">
-                                    Under Development
-                                </span>
-                            </motion.div>
-                        </div>
                     </div>
                 </section>
 
@@ -650,36 +795,78 @@ export default function TechnicalSkillsTechnologyInstitute() {
                     </div>
                 </section>
 
-                {/* === TRAINERS SECTION === */}
+                {/* === TRAINERS SECTION (WITH SECTOR TABS) === */}
                 <section
                     className="relative overflow-hidden py-20 md:py-28"
                     style={{ backgroundColor: PANEL, borderTop: `1px solid ${HAIRLINE}`, borderBottom: `1px solid ${HAIRLINE}` }}
                 >
                     <div className="relative max-w-7xl mx-auto px-6">
-                        <div className="text-center mb-16">
+                        <div className="text-center mb-12">
                             <Kicker textClass="text-blue-600" ruleClass="bg-blue-600" align="center">Our Trainers</Kicker>
                             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif">
                                 <MaskedText text="Trainers" />
                             </h2>
                         </div>
 
-                        {trainersBySector.map((group, sectorIdx) => (
-                            <div key={group.sector} className="mb-20 last:mb-0">
-                                <div className="flex items-center gap-4 mb-10">
-                                    <span className="w-8 h-px bg-emerald-600" />
-                                    <h3 className="text-xl md:text-2xl font-bold text-slate-800 vp-serif tracking-tight">
-                                        {group.sector}
-                                    </h3>
-                                    <span className="flex-1 h-px bg-slate-200" />
-                                </div>
-
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                                    {group.trainers.map((trainer, idx) => (
-                                        <TrainerCard key={`${sectorIdx}-${idx}`} trainer={trainer} idx={idx} />
+                        {/* === SECTOR TABS === */}
+                        <div className="mb-14">
+                            <div className="flex justify-center">
+                                <div className="no-scrollbar flex gap-2 overflow-x-auto p-1.5 bg-white/60 backdrop-blur-md border border-white/80 rounded-full shadow-lg max-w-full">
+                                    {trainersBySector.map((group, idx) => (
+                                        <button
+                                            key={group.sector}
+                                            onClick={() => setActiveSector(idx)}
+                                            className={`relative px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-semibold rounded-full whitespace-nowrap transition-colors duration-300 ${activeSector === idx ? 'text-white' : 'text-slate-600 hover:text-emerald-700'}`}
+                                        >
+                                            {activeSector === idx && (
+                                                <motion.span
+                                                    layoutId="sectorTabPill"
+                                                    className="absolute inset-0 bg-emerald-700 rounded-full shadow-md shadow-emerald-500/30"
+                                                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                                                />
+                                            )}
+                                            <span className="relative z-10">{group.shortLabel}</span>
+                                        </button>
                                     ))}
                                 </div>
                             </div>
-                        ))}
+                        </div>
+
+                        {/* === ACTIVE SECTOR CONTENT === */}
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={activeSector}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.4, ease: 'easeInOut' }}
+                            >
+                                {/* Sector header */}
+                                <div className="flex items-center gap-4 mb-10">
+                                    <span className="w-8 h-px bg-emerald-600" />
+                                    <h3 className="text-xl md:text-2xl font-bold text-slate-800 vp-serif tracking-tight">
+                                        {activeSectorData.sector}
+                                    </h3>
+                                    <span className="flex-1 h-px bg-slate-200" />
+                                    <span className="text-xs font-semibold text-emerald-600 uppercase tracking-wider">
+                                        {activeSectorData.trainers.length} {activeSectorData.trainers.length === 1 ? 'Trainer' : 'Trainers'}
+                                    </span>
+                                </div>
+
+                                {/* Trainer grid for the active sector */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 justify-items-center">
+                                    {activeSectorData.trainers.map((trainer, idx) => (
+                                        <TrainerCard
+                                            key={`${activeSector}-${trainer.name}-${idx}`}
+                                            trainer={trainer}
+                                            idx={idx}
+                                            qualification={trainer.qualification}
+                                            qualifications={trainer.qualifications}
+                                        />
+                                    ))}
+                                </div>
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
                 </section>
 
@@ -699,7 +886,7 @@ export default function TechnicalSkillsTechnologyInstitute() {
                 >
                     <div className="relative max-w-7xl mx-auto px-6 z-10">
                         <div className="text-center mb-16">
-                            <Kicker textClass="text-amber-600" ruleClass="bg-amber-500" align="center">Curriculum</Kicker>
+                            <Kicker textClass="text-amber-600" ruleClass="bg-amber-500" align="center">Qualifications</Kicker>
                             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif drop-shadow-[0_2px_5px_rgba(255,255,255,0.8)]">
                                 <MaskedText text="Courses Offered" />
                             </h2>

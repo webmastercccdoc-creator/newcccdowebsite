@@ -192,18 +192,30 @@ Route::get('/internationalization/wuri', function () {
 Route::get('/news/latest', function () {
     return Inertia::render('content/article/LatestNews');
 })->name('news.latest');
+Route::get('/article/latest', function () {
+    return Inertia::render('content/article/LatestNews');
+});
 
 Route::get('/news/events', function () {
     return Inertia::render('content/article/UpcomingEvents');
 })->name('news.events');
+Route::get('/article/events', function () {
+    return Inertia::render('content/article/UpcomingEvents');
+});
 
 Route::get('/news/news-letters', function () {
     return Inertia::render('content/article/NewsLetters');
 })->name('news.news-letters');
+Route::get('/article/news-letters', function () {
+    return Inertia::render('content/article/NewsLetters');
+});
 
 Route::get('/events/{id}', function ($id) {
     return Inertia::render('content/article/ViewEvents', ['id' => $id]);
 })->name('events.view');
+Route::get('/article/events/{id}', function ($id) {
+    return Inertia::render('content/article/ViewEvents', ['id' => $id]);
+});
 
 // ============================================
 // PROMOTIONS PAGE (Public)
@@ -237,6 +249,7 @@ Route::get('/apply', function () {
 // NEWS API ROUTES (Public)
 // ============================================
 Route::get('/news/{id}', [NewsController::class, 'show'])->name('news.show');
+Route::get('/article/{id}', [NewsController::class, 'show']);
 Route::get('/api/news', [NewsController::class, 'apiIndex']);
 Route::get('/api/news/{id}', [NewsController::class, 'apiShow']);
 

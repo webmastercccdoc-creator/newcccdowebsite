@@ -115,12 +115,57 @@ const TrainerCard = ({ trainer, idx, qualification, qualifications }) => {
     );
 };
 
+// --- Support Team Card Component ---
+const SupportCard = ({ member, idx }) => {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: idx * 0.08, duration: 0.6 }}
+            className="group flex flex-col items-center w-full max-w-[260px] mx-auto"
+        >
+            <div className="relative w-full">
+                <div className="relative z-10 rounded-lg p-2 bg-white border border-slate-100 shadow-md transition-all duration-500 group-hover:shadow-xl">
+                    <div className="overflow-hidden rounded-md w-full aspect-[4/5] bg-slate-200 border-[3px] border-slate-900/90 flex items-center justify-center">
+                        {member.image ? (
+                            <img
+                                src={member.image}
+                                alt={member.name}
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                        ) : (
+                            <span className="text-slate-400 text-xs uppercase tracking-wider">Photo</span>
+                        )}
+                    </div>
+                </div>
+
+                <div className="absolute inset-0 z-0 rounded-lg translate-x-2.5 translate-y-2.5 border-2 border-blue-700/50 transition-all duration-500 group-hover:translate-x-1.5 group-hover:translate-y-1.5"></div>
+
+                <div className="absolute top-1 left-1 w-5 h-5 border-t-2 border-l-2 border-blue-500/80 z-20 rounded-tl-md transition-all duration-500 group-hover:top-0.5 group-hover:left-0.5"></div>
+                <div className="absolute bottom-1 right-1 w-5 h-5 border-b-2 border-r-2 border-blue-500/80 z-20 rounded-br-md transition-all duration-500 group-hover:bottom-0.5 group-hover:right-0.5"></div>
+            </div>
+
+            <div className="mt-6 text-center px-2">
+                <h3 className="text-base font-serif font-bold text-slate-800 tracking-tight leading-tight">{member.name}</h3>
+                <div className="mt-2 flex flex-col items-center gap-1">
+                    <p className="text-[11px] text-blue-600 font-semibold uppercase tracking-[0.1em]">
+                        {member.role}
+                    </p>
+                </div>
+                <div className="mt-3 h-px w-12 bg-slate-200 mx-auto"></div>
+            </div>
+        </motion.div>
+    );
+};
+
 // --- Main Component ---
 export default function TechnicalSkillsTechnologyInstitute() {
     const [imageError, setImageError] = useState(false);
     const [activeVMO, setActiveVMO] = useState('vision');
     const [activeProg, setActiveProg] = useState(0);
     const [activeSector, setActiveSector] = useState(0);
+    const [activeSupportUnit, setActiveSupportUnit] = useState(0);
     const [tstiNews, setTstiNews] = useState([]);
     const [isLoadingNews, setIsLoadingNews] = useState(true);
     const [isNewsVisible, setIsNewsVisible] = useState(false);
@@ -410,6 +455,11 @@ export default function TechnicalSkillsTechnologyInstitute() {
             shortLabel: "Tourism",
             trainers: [
                 {
+                    name: "Mark Adrian S. Baa",
+                    image: gemmaGonzalesImg,
+                    qualification: "Section Head, Vocational Institutional Supervisor, Housekeeping NCII Trainer, Housekeeping NCII",
+                },
+                {
                     name: "Gay Marie C. Hawinay, LPT",
                     image: gayMarieHawinayImg,
                     qualification: "Trainer, Housekeeping NCII & NCIII",
@@ -424,7 +474,7 @@ export default function TechnicalSkillsTechnologyInstitute() {
                     image: gemmaGonzalesImg,
                     qualification: "Trainer, Housekeeping NCII (CBT)",
                 },
-                           {
+                {
                     name: "Rica Mae L. Omictin",
                     image: ricaOmictinImg,
                     qualification: "Trainer, Events Management Services NCIII",
@@ -467,91 +517,130 @@ export default function TechnicalSkillsTechnologyInstitute() {
         },
     ];
 
-   // --- Programs (aligned with trainer specializations) ---
-const programs = [
-    {
-        name: "Electrical Installation & Maintenance (EIM) NC II",
-        degree: "Construction Sector",
-        desc: "This program equips learners with the competencies to install, maintain, and troubleshoot electrical wiring systems, fixtures, and equipment in residential, commercial, and industrial settings in accordance with the Philippine Electrical Code and TESDA standards.",
-        tags: ["Electrical Wiring", "Troubleshooting", "PEC Compliance", "Safety Practices"],
-        careers: ["Electrical Technician", "Maintenance Electrician", "Wiring Installer", "Building Maintenance Staff"],
-        trainers: ["Romulo P. Araña", "Ariel Dablio"],
-    },
-    {
-        name: "Shielded Metal Arc Welding (SMAW) NC I & NC II",
-        degree: "Construction Sector",
-        desc: "A hands-on welding program covering arc welding techniques on carbon steel plates and pipes, weld inspection, and safety procedures. Learners are trained for both community-based and institution-based delivery, including the Mobile Training Program (MTP).",
-        tags: ["Arc Welding", "Carbon Steel", "Weld Inspection", "MTP & Community-Based"],
-        careers: ["Welder / Fabricator", "Structural Welder", "Pipe Welder", "Welding Inspector"],
-        trainers: ["Jun Junrie A. Fuentes", "Brian M. Largo", "Mr. Elnard R. Castillon"],
-    },
-    {
-        name: "Carpentry NC II",
-        degree: "Construction Sector",
-        desc: "This program trains learners in layout, cutting, assembling, and installing wooden structures and fixtures using hand and power tools, following occupational health and safety standards for construction sites.",
-        tags: ["Wood Framing", "Layout & Cutting", "Formworks", "Power Tools"],
-        careers: ["Carpenter", "Formwork Builder", "Furniture Maker", "Construction Worker"],
-        trainers: ["Iriel P. Ansay, MPA", "Mr. Elnard R. Castillon"],
-    },
-    {
-        name: "Plumbing NC I & NC II",
-        degree: "Plumbing",
-        desc: "Covers the installation, repair, and maintenance of water supply, drainage, and venting systems for residential and commercial buildings, including pipe fitting, fixtures installation, and leak testing.",
-        tags: ["Pipe Fitting", "Water Supply", "Drainage Systems", "Fixture Installation"],
-        careers: ["Plumber", "Pipefitter", "Sanitary Installer", "Maintenance Plumber"],
-        trainers: ["Iriel P. Ansay, MPA"],
-    },
-    {
-        name: "Construction Painting NC II",
-        degree: "Construction Painting",
-        desc: "This program trains learners in surface preparation, paint mixing, and the application of decorative and protective coatings on interior and exterior building surfaces. It covers the proper use of brushes, rollers, and spray equipment, along with safety and quality standards for construction painting works.",
-        tags: ["Surface Preparation", "Paint Application", "Coating Systems", "Safety Practices"],
-        careers: ["Construction Painter", "Painting Contractor", "Building Finisher", "Maintenance Painter"],
-        trainers: ["Mr. Elnard R. Castillon"],
-    },
-    {
-        name: "Housekeeping NC II & NC III",
-        degree: "Tourism Sector",
-        desc: "A tourism-sector program that develops skills in guest room preparation, cleaning, laundry operations, and guest relations. Graduates are equipped for employment in hotels, resorts, and other hospitality establishments. Offered through both institution-based and community-based (CBT) delivery modes.",
-        tags: ["Guest Room Prep", "Laundry Operations", "Guest Relations", "CBT & Community-Based"],
-        careers: ["Room Attendant", "Housekeeping Staff", "Laundry Attendant", "Public Area Cleaner"],
-        trainers: ["Gay Marie C. Hawinay, LPT", "Omiya O. Linog, LPT", "Gemma E. Gonzales"],
-    },
-    {
-        name: "Barangay Health Services NC II",
-        degree: "Human Health / Health Care Sector",
-        desc: "This program prepares learners to deliver basic health care services at the barangay level, including health promotion, disease prevention, maternal and child care, and first aid. Graduates are equipped to serve as barangay health workers and community health aides in partnership with local government units and rural health units.",
-        tags: ["Community Health", "Maternal & Child Care", "First Aid", "Health Promotion"],
-        careers: ["Barangay Health Worker", "Community Health Aide", "Rural Health Unit Staff", "Health Program Assistant"],
-        trainers: ["Charlotte Y. Cansino, RN, MN, MPA"],
-    },
-    {
-        name: "Events Management Services NC III",
-        degree: "Tourism Sector",
-        desc: "This program equips learners with the competencies to plan, organize, and coordinate events such as conferences, weddings, corporate gatherings, and community activities. It covers client relations, budgeting, logistics, supplier coordination, and on-site event execution following TESDA's Events Management Services NC III standards.",
-        tags: ["Event Planning", "Client Relations", "Logistics & Coordination", "Budgeting"],
-        careers: ["Events Coordinator", "Events Assistant", "Conference Organizer", "Banquet Staff"],
-        trainers: ["Rica Mae L. Omictin"],
-    },
-    {
-        name: "Bookkeeping NC III",
-        degree: "Health, Social, and Other Community Development Services Sector",
-        desc: "This program equips learners with the knowledge and skills to record financial transactions, prepare reports, and maintain books of accounts for small businesses, following the Philippine Financial Reporting Standards (PFRS) for micro and small enterprises. Graduates are prepared for TESDA's Bookkeeping NC III assessment.",
-        tags: ["Financial Recording", "Book of Accounts", "Financial Reports", "PFRS Compliance"],
-        careers: ["Bookkeeper", "Accounting Clerk", "Accounts Receivable/Payable Staff", "Small Business Bookkeeper"],
-        trainers: ["Rica Mae L. Omictin"],
-    },
-    {
-        name: "Trainer's Methodology Level I",
-        degree: "Trainer's Methodology",
-        desc: "This program equips aspiring and practicing TVET trainers with the competencies to plan and prepare training sessions, facilitate learning, maintain training facilities, and assess learner progress. It is a prerequisite qualification for anyone who wants to become a nationally certified TVET trainer under TESDA's Philippine TVET Trainers Qualifications Framework.",
-        tags: ["Training Delivery", "Session Planning", "Competency Assessment", "TVET Standards"],
-        careers: ["TVET Trainer", "Training Coordinator", "Skills Assessor", "In-Company Instructor"],
-        trainers: ["Valcyrus A. Madarieta"],
-    },
-];
+    // ============================================================
+    // SUPPORT TEAM DATA — grouped by SUPPORT UNIT / FUNCTION.
+    // Replace the placeholder names, roles, and images with your
+    // actual support personnel.
+    // ============================================================
+    const supportTeamByUnit = [
+        {
+            unit: "Administrative Support",
+            shortLabel: "Administrative Support",
+            members: [
+                { name: "Marivic I. Martinez", role: "Section Head, TSTI Administrative Support", image: null },
+                { name: "Jana Ilyne M. Agcopra", role: "Training Assets and Inventory Officer", image: null },
+                { name: "Maria Recca Ello", role: "Records and Information Officer", image: null },
+            ],
+        },
+        {
+            unit: "Registrar Office",
+            shortLabel: "Registrar Office",
+            members: [
+                { name: "Valcyrus A. Madarieta", role: "Head Registrar", image: null },
+                { name: "Pretche P. Sioson", role: "Enrollment and TESDA Forms Officer", image: null },
+                { name: "Malou A. Corda", role: "Records And Liaison Officer", image: null },
+            ],
+        },
+        {
+            unit: "Institutional Development and External Linkages Support Section",
+            shortLabel: "Institutional Dev't & Linkages",
+            members: [
+                { name: "Rutche E. Montaño", role: "Section Head, Institutional Development and External Linkages Support Section, UTPRAS Focal and Assessment Center Manager", image: null },
+                { name: "Kris S. Buntag", role: "Job Linkaging and Network Services Coordinator", image: null },
+                { name: "Gemma E. Gonzales", role: "Community Partnership and Extension Coordinator", image: null },
+                { name: "Marivic I. Martinez", role: "Focal - Learner Support Services", image: null },
+                { name: "Jana Ilyne M. Agcopra", role: "Assessment Center Processing Officer", image: null },
+                { name: "Omiya O. Linog", role: "Policy and Performance Management Officer", image: null },
+            ],
+        },
+    ];
+
+    // --- Programs (aligned with trainer specializations) ---
+    const programs = [
+        {
+            name: "Electrical Installation & Maintenance (EIM) NC II",
+            degree: "Construction Sector",
+            desc: "This program equips learners with the competencies to install, maintain, and troubleshoot electrical wiring systems, fixtures, and equipment in residential, commercial, and industrial settings in accordance with the Philippine Electrical Code and TESDA standards.",
+            tags: ["Electrical Wiring", "Troubleshooting", "PEC Compliance", "Safety Practices"],
+            careers: ["Electrical Technician", "Maintenance Electrician", "Wiring Installer", "Building Maintenance Staff"],
+            trainers: ["Romulo P. Araña", "Ariel Dablio"],
+        },
+        {
+            name: "Shielded Metal Arc Welding (SMAW) NC I & NC II",
+            degree: "Construction Sector",
+            desc: "A hands-on welding program covering arc welding techniques on carbon steel plates and pipes, weld inspection, and safety procedures. Learners are trained for both community-based and institution-based delivery, including the Mobile Training Program (MTP).",
+            tags: ["Arc Welding", "Carbon Steel", "Weld Inspection", "MTP & Community-Based"],
+            careers: ["Welder / Fabricator", "Structural Welder", "Pipe Welder", "Welding Inspector"],
+            trainers: ["Jun Junrie A. Fuentes", "Brian M. Largo", "Mr. Elnard R. Castillon"],
+        },
+        {
+            name: "Carpentry NC II",
+            degree: "Construction Sector",
+            desc: "This program trains learners in layout, cutting, assembling, and installing wooden structures and fixtures using hand and power tools, following occupational health and safety standards for construction sites.",
+            tags: ["Wood Framing", "Layout & Cutting", "Formworks", "Power Tools"],
+            careers: ["Carpenter", "Formwork Builder", "Furniture Maker", "Construction Worker"],
+            trainers: ["Iriel P. Ansay, MPA", "Mr. Elnard R. Castillon"],
+        },
+        {
+            name: "Plumbing NC I & NC II",
+            degree: "Plumbing",
+            desc: "Covers the installation, repair, and maintenance of water supply, drainage, and venting systems for residential and commercial buildings, including pipe fitting, fixtures installation, and leak testing.",
+            tags: ["Pipe Fitting", "Water Supply", "Drainage Systems", "Fixture Installation"],
+            careers: ["Plumber", "Pipefitter", "Sanitary Installer", "Maintenance Plumber"],
+            trainers: ["Iriel P. Ansay, MPA"],
+        },
+        {
+            name: "Construction Painting NC II",
+            degree: "Construction Painting",
+            desc: "This program trains learners in surface preparation, paint mixing, and the application of decorative and protective coatings on interior and exterior building surfaces. It covers the proper use of brushes, rollers, and spray equipment, along with safety and quality standards for construction painting works.",
+            tags: ["Surface Preparation", "Paint Application", "Coating Systems", "Safety Practices"],
+            careers: ["Construction Painter", "Painting Contractor", "Building Finisher", "Maintenance Painter"],
+            trainers: ["Mr. Elnard R. Castillon"],
+        },
+        {
+            name: "Housekeeping NC II & NC III",
+            degree: "Tourism Sector",
+            desc: "A tourism-sector program that develops skills in guest room preparation, cleaning, laundry operations, and guest relations. Graduates are equipped for employment in hotels, resorts, and other hospitality establishments. Offered through both institution-based and community-based (CBT) delivery modes.",
+            tags: ["Guest Room Prep", "Laundry Operations", "Guest Relations", "CBT & Community-Based"],
+            careers: ["Room Attendant", "Housekeeping Staff", "Laundry Attendant", "Public Area Cleaner"],
+            trainers: ["Gay Marie C. Hawinay, LPT", "Omiya O. Linog, LPT", "Gemma E. Gonzales"],
+        },
+        {
+            name: "Barangay Health Services NC II",
+            degree: "Human Health / Health Care Sector",
+            desc: "This program prepares learners to deliver basic health care services at the barangay level, including health promotion, disease prevention, maternal and child care, and first aid. Graduates are equipped to serve as barangay health workers and community health aides in partnership with local government units and rural health units.",
+            tags: ["Community Health", "Maternal & Child Care", "First Aid", "Health Promotion"],
+            careers: ["Barangay Health Worker", "Community Health Aide", "Rural Health Unit Staff", "Health Program Assistant"],
+            trainers: ["Charlotte Y. Cansino, RN, MN, MPA"],
+        },
+        {
+            name: "Events Management Services NC III",
+            degree: "Tourism Sector",
+            desc: "This program equips learners with the competencies to plan, organize, and coordinate events such as conferences, weddings, corporate gatherings, and community activities. It covers client relations, budgeting, logistics, supplier coordination, and on-site event execution following TESDA's Events Management Services NC III standards.",
+            tags: ["Event Planning", "Client Relations", "Logistics & Coordination", "Budgeting"],
+            careers: ["Events Coordinator", "Events Assistant", "Conference Organizer", "Banquet Staff"],
+            trainers: ["Rica Mae L. Omictin"],
+        },
+        {
+            name: "Bookkeeping NC III",
+            degree: "Health, Social, and Other Community Development Services Sector",
+            desc: "This program equips learners with the knowledge and skills to record financial transactions, prepare reports, and maintain books of accounts for small businesses, following the Philippine Financial Reporting Standards (PFRS) for micro and small enterprises. Graduates are prepared for TESDA's Bookkeeping NC III assessment.",
+            tags: ["Financial Recording", "Book of Accounts", "Financial Reports", "PFRS Compliance"],
+            careers: ["Bookkeeper", "Accounting Clerk", "Accounts Receivable/Payable Staff", "Small Business Bookkeeper"],
+            trainers: ["Rica Mae L. Omictin"],
+        },
+        {
+            name: "Trainer's Methodology Level I",
+            degree: "Trainer's Methodology",
+            desc: "This program equips aspiring and practicing TVET trainers with the competencies to plan and prepare training sessions, facilitate learning, maintain training facilities, and assess learner progress. It is a prerequisite qualification for anyone who wants to become a nationally certified TVET trainer under TESDA's Philippine TVET Trainers Qualifications Framework.",
+            tags: ["Training Delivery", "Session Planning", "Competency Assessment", "TVET Standards"],
+            careers: ["TVET Trainer", "Training Coordinator", "Skills Assessor", "In-Company Instructor"],
+            trainers: ["Valcyrus A. Madarieta"],
+        },
+    ];
 
     const activeSectorData = trainersBySector[activeSector];
+    const activeSupportData = supportTeamByUnit[activeSupportUnit];
 
     return (
         <MainLayout
@@ -698,8 +787,9 @@ const programs = [
                 <section className="relative max-w-7xl mx-auto px-6 py-20 md:py-28">
                     <div className="grid md:grid-cols-12 gap-8 md:gap-12 items-start">
 
+                        {/* LEFT: Portrait Card */}
                         <motion.div
-                            className="md:col-span-5 relative flex flex-col items-center"
+                            className="md:col-span-4 relative flex flex-col items-center"
                             initial={{ opacity: 0, scale: 0.95 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
@@ -731,7 +821,7 @@ const programs = [
 
                             <div className="text-center mt-8 w-full max-w-xs mx-auto">
                                 <h3 className="text-2xl vp-serif font-semibold tracking-tight text-slate-800">
-                                    Karl Hein M. Pios
+                                    Karl Hein M. Pios, LPT
                                 </h3>
                                 <p className="mt-2 text-[12px] font-bold tracking-wider uppercase text-emerald-700">
                                     Vocational School Administrator
@@ -743,6 +833,47 @@ const programs = [
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
                                     </svg>
                                     <span>City College of Cagayan de Oro</span>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        {/* RIGHT: Bionote */}
+                        <motion.div
+                            className="md:col-span-8"
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6, delay: 0.15 }}
+                        >
+                            <Kicker textClass="text-emerald-600" ruleClass="bg-emerald-600">About the Administrator</Kicker>
+                            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 vp-serif mt-1 mb-6">
+                                <MaskedText text="Bionote" />
+                            </h2>
+
+                            <div className="relative p-8 md:p-10 bg-white rounded-[2rem] border border-emerald-100 shadow-2xl shadow-emerald-500/10 overflow-hidden">
+                                {/* Decorative accent */}
+                                <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-emerald-600 via-amber-400 to-emerald-600"></div>
+
+                                <div className="relative z-10 space-y-5 text-slate-600 leading-relaxed text-[15px]">
+                                    <p>
+                                        <span className="font-semibold text-slate-800">Karl Hein M. Pios, LPT</span>, is an educator, academic administrator, and TVET leader currently serving as the <span className="font-semibold text-emerald-700">Vocational School Administrator</span> of the Technical Skills and Technology Institute (TSTI) of the City College of Cagayan de Oro. With extensive experience in educational management, student development, finance, and institutional administration, he has contributed significantly in strengthening the administrative operations, the Technical-Vocational Education and the educational development initiatives in the Institution and the City.
+                                    </p>
+
+                                    <p>
+                                        A Licensed Professional Teacher, he earned his <span className="font-semibold text-slate-800">Bachelor of Elementary Education major in Special Education</span> from Xavier University – Ateneo de Cagayan and is currently completing his <span className="font-semibold text-slate-800">Master of Arts in Education major in School Management</span>. He is also a holder of TESDA National Certifications in <span className="font-semibold text-slate-800">Computer Systems Servicing NC II</span> and <span className="font-semibold text-slate-800">Bookkeeping NC III</span>, reflecting his commitment to lifelong learning and skills development.
+                                    </p>
+
+                                    <p>
+                                        Prior to his current role, Mr. Pios served as Program Coordinator of the Arrupe Educational Center – Social Development of the School of Education at Xavier University – Ateneo de Cagayan. A Fellow of the <span className="font-semibold text-slate-800">Philippine Youth Leadership Program (PYLP) Batch 17/18</span>, an international leadership exchange initiative that develops emerging Filipino leaders committed to civic engagement and community development.
+                                    </p>
+
+                                    <p>
+                                        He also held key leadership positions at the City College of Cagayan de Oro, including <span className="font-semibold text-slate-800">Head of Student Affairs Services</span>, <span className="font-semibold text-slate-800">Director for Administration</span>, <span className="font-semibold text-slate-800">Vice President for Finance</span>, and <span className="font-semibold text-slate-800">Assistant Department Manager</span>. His leadership experience spans academic affairs, student services, institutional operations, financial management, and strategic development.
+                                    </p>
+
+                                    <p>
+                                        Throughout his career in the Institution, he has championed accessible, industry-responsive, and community-centered education programs that empower learners through technical skills training, employability development, and lifelong learning opportunities. As Vocational School Administrator of the Technical Skills and Technology Institute (TSTI), he leads initiatives to expand TESDA-accredited programs, strengthen industry and community partnerships, uphold quality assurance and compliance standards, and advance the institute's mission of <span className="font-semibold italic text-emerald-700">"Transforming Future-Ready Skilled Workers"</span> by promoting inclusive technical-vocational education that equips individuals with the competencies needed for meaningful employment, career advancement, and sustainable livelihoods.
+                                    </p>
                                 </div>
                             </div>
                         </motion.div>
@@ -862,6 +993,82 @@ const programs = [
                                             idx={idx}
                                             qualification={trainer.qualification}
                                             qualifications={trainer.qualifications}
+                                        />
+                                    ))}
+                                </div>
+                            </motion.div>
+                        </AnimatePresence>
+                    </div>
+                </section>
+
+                {/* === SUPPORT TEAM SECTION (WITH UNIT TABS) === */}
+                <section
+                    className="relative overflow-hidden py-20 md:py-28 bg-slate-100"
+                    style={{ borderTop: `1px solid ${HAIRLINE}`, borderBottom: `1px solid ${HAIRLINE}` }}
+                >
+                    <div className="relative max-w-7xl mx-auto px-6">
+                        <div className="text-center mb-12">
+                            <Kicker textClass="text-blue-600" ruleClass="bg-blue-600" align="center">Behind the Scenes</Kicker>
+                            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif">
+                                <MaskedText text="Our Support Team" />
+                            </h2>
+                            <p className="mt-4 max-w-2xl mx-auto text-slate-500 text-sm leading-relaxed">
+                                The dedicated non-teaching staff who keep the Technical Skills & Technology Institute running smoothly — from administrative support to registrar services, institutional development, and external linkages.
+                            </p>
+                        </div>
+
+                        {/* === SUPPORT UNIT TABS === */}
+                        <div className="mb-14">
+                            <div className="flex justify-center">
+                                <div className="no-scrollbar flex gap-2 overflow-x-auto p-1.5 bg-white/60 backdrop-blur-md border border-white/80 rounded-full shadow-lg max-w-full">
+                                    {supportTeamByUnit.map((group, idx) => (
+                                        <button
+                                            key={group.unit}
+                                            onClick={() => setActiveSupportUnit(idx)}
+                                            className={`relative px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-semibold rounded-full whitespace-nowrap transition-colors duration-300 ${activeSupportUnit === idx ? 'text-white' : 'text-slate-600 hover:text-blue-700'}`}
+                                        >
+                                            {activeSupportUnit === idx && (
+                                                <motion.span
+                                                    layoutId="supportTabPill"
+                                                    className="absolute inset-0 bg-blue-700 rounded-full shadow-md shadow-blue-500/30"
+                                                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                                                />
+                                            )}
+                                            <span className="relative z-10">{group.shortLabel}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* === ACTIVE SUPPORT UNIT CONTENT === */}
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={activeSupportUnit}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.4, ease: 'easeInOut' }}
+                            >
+                                {/* Unit header */}
+                                <div className="flex items-center gap-4 mb-10">
+                                    <span className="w-8 h-px bg-blue-600" />
+                                    <h3 className="text-xl md:text-2xl font-bold text-slate-800 vp-serif tracking-tight">
+                                        {activeSupportData.unit}
+                                    </h3>
+                                    <span className="flex-1 h-px bg-slate-200" />
+                                    <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">
+                                        {activeSupportData.members.length} {activeSupportData.members.length === 1 ? 'Member' : 'Members'}
+                                    </span>
+                                </div>
+
+                                {/* Support grid for the active unit */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 justify-items-center">
+                                    {activeSupportData.members.map((member, idx) => (
+                                        <SupportCard
+                                            key={`${activeSupportUnit}-${member.name}-${idx}`}
+                                            member={member}
+                                            idx={idx}
                                         />
                                     ))}
                                 </div>

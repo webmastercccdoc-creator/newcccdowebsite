@@ -17,6 +17,7 @@ use App\Http\Controllers\UrlShortenerController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\PopupController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -275,6 +276,11 @@ Route::get('/api/events/active', [EventsController::class, 'getActiveEvents']);
 Route::get('/api/events/status-counts', [EventsController::class, 'getStatusCounts']);
 
 // ============================================
+// POPUP API ROUTE (Public)
+// ============================================
+Route::get('/api/popup', [PopupController::class, 'show']);
+
+// ============================================
 // ADMIN ROUTES (Requires Authentication)
 // ============================================
 Route::middleware(['auth'])->group(function () {
@@ -333,6 +339,12 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/admin/promotions/{id}/status', [PromotionsController::class, 'toggleStatus'])->name('admin.promotions.toggle-status');
     Route::delete('/admin/promotions/{id}', [PromotionsController::class, 'destroy'])->name('admin.promotions.destroy');
     Route::delete('/admin/promotions/bulk', [PromotionsController::class, 'bulkDelete'])->name('admin.promotions.bulk-delete');
+
+    // ============================================
+    // POPUP / ANNOUNCEMENT SETTINGS (Admin)
+    // ============================================
+    Route::get('/admin/popup', [PopupController::class, 'show'])->name('admin.popup.show');
+    Route::post('/admin/popup', [PopupController::class, 'update'])->name('admin.popup.update');
 
     // ============================================
     // EVENTS MANAGEMENT ROUTES (Admin)

@@ -16,7 +16,7 @@ import trishaDagusPhoto from '../../../assets/images/TRISHA_DAGUS.png';
 import wenefredoDellavaPhoto from '../../../assets/images/Wenefredo_Dellava.png';
 import markJanubasPhoto from '../../../assets/images/MARK_JANUBAS.png';
 import katerinaJanubasPhoto from '../../../assets/images/KATERINA_ JANUBAS.png';
-import pedroGambaPhoto from '../../../assets/images/PEDRO_GAMBA.png';
+import pedroGambaPhoto from '../../../assets/logos/ccdologo.png';
 import roshmondEntrinaPhoto from '../../../assets/images/Roshmond_Entrina.png';
 import andreaErminoPhoto from '../../../assets/images/Andrea_Ermino.png';
 import erlouiseVargasPhoto from '../../../assets/images/ERLOUISE_VARGAS.png';
@@ -38,6 +38,7 @@ import agaMahinayPhoto from '../../../assets/images/AGA_MAHINAY.png';
 import crysvenneBisligPhoto from '../../../assets/images/CRYSVENNE_BISLIG.png';
 import peterPedimentePhoto from '../../../assets/images/PETER_PEDIMENTE.png';
 import shadrachSantoPhoto from '../../../assets/images/SHADRACH_SANTO.png';
+import melbourneCagasanPhoto from '../../../assets/images/MELBOURNE_CAGASAN.png';
 
 // --- Faculty Photo & Background Imports ---
 const deanPhoto = drDonnaCotejoPhoto;
@@ -382,7 +383,7 @@ export default function CollegeArtsSciences() {
         { name: "DR. MELODY R. AGCITO", role: "PART-TIME FACULTY,\nGEN ED", photo: melodyImage },
         { name: "JOEL D. POTANE, PhD", role: "PART-TIME FACULTY,\nGEN ED", photo: joelPotanePhoto },
         { name: "MA. AIRA CHENESSA B. AGUILAR, EdD", role: "PART-TIME FACULTY,\nGEN ED", photo: chenessaAguilarPhoto },
-        { name: "MELBOURNE JEKO S. CAGASAN", role: "PART-TIME FACULTY,\nGEN ED" },
+        { name: "MELBOURNE JEKO S. CAGASAN", role: "PART-TIME FACULTY,\nGEN ED", photo: melbourneCagasanPhoto },
         { name: "SHADRACH MICHAEL S. SANTO", role: "PART-TIME FACULTY,\nGEN ED", photo: shadrachSantoPhoto },
         { name: "RIO HILLARY P. DALMAN", role: "PART-TIME FACULTY,\nGEN ED", photo: rioDalmanPhoto   },
         { name: "ROSHMOND ENTRINA", role: "PART-TIME FACULTY,\nGEN ED", photo: roshmondEntrinaPhoto },

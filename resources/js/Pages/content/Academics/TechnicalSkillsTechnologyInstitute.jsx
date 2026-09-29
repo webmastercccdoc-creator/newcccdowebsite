@@ -941,9 +941,15 @@ export default function TechnicalSkillsTechnologyInstitute() {
                                 <svg className="w-10 h-10 mx-auto text-amber-300 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M3 8.689c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062A1.125 1.125 0 013 16.81V8.69zM12.336 8.689c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062a1.125 1.125 0 01-1.683-.977V8.69z" />
                                 </svg>
-                                <p className="text-xl md:text-2xl text-white/95 leading-relaxed vp-serif font-medium">
-                                    Under Development
-                                </p>
+                                {activeVMO === 'vision' ? (
+                                    <p className="text-xl md:text-2xl text-white/95 leading-relaxed vp-serif font-medium">
+                                        To be a leading provider of relevant and accessible technical skills training that empowers future-ready skilled workers and communities aligned with sustainable development goals.
+                                    </p>
+                                ) : (
+                                    <p className="text-xl md:text-2xl text-white/95 leading-relaxed vp-serif font-medium">
+                                        TSTI is dedicated to offering a technical vocational education deeply rooted in cultural relevance, striving for excellence in equipping students with industry-aligned skills. We are committed to nurturing innovation, embracing sustainable practices, and fostering comprehensive personal and professional development.
+                                    </p>
+                                )}
                             </motion.div>
                         </AnimatePresence>
                     </div>

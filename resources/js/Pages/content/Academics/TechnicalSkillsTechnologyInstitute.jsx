@@ -10,13 +10,21 @@ import brianLargoImg from '../../../assets/images/TSTI Trainers/Brian M. Largo.p
 import charlotteCansinoImg from '../../../assets/images/TSTI Trainers/Charlotte Y. Cansino.png';
 import elnardCastillonImg from '../../../assets/images/TSTI Trainers/elnard-image.png';
 import gayMarieHawinayImg from '../../../assets/images/TSTI Trainers/Gay Marie C. Hawinay.png';
-import gemmaGonzalesImg from '../../../assets/images/TSTI Trainers/Brian M. Largo.png';
+import gemmaGonzalesImg from '../../../assets/images/TSTI Trainers/gemma-image.png';
 import irielAnsayImg from '../../../assets/images/TSTI Trainers/Iriel P. Ansay.png';
 import junFuentesImg from '../../../assets/images/TSTI Trainers/Jun Junrie A. Fuentes.png';
+import krisBuntagImg from '../../../assets/images/TSTI Trainers/buntag-image.png';
+import janaAgcopraImg from '../../../assets/images/TSTI Trainers/janna-image.png';
+import malouCordaImg from '../../../assets/images/TSTI Trainers/malou-iimage.png';
+import marivicMartinezImg from '../../../assets/images/TSTI Trainers/marivic-iimage.png';
+import markBaaImg from '../../../assets/images/TSTI Trainers/mark-iimage.png';
+import pretcheSiosonImg from '../../../assets/images/TSTI Trainers/pretche-imae.png';
+import reccaElloImg from '../../../assets/images/TSTI Trainers/recca-image.png';
 import omiyaLinogImg from '../../../assets/images/TSTI Trainers/Omiya O. Linog.png';
 import ricaOmictinImg from '../../../assets/images/TSTI Trainers/Rica Mae L. Omictin.png';
 import romuloAranaImg from '../../../assets/images/TSTI Trainers/Romulo P. Arana.png';
-import valcyrusMadarietaImg from '../../../assets/images/TSTI Trainers/Brian M. Largo.png';
+import rutcheMontanoImg from '../../../assets/images/TSTI Trainers/rutche-image.png';
+import valcyrusMadarietaImg from '../../../assets/images/TSTI Trainers/valcyrus-image.png';
 import karlImg from '../../../assets/images/TSTI Trainers/karl-image.png';
 
 import { motion, AnimatePresence } from 'framer-motion';
@@ -456,7 +464,7 @@ export default function TechnicalSkillsTechnologyInstitute() {
             trainers: [
                 {
                     name: "Mark Adrian S. Baa",
-                    image: gemmaGonzalesImg,
+                    image: markBaaImg,
                     qualification: "Section Head, Vocational Institutional Supervisor, Housekeeping NCII Trainer, Housekeeping NCII",
                 },
                 {
@@ -527,30 +535,30 @@ export default function TechnicalSkillsTechnologyInstitute() {
             unit: "Administrative Support",
             shortLabel: "Administrative Support",
             members: [
-                { name: "Marivic I. Martinez", role: "Section Head, TSTI Administrative Support", image: null },
-                { name: "Jana Ilyne M. Agcopra", role: "Training Assets and Inventory Officer", image: null },
-                { name: "Maria Recca Ello", role: "Records and Information Officer", image: null },
+                { name: "Marivic I. Martinez", role: "Section Head, TSTI Administrative Support", image: marivicMartinezImg },
+                { name: "Jana Ilyne M. Agcopra", role: "Training Assets and Inventory Officer", image: janaAgcopraImg },
+                { name: "Maria Recca Ello", role: "Records and Information Officer", image: reccaElloImg },
             ],
         },
         {
             unit: "Registrar Office",
             shortLabel: "Registrar Office",
             members: [
-                { name: "Valcyrus A. Madarieta", role: "Head Registrar", image: null },
-                { name: "Pretche P. Sioson", role: "Enrollment and TESDA Forms Officer", image: null },
-                { name: "Malou A. Corda", role: "Records And Liaison Officer", image: null },
+                { name: "Valcyrus A. Madarieta", role: "Head Registrar", image: valcyrusMadarietaImg },
+                { name: "Pretche P. Sioson", role: "Enrollment and TESDA Forms Officer", image: pretcheSiosonImg },
+                { name: "Malou A. Corda", role: "Records And Liaison Officer", image: malouCordaImg },
             ],
         },
         {
             unit: "Institutional Development and External Linkages Support Section",
             shortLabel: "Institutional Dev't & Linkages",
             members: [
-                { name: "Rutche E. Montaño", role: "Section Head, Institutional Development and External Linkages Support Section, UTPRAS Focal and Assessment Center Manager", image: null },
-                { name: "Kris S. Buntag", role: "Job Linkaging and Network Services Coordinator", image: null },
-                { name: "Gemma E. Gonzales", role: "Community Partnership and Extension Coordinator", image: null },
-                { name: "Marivic I. Martinez", role: "Focal - Learner Support Services", image: null },
-                { name: "Jana Ilyne M. Agcopra", role: "Assessment Center Processing Officer", image: null },
-                { name: "Omiya O. Linog", role: "Policy and Performance Management Officer", image: null },
+                { name: "Rutche E. Montaño", role: "Section Head, Institutional Development and External Linkages Support Section, UTPRAS Focal and Assessment Center Manager", image: rutcheMontanoImg },
+                { name: "Kris S. Buntag", role: "Job Linkaging and Network Services Coordinator", image: krisBuntagImg },
+                { name: "Gemma E. Gonzales", role: "Community Partnership and Extension Coordinator", image: gemmaGonzalesImg },
+                { name: "Marivic I. Martinez", role: "Focal - Learner Support Services", image: marivicMartinezImg },
+                { name: "Jana Ilyne M. Agcopra", role: "Assessment Center Processing Officer", image: janaAgcopraImg },
+                { name: "Omiya O. Linog", role: "Policy and Performance Management Officer", image: omiyaLinogImg },
             ],
         },
     ];

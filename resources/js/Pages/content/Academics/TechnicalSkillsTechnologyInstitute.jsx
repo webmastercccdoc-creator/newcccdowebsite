@@ -10,13 +10,21 @@ import brianLargoImg from '../../../assets/images/TSTI Trainers/Brian M. Largo.p
 import charlotteCansinoImg from '../../../assets/images/TSTI Trainers/Charlotte Y. Cansino.png';
 import elnardCastillonImg from '../../../assets/images/TSTI Trainers/elnard-image.png';
 import gayMarieHawinayImg from '../../../assets/images/TSTI Trainers/Gay Marie C. Hawinay.png';
-import gemmaGonzalesImg from '../../../assets/images/TSTI Trainers/Brian M. Largo.png';
+import gemmaGonzalesImg from '../../../assets/images/TSTI Trainers/gemma-image.png';
 import irielAnsayImg from '../../../assets/images/TSTI Trainers/Iriel P. Ansay.png';
 import junFuentesImg from '../../../assets/images/TSTI Trainers/Jun Junrie A. Fuentes.png';
+import krisBuntagImg from '../../../assets/images/TSTI Trainers/buntag-image.png';
+import janaAgcopraImg from '../../../assets/images/TSTI Trainers/janna-image.png';
+import malouCordaImg from '../../../assets/images/TSTI Trainers/malou-iimage.png';
+import marivicMartinezImg from '../../../assets/images/TSTI Trainers/marivic-iimage.png';
+import markBaaImg from '../../../assets/images/TSTI Trainers/mark-iimage.png';
+import pretcheSiosonImg from '../../../assets/images/TSTI Trainers/pretche-imae.png';
+import reccaElloImg from '../../../assets/images/TSTI Trainers/recca-image.png';
 import omiyaLinogImg from '../../../assets/images/TSTI Trainers/Omiya O. Linog.png';
 import ricaOmictinImg from '../../../assets/images/TSTI Trainers/Rica Mae L. Omictin.png';
 import romuloAranaImg from '../../../assets/images/TSTI Trainers/Romulo P. Arana.png';
-import valcyrusMadarietaImg from '../../../assets/images/TSTI Trainers/Brian M. Largo.png';
+import rutcheMontanoImg from '../../../assets/images/TSTI Trainers/rutche-image.png';
+import valcyrusMadarietaImg from '../../../assets/images/TSTI Trainers/valcyrus-image.png';
 import karlImg from '../../../assets/images/TSTI Trainers/karl-image.png';
 
 import { motion, AnimatePresence } from 'framer-motion';
@@ -456,7 +464,7 @@ export default function TechnicalSkillsTechnologyInstitute() {
             trainers: [
                 {
                     name: "Mark Adrian S. Baa",
-                    image: gemmaGonzalesImg,
+                    image: markBaaImg,
                     qualification: "Section Head, Vocational Institutional Supervisor, Housekeeping NCII Trainer, Housekeeping NCII",
                 },
                 {
@@ -527,30 +535,30 @@ export default function TechnicalSkillsTechnologyInstitute() {
             unit: "Administrative Support",
             shortLabel: "Administrative Support",
             members: [
-                { name: "Marivic I. Martinez", role: "Section Head, TSTI Administrative Support", image: null },
-                { name: "Jana Ilyne M. Agcopra", role: "Training Assets and Inventory Officer", image: null },
-                { name: "Maria Recca Ello", role: "Records and Information Officer", image: null },
+                { name: "Marivic I. Martinez", role: "Section Head, TSTI Administrative Support", image: marivicMartinezImg },
+                { name: "Jana Ilyne M. Agcopra", role: "Training Assets and Inventory Officer", image: janaAgcopraImg },
+                { name: "Maria Recca Ello", role: "Records and Information Officer", image: reccaElloImg },
             ],
         },
         {
             unit: "Registrar Office",
             shortLabel: "Registrar Office",
             members: [
-                { name: "Valcyrus A. Madarieta", role: "Head Registrar", image: null },
-                { name: "Pretche P. Sioson", role: "Enrollment and TESDA Forms Officer", image: null },
-                { name: "Malou A. Corda", role: "Records And Liaison Officer", image: null },
+                { name: "Valcyrus A. Madarieta", role: "Head Registrar", image: valcyrusMadarietaImg },
+                { name: "Pretche P. Sioson", role: "Enrollment and TESDA Forms Officer", image: pretcheSiosonImg },
+                { name: "Malou A. Corda", role: "Records And Liaison Officer", image: malouCordaImg },
             ],
         },
         {
             unit: "Institutional Development and External Linkages Support Section",
             shortLabel: "Institutional Dev't & Linkages",
             members: [
-                { name: "Rutche E. Montaño", role: "Section Head, Institutional Development and External Linkages Support Section, UTPRAS Focal and Assessment Center Manager", image: null },
-                { name: "Kris S. Buntag", role: "Job Linkaging and Network Services Coordinator", image: null },
-                { name: "Gemma E. Gonzales", role: "Community Partnership and Extension Coordinator", image: null },
-                { name: "Marivic I. Martinez", role: "Focal - Learner Support Services", image: null },
-                { name: "Jana Ilyne M. Agcopra", role: "Assessment Center Processing Officer", image: null },
-                { name: "Omiya O. Linog", role: "Policy and Performance Management Officer", image: null },
+                { name: "Rutche E. Montaño", role: "Section Head, Institutional Development and External Linkages Support Section, UTPRAS Focal and Assessment Center Manager", image: rutcheMontanoImg },
+                { name: "Kris S. Buntag", role: "Job Linkaging and Network Services Coordinator", image: krisBuntagImg },
+                { name: "Gemma E. Gonzales", role: "Community Partnership and Extension Coordinator", image: gemmaGonzalesImg },
+                { name: "Marivic I. Martinez", role: "Focal - Learner Support Services", image: marivicMartinezImg },
+                { name: "Jana Ilyne M. Agcopra", role: "Assessment Center Processing Officer", image: janaAgcopraImg },
+                { name: "Omiya O. Linog", role: "Policy and Performance Management Officer", image: omiyaLinogImg },
             ],
         },
     ];
@@ -838,23 +846,19 @@ export default function TechnicalSkillsTechnologyInstitute() {
                         </motion.div>
 
                         {/* RIGHT: Bionote */}
-                        <motion.div
-                            className="md:col-span-8"
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: 0.15 }}
-                        >
+                        <div className="md:col-span-8">
                             <Kicker textClass="text-emerald-600" ruleClass="bg-emerald-600">About the Administrator</Kicker>
-                            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 vp-serif mt-1 mb-6">
+                            <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif mb-6">
                                 <MaskedText text="Bionote" />
                             </h2>
 
-                            <div className="relative p-8 md:p-10 bg-white rounded-[2rem] border border-emerald-100 shadow-2xl shadow-emerald-500/10 overflow-hidden">
-                                {/* Decorative accent */}
-                                <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-emerald-600 via-amber-400 to-emerald-600"></div>
-
-                                <div className="relative z-10 space-y-5 text-slate-600 leading-relaxed text-[15px]">
+                            <motion.div
+                                className="space-y-4 text-slate-600 leading-relaxed text-[15px]"
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.6, delay: 0.2 }}
+                            >
                                     <p>
                                         <span className="font-semibold text-slate-800">Karl Hein M. Pios, LPT</span>, is an educator, academic administrator, and TVET leader currently serving as the <span className="font-semibold text-emerald-700">Vocational School Administrator</span> of the Technical Skills and Technology Institute (TSTI) of the City College of Cagayan de Oro. With extensive experience in educational management, student development, finance, and institutional administration, he has contributed significantly in strengthening the administrative operations, the Technical-Vocational Education and the educational development initiatives in the Institution and the City.
                                     </p>
@@ -874,9 +878,27 @@ export default function TechnicalSkillsTechnologyInstitute() {
                                     <p>
                                         Throughout his career in the Institution, he has championed accessible, industry-responsive, and community-centered education programs that empower learners through technical skills training, employability development, and lifelong learning opportunities. As Vocational School Administrator of the Technical Skills and Technology Institute (TSTI), he leads initiatives to expand TESDA-accredited programs, strengthen industry and community partnerships, uphold quality assurance and compliance standards, and advance the institute's mission of <span className="font-semibold italic text-emerald-700">"Transforming Future-Ready Skilled Workers"</span> by promoting inclusive technical-vocational education that equips individuals with the competencies needed for meaningful employment, career advancement, and sustainable livelihoods.
                                     </p>
-                                </div>
-                            </div>
-                        </motion.div>
+                            </motion.div>
+
+                            <motion.div
+                                className="mt-6 flex flex-wrap gap-2"
+                                initial={{ opacity: 0 }}
+                                whileInView={{ opacity: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: 0.4 }}
+                            >
+                                {[
+                                    'Bachelor of Elementary Education, Special Education',
+                                    'MA Education, School Management (In Progress)',
+                                    'Computer Systems Servicing NC II',
+                                    'Bookkeeping NC III',
+                                ].map((credential) => (
+                                    <span key={credential} className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-xs font-medium text-slate-600 shadow-sm">
+                                        {credential}
+                                    </span>
+                                ))}
+                            </motion.div>
+                        </div>
                     </div>
                 </section>
 
@@ -940,27 +962,27 @@ export default function TechnicalSkillsTechnologyInstitute() {
                         </div>
 
                         {/* === SECTOR TABS === */}
-                        <div className="mb-14">
-                            <div className="flex justify-center">
-                                <div className="no-scrollbar flex gap-2 overflow-x-auto p-1.5 bg-white/60 backdrop-blur-md border border-white/80 rounded-full shadow-lg max-w-full">
-                                    {trainersBySector.map((group, idx) => (
-                                        <button
-                                            key={group.sector}
-                                            onClick={() => setActiveSector(idx)}
-                                            className={`relative px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-semibold rounded-full whitespace-nowrap transition-colors duration-300 ${activeSector === idx ? 'text-white' : 'text-slate-600 hover:text-emerald-700'}`}
-                                        >
-                                            {activeSector === idx && (
-                                                <motion.span
-                                                    layoutId="sectorTabPill"
-                                                    className="absolute inset-0 bg-emerald-700 rounded-full shadow-md shadow-emerald-500/30"
-                                                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                                                />
-                                            )}
-                                            <span className="relative z-10">{group.shortLabel}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
+                        <div className="flex flex-wrap items-center justify-center gap-2.5 mb-10 md:mb-14">
+                            {trainersBySector.map((group, idx) => {
+                                const isActive = activeSector === idx;
+                                return (
+                                    <button
+                                        key={group.sector}
+                                        onClick={() => setActiveSector(idx)}
+                                        aria-pressed={isActive}
+                                        className={`px-5 py-2.5 rounded-full text-[12px] font-bold uppercase tracking-[0.12em] border transition-all duration-300 ${
+                                            isActive
+                                                ? 'bg-emerald-700 text-white border-amber-400 shadow-md shadow-emerald-900/10'
+                                                : 'bg-white text-slate-500 border-slate-200 hover:border-emerald-300 hover:text-emerald-700'
+                                        }`}
+                                    >
+                                        {group.shortLabel}
+                                        <span className={`ml-2 text-[10px] font-bold ${isActive ? 'text-amber-300' : 'text-slate-300'}`}>
+                                            {group.trainers.length}
+                                        </span>
+                                    </button>
+                                );
+                            })}
                         </div>
 
                         {/* === ACTIVE SECTOR CONTENT === */}

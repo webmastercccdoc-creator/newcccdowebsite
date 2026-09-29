@@ -71,7 +71,6 @@ export default function CollegeEducation() {
     const [coeNews, setCoeNews] = useState([]);
     const [isLoadingNews, setIsLoadingNews] = useState(true);
     const [isNewsVisible, setIsNewsVisible] = useState(false);
-    const [isBioExpanded, setIsBioExpanded] = useState(false);
 
     // Refs for 3D Carousel
     const dragRef = useRef(null);
@@ -631,7 +630,6 @@ export default function CollegeEducation() {
                             </h2>
 
                             <motion.div
-                                id="dean-bionote-details"
                                 className="space-y-4 text-slate-600 leading-relaxed text-[15px]"
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
@@ -641,37 +639,22 @@ export default function CollegeEducation() {
                                 <p>
                                     Dr. Liza L. Chua is the current Dean of the College of Education at the City College of Cagayan de Oro. She previously served as Dean of the College of Teacher Education (CTE) at the University of Cebu–Main Campus for seven years and as College Dean at St. Paul University Surigao from School Year 2022–2024.
                                 </p>
-                                {isBioExpanded && (
-                                    <>
-                                        <p>
-                                            Dr. Chua earned her Bachelor of Secondary Education major in Social Science and her Master of Arts in Social Science from Cebu Normal University. She also completed her Diploma in Special Education and Master of Arts in Special Education at Cebu Technological University. She earned her <strong className="text-slate-800">Doctor in Development Education (DevEdD)</strong> from Cebu Technological University and completed her <strong className="text-slate-800">Doctor of Philosophy major in Educational Management</strong> at the University of Bohol in 2017.
-                                        </p>
-                                        <p>
-                                            An active scholar and researcher, Dr. Chua has written, co-authored, and published articles in international journals since 2015. She has likewise co-authored textbooks and other instructional and printed materials over the past several years, contributing to the advancement of knowledge and practice in education and teacher education.
-                                        </p>
-                                        <p>
-                                            Dr. Chua has been a <strong className="text-slate-800">PACUCOA Accreditor since 2015</strong>, contributing her expertise to quality assurance and continuous improvement in Philippine higher education. She also serves as a Pre-Service Teacher Education Curriculum Writer under the Results-Based, Inclusive, and Transformative Quality (RITQ) Framework in collaboration with the Teacher Education Council (TEC), where she contributes to curriculum development initiatives that promote quality, relevance, inclusivity, and transformative teacher education.
-                                        </p>
-                                        <p>
-                                            Demonstrating her commitment to academic leadership and institutional development, Dr. Chua was also among the candidates in the <strong className="text-slate-800">Search for President of the City College of Cagayan de Oro</strong> held on October 25, 2024, at the Tourism Hall, City Hall Compound, Cagayan de Oro City.
-                                        </p>
-                                        <p>
-                                            With her extensive experience in academic leadership, teacher education, special education, research, curriculum development, and quality assurance, Dr. Chua continues to advocate for inclusive, transformative, and outcomes-based education. Her professional work reflects a sustained commitment to developing competent educators, strengthening educational institutions, advancing research, and contributing to the continuing improvement of Philippine education.
-                                        </p>
-                                    </>
-                                )}
+                                <p>
+                                    Dr. Chua earned her Bachelor of Secondary Education major in Social Science and her Master of Arts in Social Science from Cebu Normal University. She also completed her Diploma in Special Education and Master of Arts in Special Education at Cebu Technological University. She earned her <strong className="text-slate-800">Doctor in Development Education (DevEdD)</strong> from Cebu Technological University and completed her <strong className="text-slate-800">Doctor of Philosophy major in Educational Management</strong> at the University of Bohol in 2017.
+                                </p>
+                                <p>
+                                    An active scholar and researcher, Dr. Chua has written, co-authored, and published articles in international journals since 2015. She has likewise co-authored textbooks and other instructional and printed materials over the past several years, contributing to the advancement of knowledge and practice in education and teacher education.
+                                </p>
+                                <p>
+                                    Dr. Chua has been a <strong className="text-slate-800">PACUCOA Accreditor since 2015</strong>, contributing her expertise to quality assurance and continuous improvement in Philippine higher education. She also serves as a Pre-Service Teacher Education Curriculum Writer under the Results-Based, Inclusive, and Transformative Quality (RITQ) Framework in collaboration with the Teacher Education Council (TEC), where she contributes to curriculum development initiatives that promote quality, relevance, inclusivity, and transformative teacher education.
+                                </p>
+                                <p>
+                                    Demonstrating her commitment to academic leadership and institutional development, Dr. Chua was also among the candidates in the <strong className="text-slate-800">Search for President of the City College of Cagayan de Oro</strong> held on October 25, 2024, at the Tourism Hall, City Hall Compound, Cagayan de Oro City.
+                                </p>
+                                <p>
+                                    With her extensive experience in academic leadership, teacher education, special education, research, curriculum development, and quality assurance, Dr. Chua continues to advocate for inclusive, transformative, and outcomes-based education. Her professional work reflects a sustained commitment to developing competent educators, strengthening educational institutions, advancing research, and contributing to the continuing improvement of Philippine education.
+                                </p>
                             </motion.div>
-
-                            <button
-                                type="button"
-                                onClick={() => setIsBioExpanded((expanded) => !expanded)}
-                                aria-expanded={isBioExpanded}
-                                aria-controls="dean-bionote-details"
-                                className="mt-6 inline-flex items-center gap-2 rounded-full border border-emerald-700 bg-emerald-700 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-emerald-800"
-                            >
-                                {isBioExpanded ? 'View less' : 'View more about Dr. Chua'}
-                                <span aria-hidden="true" className="text-amber-300">{isBioExpanded ? '↑' : '↓'}</span>
-                            </button>
 
                             <motion.div
                                 className="mt-6 flex flex-wrap gap-2"

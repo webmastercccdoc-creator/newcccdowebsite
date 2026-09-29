@@ -3,6 +3,7 @@ import axios from 'axios';
 import AdminLayout from '@/layouts/AdminLayout';
 import AddPromotions from './AddPromotions';
 import EditPromotions from './EditPromotions';
+import ManagePopup from './ManagePopup';
 import { ConfirmModal } from '@/components/admin/Modal';
 
 export default function Promotions() {
@@ -15,6 +16,9 @@ export default function Promotions() {
     const [isDeleting, setIsDeleting] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
+
+    // Popup management modal
+    const [isManagePopupOpen, setIsManagePopupOpen] = useState(false);
 
     // Permissions state
     const [userPermissions, setUserPermissions] = useState([]);
@@ -273,8 +277,8 @@ export default function Promotions() {
 
     return (
         <AdminLayout title="Promotions">
-            {/* Header with Add Promotion Button */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+            {/* Header with Action Buttons */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
                 <div>
                     <p className="text-sm text-gray-600">
                         Manage all promotions
@@ -283,18 +287,32 @@ export default function Promotions() {
                         Create, edit, and manage promotional content
                     </p>
                 </div>
-                {hasPermission('promotions') && (
-                    <button
-                        type="button"
-                        onClick={() => setIsAddModalOpen(true)}
-                        className="mt-3 sm:mt-0 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg w-fit"
-                    >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
-                        Create New Promotion
-                    </button>
-                )}
+                <div className="flex flex-wrap items-center gap-3">
+                    {hasPermission('promotions') && (
+                        <button
+                            type="button"
+                            onClick={() => setIsManagePopupOpen(true)}
+                            className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg w-fit"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                            </svg>
+                            Manage Announcement
+                        </button>
+                    )}
+                    {hasPermission('promotions') && (
+                        <button
+                            type="button"
+                            onClick={() => setIsAddModalOpen(true)}
+                            className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg w-fit"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                            Create New Promotion
+                        </button>
+                    )}
+                </div>
             </div>
 
             {/* Search and Filters */}
@@ -540,6 +558,11 @@ export default function Promotions() {
                 }}
                 onUpdated={handlePromotionUpdated}
                 promotionId={selectedPromotionId}
+            />
+
+            <ManagePopup
+                isOpen={isManagePopupOpen}
+                onClose={() => setIsManagePopupOpen(false)}
             />
 
             <ConfirmModal

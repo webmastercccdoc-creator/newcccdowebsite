@@ -417,6 +417,7 @@ export default function CollegeBusinessManagement() {
                   left: 50%;
                   transform: translate(-50%,-50%) rotateX(90deg);
                   background: -webkit-radial-gradient(center center, farthest-side , #9993, transparent);
+                                    pointer-events: none;
                 }
             `}</style>
 
@@ -770,7 +771,7 @@ export default function CollegeBusinessManagement() {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true, amount: 0.3 }}
                                     transition={{ duration: 0.7, ease: 'easeOut' }}
-                                    className="relative w-full"
+                                    className="relative z-0 w-full"
                                     style={{ height: '620px', perspective: '1000px', marginBottom: '40px', paddingTop: '24px' }}
                                 >
                                     <div id="drag-container" ref={dragRef} style={{ position: 'relative', height: '100%', transformStyle: 'preserve-3d', top: '10px' }}>
@@ -826,8 +827,8 @@ export default function CollegeBusinessManagement() {
                                     </button>
                                 </motion.div>
 
-                                <div className="w-full pt-2 text-center">
-                                    <a href="/news/latest" className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-emerald-600 text-white font-semibold hover:bg-emerald-500 transition-colors duration-300 shadow-lg shadow-emerald-500/20">
+                                <div className="relative z-20 w-full pt-2 text-center">
+                                    <a href="/article/latest" className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-emerald-600 text-white font-semibold hover:bg-emerald-500 transition-colors duration-300 shadow-lg shadow-emerald-500/20">
                                         View All News
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                                     </a>

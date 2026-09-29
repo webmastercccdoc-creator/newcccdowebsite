@@ -1,10 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Document, Page, pdfjs } from "react-pdf";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
 
 import MainLayout from "../../../layouts/MainLayout";
 import libraryBannerImg from "../../../assets/banner/ovpacads-banner.png";
 import libraryLogo from "../../../assets/logos/osas-logo.png";
+import facilityReservationPdf from "../../../assets/Downloadable Fiile/Library Guideline/GLN-LIB-001_Book-A-Spot_ Library Facility Reservation .pdf";
+import circulationGuidelinesPdf from "../../../assets/Downloadable Fiile/Library Guideline/GLN-LIB-002_Library Circulation Guidelines.pdf";
+import electronicResourcesGuidelinesPdf from "../../../assets/Downloadable Fiile/Library Guideline/GLN-LIB-003_Acceptable Use of Electronic Resources.pdf";
+import generalConductGuidelinesPdf from "../../../assets/Downloadable Fiile/Library Guideline/GLN-LIB-004_General Conduct Inside the Library.pdf";
 import melodyImage from "../../../assets/images/melody-image.png";
+import aprilImage from "../../../assets/images/april-image.png";
+import feImage from "../../../assets/images/fe-image.png";
 import sdg1 from "../../../assets/images/sdg1.png";
 import sdg2 from "../../../assets/images/sdg2.jpg";
 import sdg3 from "../../../assets/images/sdg3.png";
@@ -22,6 +31,11 @@ import sdg14 from "../../../assets/images/sdg14.png";
 import sdg15 from "../../../assets/images/sdg15.png";
 import sdg16 from "../../../assets/images/sdg16.png";
 import sdg17 from "../../../assets/images/sdg17.png";
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+    "pdfjs-dist/build/pdf.worker.min.mjs",
+    import.meta.url
+).toString();
 
 // ===================== Motion variants =====================
 const riseIn = {
@@ -589,18 +603,21 @@ const PERSONNEL = [
         role: "Head Librarian",
         unit: "Library Services Office",
         accent: "green",
+        image: melodyImage,
     },
     {
         name: "April Grace S. Almahan",
         role: "Reference & User Services Assistant",
         unit: "Reference & User Services",
         accent: "gold",
+        image: aprilImage,
     },
     {
         name: "Marie Fe S. Cagasan",
         role: "Collections & Processing Clerk",
         unit: "Collections & Processing",
         accent: "green",
+        image: feImage,
     },
 ];
 
@@ -632,15 +649,26 @@ function Personnel() {
 
                             <div className="relative mb-4">
                                 <div
-                                    className={`flex h-20 w-20 items-center justify-center rounded-full border-4 shadow-lg transition-transform duration-500 group-hover:scale-105 ${
+                                    className={`relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-4 shadow-lg transition-transform duration-500 group-hover:scale-105 ${
                                         isGold
                                             ? "border-[#f5c518] bg-[#fffdf3] text-[#b8860b] shadow-[#f5c518]/25"
                                             : "border-[#157d3c] bg-[#f0f7f2] text-[#157d3c] shadow-[#157d3c]/25"
                                     }`}
                                 >
-                                    <span className="text-2xl font-black">
+                                    <span className="absolute text-2xl font-black">
                                         {getInitials(person.name)}
                                     </span>
+                                    {person.image && (
+                                        <img
+                                            src={person.image}
+                                            alt={person.name}
+                                            className="relative h-full w-full object-cover object-top"
+                                            onError={(e) => {
+                                                e.currentTarget.style.display =
+                                                    "none";
+                                            }}
+                                        />
+                                    )}
                                 </div>
 
                                 <span
@@ -1738,6 +1766,311 @@ function LibraryServices() {
     );
 }
 
+// ===================== Library Policies and Guidelines =====================
+const POLICY_GUIDELINE_TABS = [
+    {
+        id: "facility-reservation",
+        label: "Facility Reservation",
+        reference: "GLN-LIB-001",
+        title: "Book-A-Spot: Library Facility Reservation",
+        pdf: facilityReservationPdf,
+        accent: "from-green-700 to-emerald-500",
+    },
+    {
+        id: "circulation",
+        label: "Circulation",
+        reference: "GLN-LIB-002",
+        title: "Library Circulation Guidelines",
+        pdf: circulationGuidelinesPdf,
+        accent: "from-yellow-500 to-amber-400",
+    },
+    {
+        id: "electronic-resources",
+        label: "Electronic Resources",
+        reference: "GLN-LIB-003",
+        title: "Acceptable Use of Electronic Resources",
+        pdf: electronicResourcesGuidelinesPdf,
+        accent: "from-emerald-700 to-green-500",
+    },
+    {
+        id: "general-conduct",
+        label: "General Conduct",
+        reference: "GLN-LIB-004",
+        title: "General Conduct Inside the Library",
+        pdf: generalConductGuidelinesPdf,
+        accent: "from-amber-500 to-yellow-400",
+    },
+];
+
+function PolicyGuidelines() {
+    const [activePolicy, setActivePolicy] = useState(
+        POLICY_GUIDELINE_TABS[0].id
+    );
+    const [openPdf, setOpenPdf] = useState(null);
+    const [numPages, setNumPages] = useState(null);
+    const [pageNumber, setPageNumber] = useState(1);
+    const activePolicyTab =
+        POLICY_GUIDELINE_TABS.find((tab) => tab.id === activePolicy) ||
+        POLICY_GUIDELINE_TABS[0];
+
+    useEffect(() => {
+        if (!openPdf) return;
+
+        const handleKeyDown = (event) => {
+            if (event.key === "Escape") setOpenPdf(null);
+            if (event.key === "ArrowRight" && numPages && pageNumber < numPages) {
+                setPageNumber((page) => page + 1);
+            }
+            if (event.key === "ArrowLeft" && pageNumber > 1) {
+                setPageNumber((page) => page - 1);
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [openPdf, numPages, pageNumber]);
+
+    const openViewer = (tab) => {
+        setOpenPdf(tab);
+        setPageNumber(1);
+        setNumPages(null);
+    };
+
+    const closeViewer = () => {
+        setOpenPdf(null);
+        setPageNumber(1);
+        setNumPages(null);
+    };
+
+    return (
+        <div className="space-y-6">
+            <div
+                role="tablist"
+                aria-label="Library policies and guidelines"
+                className="library-tab-strip flex gap-2 overflow-x-auto pb-1"
+            >
+                {POLICY_GUIDELINE_TABS.map((tab) => {
+                    const isActive = activePolicy === tab.id;
+                    return (
+                        <button
+                            key={tab.id}
+                            type="button"
+                            role="tab"
+                            id={`policy-tab-${tab.id}`}
+                            aria-selected={isActive}
+                            aria-controls={`policy-panel-${tab.id}`}
+                            onClick={() => setActivePolicy(tab.id)}
+                            className={`relative shrink-0 rounded-full px-4 py-2.5 text-sm font-semibold whitespace-nowrap transition-colors duration-200 focus:outline-none ${
+                                isActive
+                                    ? "text-white"
+                                    : "text-gray-600 hover:bg-[#f0f7f2] hover:text-[#1a1a1a]"
+                            }`}
+                        >
+                            {isActive && (
+                                <motion.span
+                                    layoutId="policyGuidelinePill"
+                                    className="absolute inset-0 rounded-full bg-[#157d3c] shadow-md shadow-[#157d3c]/25"
+                                    transition={{
+                                        type: "spring",
+                                        stiffness: 420,
+                                        damping: 34,
+                                    }}
+                                />
+                            )}
+                            <span className="relative z-10">{tab.label}</span>
+                        </button>
+                    );
+                })}
+            </div>
+
+            <AnimatePresence mode="wait">
+                <motion.section
+                    key={activePolicy}
+                    role="tabpanel"
+                    id={`policy-panel-${activePolicy}`}
+                    aria-labelledby={`policy-tab-${activePolicy}`}
+                    variants={panelSwitch}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="flex justify-start"
+                >
+                    <article className="group relative flex w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+                        <div
+                            className={`h-1.5 w-full bg-gradient-to-r ${activePolicyTab.accent}`}
+                        />
+
+                        <div className="relative flex h-[380px] w-full items-start justify-center overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+                            <span
+                                className={`absolute left-4 top-4 z-10 rounded-full bg-gradient-to-r ${activePolicyTab.accent} px-3 py-1 text-xs font-bold text-white shadow-md`}
+                            >
+                                {activePolicyTab.reference}
+                            </span>
+                            <Document
+                                file={activePolicyTab.pdf}
+                                loading={
+                                    <div className="flex h-full items-center justify-center">
+                                        <div className="h-8 w-8 animate-spin rounded-full border-4 border-green-700 border-t-transparent" />
+                                    </div>
+                                }
+                                error={
+                                    <div className="flex h-full items-center justify-center p-6 text-center text-sm font-semibold text-red-600">
+                                        Failed to load PDF preview.
+                                    </div>
+                                }
+                            >
+                                <Page
+                                    pageNumber={1}
+                                    width={
+                                        typeof window === "undefined"
+                                            ? 460
+                                            : Math.min(460, window.innerWidth - 80)
+                                    }
+                                    renderAnnotationLayer={false}
+                                    renderTextLayer={false}
+                                    className="mt-4 shadow-md transition-transform duration-500 group-hover:scale-[1.02]"
+                                />
+                            </Document>
+                            <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent" />
+                        </div>
+
+                        <div className="flex flex-1 flex-col p-6">
+                            <h3 className="text-2xl font-extrabold leading-tight text-green-900">
+                                {activePolicyTab.title}
+                            </h3>
+                            <p className="mt-1 font-medium text-gray-700">
+                                City College of Cagayan de Oro Library
+                            </p>
+                            <p className="mt-1 text-sm text-gray-500">
+                                Official Library Policy and Guidelines
+                            </p>
+                            <button
+                                type="button"
+                                onClick={() => openViewer(activePolicyTab)}
+                                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-yellow-400 to-yellow-500 py-3.5 font-extrabold text-green-900 shadow-md transition-all duration-300 hover:from-yellow-500 hover:to-yellow-600 hover:shadow-lg active:scale-[0.98]"
+                            >
+                                <span>ACCESS THE FULL VERSION</span>
+                                <span className="transition-transform group-hover:translate-x-1">
+                                    &rarr;
+                                </span>
+                            </button>
+                        </div>
+                    </article>
+                </motion.section>
+            </AnimatePresence>
+
+            {openPdf && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-0 backdrop-blur-sm md:p-6">
+                    <button
+                        type="button"
+                        className="absolute inset-0 cursor-default"
+                        onClick={closeViewer}
+                        aria-label="Close PDF viewer"
+                    />
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="policy-pdf-title"
+                        className="relative z-10 flex h-full w-full flex-col overflow-hidden bg-white shadow-2xl md:h-[92vh] md:max-w-5xl md:rounded-2xl"
+                    >
+                        <div className="flex items-center justify-between gap-4 bg-gradient-to-r from-green-900 to-emerald-700 px-5 py-3 text-white">
+                            <div className="min-w-0">
+                                <h2
+                                    id="policy-pdf-title"
+                                    className="truncate font-bold"
+                                >
+                                    {openPdf.title}
+                                </h2>
+                                <p className="truncate text-xs text-green-100">
+                                    {openPdf.reference}
+                                </p>
+                            </div>
+                            <div className="flex shrink-0 items-center gap-2">
+                                <a
+                                    href={openPdf.pdf}
+                                    download
+                                    className="hidden items-center gap-1.5 rounded-lg bg-yellow-400 px-3 py-1.5 text-sm font-semibold text-green-900 transition hover:bg-yellow-300 md:inline-flex"
+                                >
+                                    Download PDF
+                                </a>
+                                <button
+                                    type="button"
+                                    onClick={closeViewer}
+                                    className="rounded-lg bg-red-600 px-3 py-1.5 text-sm font-semibold transition hover:bg-red-700"
+                                    aria-label="Close viewer"
+                                >
+                                    Close &times;
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-1 justify-center overflow-auto bg-gray-200 p-4">
+                            <Document
+                                file={openPdf.pdf}
+                                onLoadSuccess={({ numPages: pageCount }) =>
+                                    setNumPages(pageCount)
+                                }
+                                loading={
+                                    <div className="flex h-full items-center justify-center">
+                                        <div className="h-10 w-10 animate-spin rounded-full border-4 border-green-700 border-t-transparent" />
+                                    </div>
+                                }
+                                error={
+                                    <div className="p-8 font-semibold text-red-600">
+                                        Failed to load PDF.
+                                    </div>
+                                }
+                            >
+                                <Page
+                                    pageNumber={pageNumber}
+                                    width={
+                                        typeof window === "undefined"
+                                            ? 900
+                                            : Math.min(900, window.innerWidth - 80)
+                                    }
+                                    renderAnnotationLayer={false}
+                                    renderTextLayer={false}
+                                    className="shadow-xl"
+                                />
+                            </Document>
+                        </div>
+
+                        {numPages && (
+                            <div className="flex items-center justify-between border-t bg-white px-5 py-3">
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setPageNumber((page) => Math.max(1, page - 1))
+                                    }
+                                    disabled={pageNumber <= 1}
+                                    className="rounded-lg bg-gray-100 px-3 py-1.5 text-sm font-semibold text-gray-800 transition hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40"
+                                >
+                                    Previous
+                                </button>
+                                <span className="text-sm text-gray-600">
+                                    Page <strong>{pageNumber}</strong> of {numPages}
+                                </span>
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setPageNumber((page) =>
+                                            Math.min(numPages, page + 1)
+                                        )
+                                    }
+                                    disabled={pageNumber >= numPages}
+                                    className="rounded-lg bg-gray-100 px-3 py-1.5 text-sm font-semibold text-gray-800 transition hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
 // ===================== Lower Tabs Data =====================
 const TABS = [
     {
@@ -1768,7 +2101,7 @@ const TABS = [
         id: "policies",
         label: "Policies & Guidelines",
         shortLabel: "Policies",
-        content: <UnderDevelopment />,
+        content: <PolicyGuidelines />,
     },
     {
         id: "news",

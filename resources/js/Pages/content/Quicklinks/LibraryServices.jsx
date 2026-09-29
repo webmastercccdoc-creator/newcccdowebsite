@@ -1939,7 +1939,7 @@ function PolicyGuidelines() {
                                 {activePolicyTab.title}
                             </h3>
                             <p className="mt-1 font-medium text-gray-700">
-                                City College of Cagayan de Oro Library
+                                College Library Services Office
                             </p>
                             <p className="mt-1 text-sm text-gray-500">
                                 Official Library Policy and Guidelines

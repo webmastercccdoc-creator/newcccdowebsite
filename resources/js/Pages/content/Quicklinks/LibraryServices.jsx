@@ -2142,31 +2142,6 @@ function TopLibraryUsers() {
                             </motion.div>
                         ))}
                     </div>
-
-                    {/* Disclaimer */}
-                    <div className="mt-6 flex items-start gap-3 rounded-2xl border border-dashed border-[#f5c518]/60 bg-[#fffdf3] px-5 py-4">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#b8860b"
-                            strokeWidth="1.9"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="mt-0.5 h-4 w-4 shrink-0"
-                        >
-                            <circle cx="12" cy="12" r="10" />
-                            <path d="M12 16v-4" />
-                            <path d="M12 8h.01" />
-                        </svg>
-                        <p className="m-0 text-xs leading-relaxed text-gray-600">
-                            <strong className="font-bold text-[#1a1a1a]">
-                                Top users gallery.
-                            </strong>{" "}
-                            Images are automatically loaded from the
-                            &ldquo;Library Users&rdquo; folder.
-                        </p>
-                    </div>
                 </>
             ) : (
                 <>
@@ -2325,11 +2300,6 @@ export default function LibraryServicesPage() {
     const activeDirectorTabData = DIRECTOR_TABS.find(
         (t) => t.id === activeDirectorTab
     );
-
-    const directorLabelParts = activeDirectorTabData.label.split(" ");
-    const directorLabelLast =
-        directorLabelParts.length > 1 ? directorLabelParts.pop() : null;
-    const directorLabelFirst = directorLabelParts.join(" ");
 
     const renderNewsTabContent = () => {
         if (isLoadingLibraryNews) {
@@ -2660,21 +2630,6 @@ export default function LibraryServicesPage() {
                                         animate="visible"
                                         exit="exit"
                                     >
-                                        <div className="mb-5 flex items-center gap-4">
-                                            <h2 className="m-0 text-2xl font-black tracking-tight text-[#1a1a1a] md:text-3xl">
-                                                {directorLabelFirst
-                                                    ? `${directorLabelFirst} `
-                                                    : ""}
-                                                <span className="text-[#157d3c]">
-                                                    {directorLabelLast ||
-                                                        activeDirectorTabData.label}
-                                                </span>
-                                            </h2>
-                                            <span className="hidden h-px flex-1 bg-gray-200 sm:block" />
-                                        </div>
-
-                                        <div className="mb-6 h-1 w-14 rounded-full bg-[#f5c518]" />
-
                                         {activeDirectorTabData.content}
                                     </motion.div>
                                 </AnimatePresence>
@@ -2833,22 +2788,13 @@ export default function LibraryServicesPage() {
                                     exit="exit"
                                     className="relative"
                                 >
-                                    <div className="mb-5 flex items-center gap-4">
-                                        <h3 className="m-0 text-xl font-black tracking-tight text-[#1a1a1a] md:text-2xl">
-                                            {activeTabData.label}
-                                        </h3>
-                                        <span className="hidden h-px flex-1 bg-gray-200 sm:block" />
-                                    </div>
-
-                                    <div className="mb-6 h-1 w-14 rounded-full bg-[#f5c518]" />
-
                                     {tabContent}
                                 </motion.div>
                             </AnimatePresence>
                         </div>
                     </div>
                 </motion.section>
-            </div>z
+            </div>
         </MainLayout>
     );
 }

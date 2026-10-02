@@ -987,16 +987,23 @@ export default function TechnicalSkillsTechnologyInstitute() {
                                         <span className="text-[13px] italic font-serif text-emerald-600">Lead Trainer &amp; Supervisor</span>
                                     </div>
 
-                                    <h3 className="text-2xl md:text-3xl font-bold text-slate-800 vp-serif tracking-tight">
-                                        Mark Adrian S. Baa
-                                    </h3>
-                                    <p className="mt-2 text-[12px] font-bold tracking-wider uppercase text-emerald-700">
-                                        Vocational Institutional Supervisor • Section Head, TSTI
+                                    <div className="mt-5 space-y-4 text-slate-600 leading-relaxed text-[15px]">
+                                    <p>
+                                        <span className="font-semibold text-slate-800">Mark Adrian S. Baa</span> is a <span className="font-semibold text-emerald-700">Vocational Instruction Supervisor</span> at the City College of Cagayan de Oro – Technical Skills and Technology Institute (CCCDO-TSTI), with over <span className="font-semibold text-slate-800">six years of experience</span> in technical-vocational education and training.
                                     </p>
 
-                                    <p className="mt-5 text-slate-600 leading-relaxed text-[15px]">
-                                        <span className="font-semibold text-slate-800">Mark Adrian S. Baa</span> provides instructional leadership and operational oversight for the institute's technical-vocational programs, ensuring alignment with TESDA standards and industry requirements. As a TESDA-certified trainer, he holds a <span className="font-semibold text-slate-800">Housekeeping NC II</span> qualification and leads the Tourism Sector programs of the institute, overseeing trainer development, curriculum implementation, and assessment center operations.
+                                    <p>
+                                        He holds a <span className="font-semibold text-slate-800">Bachelor of Industrial Technology</span> from Pangasinan State University and is currently pursuing his <span className="font-semibold text-slate-800">Master's degree</span> at Southern Philippine College. Since joining the City College of Cagayan de Oro in <span className="font-semibold text-slate-800">2019</span>, he has played an active role in vocational program implementation, instructional supervision, trainer development, and industry engagement.
                                     </p>
+
+                                    <p>
+                                        He is a <span className="font-semibold text-slate-800">TESDA-recognized Housekeeping NC II Trainer</span>, a <span className="font-semibold text-slate-800">Certified Academe Trainer</span> for the Filipino Brand of Service Excellence (FBSE) under the Department of Tourism, and a <span className="font-semibold text-slate-800">Certified Hospitality Professional</span> under the Institute of Tourism and Hospitality Professionals (ITHP).
+                                    </p>
+
+                                    <p>
+                                        As a Vocational Instruction Supervisor, he supports the quality implementation of vocational programs across various qualifications, ensuring alignment with TESDA standards and institutional goals, while promoting <span className="font-semibold italic text-emerald-700">skills development, industry relevance, and quality training delivery</span>.
+                                    </p>
+                                </div>
 
                                     <div className="mt-5 flex flex-wrap gap-2">
                                         {[

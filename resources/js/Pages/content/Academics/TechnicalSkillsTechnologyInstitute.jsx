@@ -70,11 +70,7 @@ const UnderDevelopment = ({ label = "Content" }) => (
 );
 
 // --- Trainer Card Component ---
-// `qualification`  — single qualification string (legacy)
-// `qualifications` — array of qualifications (for multi-qualified trainers)
 const TrainerCard = ({ trainer, idx, qualification, qualifications }) => {
-    // Build the list of quals to display under the name.
-    // Prefer the array form when provided; otherwise fall back to a single string.
     const qualList = Array.isArray(qualifications) && qualifications.length > 0
         ? qualifications
         : (qualification || trainer.position ? [qualification || trainer.position] : []);
@@ -383,13 +379,7 @@ export default function TechnicalSkillsTechnologyInstitute() {
     };
 
     // ============================================================
-    // TRAINERS DATA — grouped by SECTOR, each trainer lists the
-    // qualification(s) they hold for that sector.
-    //
-    // A trainer with multiple qualifications appears in EACH
-    // relevant sector tab. The `qualifications` array (or single
-    // `qualification` string) is what gets displayed under the
-    // trainer's name inside that tab.
+    // TRAINERS DATA
     // ============================================================
     const trainersBySector = [
         {
@@ -417,13 +407,11 @@ export default function TechnicalSkillsTechnologyInstitute() {
                     qualification: "Trainer, SMAW NCI & NCII (CBT & MTP)",
                 },
                 {
-                    // Iriel is dual-qualified: appears here for Carpentry, and again under Plumbing below
                     name: "Iriel P. Ansay, MPA",
                     image: irielAnsayImg,
                     qualification: "Trainer, Carpentry NCII",
                 },
                 {
-                    // NEW TRAINER — Mr. Elnard R. Castillon (multi-qualified)
                     name: "Mr. Elnard R. Castillon",
                     image: elnardCastillonImg,
                     qualifications: [
@@ -435,7 +423,6 @@ export default function TechnicalSkillsTechnologyInstitute() {
             ],
         },
         {
-            // Separate tab for Plumbing since Iriel handles both Carpentry AND Plumbing
             sector: "Plumbing",
             shortLabel: "Plumbing",
             trainers: [
@@ -447,7 +434,6 @@ export default function TechnicalSkillsTechnologyInstitute() {
             ],
         },
         {
-            // Separate tab for Construction Painting — Elnard is the assigned trainer
             sector: "Construction Painting",
             shortLabel: "Construction Painting",
             trainers: [
@@ -462,11 +448,6 @@ export default function TechnicalSkillsTechnologyInstitute() {
             sector: "Tourism Sector",
             shortLabel: "Tourism",
             trainers: [
-                {
-                    name: "Mark Adrian S. Baa",
-                    image: markBaaImg,
-                    qualification: "Section Head, Vocational Institutional Supervisor, Housekeeping NCII Trainer, Housekeeping NCII",
-                },
                 {
                     name: "Gay Marie C. Hawinay, LPT",
                     image: gayMarieHawinayImg,
@@ -501,7 +482,6 @@ export default function TechnicalSkillsTechnologyInstitute() {
             ],
         },
         {
-            // Tab dedicated to Bookkeeping — Rica Mae is dual-qualified
             sector: "Health, Social, and Other Community Development Services Sector",
             shortLabel: "Health, Social, and Other...",
             trainers: [
@@ -526,9 +506,7 @@ export default function TechnicalSkillsTechnologyInstitute() {
     ];
 
     // ============================================================
-    // SUPPORT TEAM DATA — grouped by SUPPORT UNIT / FUNCTION.
-    // Replace the placeholder names, roles, and images with your
-    // actual support personnel.
+    // SUPPORT TEAM DATA
     // ============================================================
     const supportTeamByUnit = [
         {
@@ -563,7 +541,7 @@ export default function TechnicalSkillsTechnologyInstitute() {
         },
     ];
 
-    // --- Programs (aligned with trainer specializations) ---
+    // --- Programs ---
     const programs = [
         {
             name: "Electrical Installation & Maintenance (EIM) NC II",
@@ -662,7 +640,6 @@ export default function TechnicalSkillsTechnologyInstitute() {
                 body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; background-color: #F8FAFC; }
                 .vp-serif { font-family: 'Fraunces', ui-serif, Georgia, serif; }
 
-                /* Hide scrollbar for tab strip */
                 .no-scrollbar::-webkit-scrollbar { display: none; }
                 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
                 
@@ -796,7 +773,6 @@ export default function TechnicalSkillsTechnologyInstitute() {
                 <section className="relative max-w-7xl mx-auto px-6 py-20 md:py-28">
                     <div className="grid md:grid-cols-12 gap-8 md:gap-12 items-start">
 
-                        {/* LEFT: Portrait Card */}
                         <motion.div
                             className="md:col-span-4 relative flex flex-col items-center"
                             initial={{ opacity: 0, scale: 0.95 }}
@@ -846,7 +822,6 @@ export default function TechnicalSkillsTechnologyInstitute() {
                             </div>
                         </motion.div>
 
-                        {/* RIGHT: Bionote */}
                         <div className="md:col-span-8">
                             <Kicker textClass="text-emerald-600" ruleClass="bg-emerald-600">About the Administrator</Kicker>
                             <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mt-1 vp-serif mb-6">
@@ -968,6 +943,77 @@ export default function TechnicalSkillsTechnologyInstitute() {
                             </h2>
                         </div>
 
+                        {/* === FEATURED: VOCATIONAL INSTITUTIONAL SUPERVISOR (above tabs) === */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6 }}
+                            className="relative mb-12 md:mb-16 rounded-3xl bg-white border border-emerald-100 shadow-xl shadow-emerald-900/5 overflow-hidden"
+                        >
+                            <div className="grid md:grid-cols-12 gap-6 md:gap-10 items-center p-6 md:p-10">
+
+                                {/* Portrait */}
+                                <div className="md:col-span-4 flex justify-center">
+                                    <div className="relative w-full max-w-[240px] mx-auto pb-6">
+                                        <div className="relative z-10 rounded-xl p-2 bg-white border border-slate-100 shadow-2xl">
+                                            <div className="overflow-hidden rounded-lg w-full aspect-[4/5] bg-slate-100 flex items-center justify-center">
+                                                <img
+                                                    src={markBaaImg}
+                                                    alt="Mark Adrian S. Baa"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="absolute inset-0 z-0 rounded-2xl translate-x-2 translate-y-2 border-2 border-amber-400"></div>
+
+                                        <div
+                                            className="absolute left-1/2 bottom-0 -translate-x-1/2 z-20 w-16 h-16 rounded-full bg-white shadow-md flex items-center justify-center p-1.5 border-2 border-emerald-700"
+                                        >
+                                            <img
+                                                src={ccdologo}
+                                                alt="City College of Cagayan de Oro Logo"
+                                                className="w-full h-full object-contain"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Bionote */}
+                                <div className="md:col-span-8">
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <span className="w-8 h-px bg-emerald-600" />
+                                        <span className="text-[13px] italic font-serif text-emerald-600">Lead Trainer &amp; Supervisor</span>
+                                    </div>
+
+                                    <h3 className="text-2xl md:text-3xl font-bold text-slate-800 vp-serif tracking-tight">
+                                        Mark Adrian S. Baa
+                                    </h3>
+                                    <p className="mt-2 text-[12px] font-bold tracking-wider uppercase text-emerald-700">
+                                        Vocational Institutional Supervisor • Section Head, TSTI
+                                    </p>
+
+                                    <p className="mt-5 text-slate-600 leading-relaxed text-[15px]">
+                                        <span className="font-semibold text-slate-800">Mark Adrian S. Baa</span> provides instructional leadership and operational oversight for the institute's technical-vocational programs, ensuring alignment with TESDA standards and industry requirements. As a TESDA-certified trainer, he holds a <span className="font-semibold text-slate-800">Housekeeping NC II</span> qualification and leads the Tourism Sector programs of the institute, overseeing trainer development, curriculum implementation, and assessment center operations.
+                                    </p>
+
+                                    <div className="mt-5 flex flex-wrap gap-2">
+                                        {[
+                                            'Vocational Institutional Supervisor',
+                                            'Section Head, TSTI',
+                                            'Housekeeping NC II Trainer',
+                                            'Tourism Sector Lead',
+                                        ].map((credential) => (
+                                            <span key={credential} className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full text-xs font-medium text-slate-600">
+                                                {credential}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+
                         {/* === SECTOR TABS === */}
                         <div className="flex flex-wrap items-center justify-center gap-2.5 mb-10 md:mb-14">
                             {trainersBySector.map((group, idx) => {
@@ -1001,7 +1047,6 @@ export default function TechnicalSkillsTechnologyInstitute() {
                                 exit={{ opacity: 0, y: -20 }}
                                 transition={{ duration: 0.4, ease: 'easeInOut' }}
                             >
-                                {/* Sector header */}
                                 <div className="flex items-center gap-4 mb-10">
                                     <span className="w-8 h-px bg-emerald-600" />
                                     <h3 className="text-xl md:text-2xl font-bold text-slate-800 vp-serif tracking-tight">
@@ -1013,7 +1058,6 @@ export default function TechnicalSkillsTechnologyInstitute() {
                                     </span>
                                 </div>
 
-                                {/* Trainer grid for the active sector */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 justify-items-center">
                                     {activeSectorData.trainers.map((trainer, idx) => (
                                         <TrainerCard
@@ -1046,7 +1090,6 @@ export default function TechnicalSkillsTechnologyInstitute() {
                             </p>
                         </div>
 
-                        {/* === SUPPORT UNIT TABS === */}
                         <div className="mb-14">
                             <div className="flex justify-center">
                                 <div className="no-scrollbar flex gap-2 overflow-x-auto p-1.5 bg-white/60 backdrop-blur-md border border-white/80 rounded-full shadow-lg max-w-full">
@@ -1070,7 +1113,6 @@ export default function TechnicalSkillsTechnologyInstitute() {
                             </div>
                         </div>
 
-                        {/* === ACTIVE SUPPORT UNIT CONTENT === */}
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={activeSupportUnit}
@@ -1079,7 +1121,6 @@ export default function TechnicalSkillsTechnologyInstitute() {
                                 exit={{ opacity: 0, y: -20 }}
                                 transition={{ duration: 0.4, ease: 'easeInOut' }}
                             >
-                                {/* Unit header */}
                                 <div className="flex items-center gap-4 mb-10">
                                     <span className="w-8 h-px bg-blue-600" />
                                     <h3 className="text-xl md:text-2xl font-bold text-slate-800 vp-serif tracking-tight">
@@ -1091,7 +1132,6 @@ export default function TechnicalSkillsTechnologyInstitute() {
                                     </span>
                                 </div>
 
-                                {/* Support grid for the active unit */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 justify-items-center">
                                     {activeSupportData.members.map((member, idx) => (
                                         <SupportCard

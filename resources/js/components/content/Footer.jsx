@@ -115,11 +115,11 @@ const Footer = () => {
                                     Student Portal
                                 </Link>
                             </li>
-                            {/* <li>
+                            <li>
                                 <Link href="/faculty-staff" className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300">
                                     Faculty & Staff
                                 </Link>
-                            </li> */}
+                            </li>
                             {/* <li>
                                 <Link
                                     href="/alumni"

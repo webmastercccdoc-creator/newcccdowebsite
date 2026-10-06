@@ -953,9 +953,9 @@ export default function TechnicalSkillsTechnologyInstitute() {
                         >
                             <div className="grid md:grid-cols-12 gap-6 md:gap-10 items-center p-6 md:p-10">
 
-                                {/* Portrait */}
-                                <div className="md:col-span-4 flex justify-center">
-                                    <div className="relative w-full max-w-[240px] mx-auto pb-6">
+                                {/* Portrait + Name (mirrors Karl's layout) */}
+                                <div className="md:col-span-4 flex flex-col items-center">
+                                    <div className="relative w-full max-w-[240px] mx-auto pb-8">
                                         <div className="relative z-10 rounded-xl p-2 bg-white border border-slate-100 shadow-2xl">
                                             <div className="overflow-hidden rounded-lg w-full aspect-[4/5] bg-slate-100 flex items-center justify-center">
                                                 <img
@@ -969,7 +969,7 @@ export default function TechnicalSkillsTechnologyInstitute() {
                                         <div className="absolute inset-0 z-0 rounded-2xl translate-x-2 translate-y-2 border-2 border-amber-400"></div>
 
                                         <div
-                                            className="absolute left-1/2 bottom-0 -translate-x-1/2 z-20 w-16 h-16 rounded-full bg-white shadow-md flex items-center justify-center p-1.5 border-2 border-emerald-700"
+                                            className="absolute left-1/2 bottom-0 -translate-x-1/2 z-20 w-20 h-20 rounded-full bg-white shadow-md flex items-center justify-center p-2 transition-transform duration-300 hover:scale-105 border-2 border-emerald-700"
                                         >
                                             <img
                                                 src={ccdologo}
@@ -978,39 +978,54 @@ export default function TechnicalSkillsTechnologyInstitute() {
                                             />
                                         </div>
                                     </div>
+
+                                    <div className="text-center mt-8 w-full max-w-xs mx-auto">
+                                        <h3 className="text-2xl vp-serif font-semibold tracking-tight text-slate-800">
+                                            Mark Adrian S. Baa
+                                        </h3>
+                                        <p className="mt-2 text-[12px] font-bold tracking-wider uppercase text-emerald-700">
+                                            Vocational Instruction Supervisor
+                                        </p>
+                                        <p className="mt-1 text-sm text-slate-400 font-medium">Section Head, TSTI</p>
+                                        <div className="mt-5 pt-4 flex items-center justify-center gap-2 text-xs text-slate-500 border-t border-slate-200">
+                                            <svg className="w-4 h-4 flex-shrink-0 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                                            </svg>
+                                            <span>City College of Cagayan de Oro</span>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 {/* Bionote */}
                                 <div className="md:col-span-8">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <span className="w-8 h-px bg-emerald-600" />
-                                        <span className="text-[13px] italic font-serif text-emerald-600">Lead Trainer &amp; Supervisor</span>
+                                    <div className="space-y-4 text-slate-600 leading-relaxed text-[15px]">
+                                        <p>
+                                            <span className="font-semibold text-slate-800">Mark Adrian S. Baa</span> is a <span className="font-semibold text-emerald-700">Vocational Instruction Supervisor</span> at the City College of Cagayan de Oro – Technical Skills and Technology Institute (CCCDO-TSTI), with over <span className="font-semibold text-slate-800">six years of experience</span> in technical-vocational education and training.
+                                        </p>
+
+                                        <p>
+                                            He holds a <span className="font-semibold text-slate-800">Bachelor of Industrial Technology</span> from Pangasinan State University and is currently pursuing his <span className="font-semibold text-slate-800">Master's degree</span> at Southern Philippine College. Since joining the City College of Cagayan de Oro in <span className="font-semibold text-slate-800">2019</span>, he has played an active role in vocational program implementation, instructional supervision, trainer development, and industry engagement.
+                                        </p>
+
+                                        <p>
+                                            He is a <span className="font-semibold text-slate-800">TESDA-recognized Housekeeping NC II Trainer</span>, a <span className="font-semibold text-slate-800">Certified Academe Trainer</span> for the Filipino Brand of Service Excellence (FBSE) under the Department of Tourism, and a <span className="font-semibold text-slate-800">Certified Hospitality Professional</span> under the Institute of Tourism and Hospitality Professionals (ITHP).
+                                        </p>
+
+                                        <p>
+                                            As a Vocational Instruction Supervisor, he supports the quality implementation of vocational programs across various qualifications, ensuring alignment with TESDA standards and institutional goals, while promoting <span className="font-semibold italic text-emerald-700">skills development, industry relevance, and quality training delivery</span>.
+                                        </p>
                                     </div>
 
-                                    <div className="mt-5 space-y-4 text-slate-600 leading-relaxed text-[15px]">
-                                    <p>
-                                        <span className="font-semibold text-slate-800">Mark Adrian S. Baa</span> is a <span className="font-semibold text-emerald-700">Vocational Instruction Supervisor</span> at the City College of Cagayan de Oro – Technical Skills and Technology Institute (CCCDO-TSTI), with over <span className="font-semibold text-slate-800">six years of experience</span> in technical-vocational education and training.
-                                    </p>
-
-                                    <p>
-                                        He holds a <span className="font-semibold text-slate-800">Bachelor of Industrial Technology</span> from Pangasinan State University and is currently pursuing his <span className="font-semibold text-slate-800">Master's degree</span> at Southern Philippine College. Since joining the City College of Cagayan de Oro in <span className="font-semibold text-slate-800">2019</span>, he has played an active role in vocational program implementation, instructional supervision, trainer development, and industry engagement.
-                                    </p>
-
-                                    <p>
-                                        He is a <span className="font-semibold text-slate-800">TESDA-recognized Housekeeping NC II Trainer</span>, a <span className="font-semibold text-slate-800">Certified Academe Trainer</span> for the Filipino Brand of Service Excellence (FBSE) under the Department of Tourism, and a <span className="font-semibold text-slate-800">Certified Hospitality Professional</span> under the Institute of Tourism and Hospitality Professionals (ITHP).
-                                    </p>
-
-                                    <p>
-                                        As a Vocational Instruction Supervisor, he supports the quality implementation of vocational programs across various qualifications, ensuring alignment with TESDA standards and institutional goals, while promoting <span className="font-semibold italic text-emerald-700">skills development, industry relevance, and quality training delivery</span>.
-                                    </p>
-                                </div>
-
-                                    <div className="mt-5 flex flex-wrap gap-2">
+                                    <div className="mt-6 flex flex-wrap gap-2">
                                         {[
-                                            'Vocational Institutional Supervisor',
+                                            'Vocational Instruction Supervisor',
                                             'Section Head, TSTI',
-                                            'Housekeeping NC II Trainer',
-                                            'Tourism Sector Lead',
+                                            'TESDA Housekeeping NC II Trainer',
+                                            'FBSE Certified Academe Trainer',
+                                            'Certified Hospitality Professional (ITHP)',
+                                            'Bachelor of Industrial Technology',
+                                            'MA Candidate, Southern Philippine College',
                                         ].map((credential) => (
                                             <span key={credential} className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full text-xs font-medium text-slate-600">
                                                 {credential}

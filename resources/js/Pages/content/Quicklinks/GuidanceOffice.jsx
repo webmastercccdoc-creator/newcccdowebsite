@@ -46,6 +46,20 @@ const tabPanelVariants = {
     },
 };
 
+const subTabPanelVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+    },
+    exit: {
+        opacity: 0,
+        y: -8,
+        transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] },
+    },
+};
+
 // ===================== Slideshow Data =====================
 const SLIDES = [
     {
@@ -148,6 +162,492 @@ const UnderDevelopment = () => (
     </div>
 );
 
+// ============ Electronic Forms content (reusable) ============
+const ElectronicFormsContent = (
+    <>
+        <p className="mb-4 text-justify leading-relaxed text-gray-700">
+            The City College of Cagayan de Oro provides guidance and counseling
+            support for students who need assistance with personal, academic,
+            social, career, or mental health concerns. Students may access the
+            appropriate form below for appointments, counseling, consultations,
+            crisis support, or referrals. The Guidance, Counseling, and
+            Assessment Office provides online forms for students to
+            conveniently access our services. Please select the appropriate
+            form below to proceed. All submissions are confidential and will be
+            handled with strict adherence to data privacy regulations.
+        </p>
+
+        {/* Urgent support notice */}
+        <div className="mb-6 rounded-xl border-l-4 border-[#f5c518] bg-[#fff9e6] p-5">
+            <h4 className="mb-1.5 flex items-center gap-2 text-sm font-extrabold uppercase tracking-widest text-[#1a1a1a]">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#b8860b"
+                    strokeWidth="2.25"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-4 w-4 shrink-0"
+                >
+                    <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                    <path d="M12 9v4" />
+                    <path d="M12 17h.01" />
+                </svg>
+                Need urgent support?
+            </h4>
+            <p className="text-sm leading-relaxed text-gray-700">
+                Students experiencing an immediate crisis, serious emotional
+                distress, or safety concern are encouraged to proceed directly
+                to the Guidance and Counseling Office or seek assistance from
+                the appropriate college personnel or emergency services. For
+                non-urgent concerns, please use the Appointment Request Form or
+                the appropriate intake form.
+            </p>
+        </div>
+
+        <div className="flex flex-col gap-4">
+            {[
+                {
+                    title: "CCAT Admission Form",
+                    link: "https://docs.google.com/forms/d/1PvU3HKTnVRqIdB5CUNHBANHB4k9qnzVokld8o6mof8M/viewform?edit_requested=true",
+                    description:
+                        "For applicants who need to complete the required CCAT admission or assessment process. Eligible applicants may accomplish this form before proceeding with the scheduled assessment or admission-related guidance activity.",
+                    where: "Guidance and Counseling Office / designated CCAT venue.",
+                    schedule: "Based on the announced CCAT schedule.",
+                    booking: "Complete and submit the online form.",
+                    fee: "Free Access",
+                },
+                {
+                    title: "Appointment Request Form",
+                    link: "https://docs.google.com/forms/d/e/1FAIpQLSf5jxpis5cLCQzexIF0OOrEduZjdpKmxOGEkg9-bvjLJ2rhBg/viewform",
+                    description:
+                        "For currently enrolled students who wish to schedule a confidential consultation or counseling session for personal, academic, career, social, or other concerns.",
+                    where: "Guidance and Counseling Office.",
+                    schedule:
+                        "Monday to Friday, 8:00 AM to 5:00 PM; subject to counselor availability.",
+                    booking:
+                        "Submit the Appointment Request Form and wait for confirmation of your schedule.",
+                    fee: "Free Services for CCCDO students",
+                },
+                {
+                    title: "Referral Form",
+                    link: "https://docs.google.com/forms/d/e/1FAIpQLScQl87WDvcjxtTJf5ssLhptolfjCaaIrIsPBlmHB1FTd0-x_g/viewform",
+                    description:
+                        "For faculty members, staff, parents/guardians, or concerned members of the college community who wish to refer a student who may benefit from guidance, counseling, psychosocial support, or other appropriate services. Students may also be referred when concerns affect their well-being, safety, behavior, or academic functioning.",
+                    where: "Guidance and Counseling Office / Online.",
+                    schedule:
+                        "Referrals are reviewed during office hours; urgent concerns are prioritized.",
+                    booking:
+                        "Submit the Referral Form with sufficient relevant information.",
+                    fee: "Free Services for CCCDO students",
+                },
+                {
+                    title: "Psychosocial and Mental Health Services Intake Form",
+                    link: "https://docs.google.com/forms/d/e/1FAIpQLScKBi47fyzMKclLg4Y23469GwYSdnCIJKkOKuYqJd9OKeZcQA/viewform",
+                    description:
+                        "For students seeking psychosocial support or assistance with emotional, behavioral, mental health, adjustment, family, relationship, or crisis-related concerns. The form helps the counselor understand the student's needs before the initial session.",
+                    where: "Guidance and Counseling Office or designated confidential counseling area.",
+                    schedule:
+                        "By appointment; urgent or crisis cases may be prioritized.",
+                    booking:
+                        "Complete the intake form and await instructions or appointment confirmation.",
+                    fee: "Free Services for CCCDO students",
+                },
+                {
+                    title: "Client-Counselor Feedback Form",
+                    link: "https://docs.google.com/forms/d/e/1FAIpQLSeAg8TXIuWJh00KK8DePaH6M94DetGTkRJ1kUNKsTBdzvK0dQ/viewform",
+                    description:
+                        "For students or clients who have completed a counseling, consultation, psychosocial support, or guidance session. This confidential feedback form helps the Guidance and Counseling Office evaluate the quality, accessibility, and effectiveness of its services.",
+                    where: null,
+                    schedule: null,
+                    when: "After receiving a guidance or counseling service.",
+                    booking:
+                        "Complete the online feedback form. No appointment is required.",
+                    fee: "None for submitting feedback.",
+                },
+                {
+                    title: "School Counseling Services Intake Form",
+                    link: "https://docs.google.com/forms/d/1VNl6lLunD8jm5Sajx9WA1t4fC9nHxaYokVZFm7SpmGI/viewform?pli=1&pli=1&edit_requested=true",
+                    description:
+                        "For currently enrolled students accessing school counseling services for academic, personal, social, career, behavioral, or adjustment concerns. The information provided helps the counselor identify the student's needs and plan appropriate support or intervention.",
+                    where: "Guidance and Counseling Office.",
+                    schedule:
+                        "During official counseling hours or by appointment.",
+                    booking:
+                        "Complete the intake form before or upon your scheduled counseling session.",
+                    fee: "Free Services for CCCDO students",
+                },
+            ].map((form, index) => {
+                const isHighlighted = index === 0;
+                return (
+                    <div
+                        key={form.title}
+                        className={`overflow-hidden rounded-xl border transition-all duration-200 ${
+                            isHighlighted
+                                ? "border-[#157d3c] bg-[#f0f7f2]"
+                                : "border-gray-200 bg-white hover:border-[#157d3c] hover:shadow-md"
+                        }`}
+                    >
+                        {/* Card header with number + title */}
+                        <div className="flex items-center gap-3 border-b border-gray-200 bg-white px-5 py-4">
+                            <span
+                                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
+                                    isHighlighted
+                                        ? "bg-[#157d3c] text-white"
+                                        : "bg-[#f0f7f2] text-[#157d3c]"
+                                }`}
+                            >
+                                {index + 1}
+                            </span>
+                            <h4 className="text-base font-bold tracking-tight text-[#1a1a1a]">
+                                {form.title}
+                            </h4>
+                        </div>
+
+                        {/* Description */}
+                        <div className="px-5 py-4">
+                            <p className="mb-4 text-justify text-sm leading-relaxed text-gray-700">
+                                {form.description}
+                            </p>
+
+                            {/* Meta details */}
+                            <div className="space-y-2 text-xs leading-relaxed text-gray-700">
+                                {form.where && (
+                                    <div className="flex gap-2">
+                                        <span className="w-20 shrink-0 font-bold uppercase tracking-wider text-[#157d3c]">
+                                            Where
+                                        </span>
+                                        <span className="text-gray-700">
+                                            {form.where}
+                                        </span>
+                                    </div>
+                                )}
+                                {form.when && (
+                                    <div className="flex gap-2">
+                                        <span className="w-20 shrink-0 font-bold uppercase tracking-wider text-[#157d3c]">
+                                            When
+                                        </span>
+                                        <span className="text-gray-700">
+                                            {form.when}
+                                        </span>
+                                    </div>
+                                )}
+                                {form.schedule && (
+                                    <div className="flex gap-2">
+                                        <span className="w-20 shrink-0 font-bold uppercase tracking-wider text-[#157d3c]">
+                                            Schedule
+                                        </span>
+                                        <span className="text-gray-700">
+                                            {form.schedule}
+                                        </span>
+                                    </div>
+                                )}
+                                {form.booking && (
+                                    <div className="flex gap-2">
+                                        <span className="w-20 shrink-0 font-bold uppercase tracking-wider text-[#157d3c]">
+                                            Booking
+                                        </span>
+                                        <span className="text-gray-700">
+                                            {form.booking}
+                                        </span>
+                                    </div>
+                                )}
+                                {form.fee && (
+                                    <div className="flex gap-2">
+                                        <span className="w-20 shrink-0 font-bold uppercase tracking-wider text-[#157d3c]">
+                                            Fee
+                                        </span>
+                                        <span className="text-gray-700">
+                                            {form.fee}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Action button */}
+                            <div className="mt-4">
+                                <a
+                                    href={form.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className={`group inline-flex items-center gap-2 rounded-full px-5 py-2 text-xs font-bold transition-colors duration-200 ${
+                                        isHighlighted
+                                            ? "bg-[#157d3c] text-white hover:bg-[#0f5c2c]"
+                                            : "bg-[#157d3c] text-white hover:bg-[#0f5c2c]"
+                                    }`}
+                                >
+                                    Open Form
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
+                                    >
+                                        <path d="M5 12h14" />
+                                        <path d="m12 5 7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    </>
+);
+
+// ===================== About Sub-Tabs Component =====================
+function AboutSubTabs() {
+    const ABOUT_SUBTABS = [
+        { id: "vision", label: "Vision" },
+        { id: "mission", label: "Mission" },
+        { id: "goals", label: "Goals" },
+        { id: "personnel", label: "Personnel" },
+        { id: "service-hours", label: "Service Hours" },
+    ];
+
+    const [activeSubTab, setActiveSubTab] = useState(ABOUT_SUBTABS[0].id);
+
+    const renderSubTabContent = () => {
+        switch (activeSubTab) {
+            case "vision":
+                return (
+                    <>
+                        <h3 className="mb-3 text-lg font-extrabold text-[#1a1a1a] tracking-tight">
+                            Guidance Vision
+                        </h3>
+                        <div className="w-12 h-1 bg-[#f5c518] rounded-full mb-5" />
+                        <p className="text-justify leading-relaxed text-gray-700">
+                            To develop a community of flexible, forward-thinking
+                            people who are prepared to lead and innovate in a
+                            dynamic global environment while providing college
+                            education personalized support to foster well-being,
+                            academic distinction, and essential life
+                            competencies.
+                        </p>
+                    </>
+                );
+
+            case "mission":
+                return (
+                    <>
+                        <h3 className="mb-3 text-lg font-extrabold text-[#1a1a1a] tracking-tight">
+                            Guidance Mission
+                        </h3>
+                        <div className="w-12 h-1 bg-[#f5c518] rounded-full mb-5" />
+                        <p className="text-justify leading-relaxed text-gray-700">
+                            We are dedicated to meeting the needs of the youth
+                            in Cagayan de Oro and indigenous communities by
+                            honoring and integrating culture and heritage to
+                            tackle societal issues and promote peace and human
+                            rights education for positive transformations. We
+                            are committed to guiding our students towards
+                            academic achievement, personal growth, and
+                            well-being by providing compassionate assistance,
+                            tailored guidance, and empowering resources to
+                            navigate challenges and make informed choices.
+                        </p>
+                    </>
+                );
+
+            case "goals":
+                return (
+                    <>
+                        <h3 className="mb-3 text-lg font-extrabold text-[#1a1a1a] tracking-tight">
+                            Goals
+                        </h3>
+                        <div className="w-12 h-1 bg-[#f5c518] rounded-full mb-5" />
+                        <p className="mb-4 text-justify leading-relaxed text-gray-700">
+                            The Guidance, Counseling and Assessment Services of
+                            the City College of Cagayan de Oro aims to promote
+                            the holistic development, mental health, well-being,
+                            resilience, and academic success of students by
+                            providing accessible, inclusive, ethical,
+                            evidence-based, and responsive guidance, counseling,
+                            assessment, psychosocial, and referral services.
+                        </p>
+                        <p className="text-justify leading-relaxed text-gray-700">
+                            In collaboration with academic units, administrative
+                            offices, families, community partners, and other
+                            relevant stakeholders, the service seeks to create a
+                            supportive college environment that empowers
+                            students to understand themselves, make informed
+                            decisions, cope effectively with personal and
+                            academic challenges, develop healthy relationships,
+                            and achieve their educational, career, and personal
+                            goals.
+                        </p>
+                    </>
+                );
+
+            case "personnel":
+                return (
+                    <>
+                        <h3 className="mb-3 text-lg font-extrabold text-[#1a1a1a] tracking-tight">
+                            Personnel
+                        </h3>
+                        <div className="w-12 h-1 bg-[#f5c518] rounded-full mb-5" />
+
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                            {[
+                                {
+                                    initials: "FC",
+                                    name: "Faith Quinal-Colarte, RGC",
+                                    roles: [
+                                        "Coordinator, Student Welfare and Services",
+                                        "Head of the Guidance, Counseling and Assessment Services",
+                                        "Guidance Counselor",
+                                    ],
+                                },
+                                {
+                                    initials: "JM",
+                                    name: "Jonathan Ace C. Malalis",
+                                    roles: ["Guidance Associate"],
+                                },
+                                {
+                                    initials: "HA",
+                                    name: "Harley Q. Abejo",
+                                    roles: ["Admission Officer"],
+                                },
+                            ].map((person) => (
+                                <div
+                                    key={person.name}
+                                    className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#157d3c] hover:shadow-lg"
+                                >
+                                    <div className="flex h-32 items-center justify-center bg-[#f0f7f2]">
+                                        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#157d3c] text-2xl font-extrabold text-white">
+                                            {person.initials}
+                                        </div>
+                                    </div>
+                                    <div className="border-t-4 border-[#f5c518] px-4 py-4 text-center">
+                                        <h4 className="text-sm font-extrabold tracking-tight text-[#1a1a1a] sm:text-base">
+                                            {person.name}
+                                        </h4>
+                                        <ul className="mt-2 space-y-1">
+                                            {person.roles.map((role) => (
+                                                <li
+                                                    key={role}
+                                                    className="text-[11px] font-semibold leading-relaxed text-[#157d3c] sm:text-xs"
+                                                >
+                                                    {role}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                );
+
+            case "service-hours":
+                return (
+                    <>
+                        <h3 className="mb-3 text-lg font-extrabold text-[#1a1a1a] tracking-tight">
+                            Service Hours
+                        </h3>
+                        <div className="w-12 h-1 bg-[#f5c518] rounded-full mb-5" />
+                        <p className="mb-5 text-justify leading-relaxed text-gray-700">
+                            The Guidance, Counseling, and Assessment Office is
+                            open during the following hours. Walk-in
+                            consultations and appointments are both
+                            accommodated.
+                        </p>
+
+                        <div className="overflow-hidden rounded-xl border border-gray-200">
+                            <table className="w-full text-sm">
+                                <thead className="bg-[#157d3c] text-white">
+                                    <tr>
+                                        <th className="px-4 py-3 text-left font-bold">
+                                            Day
+                                        </th>
+                                        <th className="px-4 py-3 text-left font-bold">
+                                            Hours
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-200 bg-white">
+                                    <tr className="transition-colors hover:bg-[#f0f7f2]">
+                                        <td className="px-4 py-3 font-semibold text-[#1a1a1a]">
+                                            Monday to Friday
+                                        </td>
+                                        <td className="px-4 py-3 text-gray-700">
+                                            8:00 AM – 5:00 PM
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div className="mt-5 rounded-xl border border-[#157d3c] bg-[#f0f7f2] p-5">
+                            <p className="text-sm leading-relaxed text-gray-700">
+                                <strong className="text-[#157d3c]">
+                                    Note:
+                                </strong>{" "}
+                                Please bring a valid student ID for all
+                                transactions. For urgent concerns outside
+                                office hours, you may reach us via email at{" "}
+                                <a
+                                    href="mailto:citycollegeguidancecaservices@gmail.com"
+                                    className="font-semibold text-[#157d3c] hover:underline"
+                                >
+                                    citycollegeguidancecaservices@gmail.com
+                                </a>
+                                .
+                            </p>
+                        </div>
+                    </>
+                );
+
+            default:
+                return null;
+        }
+    };
+
+    return (
+        <div>
+            {/* Sub-tab strip */}
+            <div className="mb-6 flex flex-wrap items-center justify-center gap-2 border-b border-gray-200 pb-3">
+                {ABOUT_SUBTABS.map((sub) => {
+                    const isActive = activeSubTab === sub.id;
+                    return (
+                        <button
+                            key={sub.id}
+                            type="button"
+                            onClick={() => setActiveSubTab(sub.id)}
+                            className={`relative shrink-0 rounded-full px-4 py-2 text-xs font-bold tracking-wide transition-colors duration-200 focus:outline-none ${
+                                isActive
+                                    ? "bg-[#157d3c] text-white shadow-sm"
+                                    : "bg-gray-100 text-gray-600 hover:bg-[#f5c518] hover:text-[#1a1a1a]"
+                            }`}
+                        >
+                            {sub.label}
+                        </button>
+                    );
+                })}
+            </div>
+
+            {/* Sub-tab content */}
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={activeSubTab}
+                    variants={subTabPanelVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                >
+                    {renderSubTabContent()}
+                </motion.div>
+            </AnimatePresence>
+        </div>
+    );
+}
+
 // ===================== Lower Tabs Data =====================
 const TABS = [
     {
@@ -214,100 +714,273 @@ const TABS = [
         ),
     },
     {
-        id: "electronic-forms",
-        label: "Electronic Forms",
-        shortLabel: "E-Forms",
+        id: "wecare",
+        label: "WeCare Mental Health Program",
+        shortLabel: "WeCare",
         content: (
             <>
                 <p className="mb-6 text-justify leading-relaxed text-gray-700">
-                    The Guidance, Counseling, and Assessment Office provides
-                    online forms for students to conveniently access our
-                    services. Please select the appropriate form below to
-                    proceed. All submissions are confidential and will be
-                    handled with strict adherence to data privacy regulations.
+                    <strong>WeCare</strong> is the mental health and wellness
+                    program of the Guidance, Counseling, and Assessment Office.
+                    Through its flagship initiative,{" "}
+                    <strong>We Care Wednesday</strong>, the office regularly
+                    engages the college community in activities that promote
+                    mental health awareness, self-care, and holistic well-being.
                 </p>
 
-                <div className="flex flex-col gap-3">
-                    {[
-                        {
-                            title: "CCAT Admission Form",
-                            link: "https://docs.google.com/forms/d/1PvU3HKTnVRqIdB5CUNHBANHB4k9qnzVokld8o6mof8M/viewform?edit_requested=true",
-                        },
-                        {
-                            title: "Appointment Request Form",
-                            link: "https://docs.google.com/forms/d/e/1FAIpQLSf5jxpis5cLCQzexIF0OOrEduZjdpKmxOGEkg9-bvjLJ2rhBg/viewform",
-                        },
-                        {
-                            title: "Referral Form",
-                            link: "https://docs.google.com/forms/d/e/1FAIpQLScQl87WDvcjxtTJf5ssLhptolfjCaaIrIsPBlmHB1FTd0-x_g/viewform",
-                        },
-                        {
-                            title: "Psychosocial and Mental Health Services Intake Form",
-                            link: "https://docs.google.com/forms/d/e/1FAIpQLScKBi47fyzMKclLg4Y23469GwYSdnCIJKkOKuYqJd9OKeZcQA/viewform",
-                        },
-                        {
-                            title: "Client Counselor Feedback",
-                            link: "https://docs.google.com/forms/d/e/1FAIpQLSeAg8TXIuWJh00KK8DePaH6M94DetGTkRJ1kUNKsTBdzvK0dQ/viewform",
-                        },
-                        {
-                            title: "School Counseling Services Intake Form",
-                            link: "https://docs.google.com/forms/d/1VNl6lLunD8jm5Sajx9WA1t4fC9nHxaYokVZFm7SpmGI/viewform?pli=1&pli=1&edit_requested=true",
-                        },
-                    ].map((form, index) => {
-                        const isHighlighted = index === 0;
-                        return (
-                            <a
-                                key={form.title}
-                                href={form.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`group flex items-center justify-between rounded-lg border px-5 py-4 transition-all duration-200 ${
-                                    isHighlighted
-                                        ? "border-[#157d3c] bg-[#f0f7f2] hover:bg-[#e6f2ea]"
-                                        : "border-gray-200 bg-gray-50 hover:border-[#157d3c] hover:bg-[#f0f7f2]"
-                                }`}
+                {/* ===== 2 Cards Grid ===== */}
+                <div className="grid gap-5 sm:grid-cols-2">
+                    {/* Card 1 — We Care Wednesday 2025 */}
+                    <div className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#157d3c] hover:shadow-lg">
+                        <div className="relative flex h-36 items-center justify-center bg-[#f0f7f2] px-4 text-center">
+                            <span className="absolute right-3 top-3 rounded-full bg-[#157d3c] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
+                                2025
+                            </span>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#157d3c"
+                                strokeWidth="1.75"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="h-14 w-14"
                             >
-                                <div className="flex items-center gap-3">
-                                    <span
-                                        className={`text-base font-bold ${
-                                            isHighlighted
-                                                ? "text-[#157d3c]"
-                                                : "text-[#1a1a1a]"
-                                        }`}
-                                    >
-                                        {index + 1}
-                                    </span>
-                                    <span
-                                        className={`text-base font-bold tracking-tight ${
-                                            isHighlighted
-                                                ? "text-[#157d3c]"
-                                                : "text-[#1a1a1a] group-hover:text-[#157d3c]"
-                                        }`}
-                                    >
-                                        {form.title}
-                                    </span>
-                                </div>
+                                <rect width="18" height="18" x="3" y="4" rx="2" />
+                                <path d="M3 10h18" />
+                                <path d="M8 2v4" />
+                                <path d="M16 2v4" />
+                            </svg>
+                        </div>
+                        <div className="border-t-4 border-[#f5c518] flex flex-1 flex-col px-5 py-5">
+                            <h4 className="text-base font-bold text-[#1a1a1a]">
+                                We Care Wednesday
+                            </h4>
+                            <p className="mt-1 text-xs font-semibold uppercase tracking-widest text-[#157d3c]">
+                                2025 Edition
+                            </p>
+                            <p className="mt-1 text-[11px] font-medium italic text-gray-500">
+                                "Mental Health and Suicide Prevention and Wellness Initiative"
+                            </p>
+                            <p className="mt-2 text-justify text-xs leading-relaxed text-gray-600">
+                                A proactive campaign to address the mental health needs of our
+                                students — raising awareness, providing tangible support,
+                                reducing stigma, and empowering students to seek help. Together,
+                                we can create a campus community where mental health is valued,
+                                and every student feels supported.
+                            </p>
 
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className={`h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 ${
-                                        isHighlighted
-                                            ? "text-[#157d3c]"
-                                            : "text-gray-400 group-hover:text-[#157d3c]"
-                                    }`}
-                                >
-                                    <path d="M5 12h14" />
-                                    <path d="m12 5 7 7-7 7" />
-                                </svg>
-                            </a>
-                        );
-                    })}
+                            <h5 className="mt-4 mb-2 text-[11px] font-extrabold uppercase tracking-widest text-[#157d3c]">
+                                Highlights
+                            </h5>
+                            <ul className="space-y-1.5 text-xs leading-relaxed text-gray-700">
+                                <li className="flex gap-2">
+                                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#f5c518]" />
+                                    <span>
+                                        <strong>Pre-Campaign Awareness & Social Media Promotion</strong>
+                                        {" – "}
+                                        <a
+                                            href="https://drive.google.com/drive/u/5/folders/1J_jJ67WkxUwkBvbuylkZKXun_quJpAGB"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-semibold text-[#157d3c] hover:underline"
+                                        >
+                                            Talk.Share.Heal
+                                        </a>
+                                    </span>
+                                </li>
+                                <li className="flex gap-2">
+                                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#f5c518]" />
+                                    <span>
+                                        <strong>Primer Video</strong> – Suicide Awareness and
+                                        Prevention Month Micro-series{" "}
+                                        <a
+                                            href="https://drive.google.com/drive/u/5/folders/1JocwK9kr15iXARQ8acqSeMejuUIdhjnp"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-semibold text-[#157d3c] hover:underline"
+                                        >
+                                            (Watch here)
+                                        </a>
+                                    </span>
+                                </li>
+                                <li className="flex gap-2">
+                                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#f5c518]" />
+                                    <span>
+                                        <strong>Series 1 Primer</strong> – Understanding Suicide
+                                        Risk Factors and Warning Signs{" "}
+                                        <a
+                                            href="https://drive.google.com/drive/u/5/folders/1BBsoYcxU1nMP_L8KTS84b6BMx0suytBj"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-semibold text-[#157d3c] hover:underline"
+                                        >
+                                            (Access)
+                                        </a>
+                                    </span>
+                                </li>
+                                <li className="flex gap-2">
+                                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#f5c518]" />
+                                    <span>
+                                        <strong>Series 2 Primer</strong> – Coping Strategies for
+                                        Stress and Building Resilience{" "}
+                                        <a
+                                            href="https://drive.google.com/drive/u/5/folders/150WYJhUFlrE0dTfmhx6vw81bUA882FiN"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-semibold text-[#157d3c] hover:underline"
+                                        >
+                                            (Access)
+                                        </a>
+                                    </span>
+                                </li>
+                                <li className="flex gap-2">
+                                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#f5c518]" />
+                                    <span>
+                                        <strong>Series 3 Primer</strong> – How to Seek Help and
+                                        Support on Campus and in the Community{" "}
+                                        <a
+                                            href="https://drive.google.com/drive/u/5/folders/113ylFYNh6mJhCrSWWNDWwGfS5bR0oXWM"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="font-semibold text-[#157d3c] hover:underline"
+                                        >
+                                            (Access)
+                                        </a>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {/* Card 2 — We Care Wednesday 2026 */}
+                    <div className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#157d3c] hover:shadow-lg">
+                        <div className="relative flex h-36 items-center justify-center bg-[#f0f7f2] px-4 text-center">
+                            <span className="absolute right-3 top-3 rounded-full bg-[#157d3c] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
+                                2026
+                            </span>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#157d3c"
+                                strokeWidth="1.75"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="h-14 w-14"
+                            >
+                                <rect width="18" height="18" x="3" y="4" rx="2" />
+                                <path d="M3 10h18" />
+                                <path d="M8 2v4" />
+                                <path d="M16 2v4" />
+                                <path d="m9 16 2 2 4-4" />
+                            </svg>
+                        </div>
+                        <div className="border-t-4 border-[#f5c518] flex flex-1 flex-col px-5 py-5">
+                            <h4 className="text-base font-bold text-[#1a1a1a]">
+                                We Care Wednesday
+                            </h4>
+                            <p className="mt-1 text-xs font-semibold uppercase tracking-widest text-[#157d3c]">
+                                2026 Edition
+                            </p>
+                            <p className="mt-1 text-[11px] font-medium italic text-gray-500">
+                                "Lived Experiences Heard: Real Voices, Real Change"
+                            </p>
+                            <p className="mt-2 text-justify text-xs leading-relaxed text-gray-600">
+                                A Mental Health Awareness and Wellness Campaign in celebration of
+                                World Mental Health Day 2026. The program promotes awareness,
+                                emotional well-being, and a caring, inclusive, and help-seeking
+                                culture among students through accessible mental health education
+                                and student-centered wellness activities conducted every
+                                Wednesday of October 2026.
+                            </p>
+
+                            <h5 className="mt-4 mb-2 text-[11px] font-extrabold uppercase tracking-widest text-[#157d3c]">
+                                Weekly Schedule
+                            </h5>
+                            <ul className="space-y-2 text-xs leading-relaxed text-gray-700">
+                                <li className="flex gap-2">
+                                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#f5c518]" />
+                                    <span>
+                                        <strong>October 7, 2026</strong> – "WE CARE: Your Story,
+                                        Your Voice, Your Mental Health Matters"
+                                        <span className="mt-0.5 block text-[11px] text-gray-500">
+                                            Official launching of the WE CARE Wednesday campaign,
+                                            introducing the program objectives, the 2026 World
+                                            Mental Health Day theme, basic mental health concepts,
+                                            stigma reduction, help-seeking, and available support
+                                            services.
+                                        </span>
+                                    </span>
+                                </li>
+                                <li className="flex gap-2">
+                                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#f5c518]" />
+                                    <span>
+                                        <strong>October 14, 2026</strong> – "Real Voices, Real
+                                        Strength: Listening Without Judgment"
+                                        <span className="mt-0.5 block text-[11px] text-gray-500">
+                                            A short recorded video focusing on compassionate
+                                            listening, emotional validation, breaking mental health
+                                            stigma, supporting peers, and recognizing when someone
+                                            may need additional assistance.
+                                        </span>
+                                    </span>
+                                </li>
+                                <li className="flex gap-2">
+                                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#f5c518]" />
+                                    <span>
+                                        <strong>October 21, 2026</strong> – "From Being Heard to
+                                        Being Helped: Building a Mentally Healthy College
+                                        Community"
+                                        <span className="mt-0.5 block text-[11px] text-gray-500">
+                                            A brief interactive webinar discussing common student
+                                            mental health challenges, healthy coping strategies,
+                                            the importance of lived experiences, supportive
+                                            communication, help-seeking, and appropriate referral.
+                                        </span>
+                                    </span>
+                                </li>
+                                <li className="flex gap-2">
+                                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#f5c518]" />
+                                    <span>
+                                        <strong>October 28, 2026</strong> – "Real Voices, Real
+                                        Change: WE CARE, We Listen, We Support"
+                                        <span className="mt-0.5 block text-[11px] text-gray-500">
+                                            Students, faculty, staff, student leaders, and support
+                                            personnel may record brief messages promoting hope,
+                                            belonging, empathy, self-care, and help-seeking.
+                                            Selected clips will be compiled into the campaign
+                                            culmination video.
+                                        </span>
+                                    </span>
+                                </li>
+                            </ul>
+
+                            <p className="mt-4 text-[11px] italic text-gray-500">
+                                Note: Resource links are yet to be finalized for launching and
+                                will be updated soon.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Call to action */}
+                <div className="mt-8 rounded-xl border border-[#157d3c] bg-[#f0f7f2] p-6">
+                    <h4 className="mb-2 text-base font-bold text-[#1a1a1a]">
+                        Need someone to talk to?
+                    </h4>
+                    <p className="text-sm leading-relaxed text-gray-700">
+                        The WeCare Mental Health Program is here for you. Reach out
+                        to the Guidance, Counseling, and Assessment Office at{" "}
+                        <a
+                            href="mailto:citycollegeguidancecaservices@gmail.com"
+                            className="font-semibold text-[#157d3c] hover:underline"
+                        >
+                            citycollegeguidancecaservices@gmail.com
+                        </a>{" "}
+                        or visit us at the Guidance Office. Your privacy and
+                        well-being are our priority.
+                    </p>
                 </div>
             </>
         ),
@@ -374,6 +1047,12 @@ const DIRECTOR_TABS = [
                 </p>
             </>
         ),
+    },
+    {
+        id: "about",
+        label: "About",
+        shortLabel: "About",
+        content: <AboutSubTabs />,
     },
     {
         id: "general-functions",
@@ -678,6 +1357,12 @@ const DIRECTOR_TABS = [
             </>
         ),
     },
+    {
+        id: "electronic-forms",
+        label: "Electronic Forms",
+        shortLabel: "E-Forms",
+        content: ElectronicFormsContent,
+    },
 ];
 
 // ============ Banner text ============
@@ -735,7 +1420,6 @@ function OfficeSlideshow() {
             initial="hidden"
             animate="visible"
         >
-            {/* Section heading */}
             <div className="border-b border-gray-200 bg-[#f0f7f2] px-6 sm:px-8 md:px-10 lg:px-14 py-6 text-center">
                 <h2 className="m-0 text-2xl md:text-3xl font-extrabold text-[#1a1a1a] tracking-tight">
                     Our{" "}
@@ -753,7 +1437,6 @@ function OfficeSlideshow() {
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
             >
-                {/* Slides */}
                 <div className="relative w-full aspect-[16/9] md:aspect-[21/9] bg-gray-100">
                     <AnimatePresence mode="wait">
                         <motion.div
@@ -776,7 +1459,6 @@ function OfficeSlideshow() {
                         </motion.div>
                     </AnimatePresence>
 
-                    {/* Prev / Next buttons */}
                     <button
                         type="button"
                         onClick={goPrev}
@@ -816,13 +1498,11 @@ function OfficeSlideshow() {
                         </svg>
                     </button>
 
-                    {/* Counter */}
                     <div className="absolute top-4 right-4 z-20 rounded-full bg-black/50 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
                         {current + 1} / {SLIDES.length}
                     </div>
                 </div>
 
-                {/* Text content below the image */}
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={slide.id}
@@ -842,7 +1522,6 @@ function OfficeSlideshow() {
                     </motion.div>
                 </AnimatePresence>
 
-                {/* Dots */}
                 <div className="pb-6 flex items-center justify-center gap-2">
                     {SLIDES.map((s, i) => (
                         <button
@@ -1072,7 +1751,6 @@ export default function GuidanceOffice() {
                 />
             </div>
 
-
             {/* ==================== MAIN CONTENT ==================== */}
             <div className="mx-auto w-full max-w-[1600px] px-6 sm:px-10 lg:px-16 xl:px-20 py-14 md:py-20">
                 <motion.div
@@ -1082,11 +1760,9 @@ export default function GuidanceOffice() {
                     animate="visible"
                 >
                     <div className="flex flex-col md:flex-row gap-10 lg:gap-14 p-8 md:p-10 lg:p-14 items-start">
-                        {/* ================= LEFT COLUMN: Image + Contact Us ================= */}
+                        {/* ================= LEFT COLUMN ================= */}
                         <div className="w-full shrink-0 md:w-80 lg:w-96 mx-auto md:mx-0 flex flex-col gap-8">
-                            {/* Director Image */}
                             <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-                                {/* Image */}
                                 <div className="w-full aspect-[4/5] flex items-center justify-center bg-white p-2">
                                     <img
                                         src={colarteImage}
@@ -1098,7 +1774,6 @@ export default function GuidanceOffice() {
                                     />
                                 </div>
 
-                                {/* Name + Position panel */}
                                 <div className="border-t-4 border-[#f5c518] bg-white px-4 py-4 text-center">
                                     <p className="m-0 text-sm sm:text-base md:text-lg font-bold tracking-wide uppercase text-[#157d3c]">
                                         Faith Q. Colarte, RGC
@@ -1109,7 +1784,6 @@ export default function GuidanceOffice() {
                                 </div>
                             </div>
 
-                            {/* ===== Contact Us — below the director image ===== */}
                             <div className="rounded-xl border border-[#157d3c] bg-[#157d3c] p-6 shadow-sm">
                                 <div className="flex flex-col items-left text-left mb-5">
                                     <h3 className="m-0 text-lg font-extrabold text-white tracking-tight">
@@ -1194,14 +1868,14 @@ export default function GuidanceOffice() {
                             </div>
                         </div>
 
-                        {/* ================= RIGHT COLUMN: Tabs on top, then Content ================= */}
+                        {/* ================= RIGHT COLUMN ================= */}
                         <div className="flex-1 w-full">
-                            {/* ===== Upper Tab Switcher — at the top of the content area ===== */}
+                            {/* Upper Tab Switcher */}
                             <div className="-mx-8 md:-mx-10 lg:-mx-14 -mt-8 md:-mt-10 lg:-mt-14 mb-8 border-b border-gray-200 bg-[#f0f7f2]">
                                 <div
                                     role="tablist"
                                     aria-label="Director information tabs"
-                                    className="flex w-full items-stretch overflow-x-auto"
+                                    className="guidance-tab-strip flex w-full items-stretch overflow-x-auto"
                                 >
                                     {DIRECTOR_TABS.map((tab) => {
                                         const isActive = activeDirectorTab === tab.id;
@@ -1243,7 +1917,7 @@ export default function GuidanceOffice() {
                                 </div>
                             </div>
 
-                            {/* ===== Tab Panel ===== */}
+                            {/* Tab Panel */}
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={activeDirectorTab}
@@ -1256,18 +1930,35 @@ export default function GuidanceOffice() {
                                     exit="exit"
                                 >
                                     <h2 className="m-0 mb-4 text-2xl md:text-3xl font-extrabold text-[#1a1a1a] tracking-tight text-center">
-                                        {activeDirectorTab === "bionote" ? (
+                                        {activeDirectorTab === "bionote" && (
                                             <>
                                                 Bio{" "}
                                                 <span className="text-[#157d3c]">
                                                     Note
                                                 </span>
                                             </>
-                                        ) : (
+                                        )}
+                                        {activeDirectorTab === "about" && (
+                                            <>
+                                                About{" "}
+                                                <span className="text-[#157d3c]">
+                                                    Us
+                                                </span>
+                                            </>
+                                        )}
+                                        {activeDirectorTab === "general-functions" && (
                                             <>
                                                 General{" "}
                                                 <span className="text-[#157d3c]">
                                                     Functions
+                                                </span>
+                                            </>
+                                        )}
+                                        {activeDirectorTab === "electronic-forms" && (
+                                            <>
+                                                Electronic{" "}
+                                                <span className="text-[#157d3c]">
+                                                    Forms
                                                 </span>
                                             </>
                                         )}
@@ -1292,7 +1983,6 @@ export default function GuidanceOffice() {
                     initial="hidden"
                     animate="visible"
                 >
-                    {/* Tab Header Bar */}
                     <div className="border-b border-gray-200 bg-[#f0f7f2]">
                         <div
                             ref={tabStripRef}
@@ -1340,7 +2030,6 @@ export default function GuidanceOffice() {
                         </div>
                     </div>
 
-                    {/* Tab Panel */}
                     <div className="p-8 md:p-10 lg:p-14 min-h-[260px]">
                         <AnimatePresence mode="wait">
                             <motion.div

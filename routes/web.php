@@ -48,6 +48,10 @@ Route::get('/incident-report', function () {
     return Inertia::render('content/Quicklinks/IncidentReport');
 })->name('incident-report');
 
+Route::get('/faculty-staff', function () {
+    return Inertia::render('content/Quicklinks/FacultyStaff');
+})->name('faculty-staff');
+
 Route::get('/url-shortener', function () {
     return Inertia::render('content/Quicklinks/UrlShortener');
 })->name('url.shortener');

@@ -4,6 +4,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import MainLayout from "../../../layouts/MainLayout";
 import guidanceBannerImg from '../../../assets/banner/guidance-banner.png';
 import colarteImage from '../../../assets/images/colarte-image.png';
+import faithImage from '../../../assets/images/faith-image.png';
+import malalisImage from '../../../assets/images/malalis-image.png';
+import harleyImage from '../../../assets/images/harley-image.png';
 import sdg1 from '../../../assets/images/sdg1.png';
 import sdg2 from '../../../assets/images/sdg2.jpg';
 import sdg3 from '../../../assets/images/sdg3.png';
@@ -495,52 +498,54 @@ function AboutSubTabs() {
 
                         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             {[
-                                {
-                                    initials: "FC",
-                                    name: "Faith Quinal-Colarte, RGC",
-                                    roles: [
-                                        "Coordinator, Student Welfare and Services",
-                                        "Head of the Guidance, Counseling and Assessment Services",
-                                        "Guidance Counselor",
-                                    ],
-                                },
-                                {
-                                    initials: "JM",
-                                    name: "Jonathan Ace C. Malalis",
-                                    roles: ["Guidance Associate"],
-                                },
-                                {
-                                    initials: "HA",
-                                    name: "Harley Q. Abejo",
-                                    roles: ["Admission Officer"],
-                                },
-                            ].map((person) => (
-                                <div
-                                    key={person.name}
-                                    className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#157d3c] hover:shadow-lg"
-                                >
-                                    <div className="flex h-32 items-center justify-center bg-[#f0f7f2]">
-                                        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#157d3c] text-2xl font-extrabold text-white">
-                                            {person.initials}
-                                        </div>
-                                    </div>
-                                    <div className="border-t-4 border-[#f5c518] px-4 py-4 text-center">
-                                        <h4 className="text-sm font-extrabold tracking-tight text-[#1a1a1a] sm:text-base">
-                                            {person.name}
-                                        </h4>
-                                        <ul className="mt-2 space-y-1">
-                                            {person.roles.map((role) => (
-                                                <li
-                                                    key={role}
-                                                    className="text-[11px] font-semibold leading-relaxed text-[#157d3c] sm:text-xs"
-                                                >
-                                                    {role}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
+                            {
+                                image: faithImage,
+                                name: "Faith Quinal-Colarte, RGC",
+                                roles: [
+                                    "Coordinator, Student Welfare and Services",
+                                    "Head of the Guidance, Counseling and Assessment Services",
+                                    "Guidance Counselor",
+                                ],
+                            },
+                            {
+                                image: malalisImage,
+                                name: "Jonathan Ace C. Malalis",
+                                roles: ["Guidance Associate"],
+                            },
+                            {
+                                image: harleyImage,
+                                name: "Harley Q. Abejo",
+                                roles: ["Admission Officer"],
+                            },
+                        ].map((person) => (
+                            <div
+                                key={person.name}
+                                className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#157d3c] hover:shadow-lg"
+                            >
+                                <div className="relative h-48 w-full bg-[#f0f7f2]">
+                                    <img
+                                        src={person.image}
+                                        alt={person.name}
+                                        className="h-full w-full object-cover object-top"
+                                    />
                                 </div>
-                            ))}
+                                <div className="border-t-4 border-[#f5c518] px-4 py-4 text-center">
+                                    <h4 className="text-sm font-extrabold tracking-tight text-[#1a1a1a] sm:text-base">
+                                        {person.name}
+                                    </h4>
+                                    <ul className="mt-2 space-y-1">
+                                        {person.roles.map((role) => (
+                                            <li
+                                                key={role}
+                                                className="text-[11px] font-semibold leading-relaxed text-[#157d3c] sm:text-xs"
+                                            >
+                                                {role}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        ))}
                         </div>
                     </>
                 );

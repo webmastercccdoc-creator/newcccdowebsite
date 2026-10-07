@@ -94,20 +94,21 @@ export default function Modal({
         className={`
           relative bg-white rounded-2xl shadow-2xl w-full ${sizeClasses[size]}
           transform transition-all duration-300 ease-out
+          overflow-hidden
         `}
         style={{
           animation: 'slideUp 0.3s ease-out'
         }}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-800">
+        {/* Header - Updated to Dark Grey Background */}
+        <div className="flex items-center justify-between px-6 py-4 bg-gray-800 border-b border-gray-700">
+          <h3 className="text-lg font-semibold text-white">
             {title}
           </h3>
           {showCloseButton && (
             <button
               onClick={handleCloseAttempt}
-              className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors"
               aria-label="Close modal"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

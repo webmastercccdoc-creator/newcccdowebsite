@@ -300,6 +300,7 @@ export default function Sidebar() {
         hidden lg:flex
         bg-white border-r border-gray-200 shadow-xl
         h-screen flex-col
+        transition-[width] duration-300 ease-in-out
         ${isCollapsed ? 'w-20' : 'w-64'}
       `}
       aria-label="CMS sidebar"
@@ -309,23 +310,36 @@ export default function Sidebar() {
         flex items-center px-4 py-5
         ${isCollapsed ? 'justify-center' : 'justify-between'}
         bg-white border-b border-gray-200 flex-shrink-0
+        transition-all duration-300 ease-in-out
       `}>
-        {!isCollapsed && (
-          <span className="text-lg font-semibold text-gray-800 whitespace-nowrap flex-1 text-center">
-            Admin Panel
-          </span>
-        )}
+        <span 
+          className={`
+            text-lg font-semibold text-gray-800 whitespace-nowrap flex-1 text-center
+            transition-all duration-300 ease-in-out origin-left
+            ${isCollapsed 
+              ? 'opacity-0 max-w-0 -translate-x-4 pointer-events-none overflow-hidden' 
+              : 'opacity-100 max-w-[200px] translate-x-0'
+            }
+          `}
+        >
+          Admin Panel
+        </span>
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className={`
-            hidden md:flex items-center justify-center p-2 rounded-lg transition-all duration-200
+            hidden md:flex items-center justify-center p-2 rounded-lg 
             text-gray-600 hover:bg-gray-100 hover:text-gray-900
+            transition-all duration-300 ease-in-out
             ${isCollapsed ? 'mx-auto' : ''}
           `}
           aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
+          {/* Changed: Removed rotation so it stays horizontal */}
           <svg 
-            className="w-6 h-6 flex-shrink-0" 
+            className={`
+              w-6 h-6 flex-shrink-0
+              transition-transform duration-300 ease-in-out
+            `}
             fill="none" 
             stroke="currentColor" 
             viewBox="0 0 24 24"
@@ -341,7 +355,7 @@ export default function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className={`flex-1 px-3 py-4 ${isCollapsed ? 'overflow-hidden' : 'overflow-y-auto'}`} aria-label="Main navigation">
+      <nav className={`flex-1 px-3 py-4 ${isCollapsed ? 'overflow-hidden' : 'overflow-y-auto'} transition-all duration-300`} aria-label="Main navigation">
         <ul className="space-y-1">
           {navItems.map((item) => (
             <li key={item.id} className="relative">
@@ -359,20 +373,21 @@ export default function Sidebar() {
                   });
                 }}
                 className={`
-                  flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm font-medium group
+                  flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium group
                   ${activeItem === item.href    
                     ? 'bg-gray-800 text-white shadow-sm' 
                     : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                   } 
-                  ${isCollapsed ? 'justify-center' : ''}
-                  hover:scale-[1.02] transform transition-transform duration-200
+                  ${isCollapsed ? 'justify-center gap-0' : 'justify-start'}
+                  transition-all duration-300 ease-in-out
                   relative
                 `}
                 aria-current={activeItem === item.href ? 'page' : undefined}
                 title={isCollapsed ? item.name : undefined}
               >
                 <span className={`
-                  flex-shrink-0 flex items-center justify-center w-6 h-6 transition-colors duration-200
+                  flex-shrink-0 flex items-center justify-center w-6 h-6 
+                  transition-all duration-300 ease-in-out
                   ${activeItem === item.href 
                     ? 'text-white' 
                     : 'text-gray-500 group-hover:text-gray-700'
@@ -380,74 +395,105 @@ export default function Sidebar() {
                 `}>
                   {item.icon}
                 </span>
-                {!isCollapsed && (
-                  <span className={`
-                    font-medium transition-colors duration-200
-                    ${activeItem === item.href 
-                      ? 'text-white' 
-                      : 'text-gray-700 group-hover:text-gray-800'
-                    }
-                  `}>
-                    {item.name}
-                  </span>
-                )}
+                <span className={`
+                  font-medium whitespace-nowrap overflow-hidden
+                  transition-all duration-300 ease-in-out origin-left
+                  ${isCollapsed 
+                    ? 'opacity-0 max-w-0 -translate-x-2 pointer-events-none' 
+                    : 'opacity-100 max-w-[160px] translate-x-0'
+                  }
+                  ${activeItem === item.href 
+                    ? 'text-white' 
+                    : 'text-gray-700 group-hover:text-gray-800'
+                  }
+                `}>
+                  {item.name}
+                </span>
 
                 {/* Bell Icon for Approve Articles with count badge */}
-                {item.id === 'approve_articles' && hasPendingArticles && !isCollapsed && (
-                  <div className="ml-auto flex items-center gap-1.5">
-                    <svg 
-                      className={`w-5 h-5 text-amber-500 flex-shrink-0 ${shake ? 'animate-shake' : 'animate-pulse'}`}
-                      fill="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9" />
-                    </svg>
+                {item.id === 'approve_articles' && hasPendingArticles && (
+                  <>
+                    {/* Expanded mode: bell + count on the right */}
+                    <div className={`
+                      ml-auto flex items-center gap-1.5
+                      transition-all duration-300 ease-in-out
+                      ${isCollapsed 
+                        ? 'opacity-0 w-0 overflow-hidden pointer-events-none' 
+                        : 'opacity-100 w-auto'
+                      }
+                    `}>
+                      <svg 
+                        className={`w-5 h-5 text-amber-500 flex-shrink-0 ${shake ? 'animate-shake' : 'animate-pulse'}`}
+                        fill="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9" />
+                      </svg>
+                      <span className={`
+                        inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold shadow-lg
+                        ${shake ? 'animate-shake' : ''}
+                      `}>
+                        {effectivePendingCount > 99 ? '99+' : effectivePendingCount}
+                      </span>
+                    </div>
+
+                    {/* Collapsed mode: floating badge on top-right */}
                     <span className={`
-                      inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold shadow-lg
+                      absolute -right-0.5 -top-0.5 inline-flex h-5 w-5 items-center justify-center 
+                      rounded-full bg-red-500 text-[9px] text-white font-bold shadow-lg ring-2 ring-white
+                      transition-all duration-300 ease-in-out
+                      ${isCollapsed 
+                        ? 'opacity-100 scale-100 pointer-events-auto' 
+                        : 'opacity-0 scale-0 pointer-events-none'
+                      }
                       ${shake ? 'animate-shake' : ''}
                     `}>
                       {effectivePendingCount > 99 ? '99+' : effectivePendingCount}
                     </span>
-                  </div>
-                )}
-
-                {/* Show badge for Approve Articles item in collapsed mode */}
-                {item.id === 'approve_articles' && hasPendingArticles && isCollapsed && (
-                  <span className={`
-                    absolute -right-1 -top-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[8px] text-white font-bold shadow-lg ring-2 ring-white
-                    ${shake ? 'animate-shake' : ''}
-                  `}>
-                    {effectivePendingCount > 99 ? '99+' : effectivePendingCount}
-                  </span>
+                  </>
                 )}
 
                 {/* Bell Icon for pending shortened URLs with count badge */}
-                {item.id === 'shorten_url' && hasPendingUrls && !isCollapsed && (
-                  <div className="ml-auto flex items-center gap-1.5">
-                    <svg
-                      className={`w-5 h-5 text-amber-500 flex-shrink-0 ${shake ? 'animate-shake' : 'animate-pulse'}`}
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9" />
-                    </svg>
+                {item.id === 'shorten_url' && hasPendingUrls && (
+                  <>
+                    {/* Expanded mode: bell + count on the right */}
+                    <div className={`
+                      ml-auto flex items-center gap-1.5
+                      transition-all duration-300 ease-in-out
+                      ${isCollapsed 
+                        ? 'opacity-0 w-0 overflow-hidden pointer-events-none' 
+                        : 'opacity-100 w-auto'
+                      }
+                    `}>
+                      <svg
+                        className={`w-5 h-5 text-amber-500 flex-shrink-0 ${shake ? 'animate-shake' : 'animate-pulse'}`}
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9" />
+                      </svg>
+                      <span className={`
+                        inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold shadow-lg
+                        ${shake ? 'animate-shake' : ''}
+                      `}>
+                        {effectivePendingUrlCount > 99 ? '99+' : effectivePendingUrlCount}
+                      </span>
+                    </div>
+
+                    {/* Collapsed mode: floating badge on top-right */}
                     <span className={`
-                      inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold shadow-lg
+                      absolute -right-0.5 -top-0.5 inline-flex h-5 w-5 items-center justify-center 
+                      rounded-full bg-red-500 text-[9px] text-white font-bold shadow-lg ring-2 ring-white
+                      transition-all duration-300 ease-in-out
+                      ${isCollapsed 
+                        ? 'opacity-100 scale-100 pointer-events-auto' 
+                        : 'opacity-0 scale-0 pointer-events-none'
+                      }
                       ${shake ? 'animate-shake' : ''}
                     `}>
                       {effectivePendingUrlCount > 99 ? '99+' : effectivePendingUrlCount}
                     </span>
-                  </div>
-                )}
-
-                {/* Show badge for pending shortened URLs in collapsed mode */}
-                {item.id === 'shorten_url' && hasPendingUrls && isCollapsed && (
-                  <span className={`
-                    absolute -right-1 -top-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[8px] text-white font-bold shadow-lg ring-2 ring-white
-                    ${shake ? 'animate-shake' : ''}
-                  `}>
-                    {effectivePendingUrlCount > 99 ? '99+' : effectivePendingUrlCount}
-                  </span>
+                  </>
                 )}
               </NavItem>;
               })()}
@@ -457,40 +503,71 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer - User Info and Logout */}
-      <div className="border-t border-gray-200 p-4 bg-white flex-shrink-0">
+      <div className="border-t border-gray-200 p-4 bg-white flex-shrink-0 transition-all duration-300">
         <div className={`
           flex items-center gap-3
           ${isCollapsed ? 'justify-center' : 'justify-start'}
+          transition-all duration-300 ease-in-out
         `}>
-          <div className="flex-shrink-0">
+          {/* Avatar - Hidden when collapsed */}
+          <div className={`
+            flex-shrink-0
+            transition-all duration-300 ease-in-out overflow-hidden
+            ${isCollapsed ? 'w-0 opacity-0' : 'w-9 opacity-100'}
+          `}>
             <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
               <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
             </div>
           </div>
-          {!isCollapsed && (
-            <>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-800 truncate">
-                  {user?.name || 'User'}
-                </p>
-                <p className="text-xs text-gray-500 truncate">
-                  {user?.email || 'user@example.com'}
-                </p>
-              </div>
-              <button
-                onClick={handleLogout}
-                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-gray-400 hover:text-red-600"
-                aria-label="Logout"
-                title="Sign Out"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-              </button>
-            </>
-          )}
+
+          {/* User info + logout - animated out when collapsed */}
+          <div className={`
+            flex-1 min-w-0 flex items-center gap-2
+            transition-all duration-300 ease-in-out origin-left
+            ${isCollapsed 
+              ? 'opacity-0 max-w-0 -translate-x-4 pointer-events-none overflow-hidden' 
+              : 'opacity-100 max-w-[200px] translate-x-0'
+            }
+          `}>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-800 truncate">
+                {user?.name || 'User'}
+              </p>
+              <p className="text-xs text-gray-500 truncate">
+                {user?.email || 'user@example.com'}
+              </p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-gray-400 hover:text-red-600 flex-shrink-0"
+              aria-label="Logout"
+              title="Sign Out"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Collapsed logout button (shown only when collapsed) */}
+          <button
+            onClick={handleLogout}
+            className={`
+              p-1.5 rounded-lg hover:bg-gray-100 transition-all duration-300 text-gray-400 hover:text-red-600
+              ${isCollapsed 
+                ? 'opacity-100 scale-100 pointer-events-auto' 
+                : 'opacity-0 scale-0 w-0 pointer-events-none overflow-hidden'
+              }
+            `}
+            aria-label="Logout"
+            title="Sign Out"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </button>
         </div>
       </div>
 

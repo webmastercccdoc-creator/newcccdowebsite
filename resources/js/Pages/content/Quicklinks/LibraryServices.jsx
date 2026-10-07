@@ -2810,14 +2810,6 @@ export default function LibraryServicesPage() {
                             variants={riseIn}
                             className="inline-flex items-center gap-3 rounded-full border border-[#f5c518]/50 bg-black/30 px-4 py-2 backdrop-blur-sm"
                         >
-                            <img
-                                src={libraryLogo}
-                                alt=""
-                                className="h-5 w-5 object-contain"
-                                onError={(e) => {
-                                    e.currentTarget.style.display = "none";
-                                }}
-                            />
                             <span className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#f5c518] sm:text-[11px]">
                                 Library Services Office
                             </span>

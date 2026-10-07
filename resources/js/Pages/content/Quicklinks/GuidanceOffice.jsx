@@ -599,7 +599,7 @@ function AboutSubTabs() {
                                 office hours, you may reach us via email at{" "}
                                 <a
                                     href="mailto:citycollegeguidancecaservices@gmail.com"
-                                    className="font-semibold text-[#157d3c] hover:underline"
+                                    className="font-semibold text-[#157d3c] hover:underline break-all"
                                 >
                                     citycollegeguidancecaservices@gmail.com
                                 </a>
@@ -785,13 +785,40 @@ const TABS = [
                                         <strong>Pre-Campaign Awareness & Social Media Promotion</strong>
                                         {" – "}
                                         <a
-                                            href="https://drive.google.com/drive/u/5/folders/1J_jJ67WkxUwkBvbuylkZKXun_quJpAGB"
+                                            href="https://drive.google.com/file/d/1prXtAAkuVlMFW4sC7boZs_kbm3_b9HFV/view"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="font-semibold text-[#157d3c] hover:underline"
                                         >
                                             Talk.Share.Heal
                                         </a>
+                                        {/* Publication materials with exact titles */}
+                                        <span className="mt-1 flex flex-wrap gap-x-2 gap-y-1">
+                                            <a
+                                                href="https://drive.google.com/file/d/1-kcI9duFbUiOegeFcy-vvqco72GTV5dK/view"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="font-semibold text-[#157d3c] hover:underline"
+                                            >
+                                                Understanding Suicide Risk Factors and Warning Signs
+                                            </a>
+                                            <a
+                                                href="https://drive.google.com/file/d/1lwoN6aYJIqSowPJGjAyvPRpcDyvtHaBl/view"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="font-semibold text-[#157d3c] hover:underline"
+                                            >
+                                                Coping Strategies for Stress and Building Resilience
+                                            </a>
+                                            <a
+                                                href="https://drive.google.com/file/d/1j91CChO1DSXRSjthZIX061jNt2Y4_KF4/view"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="font-semibold text-[#157d3c] hover:underline"
+                                            >
+                                                How to Seek Help and Support on Campus and in the Community
+                                            </a>
+                                        </span>
                                     </span>
                                 </li>
                                 <li className="flex gap-2">
@@ -800,7 +827,7 @@ const TABS = [
                                         <strong>Primer Video</strong> – Suicide Awareness and
                                         Prevention Month Micro-series{" "}
                                         <a
-                                            href="https://drive.google.com/drive/u/5/folders/1JocwK9kr15iXARQ8acqSeMejuUIdhjnp"
+                                            href="https://drive.google.com/file/d/15QDcD5GHAa8AIdbhkH2gCGuCUELqGYip/view"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="font-semibold text-[#157d3c] hover:underline"
@@ -815,13 +842,16 @@ const TABS = [
                                         <strong>Series 1 Primer</strong> – Understanding Suicide
                                         Risk Factors and Warning Signs{" "}
                                         <a
-                                            href="https://drive.google.com/drive/u/5/folders/1BBsoYcxU1nMP_L8KTS84b6BMx0suytBj"
+                                            href="https://drive.google.com/file/d/1KU4b1FVZMgkdq-Z_68GWkc9X3iHlqXIv/view"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="font-semibold text-[#157d3c] hover:underline"
                                         >
                                             (Access)
                                         </a>
+                                        <p className="mt-1 text-justify text-[11px] leading-relaxed text-gray-600">
+                                            Learn about what suicide is, the risk factors, and warning signs that may put someone at risk. By knowing these, we can reach out, show care, and remind each other that help is always within reach.
+                                        </p>
                                     </span>
                                 </li>
                                 <li className="flex gap-2">
@@ -830,13 +860,16 @@ const TABS = [
                                         <strong>Series 2 Primer</strong> – Coping Strategies for
                                         Stress and Building Resilience{" "}
                                         <a
-                                            href="https://drive.google.com/drive/u/5/folders/150WYJhUFlrE0dTfmhx6vw81bUA882FiN"
+                                            href="https://drive.google.com/file/d/1DY0pkkX-1l7Dz6w2KDWh70evID8v4yfz/view"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="font-semibold text-[#157d3c] hover:underline"
                                         >
                                             (Access)
                                         </a>
+                                        <p className="mt-1 text-justify text-[11px] leading-relaxed text-gray-600">
+                                            These are simple, everyday things you can actually use, like handling exam stress, bouncing back from challenges, or just keeping yourself grounded when life feels heavy.
+                                        </p>
                                     </span>
                                 </li>
                                 <li className="flex gap-2">
@@ -845,19 +878,21 @@ const TABS = [
                                         <strong>Series 3 Primer</strong> – How to Seek Help and
                                         Support on Campus and in the Community{" "}
                                         <a
-                                            href="https://drive.google.com/drive/u/5/folders/113ylFYNh6mJhCrSWWNDWwGfS5bR0oXWM"
+                                            href="https://drive.google.com/file/d/1bVOqy57mdzHw1e30b_e9QpjhqXsBIK8V/view"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="font-semibold text-[#157d3c] hover:underline"
                                         >
                                             (Access)
                                         </a>
+                                        <p className="mt-1 text-justify text-[11px] leading-relaxed text-gray-600">
+                                            Learn where to turn when things feel too heavy and how reaching out to the right people and resources can truly make a difference.
+                                        </p>
                                     </span>
                                 </li>
                             </ul>
                         </div>
                     </div>
-
                     {/* Card 2 — We Care Wednesday 2026 */}
                     <div className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#157d3c] hover:shadow-lg">
                         <div className="relative flex h-36 items-center justify-center bg-[#f0f7f2] px-4 text-center">
@@ -909,12 +944,21 @@ const TABS = [
                                     <span>
                                         <strong>October 7, 2026</strong> – "WE CARE: Your Story,
                                         Your Voice, Your Mental Health Matters"
+                                        {/* 2026 Edition resource link added below */}
                                         <span className="mt-0.5 block text-[11px] text-gray-500">
                                             Official launching of the WE CARE Wednesday campaign,
                                             introducing the program objectives, the 2026 World
                                             Mental Health Day theme, basic mental health concepts,
                                             stigma reduction, help-seeking, and available support
-                                            services.
+                                            services.{" "}
+                                            <a
+                                                href="https://drive.google.com/file/d/1-SvagXSaW6lbrGLc1CjSx63G4hkvOL5U/view?usp=drive_link"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="font-semibold text-[#157d3c] hover:underline"
+                                            >
+                                                (Access Resource)
+                                            </a>
                                         </span>
                                     </span>
                                 </li>
@@ -979,7 +1023,7 @@ const TABS = [
                         to the Guidance, Counseling, and Assessment Office at{" "}
                         <a
                             href="mailto:citycollegeguidancecaservices@gmail.com"
-                            className="font-semibold text-[#157d3c] hover:underline"
+                            className="font-semibold text-[#157d3c] hover:underline break-all"
                         >
                             citycollegeguidancecaservices@gmail.com
                         </a>{" "}

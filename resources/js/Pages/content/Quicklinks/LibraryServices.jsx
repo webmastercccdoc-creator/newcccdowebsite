@@ -2805,7 +2805,7 @@ export default function LibraryServicesPage() {
                         initial="hidden"
                         animate="visible"
                         className="max-w-3xl"
-                    >
+                    >git 
                         <motion.div
                             variants={riseIn}
                             className="inline-flex items-center gap-3 rounded-full border border-[#f5c518]/50 bg-black/30 px-4 py-2 backdrop-blur-sm"

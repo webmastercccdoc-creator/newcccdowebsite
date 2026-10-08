@@ -987,11 +987,11 @@ export default function VPAcademics() {
                                     </p>
                                 </div>
 
-                                {/* Panel Body — Functions full-width on top, Org Chart full-width at the bottom */}
+                                {/* Panel Body — Core Functions */}
                                 <div className="relative px-5 sm:px-8 lg:px-10 py-7 sm:py-9">
 
                                     {/* Core Functions — full width */}
-                                    <div className="mb-9">
+                                    <div>
                                         <div className="flex items-center gap-3 mb-4 sm:mb-5">
                                             <span className="h-px w-6 bg-[#A97F2E]/60" aria-hidden="true"></span>
                                             <h4 className="text-[10px] sm:text-[11px] font-bold tracking-[0.28em] uppercase" style={{ color: 'var(--vp-green-700)' }}>
@@ -1014,28 +1014,6 @@ export default function VPAcademics() {
                                         </ul>
                                     </div>
 
-                                    {/* Organizational Structure — full width at the bottom */}
-                                    <div>
-                                        <div className="flex items-center gap-3 mb-4 sm:mb-5">
-                                            <span className="h-px w-6 bg-[#A97F2E]/60" aria-hidden="true"></span>
-                                            <h4 className="text-[10px] sm:text-[11px] font-bold tracking-[0.28em] uppercase" style={{ color: 'var(--vp-green-700)' }}>
-                                                Organizational Structure
-                                            </h4>
-                                        </div>
-                                        <div
-                                            className="rounded-xl border p-4 sm:p-6 lg:p-8"
-                                            style={{
-                                                background: 'linear-gradient(180deg, rgba(238,242,236,0.55), rgba(251,249,244,0.4))',
-                                                borderColor: 'rgba(199,154,62,0.18)',
-                                            }}
-                                        >
-                                            {isSupport ? (
-                                                <AcademicSupportOrgChart root={activeOfficeData.orgChart} />
-                                            ) : (
-                                                <OfficeOrgChart root={activeOfficeData.orgChart} />
-                                            )}
-                                        </div>
-                                    </div>
                                 </div>
 
                                 {/* Panel Footer — mobile back button */}

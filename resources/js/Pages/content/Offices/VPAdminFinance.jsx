@@ -369,11 +369,11 @@ function OfficeOrgChart({ levels }) {
    TIDMAC TEAM — light, clear, no dimming. Grid on mobile, drag carousel on desktop
    ============================================================================ */
 const TIDMAC_TEAM = [
-    { name: 'Jocynt', img: cebImg },
-    { name: 'Zy', img: anaImg },
-    { name: 'Jamie', img: notailImg },
-    { name: 'Jess', img: topsonImg },
-    { name: 'Christian', img: jeraxImg },
+    { name: 'Jocynt Namocatcat', img: cebImg, role: 'Head, System Network and Infrastructure' },
+    { name: 'Zyronne Penuela', img: anaImg, role: 'Head, Digital System and Innovation' },
+    { name: 'Jesse James Fabela', img: notailImg, role: 'Director, Technology Innovation and Data Management Center' },
+    { name: 'Jess Reil Dalondodan', img: topsonImg, role: 'Head, System Planning and Quality Assurance' },
+    { name: 'John Christian Los Baños', img: jeraxImg, role: 'Head, System Management and Development' },
 ];
 
 /* Drag carousel — desktop only (clear images, always-visible captions) */
@@ -443,7 +443,7 @@ function TidmacDragCarousel() {
                         <img className="tidmac-image" src={member.img} alt={member.name} draggable="false" />
                         <div className="tidmac-caption">
                             <span className="tidmac-header">{member.name}</span>
-                            <span className="tidmac-subheader">TIDMAC Staff</span>
+                            <span className="tidmac-subheader">{member.role}</span>
                         </div>
                     </div>
                 ))}

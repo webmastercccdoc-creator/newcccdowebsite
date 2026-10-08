@@ -237,23 +237,21 @@ const CONTACT_ITEMS = [
 // ===================== Org Chart Data =====================
 const ORG_CHART = {
     top: {
+        name: "Helmae E. Tapanan",
         role: "VP FOR ACADEMIC AFFAIRS",
     },
     head: {
+        name: "Melody R. Agcito",
         role: "HEAD LIBRARIAN",
     },
     branches: [
         {
-            title: "Reference & User Services Librarian",
-            children: [
-                { title: "Reference & User Services Assistant" },
-            ],
+            name: "April Grace S. Almahan",
+            role: "Reference & User Services Assistant",
         },
         {
-            title: "Collections and Processing Librarian",
-            children: [
-                { title: "Collections and Processing Clerk" },
-            ],
+            name: "Marie Fe S. Cagasan",
+            role: "Collections & Processing Clerk",
         },
     ],
 };
@@ -268,6 +266,9 @@ function OrgChart() {
                 <div className="relative w-full max-w-xs overflow-hidden rounded-2xl border-2 border-[#157d3c] bg-gradient-to-br from-[#157d3c] to-[#0b3d1e] p-5 text-center text-white shadow-lg shadow-[#157d3c]/25">
                     <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[#f5c518]/15 blur-2xl" />
                     <p className="relative text-sm font-black uppercase leading-tight tracking-wide">
+                        {top.name}
+                    </p>
+                    <p className="relative mt-1 text-sm font-semibold">
                         {top.role}
                     </p>
                 </div>
@@ -281,6 +282,9 @@ function OrgChart() {
                 <div className="relative w-full max-w-xs overflow-hidden rounded-2xl border-2 border-[#157d3c] bg-gradient-to-br from-[#157d3c] to-[#0b3d1e] p-5 text-center text-white shadow-lg shadow-[#157d3c]/25">
                     <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-[#f5c518]/15 blur-2xl" />
                     <p className="relative text-sm font-black uppercase leading-tight tracking-wide">
+                        {head.name}
+                    </p>
+                    <p className="relative mt-1 text-sm font-semibold">
                         {head.role}
                     </p>
                 </div>
@@ -296,35 +300,19 @@ function OrgChart() {
                 <div className="grid gap-8 md:grid-cols-2 md:gap-12">
                     {branches.map((branch) => (
                         <div
-                            key={branch.title}
+                            key={branch.name}
                             className="relative flex flex-col items-center"
                         >
                             <div className="absolute -top-6 left-1/2 hidden h-6 w-px -translate-x-1/2 bg-[#157d3c]/30 md:block" />
 
                             <div className="w-full max-w-xs rounded-2xl border-2 border-[#157d3c] bg-white p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#f5c518] hover:shadow-md">
-                                <p className="m-0 text-sm font-black leading-snug text-[#1a1a1a]">
-                                    {branch.title}
+                                <p className="m-0 text-sm font-black leading-snug text-[#157d3c]">
+                                    {branch.name}
+                                </p>
+                                <p className="mt-2 text-sm font-semibold leading-snug text-gray-700">
+                                    {branch.role}
                                 </p>
                             </div>
-
-                            {branch.children?.length > 0 && (
-                                <>
-                                    <div className="h-6 w-px bg-[#157d3c]/30" />
-
-                                    <div className="flex w-full flex-col items-center gap-4">
-                                        {branch.children.map((child) => (
-                                            <div
-                                                key={child.title}
-                                                className="w-full max-w-xs rounded-2xl border border-gray-200 bg-white p-5 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#f5c518] hover:shadow-md"
-                                            >
-                                                <p className="m-0 text-sm font-black leading-snug text-[#1a1a1a]">
-                                                    {child.title}
-                                                </p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </>
-                            )}
                         </div>
                     ))}
                 </div>
@@ -602,21 +590,18 @@ const PERSONNEL = [
         name: "Melody R. Agcito",
         role: "Head Librarian",
         unit: "Library Services Office",
-        accent: "green",
         image: melodyImage,
     },
     {
         name: "April Grace S. Almahan",
         role: "Reference & User Services Assistant",
         unit: "Reference & User Services",
-        accent: "gold",
         image: aprilImage,
     },
     {
         name: "Marie Fe S. Cagasan",
         role: "Collections & Processing Clerk",
         unit: "Collections & Processing",
-        accent: "green",
         image: feImage,
     },
 ];
@@ -634,67 +619,33 @@ function Personnel() {
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {PERSONNEL.map((person) => {
-                    const isGold = person.accent === "gold";
-                    return (
-                        <div
-                            key={person.name}
-                            className="group relative flex flex-col items-center overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 text-center shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-[#157d3c]/40 hover:shadow-lg"
-                        >
-                            <div
-                                className={`pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full blur-2xl transition-all duration-500 ${
-                                    isGold ? "bg-[#f5c518]/15" : "bg-[#157d3c]/10"
-                                }`}
+                {PERSONNEL.map((person) => (
+                    <div
+                        key={person.name}
+                        className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#157d3c] hover:shadow-lg"
+                    >
+                        <div className="flex h-64 w-full items-center justify-center bg-[#f0f7f2] p-3">
+                            <img
+                                src={person.image}
+                                alt={person.name}
+                                className="max-h-full max-w-full object-contain"
                             />
-
-                            <div className="relative mb-4">
-                                <div
-                                    className={`relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border-4 shadow-lg transition-transform duration-500 group-hover:scale-105 ${
-                                        isGold
-                                            ? "border-[#f5c518] bg-[#fffdf3] text-[#b8860b] shadow-[#f5c518]/25"
-                                            : "border-[#157d3c] bg-[#f0f7f2] text-[#157d3c] shadow-[#157d3c]/25"
-                                    }`}
-                                >
-                                    <span className="absolute text-2xl font-black">
-                                        {getInitials(person.name)}
-                                    </span>
-                                    {person.image && (
-                                        <img
-                                            src={person.image}
-                                            alt={person.name}
-                                            className="relative h-full w-full object-cover object-top"
-                                            onError={(e) => {
-                                                e.currentTarget.style.display =
-                                                    "none";
-                                            }}
-                                        />
-                                    )}
-                                </div>
-
-                                <span
-                                    className={`absolute -bottom-1 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-2 border-white shadow ${
-                                        isGold ? "bg-[#f5c518]" : "bg-[#157d3c]"
-                                    }`}
-                                    aria-hidden="true"
-                                />
-                            </div>
-
-                            <h4 className="mb-1 text-base font-black leading-snug text-[#1a1a1a] transition-colors duration-300 group-hover:text-[#157d3c]">
+                        </div>
+                        <div className="border-t-4 border-[#f5c518] px-4 py-4 text-center">
+                            <h4 className="text-sm font-extrabold tracking-tight text-[#1a1a1a] sm:text-base">
                                 {person.name}
                             </h4>
-
-                            <div className="mb-3 h-0.5 w-10 rounded-full bg-[#f5c518] transition-all duration-500 group-hover:w-16" />
-
-                            <p className="m-0 text-sm font-bold text-[#1a1a1a]">
-                                {person.role}
-                            </p>
-
-                            <p className="m-0 mt-2 font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-gray-400">
-                                {person.unit}
-                            </p>
+                            <ul className="mt-2 space-y-1">
+                                <li className="text-[11px] font-semibold leading-relaxed text-[#157d3c] sm:text-xs">
+                                    {person.role}
+                                </li>
+                                <li className="text-[11px] font-semibold leading-relaxed text-[#157d3c] sm:text-xs">
+                                    {person.unit}
+                                </li>
+                            </ul>
                         </div>
-                    );
-                })}
+                    </div>
+                ))}
             </div>
         </div>
     );
@@ -899,42 +850,45 @@ function AboutUs() {
 
     return (
         <div className="space-y-8">
-            <div
-                role="tablist"
-                aria-label="About Us sub-sections"
-                className="inline-flex flex-wrap gap-2 rounded-full border border-gray-200 bg-[#f7fbf8] p-1.5"
-            >
-                {ABOUT_TABS.map((t) => {
-                    const isActive = subTab === t.id;
-                    return (
-                        <button
-                            key={t.id}
-                            role="tab"
-                            id={`about-subtab-${t.id}`}
-                            aria-selected={isActive}
-                            aria-controls={`about-subpanel-${t.id}`}
-                            onClick={() => setSubTab(t.id)}
-                            className={`relative shrink-0 rounded-full px-5 py-2 text-sm font-semibold transition-colors duration-200 focus:outline-none ${
-                                isActive
-                                    ? "text-white"
-                                    : "text-gray-600 hover:text-[#1a1a1a]"
-                            }`}
-                        >
-                            {isActive && (
-                                <motion.span
-                                    layoutId="aboutSubPillTab"
-                                    className="absolute inset-0 rounded-full bg-[#157d3c] shadow-md shadow-[#157d3c]/25"
-                                    transition={{
-                                        type: "spring",
-                                        stiffness: 420,
-                                        damping: 34,
-                                    }}
-                                />
-                            )}
-                            <span className="relative z-10">{t.label}</span>
-                        </button>
-                    );
-                })}
+            {/* ← CHANGED: wrapper now centers the pill tab bar */}
+            <div className="flex justify-center">
+                <div
+                    role="tablist"
+                    aria-label="About Us sub-sections"
+                    className="inline-flex flex-wrap justify-center gap-2 rounded-full border border-gray-200 bg-[#f7fbf8] p-1.5"
+                >
+                    {ABOUT_TABS.map((t) => {
+                        const isActive = subTab === t.id;
+                        return (
+                            <button
+                                key={t.id}
+                                role="tab"
+                                id={`about-subtab-${t.id}`}
+                                aria-selected={isActive}
+                                aria-controls={`about-subpanel-${t.id}`}
+                                onClick={() => setSubTab(t.id)}
+                                className={`relative shrink-0 rounded-full px-5 py-2 text-sm font-semibold transition-colors duration-200 focus:outline-none ${
+                                    isActive
+                                        ? "text-white"
+                                        : "text-gray-600 hover:text-[#1a1a1a]"
+                                }`}
+                            >
+                                {isActive && (
+                                    <motion.span
+                                        layoutId="aboutSubPillTab"
+                                        className="absolute inset-0 rounded-full bg-[#157d3c] shadow-md shadow-[#157d3c]/25"
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 420,
+                                            damping: 34,
+                                        }}
+                                    />
+                                )}
+                                <span className="relative z-10">{t.label}</span>
+                            </button>
+                        );
+                    })}
+                </div>
             </div>
 
             <AnimatePresence mode="wait">
@@ -1531,42 +1485,45 @@ function LibraryResources() {
 
     return (
         <div className="space-y-6">
-            <div
-                role="tablist"
-                aria-label="Library Resources sub-sections"
-                className="inline-flex flex-wrap gap-2 rounded-full border border-gray-200 bg-[#f7fbf8] p-1.5"
-            >
-                {LIBRARY_RESOURCES_SUBTABS.map((t) => {
-                    const isActive = subTab === t.id;
-                    return (
-                        <button
-                            key={t.id}
-                            role="tab"
-                            id={`subtab-${t.id}`}
-                            aria-selected={isActive}
-                            aria-controls={`subpanel-${t.id}`}
-                            onClick={() => setSubTab(t.id)}
-                            className={`relative shrink-0 rounded-full px-5 py-2 text-sm font-semibold transition-colors duration-200 focus:outline-none ${
-                                isActive
-                                    ? "text-white"
-                                    : "text-gray-600 hover:text-[#1a1a1a]"
-                            }`}
-                        >
-                            {isActive && (
-                                <motion.span
-                                    layoutId="librarySubPillTab"
-                                    className="absolute inset-0 rounded-full bg-[#157d3c] shadow-md shadow-[#157d3c]/25"
-                                    transition={{
-                                        type: "spring",
-                                        stiffness: 420,
-                                        damping: 34,
-                                    }}
-                                />
-                            )}
-                            <span className="relative z-10">{t.label}</span>
-                        </button>
-                    );
-                })}
+            {/* ← CHANGED: wrapper now centers the pill tab bar */}
+            <div className="flex justify-center">
+                <div
+                    role="tablist"
+                    aria-label="Library Resources sub-sections"
+                    className="inline-flex flex-wrap justify-center gap-2 rounded-full border border-gray-200 bg-[#f7fbf8] p-1.5"
+                >
+                    {LIBRARY_RESOURCES_SUBTABS.map((t) => {
+                        const isActive = subTab === t.id;
+                        return (
+                            <button
+                                key={t.id}
+                                role="tab"
+                                id={`subtab-${t.id}`}
+                                aria-selected={isActive}
+                                aria-controls={`subpanel-${t.id}`}
+                                onClick={() => setSubTab(t.id)}
+                                className={`relative shrink-0 rounded-full px-5 py-2 text-sm font-semibold transition-colors duration-200 focus:outline-none ${
+                                    isActive
+                                        ? "text-white"
+                                        : "text-gray-600 hover:text-[#1a1a1a]"
+                                }`}
+                            >
+                                {isActive && (
+                                    <motion.span
+                                        layoutId="librarySubPillTab"
+                                        className="absolute inset-0 rounded-full bg-[#157d3c] shadow-md shadow-[#157d3c]/25"
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 420,
+                                            damping: 34,
+                                        }}
+                                    />
+                                )}
+                                <span className="relative z-10">{t.label}</span>
+                            </button>
+                        );
+                    })}
+                </div>
             </div>
 
             <AnimatePresence mode="wait">
@@ -1844,43 +1801,46 @@ function PolicyGuidelines() {
 
     return (
         <div className="space-y-6">
-            <div
-                role="tablist"
-                aria-label="Library policies and guidelines"
-                className="library-tab-strip flex gap-2 overflow-x-auto pb-1"
-            >
-                {POLICY_GUIDELINE_TABS.map((tab) => {
-                    const isActive = activePolicy === tab.id;
-                    return (
-                        <button
-                            key={tab.id}
-                            type="button"
-                            role="tab"
-                            id={`policy-tab-${tab.id}`}
-                            aria-selected={isActive}
-                            aria-controls={`policy-panel-${tab.id}`}
-                            onClick={() => setActivePolicy(tab.id)}
-                            className={`relative shrink-0 rounded-full px-4 py-2.5 text-sm font-semibold whitespace-nowrap transition-colors duration-200 focus:outline-none ${
-                                isActive
-                                    ? "text-white"
-                                    : "text-gray-600 hover:bg-[#f0f7f2] hover:text-[#1a1a1a]"
-                            }`}
-                        >
-                            {isActive && (
-                                <motion.span
-                                    layoutId="policyGuidelinePill"
-                                    className="absolute inset-0 rounded-full bg-[#157d3c] shadow-md shadow-[#157d3c]/25"
-                                    transition={{
-                                        type: "spring",
-                                        stiffness: 420,
-                                        damping: 34,
-                                    }}
-                                />
-                            )}
-                            <span className="relative z-10">{tab.label}</span>
-                        </button>
-                    );
-                })}
+            {/* ← CHANGED: wrapper now centers the pill tab bar */}
+            <div className="flex justify-center">
+                <div
+                    role="tablist"
+                    aria-label="Library policies and guidelines"
+                    className="library-tab-strip flex gap-2 overflow-x-auto pb-1"
+                >
+                    {POLICY_GUIDELINE_TABS.map((tab) => {
+                        const isActive = activePolicy === tab.id;
+                        return (
+                            <button
+                                key={tab.id}
+                                type="button"
+                                role="tab"
+                                id={`policy-tab-${tab.id}`}
+                                aria-selected={isActive}
+                                aria-controls={`policy-panel-${tab.id}`}
+                                onClick={() => setActivePolicy(tab.id)}
+                                className={`relative shrink-0 rounded-full px-4 py-2.5 text-sm font-semibold whitespace-nowrap transition-colors duration-200 focus:outline-none ${
+                                    isActive
+                                        ? "text-white"
+                                        : "text-gray-600 hover:bg-[#f0f7f2] hover:text-[#1a1a1a]"
+                                }`}
+                            >
+                                {isActive && (
+                                    <motion.span
+                                        layoutId="policyGuidelinePill"
+                                        className="absolute inset-0 rounded-full bg-[#157d3c] shadow-md shadow-[#157d3c]/25"
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 420,
+                                            damping: 34,
+                                        }}
+                                    />
+                                )}
+                                <span className="relative z-10">{tab.label}</span>
+                            </button>
+                        );
+                    })}
+                </div>
             </div>
 
             <AnimatePresence mode="wait">
@@ -1893,7 +1853,7 @@ function PolicyGuidelines() {
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="flex justify-start"
+                    className="flex justify-center"
                 >
                     <article className="group relative flex w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
                         <div
@@ -2416,7 +2376,6 @@ function TopLibraryUsers() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.1 }}
         >
-            {/* Section header */}
             <div className="mb-8 flex flex-wrap items-end gap-x-6 gap-y-4 md:mb-10">
                 <div>
                     <p className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-[#157d3c]">
@@ -2434,7 +2393,6 @@ function TopLibraryUsers() {
                 </p>
             </div>
 
-            {/* Period badge */}
             <div className="mb-6 flex flex-wrap items-center gap-3">
                 <span className="inline-flex items-center gap-2 rounded-full border border-[#157d3c]/25 bg-[#f0f7f2] px-4 py-2">
                     <span className="h-1.5 w-1.5 rounded-full bg-[#157d3c]" />
@@ -2446,7 +2404,6 @@ function TopLibraryUsers() {
 
             {hasImages ? (
                 <>
-                    {/* Gallery of top users */}
                     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {TOP_LIBRARY_USERS.map((user, index) => (
                             <motion.div
@@ -2454,15 +2411,12 @@ function TopLibraryUsers() {
                                 variants={riseIn}
                                 className="group relative flex aspect-[4/5] flex-col overflow-hidden rounded-2xl border border-[#f5c518]/60 bg-[#f0f7f2] shadow-sm transition-all duration-500 hover:-translate-y-2 hover:border-[#f5c518] hover:shadow-[0_24px_48px_-16px_rgba(245,197,24,0.35)]"
                             >
-                                {/* Top gold accent */}
                                 <div className="absolute left-0 right-0 top-0 z-10 h-1 bg-gradient-to-r from-[#157d3c] via-[#f5c518] to-[#157d3c]" />
 
-                                {/* Number badge */}
                                 <span className="absolute right-4 top-4 z-10 rounded-full bg-[#f5c518] px-2.5 py-1 font-mono text-[9px] font-black uppercase tracking-[0.15em] text-[#7a5c00] shadow-md">
                                     {String(index + 1).padStart(2, "0")}
                                 </span>
 
-                                {/* Image fills the entire card */}
                                 <img
                                     src={user.image}
                                     alt={user.name}
@@ -2478,7 +2432,6 @@ function TopLibraryUsers() {
                 </>
             ) : (
                 <>
-                    {/* Fallback featured card */}
                     <motion.div
                         variants={riseIn}
                         className="relative overflow-hidden rounded-3xl border border-[#f5c518]/60 bg-gradient-to-b from-[#fffdf3] to-white shadow-sm"
@@ -2805,7 +2758,7 @@ export default function LibraryServicesPage() {
                         initial="hidden"
                         animate="visible"
                         className="max-w-3xl"
-                    >git 
+                    >
                         <motion.div
                             variants={riseIn}
                             className="inline-flex items-center gap-3 rounded-full border border-[#f5c518]/50 bg-black/30 px-4 py-2 backdrop-blur-sm"
@@ -3057,7 +3010,7 @@ export default function LibraryServicesPage() {
                                 ref={tabStripRef}
                                 role="tablist"
                                 aria-label="Library Services divisions"
-                                className="library-tab-strip flex w-full items-center gap-2 overflow-x-auto"
+                                className="library-tab-strip flex w-full items-center justify-center gap-2 overflow-x-auto"
                             >
                                 {TABS.map((tab) => {
                                     const isActive = activeTab === tab.id;

@@ -180,8 +180,8 @@ const OFFICES = [
     },
     {
         id: 'linkages-partnership',
-        label: 'Linkages & Partnership',
-        name: 'Linkages and Partnership Office',
+        label: 'Strategic Partnerships Office',
+        name: 'Strategic Partnerships Office',
         description: 'Strategic alliances with industry, government, academe, and communities.',
         functions: ['Institutional Linkages', 'MOU & MOA Management', 'Industry Partnerships', 'Consortium Membership', 'Stakeholder Engagement', 'Collaborative Projects'],
         orgChart: {

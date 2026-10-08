@@ -68,6 +68,10 @@ Route::get('/nstp', function () {
     return Inertia::render('content/Quicklinks/NSTP');
 })->name('quicklinks.nstp');
 
+Route::get('/Strategic-Partnerships', function () {
+    return Inertia::render('content/Quicklinks/StrategicPartnerships');
+})->name('quicklinks.strategic-partnerships');
+
 Route::get('/sas', function () {
     return Inertia::render('content/Quicklinks/SAS');
 })->name('quicklinks.sas');

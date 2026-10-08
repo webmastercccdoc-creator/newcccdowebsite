@@ -88,6 +88,14 @@ const Footer = () => {
                                     National Service Training Program
                                 </Link>
                             </li>
+                                                        <li>
+                                <Link
+                                    href="/Strategic-Partnerships"
+                                    className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300"
+                                >
+                                    Strategic Partnerships Office
+                                </Link>
+                            </li>
                             <li>
                                 <Link
                                     href="/sas"

@@ -1034,6 +1034,86 @@ const TABS = [
             </>
         ),
     },
+        {
+        id: "highlights",
+        label: "Highlights",
+        shortLabel: "Highlights",
+        content: (
+            <>
+                <p className="mb-6 text-justify leading-relaxed text-gray-700">
+                    <strong>Highlights</strong> showcases the key moments,
+                    activities, and initiatives of the Guidance, Counseling, and
+                    Assessment Office. Browse through our gallery of memorable
+                    events, programs, and milestones that reflect our commitment
+                    to student well-being and holistic development.
+                </p>
+
+                {/* ===== Image Gallery Grid ===== */}
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {[
+                        "18y9CgXmeQO9JZIra6vABRuosXfISUdso",
+                        "1A0BsU_Im4dPgYuibdyVFpliyg03t_sMS",
+                        "1mVJGxGlK8vjUhk_qlxmrXByBpVr1qdv-",
+                        "1tkoS5zFxAi5tZI5OJeqrK8aYOua7XoWH",
+                        "18JfNGyc_iC2zkctQ69DMBPpHnSToH6au",
+                        "1OCzErlpdNFvDbXspNQizA18vDWjfjETq",
+                        "17fIQJA2V4mJ7Q6bAYWFGt30WFI7hzkhs",
+                        "1G3YtnYosznbx5DpAGonM4TLV-dZHhU8Q",
+                        "1ReaeeeTtZX2Go5M3AEddaLLJm-X9z-p0",
+                        "1bUkZX0yuwQllr9Tu6vh6E7_nJ9MjakuP",
+                        "1d8xjBhEARL44Rzo9ujlpHieum0gcaJi2",
+                        "1HAKPm8WAjPEdip_0b3BwyLh-FOy-zcBi",
+                        "1XzlbAobad2QgpDj-qGsr3814aekjkM8U",
+                        "1Y2Z-at9ULbyOlskn2I5yvwbiRDZetsTS",
+                    ].map((fileId, index) => (
+                        <a
+                            key={fileId}
+                            href={`https://drive.google.com/file/d/${fileId}/view`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#157d3c] hover:shadow-lg"
+                        >
+                            <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#f0f7f2]">
+                                <img
+                                    src={`https://lh3.googleusercontent.com/d/${fileId}`}
+                                    alt={`Highlight ${index + 1}`}
+                                    loading="lazy"
+                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    onError={(e) => {
+                                        e.currentTarget.style.display = "none";
+                                        e.currentTarget.parentElement.classList.add(
+                                            "flex",
+                                            "items-center",
+                                            "justify-center"
+                                        );
+                                    }}
+                                />
+                                {/* Hover overlay */}
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover:bg-black/40 group-hover:opacity-100">
+                                    <span className="rounded-full bg-[#157d3c] px-4 py-2 text-xs font-bold text-white shadow-md">
+                                        View Photo
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="border-t-4 border-[#f5c518] px-4 py-3">
+                                <p className="text-xs font-semibold uppercase tracking-widest text-[#157d3c]">
+                                    Highlight {String(index + 1).padStart(2, "0")}
+                                </p>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+
+                {/* Note */}
+                <div className="mt-8 rounded-xl border border-[#157d3c] bg-[#f0f7f2] p-5">
+                    <p className="text-sm leading-relaxed text-gray-700">
+                        <strong className="text-[#157d3c]">Note:</strong> Click
+                        any photo to view it in full size on Google Drive.
+                    </p>
+                </div>
+            </>
+        ),
+    },
 ];
 
 // ===================== Upper (Director) Tabs Data =====================
@@ -1411,6 +1491,65 @@ const DIRECTOR_TABS = [
         label: "Electronic Forms",
         shortLabel: "E-Forms",
         content: ElectronicFormsContent,
+    },
+    {
+        id: "service-utilization-dashboard",
+        label: "Service Utilization Transparency Dashboard",
+        shortLabel: "Dashboard",
+        content: (
+            <>
+                <p className="mb-6 text-justify leading-relaxed text-gray-700">
+                    The <strong>Service Utilization Transparency Dashboard</strong>{" "}
+                    provides a clear and accessible overview of how the Guidance,
+                    Counseling, and Assessment Office serves the college
+                    community. This dashboard promotes accountability and
+                    openness by presenting key metrics on service usage, program
+                    participation, and student engagement.
+                </p>
+
+                {/* Placeholder for dashboard */}
+                <div className="rounded-xl border-2 border-dashed border-[#157d3c] bg-[#f0f7f2] px-6 py-14 text-center">
+                    <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#157d3c] mx-auto">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#ffffff"
+                            strokeWidth="1.75"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="h-8 w-8"
+                        >
+                            <path d="M3 3v18h18" />
+                            <path d="m19 9-5 5-4-4-3 3" />
+                        </svg>
+                    </div>
+
+                    <h4 className="mb-2 text-lg font-extrabold tracking-tight text-[#1a1a1a]">
+                        Dashboard Under Development
+                    </h4>
+
+                    <p className="max-w-md mx-auto text-sm leading-relaxed text-gray-600">
+                        The Service Utilization Transparency Dashboard is
+                        currently being developed. It will soon provide
+                        real-time data and visualizations on service usage,
+                        program reach, and student engagement metrics.
+                    </p>
+
+                    <div className="mt-4 h-1 w-16 rounded-full bg-[#f5c518] mx-auto" />
+                </div>
+
+                {/* Placeholder note */}
+                <div className="mt-6 rounded-xl border border-[#157d3c] bg-[#f0f7f2] p-5">
+                    <p className="text-sm leading-relaxed text-gray-700">
+                        <strong className="text-[#157d3c]">Note:</strong> Data
+                        presented in this dashboard will be anonymized and
+                        aggregated to protect student privacy, in compliance
+                        with data privacy regulations.
+                    </p>
+                </div>
+            </>
+        ),
     },
 ];
 
@@ -2008,6 +2147,14 @@ export default function GuidanceOffice() {
                                                 Electronic{" "}
                                                 <span className="text-[#157d3c]">
                                                     Forms
+                                                </span>
+                                            </>
+                                        )}
+                                        {activeDirectorTab === "service-utilization-dashboard" && (
+                                            <>
+                                                Service Utilization{" "}
+                                                <span className="text-[#157d3c]">
+                                                    Transparency Dashboard
                                                 </span>
                                             </>
                                         )}

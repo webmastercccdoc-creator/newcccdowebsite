@@ -4,11 +4,6 @@ import vpAdminFinanceBanner from '../../../assets/banner/vpadminfinance-banner.p
 import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
 import kurtCandilasImage from '../../../assets/images/Dr_Kurt_Candilas.png';
 import ccdologo from '../../../assets/logos/ccdologo.png';
-import topsonImg from '../../../assets/images/topson.png';
-import cebImg from '../../../assets/images/ceb.png';
-import anaImg from '../../../assets/images/ana.png';
-import notailImg from '../../../assets/images/notail.png';
-import jeraxImg from '../../../assets/images/jerax.png';
 
 /* ============================================================================
    DATA CONTENT
@@ -365,132 +360,6 @@ function OfficeOrgChart({ levels }) {
     );
 }
 
-/* ============================================================================
-   TIDMAC TEAM — light, clear, no dimming. Grid on mobile, drag carousel on desktop
-   ============================================================================ */
-const TIDMAC_TEAM = [
-    { name: 'Jocynt', img: cebImg },
-    { name: 'Zy', img: anaImg },
-    { name: 'Jamie', img: notailImg },
-    { name: 'Jess', img: topsonImg },
-    { name: 'Christian', img: jeraxImg },
-];
-
-/* Drag carousel — desktop only (clear images, always-visible captions) */
-function TidmacDragCarousel() {
-    const trackRef = useRef(null);
-    const mouseDownAt = useRef(0);
-    const prevPercentage = useRef(-50);
-    const percentage = useRef(-50);
-
-    useEffect(() => {
-        const handleMouseUp = () => {
-            if (mouseDownAt.current !== 0) {
-                mouseDownAt.current = 0;
-                prevPercentage.current = percentage.current;
-            }
-        };
-
-        const handleMouseMove = (e) => {
-            if (mouseDownAt.current === 0) return;
-            const track = trackRef.current;
-            if (!track) return;
-
-            const mouseDelta = mouseDownAt.current - e.clientX;
-            const maxDelta = window.innerWidth / 2;
-
-            const movePercentage = (mouseDelta / maxDelta) * -100;
-            const nextPercentageUnconstrained = prevPercentage.current + movePercentage;
-            const nextPercentage = Math.max(Math.min(nextPercentageUnconstrained, -20), -80);
-
-            percentage.current = nextPercentage;
-
-            track.animate({
-                transform: `translate(${nextPercentage}%, -50%)`
-            }, { duration: 1200, fill: "forwards" });
-
-            const children = track.childElementCount;
-            for (const image of track.querySelectorAll(".tidmac-image")) {
-                image.animate({
-                    objectPosition: `${nextPercentage / children + (50 + 50 / children)}% center`
-                }, { duration: 1200, fill: "forwards" });
-            }
-        };
-
-        window.addEventListener('mouseup', handleMouseUp);
-        window.addEventListener('mousemove', handleMouseMove);
-
-        return () => {
-            window.removeEventListener('mouseup', handleMouseUp);
-            window.removeEventListener('mousemove', handleMouseMove);
-        };
-    }, []);
-
-    const handleMouseDown = (e) => {
-        mouseDownAt.current = e.clientX;
-    };
-
-    return (
-        <div className="tidmac-carousel">
-            <div
-                ref={trackRef}
-                className="tidmac-track"
-                onMouseDown={handleMouseDown}
-                style={{ transform: 'translate(-50%, -50%)' }}
-            >
-                {TIDMAC_TEAM.map((member, i) => (
-                    <div className="tidmac-frame" key={i}>
-                        <img className="tidmac-image" src={member.img} alt={member.name} draggable="false" />
-                        <div className="tidmac-caption">
-                            <span className="tidmac-header">{member.name}</span>
-                            <span className="tidmac-subheader">TIDMAC Staff</span>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-}
-
-/* Team section — grid (mobile, fully visible) + drag carousel (desktop) */
-function TidmacTeamSection() {
-    return (
-        <div>
-            <h4 className="text-xs font-bold tracking-[0.3em] uppercase text-[#A97F2E] mb-6 sm:mb-8 text-center">
-                Meet the Team
-            </h4>
-
-            {/* Mobile: static grid — full color, everything visible, no dragging */}
-            <div className="md:hidden grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {TIDMAC_TEAM.map((member) => (
-                    <div
-                        key={member.name}
-                        className="rounded-xl overflow-hidden border border-[#E5E0D3] bg-white shadow-[0_10px_25px_-15px_rgba(11,61,31,0.3)]"
-                    >
-                        <img
-                            src={member.img}
-                            alt={member.name}
-                            className="w-full aspect-[3/4] object-cover"
-                            draggable="false"
-                        />
-                        <div className="px-3 py-2.5 border-t border-[#EFEAE0]">
-                            <p className="text-xs font-semibold text-[#0B3D1F]">{member.name}</p>
-                            <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#A97F2E] mt-0.5">
-                                TIDMAC Staff
-                            </p>
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            {/* Desktop: interactive drag carousel */}
-            <div className="hidden md:block">
-                <TidmacDragCarousel />
-            </div>
-        </div>
-    );
-}
-
 export default function VPAdminFinance() {
     const [scrollProgress, setScrollProgress] = useState(0);
     const [activeOffice, setActiveOffice] = useState('hr');
@@ -629,84 +498,6 @@ export default function VPAdminFinance() {
                     .office-chip .vp-chip-shimmer { animation: none !important; opacity: 0 !important; }
                 }
 
-                /* ---- TIDMAC Carousel — Light / Clear skin (desktop) ---- */
-                .tidmac-carousel {
-                    position: relative;
-                    width: 100%;
-                    height: 420px;
-                    overflow: hidden;
-                    user-select: none;
-                    -webkit-user-select: none;
-                }
-                .tidmac-track {
-                    display: flex;
-                    gap: 1.5vmin;
-                    position: absolute;
-                    left: 50%;
-                    top: 50%;
-                    align-items: center;
-                    cursor: grab;
-                }
-                .tidmac-track:active { cursor: grabbing; }
-                .tidmac-frame {
-                    width: 16vmin;
-                    height: 38vmin;
-                    max-height: 340px;
-                    min-height: 240px;
-                    display: flex;
-                    flex-direction: column;
-                    overflow: hidden;
-                    position: relative;
-                    border-radius: 12px;
-                    background: #ffffff;
-                    border: 1px solid #E5E0D3;
-                    box-shadow: 0 10px 30px -12px rgba(11, 61, 31, 0.25);
-                    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-                    user-select: none;
-                }
-                .tidmac-frame:hover {
-                    width: 30vmin;
-                    box-shadow: 0 18px 40px -14px rgba(11, 61, 31, 0.35);
-                    transform: translateY(-4px);
-                }
-                /* Full-color, clear image — no brightness or opacity filters */
-                .tidmac-image {
-                    width: 100%;
-                    flex: 1;
-                    min-height: 0;
-                    object-fit: cover;
-                    object-position: 50% 50%;
-                    pointer-events: none;
-                }
-                .tidmac-caption {
-                    background: #ffffff;
-                    border-top: 1px solid #EFEAE0;
-                    padding: 0.75rem 0.9rem;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 2px;
-                    flex-shrink: 0;
-                }
-                .tidmac-header {
-                    font-family: 'Inter', sans-serif;
-                    font-size: clamp(0.85rem, 1.6vw, 1.05rem);
-                    font-weight: 600;
-                    color: #0B3D1F;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
-                .tidmac-subheader {
-                    font-family: 'Inter', sans-serif;
-                    font-size: clamp(0.55rem, 1vw, 0.65rem);
-                    font-weight: 700;
-                    letter-spacing: 0.2em;
-                    text-transform: uppercase;
-                    color: #A97F2E;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
             `}</style>
 
             {/* Scroll Progress Indicator */}
@@ -1022,11 +813,11 @@ export default function VPAdminFinance() {
                                     </p>
                                 </div>
 
-                                {/* Panel Body — Functions full-width on top, Org Chart full-width at the bottom */}
+                                {/* Panel Body — Core Functions */}
                                 <div className="relative px-5 sm:px-8 lg:px-10 py-7 sm:py-9">
 
                                     {/* Core Functions — full width */}
-                                    <div className="mb-9">
+                                    <div>
                                         <div className="flex items-center gap-3 mb-4 sm:mb-5">
                                             <span className="h-px w-6 bg-[#A97F2E]/60" aria-hidden="true"></span>
                                             <h4 className="text-[10px] sm:text-[11px] font-bold tracking-[0.28em] uppercase" style={{ color: 'var(--vp-green-700)' }}>
@@ -1049,32 +840,7 @@ export default function VPAdminFinance() {
                                         </ul>
                                     </div>
 
-                                    {/* Organizational Structure — full width at the bottom */}
-                                    <div>
-                                        <div className="flex items-center gap-3 mb-4 sm:mb-5">
-                                            <span className="h-px w-6 bg-[#A97F2E]/60" aria-hidden="true"></span>
-                                            <h4 className="text-[10px] sm:text-[11px] font-bold tracking-[0.28em] uppercase" style={{ color: 'var(--vp-green-700)' }}>
-                                                Organizational Structure
-                                            </h4>
-                                        </div>
-                                        <div
-                                            className="rounded-xl border p-4 sm:p-6 lg:p-8"
-                                            style={{
-                                                background: 'linear-gradient(180deg, rgba(238,242,236,0.55), rgba(251,249,244,0.4))',
-                                                borderColor: 'rgba(199,154,62,0.18)',
-                                            }}
-                                        >
-                                            <OfficeOrgChart levels={activeOfficeData.orgChart} />
-                                        </div>
-                                    </div>
                                 </div>
-
-                                {/* Meet the Team (light, clear — inside the white panel) */}
-                                {activeOffice === 'tidmac' && (
-                                    <div className="border-t border-[#E5E0D3] px-4 sm:px-8 py-8 sm:py-10 bg-white">
-                                        <TidmacTeamSection />
-                                    </div>
-                                )}
 
                                 {/* Panel Footer — mobile back button */}
                                 <div className="sm:hidden border-t border-[#E5E0D3] px-5 py-4 flex justify-center bg-[#FDFCF9]">

@@ -1492,6 +1492,7 @@ const DIRECTOR_TABS = [
         shortLabel: "E-Forms",
         content: ElectronicFormsContent,
     },
+    
     {
         id: "service-utilization-dashboard",
         label: "Service Utilization Transparency Dashboard",
@@ -1507,45 +1508,106 @@ const DIRECTOR_TABS = [
                     participation, and student engagement.
                 </p>
 
-                {/* Placeholder for dashboard */}
-                <div className="rounded-xl border-2 border-dashed border-[#157d3c] bg-[#f0f7f2] px-6 py-14 text-center">
-                    <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#157d3c] mx-auto">
+                {/* ===== Simple Table ===== */}
+                <div className="mb-8 w-full min-w-0 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+                    <div className="border-b border-gray-200 bg-[#f0f7f2] px-5 py-4">
+                        <h3 className="text-sm font-extrabold uppercase tracking-widest text-[#157d3c]">
+                            Service Utilization by Year
+                        </h3>
+                    </div>
+
+                    <div className="w-full min-w-0 overflow-x-auto">
+                        <table className="w-full min-w-[560px] text-sm">
+                            <thead className="bg-[#157d3c] text-white">
+                                <tr>
+                                    <th className="px-4 py-3 text-left font-bold">
+                                        Service
+                                    </th>
+                                    <th className="px-4 py-3 text-center font-bold">
+                                        2024
+                                    </th>
+                                    <th className="px-4 py-3 text-center font-bold">
+                                        2025
+                                    </th>
+                                    <th className="px-4 py-3 text-center font-bold">
+                                        2026 Q1–Q3
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200 bg-white">
+                                {[
+                                    { service: "Individual Counseling", y2024: 4, y2025: 24, y2026: 44 },
+                                    { service: "Career Guidance", y2024: 370, y2025: 395, y2026: 339 },
+                                    { service: "Absences/Tardy/Admission Slip", y2024: 12, y2025: 17, y2026: 23 },
+                                    { service: "Referral Services", y2024: 12, y2025: 14, y2026: 5 },
+                                    { service: "Follow-up Services", y2024: 21, y2025: 15, y2026: 32 },
+                                    { service: "Childminding Services", y2024: 0, y2025: 30, y2026: 130 },
+                                    { service: "Enrollment Inquiry & Application/CCAT", y2024: 1132, y2025: 1522, y2026: 1889 },
+                                    { service: "Psychosocial Support Requests", y2024: 2, y2025: 8, y2026: 27 },
+                                    { service: "Intake Interview", y2024: 15, y2025: 286, y2026: 52 },
+                                    { service: "Parents Orientation Assembly", y2024: 90, y2025: 109, y2026: 129 },
+                                    { service: "Consultation Room", y2024: 5, y2025: 12, y2026: 77 },
+                                ].map((row) => (
+                                    <tr
+                                        key={row.service}
+                                        className="transition-colors hover:bg-[#f0f7f2]"
+                                    >
+                                        <td className="px-4 py-3 font-semibold text-[#1a1a1a]">
+                                            {row.service}
+                                        </td>
+                                        <td className="px-4 py-3 text-center text-gray-700">
+                                            {row.y2024.toLocaleString()}
+                                        </td>
+                                        <td className="px-4 py-3 text-center text-gray-700">
+                                            {row.y2025.toLocaleString()}
+                                        </td>
+                                        <td className="px-4 py-3 text-center text-gray-700">
+                                            {row.y2026.toLocaleString()}
+                                        </td>
+                                    </tr>
+                                ))}
+                                {/* Total row */}
+                                <tr className="bg-[#f0f7f2] font-extrabold">
+                                    <td className="px-4 py-3 text-[#157d3c]">
+                                        Total Services Availed
+                                    </td>
+                                    <td className="px-4 py-3 text-center text-[#157d3c]">
+                                        1,663
+                                    </td>
+                                    <td className="px-4 py-3 text-center text-[#157d3c]">
+                                        2,432
+                                    </td>
+                                    <td className="px-4 py-3 text-center text-[#157d3c]">
+                                        2,747
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {/* ===== Confidentiality Commitment ===== */}
+                <div className="mt-6 rounded-xl border border-[#157d3c] bg-[#f0f7f2] p-5">
+                    <h4 className="mb-1.5 flex items-center gap-2 text-sm font-extrabold uppercase tracking-widest text-[#1a1a1a]">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="none"
-                            stroke="#ffffff"
-                            strokeWidth="1.75"
+                            stroke="#157d3c"
+                            strokeWidth="2.25"
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                            className="h-8 w-8"
+                            className="h-4 w-4 shrink-0"
                         >
-                            <path d="M3 3v18h18" />
-                            <path d="m19 9-5 5-4-4-3 3" />
+                            <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                         </svg>
-                    </div>
-
-                    <h4 className="mb-2 text-lg font-extrabold tracking-tight text-[#1a1a1a]">
-                        Dashboard Under Development
+                        Our Commitment to Confidentiality
                     </h4>
-
-                    <p className="max-w-md mx-auto text-sm leading-relaxed text-gray-600">
-                        The Service Utilization Transparency Dashboard is
-                        currently being developed. It will soon provide
-                        real-time data and visualizations on service usage,
-                        program reach, and student engagement metrics.
-                    </p>
-
-                    <div className="mt-4 h-1 w-16 rounded-full bg-[#f5c518] mx-auto" />
-                </div>
-
-                {/* Placeholder note */}
-                <div className="mt-6 rounded-xl border border-[#157d3c] bg-[#f0f7f2] p-5">
                     <p className="text-sm leading-relaxed text-gray-700">
-                        <strong className="text-[#157d3c]">Note:</strong> Data
-                        presented in this dashboard will be anonymized and
-                        aggregated to protect student privacy, in compliance
-                        with data privacy regulations.
+                        Only aggregated statistical information is published.
+                        Personal identities, individual case records, and
+                        counseling disclosures remain confidential.
                     </p>
                 </div>
             </>
@@ -2057,7 +2119,7 @@ export default function GuidanceOffice() {
                         </div>
 
                         {/* ================= RIGHT COLUMN ================= */}
-                        <div className="flex-1 w-full">
+                        <div className="min-w-0 w-full flex-1">
                             {/* Upper Tab Switcher */}
                             <div className="-mx-8 md:-mx-10 lg:-mx-14 -mt-8 md:-mt-10 lg:-mt-14 mb-8 border-b border-gray-200 bg-[#f0f7f2]">
                                 <div

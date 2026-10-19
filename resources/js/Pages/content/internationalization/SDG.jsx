@@ -86,10 +86,11 @@ const containerVariants = {
 };
 
 const tileVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
+    hidden: { opacity: 0, scale: 0.8, y: 20 },
     visible: {
         opacity: 1,
         scale: 1,
+        y: 0,
         transition: { type: 'spring', stiffness: 260, damping: 20 },
     },
 };
@@ -117,37 +118,8 @@ export default function SDG() {
         document.title = "Sustainable Development Goals - City College of Cagayan de Oro";
     }, []);
 
-    const [autoFlippedIndices, setAutoFlippedIndices] = useState({});
     const [activeHoverIndex, setActiveHoverIndex] = useState(null);
     const [selectedIndex, setSelectedIndex] = useState(null);
-
-    useEffect(() => {
-        const triggerRandomFlip = () => {
-            const randomIndex = Math.floor(Math.random() * SDG_IMAGES.length);
-            const item = SDG_IMAGES[randomIndex];
-
-            if (item.hoverImg) {
-                setAutoFlippedIndices((prev) => ({
-                    ...prev,
-                    [randomIndex]: true,
-                }));
-
-                const flipBackDelay = 2000 + Math.random() * 2000;
-                setTimeout(() => {
-                    setAutoFlippedIndices((prev) => ({
-                        ...prev,
-                        [randomIndex]: false,
-                    }));
-                }, flipBackDelay);
-            }
-        };
-
-        const intervalId = setInterval(() => {
-            triggerRandomFlip();
-        }, 2000 + Math.random() * 3000);
-
-        return () => clearInterval(intervalId);
-    }, []);
 
     const handleTileClick = (index) => {
         setSelectedIndex(index);
@@ -188,7 +160,7 @@ export default function SDG() {
                 />
             </div>
 
-            {/* ===== SINGLE FULL-WIDTH CONTAINER (DETAIL VIEW) ===== */}
+            {/* ===== DETAIL VIEW (full width) ===== */}
             {isDetailView && DetailComponent ? (
                 <div className="w-full bg-gray-50 px-4 py-6 md:py-10">
                     <motion.div
@@ -202,228 +174,258 @@ export default function SDG() {
                     </motion.div>
                 </div>
             ) : (
-                /* ===== TWO CONTAINERS (GRID VIEW + FALLBACK DETAIL) ===== */
-                <div className="w-full bg-gray-50 px-4 py-6 md:py-10">
-                    <div className="mx-auto max-w-7xl flex flex-col lg:flex-row gap-4 lg:gap-6 items-stretch">
-                        {/* LEFT CONTAINER */}
+                /* ===== ROW 1: SDG GRID | ROW 2: CONTENT | ROW 3: VIDEO ===== */
+                <div className="w-full bg-gray-50 px-4 py-6 md:py-10 overflow-hidden">
+                    <div className="mx-auto w-full max-w-[90rem] flex flex-col gap-8">
+
+                        {/* ===== ROW 1: SDG GRID ===== */}
                         <motion.div
-                            initial={{ opacity: 0, x: -40 }}
-                            animate={{ opacity: 1, x: 0 }}
+                            initial={{ opacity: 0, y: 40 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: "-50px" }}
                             transition={{ duration: 0.6, ease: 'easeOut' }}
-                            className="relative w-full lg:w-1/2 bg-white overflow-hidden flex flex-col"
+                            className="w-full bg-white p-4 md:p-8 rounded-lg shadow-sm"
                         >
-                            <AnimatePresence mode="wait">
-                                {!isDetailView ? (
-                                    <motion.div
-                                        key="grid-view"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        transition={{ duration: 0.3 }}
-                                        className="flex flex-col h-full"
-                                    >
-                                        {/* GRID VIEW */}
+                            {/* SDG Section Title & Description */}
+                            <motion.div 
+                                initial={{ opacity: 0, y: -10 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.5 }}
+                                className="mb-8 border-b border-gray-200 pb-5 text-center"
+                            >
+                                <h3 className="text-2xl md:text-3xl lg:text-4xl font-extrabold">
+                                    <span className="text-green-700">The 17 Goals for a</span>{' '}
+                                    <span className="text-amber-500">Better Future</span>
+                                </h3>
+                                <p className="text-sm md:text-base text-gray-600 mt-3">Click any goal to explore its local impact.</p>
+                            </motion.div>
+
+                            <motion.div
+                                variants={containerVariants}
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true, margin: "-50px" }}
+                                className="grid w-full mx-auto grid-cols-6 grid-rows-3 aspect-[2/1] gap-1"
+                            >
+                                {SDG_IMAGES.map((item, index) => {
+                                    const isHovered = activeHoverIndex === index;
+                                    const hasHoverImg = !!item.hoverImg;
+
+                                    return (
                                         <motion.div
-                                            variants={containerVariants}
-                                            initial="hidden"
-                                            animate="visible"
-                                            className="grid w-full grid-cols-4 grid-rows-5 aspect-[4/5]"
+                                            key={index}
+                                            variants={tileVariants}
+                                            whileHover={{ scale: 1.1, zIndex: 10, y: -5 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            onClick={() => handleTileClick(index)}
+                                            className="relative w-full h-full bg-white transition-all duration-300 ease-in-out cursor-pointer perspective-1000"
+                                            onMouseEnter={() => hasHoverImg && setActiveHoverIndex(index)}
+                                            onMouseLeave={() => setActiveHoverIndex(null)}
                                         >
-                                            {SDG_IMAGES.map((item, index) => {
-                                                const isAutoFlipped = autoFlippedIndices[index];
-                                                const isHovered = activeHoverIndex === index;
-
-                                                const currentSrc = isHovered && item.hoverImg
-                                                    ? item.hoverImg
-                                                    : isAutoFlipped && item.hoverImg
-                                                        ? item.hoverImg
-                                                        : item.defaultImg;
-
-                                                return (
-                                                    <motion.div
-                                                        key={index}
-                                                        variants={tileVariants}
-                                                        whileHover={{ scale: 1.08, zIndex: 10 }}
-                                                        whileTap={{ scale: 0.95 }}
-                                                        onClick={() => handleTileClick(index)}
-                                                        className="relative w-full h-full bg-white border-2 border-white transition-all duration-300 ease-in-out cursor-pointer overflow-hidden"
-                                                        onMouseEnter={() => item.hoverImg && setActiveHoverIndex(index)}
-                                                        onMouseLeave={() => setActiveHoverIndex(null)}
-                                                    >
+                                            <motion.div
+                                                className="w-full h-full relative preserve-3d"
+                                                animate={{ rotateY: isHovered ? 180 : 0 }}
+                                                transition={{ duration: 0.6, type: "spring", stiffness: 200, damping: 20 }}
+                                            >
+                                                {/* Front (Default Image) */}
+                                                <div className="absolute inset-0 backface-hidden">
+                                                    <img
+                                                        src={item.defaultImg}
+                                                        alt={`SDG ${index + 1}`}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </div>
+                                                
+                                                {/* Back (Hover Image) */}
+                                                {hasHoverImg && (
+                                                    <div className="absolute inset-0 backface-hidden [transform:rotateY(180deg)]">
                                                         <img
-                                                            key={currentSrc}
-                                                            src={currentSrc}
-                                                            alt={`SDG ${index + 1}`}
-                                                            className="absolute inset-0 w-full h-full object-contain animate-spin-in"
+                                                            src={item.hoverImg}
+                                                            alt={`SDG ${index + 1} Impact`}
+                                                            className="w-full h-full object-cover"
                                                         />
-                                                    </motion.div>
-                                                );
-                                            })}
+                                                    </div>
+                                                )}
+                                            </motion.div>
                                         </motion.div>
-
-                                        {/* YouTube Video */}
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ duration: 0.6, delay: 0.3 }}
-                                            className="flex-1 flex items-center justify-center p-4"
-                                        >
-                                            <div className="relative w-full max-w-2xl" style={{ paddingBottom: '56.25%' }}>
-                                                <iframe
-                                                    className="absolute top-0 left-0 w-full h-full rounded-lg"
-                                                    src="https://www.youtube.com/embed/0XTBYMfZyrM?start=8"
-                                                    title="Do you know all 17 SDGs?"
-                                                    frameBorder="0"
-                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                                    allowFullScreen
-                                                ></iframe>
-                                            </div>
-                                        </motion.div>
-                                    </motion.div>
-                                ) : (
-                                    /* DETAIL VIEW (fallback for SDGs without Detail component) */
-                                    <motion.div
-                                        key="detail-view"
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.9 }}
-                                        transition={{ duration: 0.4, ease: 'easeOut' }}
-                                        className="flex items-center justify-center w-full h-full min-h-[400px] md:min-h-[550px] p-4"
-                                    >
-                                        <img
-                                            src={detailImage}
-                                            alt={`SDG ${selectedIndex + 1}`}
-                                            className="w-full h-auto max-h-[600px] object-contain rounded-lg animate-spin-in"
-                                        />
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
+                                    );
+                                })}
+                            </motion.div>
                         </motion.div>
 
-                        {/* RIGHT CONTAINER */}
+                        {/* ===== ROW 2: CONTENT ===== */}
                         <motion.div
-                            initial={{ opacity: 0, x: 40 }}
-                            animate={{ opacity: 1, x: 0 }}
+                            initial={{ opacity: 0, y: 40 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: "-50px" }}
                             transition={{ duration: 0.6, ease: 'easeOut' }}
-                            className="w-full lg:w-1/2 bg-white p-6 md:p-10 flex flex-col justify-center"
+                            className="w-full bg-white p-6 md:p-10 rounded-lg shadow-sm"
                         >
-                            {!isDetailView ? (
-                                <motion.div
-                                    variants={containerVariants}
-                                    initial="hidden"
-                                    animate="visible"
-                                    className="text-center"
+                            <motion.div
+                                variants={containerVariants}
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true, margin: "-50px" }}
+                                className="text-center"
+                            >
+                                {/* Title - Green and Gold */}
+                                <motion.h2
+                                    variants={fadeUpVariants}
+                                    className="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight text-center"
                                 >
-                                    {/* Title */}
-                                    <motion.h2
-                                        variants={fadeUpVariants}
-                                        className="text-2xl md:text-4xl font-extrabold text-green-700 leading-tight text-center"
-                                    >
-                                        Localizing the Global Goals: <span className="text-green-700">CCCDO's SDG Journey</span>
-                                    </motion.h2>
+                                    <span className="text-green-700">Localizing the Global Goals:</span>{' '}
+                                    <span className="text-amber-500">CCCDO's SDG Journey</span>
+                                </motion.h2>
 
-                                    {/* Accent bar */}
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        animate={{ width: 80 }}
-                                        transition={{ duration: 0.8, delay: 0.3 }}
-                                        className="mx-auto mt-3 h-1 rounded-full bg-green-700"
+                                {/* Accent bar - Green to Gold Gradient */}
+                                <motion.div
+                                    initial={{ width: 0 }}
+                                    whileInView={{ width: 120 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.8, delay: 0.4 }}
+                                    className="mx-auto mt-5 h-1.5 rounded-full bg-gradient-to-r from-green-600 to-amber-400"
+                                />
+
+                                <motion.p variants={paragraphVariants} className="mt-6 text-sm md:text-base text-gray-700 leading-relaxed text-justify">
+                                    City College of Cagayan de Oro uses the Sustainable Development Goals as a
+                                    framework for institutional decision-making rather than as a set of occasional
+                                    advocacy activities. The College aims to ensure that teaching, research, student
+                                    development, community engagement, and campus operations address the needs of
+                                    Cagayan de Oro communities. This approach aligns with the College's public
+                                    mandate to expand educational access and deliver knowledge and services with
+                                    clear social value.
+                                </motion.p>
+
+                                <motion.p variants={paragraphVariants} className="mt-4 text-sm md:text-base text-gray-700 leading-relaxed text-justify">
+                                    The College's SDG efforts are evident in programs linking education to poverty
+                                    reduction, health, inclusion, environmental responsibility, and partnerships.
+                                    Notable initiatives include the Technical and Vocational Scholarship Program,
+                                    which provided ₱900,548 in assistance to 44 scholars; disaster-preparedness
+                                    activities with about 500 participants; an Indigenous Peoples Roadshow; and an
+                                    inclusion caravan reaching approximately 1,200 individuals. Environmental
+                                    initiatives, such as mangrove activities and improved waste management, further
+                                    show that sustainability is addressed through measurable campus and community
+                                    practices.
+                                </motion.p>
+
+                                <motion.p variants={paragraphVariants} className="mt-4 text-sm md:text-base text-gray-700 leading-relaxed text-justify">
+                                    CCCDO's strategy is to integrate SDG alignment at the outset of every
+                                    institutional initiative. Programs, research, extension activities, and
+                                    international engagements are expected to identify their beneficiaries,
+                                    relevant SDGs, measurable outcomes, and supporting evidence. This approach
+                                    enables the College to assess whether its interventions improve access,
+                                    strengthen participation, reduce barriers, or deliver sustainable community
+                                    benefits.
+                                </motion.p>
+
+                                <motion.p variants={paragraphVariants} className="mt-4 text-sm md:text-base text-gray-700 leading-relaxed text-justify">
+                                    The College plans to develop a more integrated SDG evidence system that
+                                    connects offices, academic programs, research units, and community partners.
+                                    The goal is to provide a credible account of how a young local college
+                                    translates global commitments into local outcomes, rather than seeking
+                                    visibility for its own sake. For CCCDO, international recognition should
+                                    result from the depth and impact of its work in the city it serves.
+                                </motion.p>
+
+                                {/* Rank image */}
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.7, delay: 0.3, type: 'spring', bounce: 0.3 }}
+                                    className="mt-7"
+                                >
+                                    <img
+                                        src={sdgRank}
+                                        alt="SDG Rank 2026"
+                                        className="w-full h-auto object-contain mx-auto rounded-lg shadow-sm"
                                     />
-
-                                    <motion.p variants={paragraphVariants} className="mt-5 text-sm md:text-base text-gray-700 leading-relaxed text-justify">
-                                        City College of Cagayan de Oro uses the <span className="text-green-700 font-semibold">Sustainable Development Goals</span> as a
-                                        framework for <span className="text-green-700 font-semibold">institutional decision-making</span> rather than as a set of occasional
-                                        advocacy activities. The College aims to ensure that <span className="text-green-700 font-semibold">teaching, research, student
-                                        development, community engagement, and campus operations</span> address the needs of
-                                        Cagayan de Oro communities. This approach aligns with the College's public
-                                        mandate to <span className="text-green-700 font-semibold">expand educational access</span> and deliver knowledge and services with
-                                        clear social value.
-                                    </motion.p>
-
-                                    <motion.p variants={paragraphVariants} className="mt-4 text-sm md:text-base text-gray-700 leading-relaxed text-justify">
-                                        The College's SDG efforts are evident in programs linking education to <span className="text-green-700 font-semibold">poverty
-                                        reduction, health, inclusion, environmental responsibility, and partnerships</span>.
-                                        Notable initiatives include the <span className="text-green-700 font-semibold">Technical and Vocational Scholarship Program</span>,
-                                        which provided <span className="text-green-700 font-semibold">₱900,548 in assistance to 44 scholars</span>; disaster-preparedness
-                                        activities with about <span className="text-green-700 font-semibold">500 participants</span>; an <span className="text-green-700 font-semibold">Indigenous Peoples Roadshow</span>; and an
-                                        inclusion caravan reaching approximately <span className="text-green-700 font-semibold">1,200 individuals</span>. Environmental
-                                        initiatives, such as <span className="text-green-700 font-semibold">mangrove activities and improved waste management</span>, further
-                                        show that sustainability is addressed through measurable campus and community
-                                        practices.
-                                    </motion.p>
-
-                                    <motion.p variants={paragraphVariants} className="mt-4 text-sm md:text-base text-gray-700 leading-relaxed text-justify">
-                                        CCCDO's strategy is to <span className="text-green-700 font-semibold">integrate SDG alignment at the outset of every
-                                        institutional initiative</span>. Programs, research, extension activities, and
-                                        international engagements are expected to identify their <span className="text-green-700 font-semibold">beneficiaries,
-                                        relevant SDGs, measurable outcomes, and supporting evidence</span>. This approach
-                                        enables the College to assess whether its interventions <span className="text-green-700 font-semibold">improve access,
-                                        strengthen participation, reduce barriers, or deliver sustainable community
-                                        benefits</span>.
-                                    </motion.p>
-
-                                    <motion.p variants={paragraphVariants} className="mt-4 text-sm md:text-base text-gray-700 leading-relaxed text-justify">
-                                        The College plans to develop a more <span className="text-green-700 font-semibold">integrated SDG evidence system</span> that
-                                        connects offices, academic programs, research units, and community partners.
-                                        The goal is to provide a credible account of how a young local college
-                                        translates <span className="text-green-700 font-semibold">global commitments into local outcomes</span>, rather than seeking
-                                        visibility for its own sake. For CCCDO, <span className="text-green-700 font-semibold">international recognition should
-                                        result from the depth and impact of its work</span> in the city it serves.
-                                    </motion.p>
-
-                                    {/* Rank image */}
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 30 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ duration: 0.6, delay: 0.5 }}
-                                        className="mt-7"
-                                    >
-                                        <img
-                                            src={sdgRank}
-                                            alt="SDG Rank 2026"
-                                            className="w-full h-auto object-contain mx-auto rounded-lg"
-                                        />
-                                    </motion.div>
-
-                                    <motion.p
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ duration: 0.6, delay: 0.7 }}
-                                        className="mt-6 text-xs md:text-sm text-gray-500 italic text-center"
-                                    >
-                                        Together, we continue to move forward — <span className="text-green-700 font-semibold">one goal at a time</span>.
-                                    </motion.p>
                                 </motion.div>
-                            ) : (
-                                <AnimatePresence mode="wait">
-                                    <motion.div
-                                        key="detail-component"
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -20 }}
-                                        transition={{ duration: 0.4 }}
-                                    >
-                                        {DetailComponent ? (
-                                            <DetailComponent onBack={handleBack} />
-                                        ) : (
-                                            <div className="text-center text-gray-500">
-                                                <p>No content available for this SDG.</p>
-                                                <button
-                                                    type="button"
-                                                    onClick={handleBack}
-                                                    className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-green-700 transition-colors"
-                                                >
-                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                                    </svg>
-                                                    Back to all SDGs
-                                                </button>
-                                            </div>
-                                        )}
-                                    </motion.div>
-                                </AnimatePresence>
-                            )}
+
+                                <motion.p
+                                    initial={{ opacity: 0 }}
+                                    whileInView={{ opacity: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.6, delay: 0.6 }}
+                                    className="mt-6 text-xs md:text-sm text-gray-500 italic text-center"
+                                >
+                                    Together, we continue to move forward — one goal at a time.
+                                </motion.p>
+                            </motion.div>
                         </motion.div>
+
+                        {/* ===== ROW 3: YOUTUBE VIDEO ===== */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 40 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: "-50px" }}
+                            transition={{ duration: 0.6, ease: 'easeOut' }}
+                            className="w-full bg-white p-4 md:p-8 rounded-lg shadow-sm flex flex-col items-center justify-center"
+                        >
+                            {/* Video Section Title & Description */}
+                            <motion.div 
+                                initial={{ opacity: 0, y: -10 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.5 }}
+                                className="mb-8 w-full border-b border-gray-200 pb-5 text-center"
+                            >
+                                <h3 className="text-2xl md:text-3xl lg:text-4xl font-extrabold">
+                                    <span className="text-green-700">Watch:</span>{' '}
+                                    <span className="text-amber-500">Do you know all 17 SDGs?</span>
+                                </h3>
+                                <p className="text-sm md:text-base text-gray-600 mt-3">A quick overview of the global goals and how they connect.</p>
+                            </motion.div>
+
+                            <motion.div 
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.6, delay: 0.3 }}
+                                className="relative w-full max-w-4xl" 
+                                style={{ paddingBottom: '56.25%' }}
+                            >
+                                <iframe
+                                    className="absolute top-0 left-0 w-full h-full rounded-lg shadow-md"
+                                    src="https://www.youtube.com/embed/0XTBYMfZyrM?start=8"
+                                    title="Do you know all 17 SDGs?"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowFullScreen
+                                ></iframe>
+                            </motion.div>
+                        </motion.div>
+
+                        {/* Fallback detail view for tiles without a Detail component */}
+                        <AnimatePresence>
+                            {isDetailView && !DetailComponent && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -20 }}
+                                    transition={{ duration: 0.4 }}
+                                    className="w-full bg-white p-6 md:p-10 rounded-lg shadow-sm"
+                                >
+                                    <div className="text-center text-gray-500">
+                                        <p>No content available for this SDG.</p>
+                                        <motion.button
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            type="button"
+                                            onClick={handleBack}
+                                            className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-green-700 transition-colors"
+                                        >
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                            </svg>
+                                            Back to all SDGs
+                                        </motion.button>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
                     </div>
                 </div>
             )}
@@ -433,23 +435,16 @@ export default function SDG() {
                 {/* Content area - empty */}
             </div>
 
+            {/* CSS for 3D Flip Effect */}
             <style>{`
-                @keyframes spinIn {
-                    0% {
-                        transform: rotateY(0deg) scale(1);
-                        opacity: 1;
-                    }
-                    50% {
-                        transform: rotateY(180deg) scale(0.8);
-                        opacity: 0;
-                    }
-                    100% {
-                        transform: rotateY(360deg) scale(1);
-                        opacity: 1;
-                    }
+                .perspective-1000 {
+                    perspective: 1000px;
                 }
-                .animate-spin-in {
-                    animation: spinIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+                .preserve-3d {
+                    transform-style: preserve-3d;
+                }
+                .backface-hidden {
+                    backface-visibility: hidden;
                 }
             `}</style>
         </MainLayout>

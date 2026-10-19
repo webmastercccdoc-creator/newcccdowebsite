@@ -271,7 +271,7 @@ const ElectronicFormsContent = (
                 },
                 {
                     title: "School Counseling Services Intake Form",
-                    link: "https://docs.google.com/forms/d/1VNl6lLunD8jm5Sajx9WA1t4fC9nHxaYokVZFm7SpmGI/viewform?pli=1&pli=1&edit_requested=true",
+                    link: "https://docs.google.com/forms/d/1m9KGUS8SQgXBNDaMon_KJzo_0cOehK1ZqJ6Oois6wxc/viewform?edit_requested=true",
                     description:
                         "For currently enrolled students accessing school counseling services for academic, personal, social, career, behavioral, or adjustment concerns. The information provided helps the counselor identify the student's needs and plan appropriate support or intervention.",
                     where: "Guidance and Counseling Office.",

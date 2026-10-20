@@ -104,6 +104,14 @@ const Footer = () => {
                                     Student Affairs and Services
                                 </Link>
                             </li>
+                            <li>
+                                <Link
+                                    href="/ollpd"
+                                    className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300"
+                                >
+                                    Office for Lifelong Learning and Professional Development
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 

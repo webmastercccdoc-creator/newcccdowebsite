@@ -76,6 +76,10 @@ Route::get('/sas', function () {
     return Inertia::render('content/Quicklinks/SAS');
 })->name('quicklinks.sas');
 
+Route::get('/ollpd', function () {
+    return Inertia::render('content/Quicklinks/OLLPD');
+})->name('quicklinks.ollpd');
+
 // API endpoints for URL Shortener
 Route::post('/shorten-url', [UrlShortenerController::class, 'shorten'])->name('url.shorten');
 Route::post('/lookup-url', [UrlShortenerController::class, 'lookup'])->name('url.lookup');

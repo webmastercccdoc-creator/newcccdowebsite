@@ -92,6 +92,7 @@ class NewsController extends Controller
                 'cbm' => ['cbm', 'businessmanagement', 'businessandmanagement', 'collegeofbusinessmanagement', 'collegeofbusinessandmanagement'],
                 'coe' => ['coe', 'education', 'collegeofeducation'],
                 'tsti' => ['tsti', 'technicalskillsandtechnologyinstitute'],
+                'ollpd' => ['ollpd', 'officeforlifelonglearningandprofessionaldevelopment'],
             ];
             $patterns = $aliases[$normalized] ?? [$normalized];
 

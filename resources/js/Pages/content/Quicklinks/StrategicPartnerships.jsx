@@ -389,12 +389,6 @@ const TABS = [
         content: <UnderDevelopment />,
     },
     {
-        id: "international",
-        label: "International Linkages",
-        shortLabel: "International",
-        content: <UnderDevelopment />,
-    },
-    {
         id: "mou",
         label: "MOUs & MOAs",
         shortLabel: "MOU/MOA",

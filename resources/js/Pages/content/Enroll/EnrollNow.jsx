@@ -14,6 +14,18 @@ import enrollBanner from '../../../assets/banner/News Banner.png';
 import registrationFormPdf from '../../../assets/Downloadable Fiile/Registration Form/COL-FO-2024-002-REGISTRATION-FORM-SEPTEMBER-2026 (1).pdf';
 import socioEconomicPdf from '../../../assets/Downloadable Fiile/Registration Form/COL-FO-2024-026-ENROLLMENT-ANNEX (1) (1).pdf';
 
+const HASH_TO_SECTION = {
+    '1': 'requirements',
+    '2': 'policies',
+    '3': 'resolution',
+    '4': 'process',
+    '5': 'report',
+};
+
+const SECTION_TO_HASH = Object.fromEntries(
+    Object.entries(HASH_TO_SECTION).map(([hash, sectionId]) => [sectionId, hash])
+);
+
 export default function EnrollNow() {
     const [activeTab, setActiveTab] = useState('hei');
     const [openSection, setOpenSection] = useState('requirements');
@@ -46,6 +58,34 @@ export default function EnrollNow() {
 
         return () => {
             window.removeEventListener('pageshow', handlePageShow);
+        };
+    }, []);
+
+    useEffect(() => {
+        let scrollTimeout;
+
+        const goToHash = () => {
+            const sectionId = HASH_TO_SECTION[window.location.hash.slice(1)];
+            if (!sectionId) return;
+
+            setActiveTab('hei');
+            setOpenSection(sectionId);
+
+            window.clearTimeout(scrollTimeout);
+            scrollTimeout = window.setTimeout(() => {
+                document.getElementById(`section-${sectionId}`)?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                });
+            }, 400);
+        };
+
+        goToHash();
+        window.addEventListener('hashchange', goToHash);
+
+        return () => {
+            window.clearTimeout(scrollTimeout);
+            window.removeEventListener('hashchange', goToHash);
         };
     }, []);
 
@@ -837,10 +877,11 @@ export default function EnrollNow() {
                                             return (
                                                 <motion.div
                                                     key={section.id}
+                                                    id={`section-${section.id}`}
                                                     initial={{ opacity: 0, y: 15 }}
                                                     animate={{ opacity: 1, y: 0 }}
                                                     transition={{ duration: 0.3, delay: index * 0.05 }}
-                                                    className={`rounded-xl border transition-colors duration-200 ${
+                                                    className={`scroll-mt-32 rounded-xl border transition-colors duration-200 ${
                                                         isOpen 
                                                             ? 'border-gray-200 bg-white shadow-sm' 
                                                             : 'border-gray-200 bg-white hover:bg-gray-50'
@@ -848,7 +889,15 @@ export default function EnrollNow() {
                                                 >
                                                     {/* Section Header (clickable) */}
                                                     <button
-                                                        onClick={() => setOpenSection(isOpen ? null : section.id)}
+                                                        onClick={() => {
+                                                            const nextSection = isOpen ? null : section.id;
+                                                            setOpenSection(nextSection);
+                                                            window.history.replaceState(
+                                                                window.history.state,
+                                                                '',
+                                                                `${window.location.pathname}${window.location.search}${nextSection ? `#${SECTION_TO_HASH[nextSection]}` : ''}`
+                                                            );
+                                                        }}
                                                         className="w-full flex items-center justify-between gap-3 px-4 sm:px-5 py-4 text-left"
                                                         aria-expanded={isOpen}
                                                     >

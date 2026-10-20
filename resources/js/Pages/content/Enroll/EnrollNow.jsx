@@ -16,56 +16,6 @@ import tstiEnrollmentFlowImg from '../../../assets/TSTI/enrollment-flow.jfif';
 import registrationFormPdf from '../../../assets/Downloadable Fiile/Registration Form/COL-FO-2024-002-REGISTRATION-FORM-SEPTEMBER-2026 (1).pdf';
 import socioEconomicPdf from '../../../assets/Downloadable Fiile/Registration Form/COL-FO-2024-026-ENROLLMENT-ANNEX (1) (1).pdf';
 
-// Import Board Resolution PDFs
-import resolution12of2024Pdf from '../../../assets/Downloadable Fiile/Board Resolution/RESOLUTION NO. 12-2024 (1).pdf';
-import resolution18of2024Pdf from '../../../assets/Downloadable Fiile/Board Resolution/Resolution No. 18 Series of 2024.pdf';
-import resolution2of2025Pdf from '../../../assets/Downloadable Fiile/Board Resolution/Resolution No. 2 Series of 2025.pdf';
-import resolution3of2025Pdf from '../../../assets/Downloadable Fiile/Board Resolution/Resolution No. 3 Series of 2025.pdf';
-import resolution5of2025Pdf from '../../../assets/Downloadable Fiile/Board Resolution/Resolution No. 5 Series of 2025.pdf';
-
-const HASH_TO_SECTION = {
-    '1': 'requirements',
-    '2': 'policies',
-    '3': 'resolution',
-    '4': 'process',
-    '5': 'report',
-    '6': 'tsti-requirements',
-    '7': 'tsti-policies',
-    '8': 'tsti-process',
-};
-
-const SECTION_TO_HASH = Object.fromEntries(
-    Object.entries(HASH_TO_SECTION).map(([hash, sectionId]) => [sectionId, hash])
-);
-
-const boardResolutions = [
-    {
-        label: 'Resolution No. 12, Series of 2024',
-        description: 'Adoption of the revised admission policy for incoming freshman students.',
-        href: resolution12of2024Pdf,
-    },
-    {
-        label: 'Resolution No. 18, Series of 2024',
-        description: 'Approval of the updated enrollment guidelines and retention policies.',
-        href: resolution18of2024Pdf,
-    },
-    {
-        label: 'Resolution No. 2, Series of 2025',
-        description: 'Establishment of admission criteria for transferees and ALS completers.',
-        href: resolution2of2025Pdf,
-    },
-    {
-        label: 'Resolution No. 3, Series of 2025',
-        description: 'Ratification of the scholarship and financial assistance program.',
-        href: resolution3of2025Pdf,
-    },
-    {
-        label: 'Resolution No. 5, Series of 2025',
-        description: 'Amendment to the student admission and screening procedures.',
-        href: resolution5of2025Pdf,
-    },
-];
-
 export default function EnrollNow() {
     const [activeTab, setActiveTab] = useState('hei');
     const [openSection, setOpenSection] = useState('requirements');
@@ -99,40 +49,6 @@ export default function EnrollNow() {
 
         return () => {
             window.removeEventListener('pageshow', handlePageShow);
-        };
-    }, []);
-
-    useEffect(() => {
-        let scrollTimeout;
-
-        const goToHash = () => {
-            const hash = window.location.hash.slice(1);
-            const sectionId = HASH_TO_SECTION[hash];
-            if (!sectionId) return;
-
-            if (sectionId.startsWith('tsti-')) {
-                setActiveTab('tsti');
-                setOpenTstiSection(sectionId);
-            } else {
-                setActiveTab('hei');
-                setOpenSection(sectionId);
-            }
-
-            window.clearTimeout(scrollTimeout);
-            scrollTimeout = window.setTimeout(() => {
-                document.getElementById(`section-${sectionId}`)?.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start',
-                });
-            }, 400);
-        };
-
-        goToHash();
-        window.addEventListener('hashchange', goToHash);
-
-        return () => {
-            window.clearTimeout(scrollTimeout);
-            window.removeEventListener('hashchange', goToHash);
         };
     }, []);
 

@@ -1,6 +1,6 @@
+
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
 import MainLayout from "../../../layouts/MainLayout";
 import guidanceBannerImg from '../../../assets/banner/guidance-banner.png';
 import colarteImage from '../../../assets/images/colarte-image.png';

@@ -233,6 +233,20 @@ export default function EnrollNow() {
                 { label: "Scholarship Opportunities", details: "Information about available scholarships and financial aid options should be provided to applicants. • Eg. Application requirements to apply city scholarship at City Scholarship Office" },
                 { label: "Special Requirements", details: "Submission of relevant certifications or achievements in technical skills (optional, but favorable)" }
             ]
+        },
+        {
+            id: 'bssw',
+            title: 'Bachelor of Science in Social Work (BSSW)',
+            criteria: [
+                { label: "Educational Background", details: "Senior High School graduate (Grade 12) or equivalent, such as an ALS completer recognized by DepEd." },
+                { label: "Minimum GWA Requirement", details: "GPA is 85% and higher • Any SHS Track" },
+                { label: "Entrance Examination", details: "Pass the college entrance examination with a minimum score of 85% or its equivalent" },
+                { label: "Extra-curricular Involvement", details: "Active participation in extra-curricular activities (optional, but favorable)" },
+                { label: "Interview", details: "Successful completion of an interview with the BSSW Program head and the dean of the College of Arts and Sciences" },
+                { label: "Scholarship Opportunities", details: "Information about available scholarships and financial aid options should be provided to applicants. • Eg. Application requirements to apply city scholarship at City Scholarship Office" },
+                { label: "Special Requirements", details: "Submission of relevant certifications or achievements in technical skills (optional, but favorable)" },
+                { label: "General Retention Standard", details: "Must obtain a grade of 2.25 or better for Professional/Major Subjects. A grade lower than 2.25 is considered non-retentive.\nMust obtain a grade of 2.75 or better for General Education Courses, including PE and NSTP." }
+            ]
         }
     ];
 
@@ -673,22 +687,34 @@ export default function EnrollNow() {
                 </svg>
             ),
             content: (
-                <div className="rounded-lg bg-gray-50 border border-gray-100 p-8 text-center">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-200 text-gray-500 mb-3">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <p className="text-sm font-semibold text-gray-800">Content Coming Soon</p>
-                    <p className="text-xs text-gray-500 mt-1 max-w-md mx-auto">
-                        This section is being prepared. Please check back later for updated information on TSTI Admission Requirements.
+                <div className="rounded-lg bg-gray-50 border border-gray-100 p-5 text-left">
+                    <p className="text-sm text-gray-600 mb-4">
+                        Please prepare the following documents for submission to the TSTI Admissions Office:
                     </p>
+                    <ul className="grid sm:grid-cols-2 gap-x-4 gap-y-3">
+                        {[
+                            "Birth Certificate",
+                            "Marriage Contract (For married women only)",
+                            "Report Card / Form 137-A",
+                            "TOR / Diploma (for college grad or college level)",
+                            "2 pcs passport size picture (white background with collar)",
+                            "2 pcs 1x1 picture",
+                            "1 long brown envelope"
+                        ].map((req, i) => (
+                            <li key={i} className="flex items-start">
+                                <svg className="w-5 h-5 text-[#1a365d] mr-2.5 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span className="text-sm text-gray-700">{req}</span>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             )
         },
         {
             id: 'tsti-policies',
-            title: 'Admission Policies per Program',
+            title: 'Admission Policies per Qualification',
             description: 'Program-specific admission rules and criteria for TSTI programs.',
             icon: (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

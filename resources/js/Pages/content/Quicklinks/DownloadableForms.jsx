@@ -25,6 +25,7 @@ const FOLDER_TO_CATEGORY = {
     "Code Of Ethics": "Code of Ethics",
     "Data Privacy": "Data Privacy",
     "Financial Report": "Financial Report",
+    "Academic Affairs Services": "Academic Affairs Services",
 };
 
 const CATEGORY_ORDER = [
@@ -32,6 +33,7 @@ const CATEGORY_ORDER = [
     "Code of Ethics",
     "Data Privacy",
     "Financial Report",
+    "Academic Affairs Services",
 ];
 
 const FORMS_PER_PAGE = 6;
@@ -335,12 +337,8 @@ export default function DownloadableForms() {
 
     // ----- Actions -----
     const handleDownload = (form) => {
-        const link = document.createElement("a");
-        link.href = form.fileUrl;
-        link.download = `${form.title}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // Open the PDF in a new browser tab instead of downloading
+        window.open(form.fileUrl, "_blank", "noopener,noreferrer");
     };
 
     const openViewer = (form) => {

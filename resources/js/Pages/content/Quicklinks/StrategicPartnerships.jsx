@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import MainLayout from "../../../layouts/MainLayout";
 import spBannerImg from "../../../assets/banner/ovpacads-banner.png";
-import spoLogo from "../../../assets/logos/osas-logo.png";
 import hernaTanoImage from "../../../assets/images/Herna_Tano.jpg";
+import hernaTanoImage1 from "../../../assets/images/herna-image.png";
 
 import sdg1 from "../../../assets/images/sdg1.png";
 import sdg2 from "../../../assets/images/sdg2.jpg";
@@ -767,18 +767,13 @@ export default function StrategicPartnerships() {
                         {/* LEFT COLUMN */}
                         <div className="w-full shrink-0 md:w-80 lg:w-96 mx-auto md:mx-0 flex flex-col gap-8">
                             <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-                                <div className="w-full aspect-[4/5] flex items-center justify-center bg-[#1a1a1a] p-2">
-                                    <div className="flex flex-col items-center gap-3 text-center px-4">
-                                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/10">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#f5c518" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8">
-                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                                                <circle cx="12" cy="7" r="4" />
-                                            </svg>
-                                        </div>
-                                        <p className="text-xs font-semibold uppercase tracking-widest text-[#f5c518]">
-                                            Photo Coming Soon
-                                        </p>
-                                    </div>
+                                {/* Changed bg to white, removed padding, and adjusted object position to move image higher */}
+                                <div className="w-full aspect-[4/5] overflow-hidden bg-white">
+                                    <img
+                                        src={hernaTanoImage1}
+                                        alt="Herna Francis Mae B. Tano"
+                                        className="h-full w-full object-cover object-[center_20%]"
+                                    />
                                 </div>
 
                                 <div className="border-t-4 border-[#f5c518] bg-white px-4 py-4 text-center">
@@ -836,7 +831,6 @@ export default function StrategicPartnerships() {
                                 </ul>
                             </div>
                         </div>
-
                         {/* RIGHT COLUMN */}
                         <div className="flex-1 w-full">
                             {/* Upper Tab Switcher */}
@@ -873,7 +867,6 @@ export default function StrategicPartnerships() {
                                     })}
                                 </div>
                             </div>
-
                             {/* Director Tab Panel */}
                             <AnimatePresence mode="wait">
                                 <motion.div
@@ -905,7 +898,6 @@ export default function StrategicPartnerships() {
                         </div>
                     </div>
                 </motion.div>
-
                 {/* ==================== OFFICE SLIDESHOW ==================== */}
                 <OfficeSlideshow />
 

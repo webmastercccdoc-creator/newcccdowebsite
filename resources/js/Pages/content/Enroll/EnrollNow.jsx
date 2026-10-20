@@ -8,27 +8,18 @@ import casLogo from '../../../assets/logos/cas-logo.png';
 import coeLogo from '../../../assets/logos/coe-logo.png';
 import enrollBanner from '../../../assets/banner/News Banner.png';
 
+// TSTI images
+import tstiAdmissionPolicyImg from '../../../assets/TSTI/admision-policy.jfif';
+import tstiEnrollmentFlowImg from '../../../assets/TSTI/enrollment-flow.jfif';
+
 // Import the PDF forms
-// Note: If your bundler throws an error due to spaces/parentheses in the filename, 
-// you may need to rename the files to remove spaces (e.g., COL-FO-2024-002-REGISTRATION-FORM.pdf)
 import registrationFormPdf from '../../../assets/Downloadable Fiile/Registration Form/COL-FO-2024-002-REGISTRATION-FORM-SEPTEMBER-2026 (1).pdf';
 import socioEconomicPdf from '../../../assets/Downloadable Fiile/Registration Form/COL-FO-2024-026-ENROLLMENT-ANNEX (1) (1).pdf';
-
-const HASH_TO_SECTION = {
-    '1': 'requirements',
-    '2': 'policies',
-    '3': 'resolution',
-    '4': 'process',
-    '5': 'report',
-};
-
-const SECTION_TO_HASH = Object.fromEntries(
-    Object.entries(HASH_TO_SECTION).map(([hash, sectionId]) => [sectionId, hash])
-);
 
 export default function EnrollNow() {
     const [activeTab, setActiveTab] = useState('hei');
     const [openSection, setOpenSection] = useState('requirements');
+    const [openTstiSection, setOpenTstiSection] = useState('tsti-requirements');
     
     // State for the nested accordions
     const [openPolicy, setOpenPolicy] = useState(null); 
@@ -58,34 +49,6 @@ export default function EnrollNow() {
 
         return () => {
             window.removeEventListener('pageshow', handlePageShow);
-        };
-    }, []);
-
-    useEffect(() => {
-        let scrollTimeout;
-
-        const goToHash = () => {
-            const sectionId = HASH_TO_SECTION[window.location.hash.slice(1)];
-            if (!sectionId) return;
-
-            setActiveTab('hei');
-            setOpenSection(sectionId);
-
-            window.clearTimeout(scrollTimeout);
-            scrollTimeout = window.setTimeout(() => {
-                document.getElementById(`section-${sectionId}`)?.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start',
-                });
-            }, 400);
-        };
-
-        goToHash();
-        window.addEventListener('hashchange', goToHash);
-
-        return () => {
-            window.clearTimeout(scrollTimeout);
-            window.removeEventListener('hashchange', goToHash);
         };
     }, []);
 
@@ -146,7 +109,7 @@ export default function EnrollNow() {
         }, 800);
     };
 
-    // Data for Admission Policies per Program
+    // Data for Admission Policies per Program (HEI)
     const programPolicies = [
         {
             id: 'btvted',
@@ -189,7 +152,7 @@ export default function EnrollNow() {
         }
     ];
 
-    // Data for Enrollment Process
+    // Data for Enrollment Process (HEI)
     const newStudentSteps = [
         { step: 1, title: "Admission Office", description: "Initial screening and submission of requirements." },
         { step: 2, title: "College Dean", description: "Interview and approval of the program dean." },
@@ -216,7 +179,6 @@ export default function EnrollNow() {
         <div className="relative border-l-2 border-gray-200 ml-3 space-y-6 pb-2 mt-4">
             {steps.map((item, index) => (
                 <div key={index} className="relative pl-6">
-                    {/* Timeline Dot */}
                     <div className={`absolute -left-[17px] top-1.5 flex items-center justify-center w-8 h-8 rounded-full border-4 border-white shadow-sm ${
                         item.isFinal ? 'bg-[#059669] text-white' : 'bg-gray-200 text-gray-600'
                     }`}>
@@ -347,16 +309,40 @@ export default function EnrollNow() {
                 </svg>
             ),
             content: (
-                <div className="rounded-lg bg-gray-50 border border-gray-100 p-5 text-center">
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-200 text-gray-500 mb-3">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <p className="text-sm font-semibold text-gray-800">Content Coming Soon</p>
-                    <p className="text-xs text-gray-500 mt-1 max-w-md mx-auto">
-                        This section is being prepared. Please check back later for updated information on Board Resolution.
+                <div className="rounded-lg bg-gray-50 border border-gray-100 p-5">
+                    <p className="text-sm text-gray-600 mb-4">
+                        Download the official board resolutions governing admissions at City College of Cagayan de Oro:
                     </p>
+                    <ul className="space-y-2">
+                        {boardResolutions.map((res, i) => (
+                            <li key={i}>
+                                <a
+                                    href={res.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-start justify-between gap-3 px-4 py-3 bg-white rounded-lg border border-gray-200 hover:border-[#059669] hover:shadow-sm transition-all group"
+                                >
+                                    <div className="flex items-start gap-3 min-w-0">
+                                        <span className="flex-shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 text-gray-500 mt-0.5">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                            </svg>
+                                        </span>
+                                        <div className="min-w-0">
+                                            <p className="text-sm font-medium text-gray-800">{res.label}</p>
+                                            <p className="text-xs text-gray-500 mt-1 leading-relaxed">{res.description}</p>
+                                        </div>
+                                    </div>
+                                    <span className="flex-shrink-0 inline-flex items-center text-xs font-semibold text-[#059669] group-hover:text-[#047857] mt-1">
+                                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        Download
+                                    </span>
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             )
         },
@@ -375,7 +361,6 @@ export default function EnrollNow() {
                         Select your student status below to view the required enrollment steps.
                     </p>
                     <div className="space-y-3 mb-6">
-                        {/* New Students Tab */}
                         <div className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
                             <button
                                 onClick={() => setOpenProcessTab(openProcessTab === 'new' ? null : 'new')}
@@ -407,7 +392,6 @@ export default function EnrollNow() {
                             </AnimatePresence>
                         </div>
 
-                        {/* Old Students Tab */}
                         <div className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
                             <button
                                 onClick={() => setOpenProcessTab(openProcessTab === 'old' ? null : 'old')}
@@ -444,7 +428,6 @@ export default function EnrollNow() {
                         Download and fill out the required forms:
                     </p>
                     <div className="space-y-3">
-                        {/* Socio-Economic Information Form Tab */}
                         <div className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
                             <button
                                 onClick={() => setOpenForm(openForm === 'socio-economic' ? null : 'socio-economic')}
@@ -489,7 +472,6 @@ export default function EnrollNow() {
                             </AnimatePresence>
                         </div>
 
-                        {/* Registration Form Tab */}
                         <div className="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
                             <button
                                 onClick={() => setOpenForm(openForm === 'registration' ? null : 'registration')}
@@ -590,6 +572,81 @@ export default function EnrollNow() {
                             </tbody>
                         </table>
                     </div>
+                </div>
+            )
+        }
+    ];
+
+    // TSTI expandable sections configuration
+    const tstiSections = [
+        {
+            id: 'tsti-requirements',
+            title: 'Admission Requirements',
+            description: 'Documents and qualifications needed to apply for TSTI programs.',
+            icon: (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+            ),
+            content: (
+                <div className="rounded-lg bg-gray-50 border border-gray-100 p-8 text-center">
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-200 text-gray-500 mb-3">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <p className="text-sm font-semibold text-gray-800">Content Coming Soon</p>
+                    <p className="text-xs text-gray-500 mt-1 max-w-md mx-auto">
+                        This section is being prepared. Please check back later for updated information on TSTI Admission Requirements.
+                    </p>
+                </div>
+            )
+        },
+        {
+            id: 'tsti-policies',
+            title: 'Admission Policies per Program',
+            description: 'Program-specific admission rules and criteria for TSTI programs.',
+            icon: (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                </svg>
+            ),
+            content: (
+                <div className="rounded-lg bg-gray-50 border border-gray-100 p-4 sm:p-5">
+                    <div className="rounded-lg overflow-hidden border border-gray-200 bg-white">
+                        <img
+                            src={tstiAdmissionPolicyImg}
+                            alt="TSTI Admission Policies"
+                            className="w-full h-auto object-contain"
+                        />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-3 text-center italic">
+                        TSTI Admission Policies per Program
+                    </p>
+                </div>
+            )
+        },
+        {
+            id: 'tsti-process',
+            title: 'Enrollment Process',
+            description: 'Step-by-step guide to completing your TSTI enrollment.',
+            icon: (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7" />
+                </svg>
+            ),
+            content: (
+                <div className="rounded-lg bg-gray-50 border border-gray-100 p-4 sm:p-5">
+                    <div className="rounded-lg overflow-hidden border border-gray-200 bg-white">
+                        <img
+                            src={tstiEnrollmentFlowImg}
+                            alt="TSTI Enrollment Process Flow"
+                            className="w-full h-auto object-contain"
+                        />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-3 text-center italic">
+                        TSTI Enrollment Process Flow
+                    </p>
                 </div>
             )
         }
@@ -758,7 +815,7 @@ export default function EnrollNow() {
                                     </p>
 
                                     <div className="space-y-2 mb-4 flex-1">
-                                        {["8 TESDA-Accredited Technical Programs", "Hands-on Practical Skills Training", "Employment & Entrepreneurship Ready", "Open to SHS Graduates, ALS Completers, & Professionals"].map((item, i) => (
+                                        {["9 TESDA-Accredited Technical Programs", "Hands-on Practical Skills Training", "Employment & Entrepreneurship Ready", "Open to SHS Graduates, ALS Completers, & Professionals"].map((item, i) => (
                                             <div key={i} className="flex items-start text-sm text-gray-700">
                                                 <svg className="w-4 h-4 text-[#1a365d] mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -867,6 +924,11 @@ export default function EnrollNow() {
                                             CHED Accredited
                                         </span>
                                     )}
+                                    {activeTab === 'tsti' && (
+                                        <span className="text-xs font-semibold text-white bg-white/20 px-3 py-1 rounded-full">
+                                            TESDA Accredited
+                                        </span>
+                                    )}
                                 </div>
 
                                 {/* ===== HEI CONTENT: Expandable Sections ===== */}
@@ -887,7 +949,6 @@ export default function EnrollNow() {
                                                             : 'border-gray-200 bg-white hover:bg-gray-50'
                                                     }`}
                                                 >
-                                                    {/* Section Header (clickable) */}
                                                     <button
                                                         onClick={() => {
                                                             const nextSection = isOpen ? null : section.id;
@@ -930,7 +991,6 @@ export default function EnrollNow() {
                                                         </svg>
                                                     </button>
 
-                                                    {/* Section Body */}
                                                     <AnimatePresence initial={false}>
                                                         {isOpen && (
                                                             <motion.div
@@ -953,36 +1013,85 @@ export default function EnrollNow() {
                                     </div>
                                 )}
 
-                                {/* ===== TSTI CONTENT: Under Construction ===== */}
+                                {/* ===== TSTI CONTENT: Expandable Sections ===== */}
                                 {activeTab === 'tsti' && (
-                                    <div className="p-8 sm:p-12 flex flex-col items-center justify-center text-center min-h-[320px]">
-                                        <motion.div
-                                            initial={{ scale: 0.8, opacity: 0 }}
-                                            animate={{ scale: 1, opacity: 1 }}
-                                            transition={{ duration: 0.4, ease: 'easeOut' }}
-                                            className="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center mb-5"
-                                        >
-                                            <svg className="w-10 h-10 text-[#1a365d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                            </svg>
-                                        </motion.div>
-                                        <h4 className="text-xl sm:text-2xl font-bold text-[#1a365d] mb-2">
-                                            Under Construction
-                                        </h4>
-                                        <p className="text-sm text-gray-600 max-w-md leading-relaxed">
-                                            We're currently preparing the TSTI program details, admission requirements, and enrollment information.
-                                            <br className="hidden sm:block" />
-                                            Please check back soon or contact the Admissions Office for immediate assistance.
-                                        </p>
-                                        <div className="flex flex-wrap justify-center gap-2 mt-5">
-                                            <span className="inline-flex items-center px-3 py-1 bg-blue-50 text-[#1a365d] rounded-full text-xs font-medium">
-                                                <span className="w-2 h-2 bg-[#1a365d] rounded-full mr-2 animate-pulse"></span>
-                                                Content in progress
-                                            </span>
-                                            <span className="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-medium">
-                                                TESDA-Accredited Programs
-                                            </span>
-                                        </div>
+                                    <div className="p-4 sm:p-6 space-y-3">
+                                        {tstiSections.map((section, index) => {
+                                            const isOpen = openTstiSection === section.id;
+                                            return (
+                                                <motion.div
+                                                    key={section.id}
+                                                    id={`section-${section.id}`}
+                                                    initial={{ opacity: 0, y: 15 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                                                    className={`scroll-mt-32 rounded-xl border transition-colors duration-200 ${
+                                                        isOpen 
+                                                            ? 'border-gray-200 bg-white shadow-sm' 
+                                                            : 'border-gray-200 bg-white hover:bg-gray-50'
+                                                    }`}
+                                                >
+                                                    <button
+                                                        onClick={() => {
+                                                            const nextSection = isOpen ? null : section.id;
+                                                            setOpenTstiSection(nextSection);
+                                                            window.history.replaceState(
+                                                                window.history.state,
+                                                                '',
+                                                                `${window.location.pathname}${window.location.search}${nextSection ? `#${SECTION_TO_HASH[nextSection]}` : ''}`
+                                                            );
+                                                        }}
+                                                        className="w-full flex items-center justify-between gap-3 px-4 sm:px-5 py-4 text-left"
+                                                        aria-expanded={isOpen}
+                                                    >
+                                                        <div className="flex items-center gap-3 min-w-0">
+                                                            <span
+                                                                className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
+                                                                    isOpen ? 'bg-blue-100 text-[#1a365d]' : 'bg-gray-100 text-gray-500'
+                                                                }`}
+                                                            >
+                                                                {section.icon}
+                                                            </span>
+                                                            <div className="min-w-0">
+                                                                <h5 className="font-semibold text-gray-900 text-sm sm:text-base">
+                                                                    {section.title}
+                                                                </h5>
+                                                                <p className="text-xs text-gray-500 mt-0.5 truncate">
+                                                                    {section.description}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <svg
+                                                            className={`flex-shrink-0 w-5 h-5 text-gray-400 transition-transform duration-300 ${
+                                                                isOpen ? 'rotate-180 text-gray-700' : ''
+                                                            }`}
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                                        </svg>
+                                                    </button>
+
+                                                    <AnimatePresence initial={false}>
+                                                        {isOpen && (
+                                                            <motion.div
+                                                                key={`${section.id}-body`}
+                                                                initial={{ height: 0, opacity: 0 }}
+                                                                animate={{ height: 'auto', opacity: 1 }}
+                                                                exit={{ height: 0, opacity: 0 }}
+                                                                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                                                                className="overflow-hidden"
+                                                            >
+                                                                <div className="px-4 sm:px-5 pb-5 pt-1">
+                                                                    {section.content}
+                                                                </div>
+                                                            </motion.div>
+                                                        )}
+                                                    </AnimatePresence>
+                                                </motion.div>
+                                            );
+                                        })}
                                     </div>
                                 )}
 
@@ -991,7 +1100,7 @@ export default function EnrollNow() {
                                     <p className="text-xs text-gray-500 text-center sm:text-left">
                                         {activeTab === 'hei'
                                             ? 'Free tuition under CHED\'s Free Higher Education Law. Open to SHS graduates, ALS completers, and transferees.'
-                                            : 'TESDA-accredited programs. Details are currently being updated.'}
+                                            : 'TESDA-accredited programs. Open to SHS graduates, ALS completers, and professionals.'}
                                     </p>
                                     <button
                                         onClick={

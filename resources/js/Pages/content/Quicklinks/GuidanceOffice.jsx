@@ -405,16 +405,33 @@ const ElectronicFormsContent = (
 );
 
 // ===================== About Sub-Tabs Component =====================
-function AboutSubTabs() {
-    const ABOUT_SUBTABS = [
-        { id: "vision", label: "Vision" },
-        { id: "mission", label: "Mission" },
-        { id: "goals", label: "Goals" },
-        { id: "personnel", label: "Personnel" },
-        { id: "service-hours", label: "Service Hours" },
-    ];
+const ABOUT_SUBTABS = [
+    { id: "vision", label: "Vision" },
+    { id: "mission", label: "Mission" },
+    { id: "goals", label: "Goals" },
+    { id: "personnel", label: "Personnel" },
+    { id: "service-hours", label: "Service Hours" },
+];
 
+function AboutSubTabs() {
     const [activeSubTab, setActiveSubTab] = useState(ABOUT_SUBTABS[0].id);
+
+    useEffect(() => {
+        const updateSubTabFromHash = () => {
+            const hash = window.location.hash.slice(1);
+            const subTabId = hash.startsWith("about-") ? hash.slice(6) : "";
+            if (ABOUT_SUBTABS.some((subTab) => subTab.id === subTabId)) {
+                setActiveSubTab(subTabId);
+            }
+        };
+
+        updateSubTabFromHash();
+        window.addEventListener("hashchange", updateSubTabFromHash);
+
+        return () => {
+            window.removeEventListener("hashchange", updateSubTabFromHash);
+        };
+    }, []);
 
     const renderSubTabContent = () => {
         switch (activeSubTab) {
@@ -624,7 +641,9 @@ function AboutSubTabs() {
                         <button
                             key={sub.id}
                             type="button"
-                            onClick={() => setActiveSubTab(sub.id)}
+                            onClick={() => {
+                                window.location.hash = `about-${sub.id}`;
+                            }}
                             className={`relative shrink-0 rounded-full px-4 py-2 text-xs font-bold tracking-wide transition-colors duration-200 focus:outline-none ${
                                 isActive
                                     ? "bg-[#157d3c] text-white shadow-sm"
@@ -1850,6 +1869,50 @@ export default function GuidanceOffice() {
         }
     }, [activeTab]);
 
+    useEffect(() => {
+        let scrollTimeout;
+
+        const goToHash = () => {
+            const hash = window.location.hash.slice(1);
+            const directorTab = DIRECTOR_TABS.find((tab) => tab.id === hash);
+            const lowerTab = TABS.find((tab) => tab.id === hash);
+            const aboutSubTabId = hash.startsWith("about-") ? hash.slice(6) : "";
+            const isAboutSubTab = ABOUT_SUBTABS.some(
+                (subTab) => subTab.id === aboutSubTabId
+            );
+            let panelId;
+
+            if (directorTab) {
+                setActiveDirectorTab(directorTab.id);
+                panelId = `director-panel-${directorTab.id}`;
+            } else if (lowerTab) {
+                setActiveTab(lowerTab.id);
+                panelId = `panel-${lowerTab.id}`;
+            } else if (isAboutSubTab) {
+                setActiveDirectorTab("about");
+                panelId = "director-panel-about";
+            } else {
+                return;
+            }
+
+            window.clearTimeout(scrollTimeout);
+            scrollTimeout = window.setTimeout(() => {
+                document.getElementById(panelId)?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+            }, 400);
+        };
+
+        goToHash();
+        window.addEventListener("hashchange", goToHash);
+
+        return () => {
+            window.clearTimeout(scrollTimeout);
+            window.removeEventListener("hashchange", goToHash);
+        };
+    }, []);
+
     const activeTabData = TABS.find((t) => t.id === activeTab);
     const activeDirectorTabData = DIRECTOR_TABS.find((t) => t.id === activeDirectorTab);
 
@@ -2136,7 +2199,9 @@ export default function GuidanceOffice() {
                                                 id={`director-tab-${tab.id}`}
                                                 aria-selected={isActive}
                                                 aria-controls={`director-panel-${tab.id}`}
-                                                onClick={() => setActiveDirectorTab(tab.id)}
+                                                onClick={() => {
+                                                    window.location.hash = tab.id;
+                                                }}
                                                 className={`relative flex-1 shrink-0 px-6 py-5 text-sm font-semibold tracking-wide whitespace-nowrap transition-colors duration-200 focus:outline-none ${
                                                     isActive
                                                         ? "text-white bg-[#157d3c]"
@@ -2257,7 +2322,9 @@ export default function GuidanceOffice() {
                                         id={`tab-${tab.id}`}
                                         aria-selected={isActive}
                                         aria-controls={`panel-${tab.id}`}
-                                        onClick={() => setActiveTab(tab.id)}
+                                        onClick={() => {
+                                            window.location.hash = tab.id;
+                                        }}
                                         className={`relative flex-1 shrink-0 px-6 py-5 text-sm font-semibold tracking-wide whitespace-nowrap transition-colors duration-200 focus:outline-none ${
                                             isActive
                                                 ? "text-white bg-[#157d3c]"

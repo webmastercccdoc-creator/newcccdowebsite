@@ -223,7 +223,7 @@ export default function EnrollNow() {
         },
         {
             id: 'btled',
-            title: 'Bachelor in Technology Education Major in Industrial Arts',
+            title: 'Bachelor in Technology and Livelihood Education Major in Industrial Arts',
             criteria: [
                 { label: "Educational Background", details: "High school diploma or equivalent (Grade 12) • ALS Graduate not later than 2019 completers" },
                 { label: "Minimum GPA Requirement", details: "GPA is 85% and higher • Any SHS Track" },
@@ -236,7 +236,7 @@ export default function EnrollNow() {
         },
         {
             id: 'bssw',
-            title: 'Bachelor of Science in Social Work (BSSW)',
+            title: 'Bachelor of Science in Social Work',
             criteria: [
                 { label: "Educational Background", details: "Senior High School graduate (Grade 12) or equivalent, such as an ALS completer recognized by DepEd." },
                 { label: "Minimum GWA Requirement", details: "GPA is 85% and higher • Any SHS Track" },

@@ -831,7 +831,6 @@ export default function StrategicPartnerships() {
                                 </ul>
                             </div>
                         </div>
-
                         {/* RIGHT COLUMN */}
                         <div className="flex-1 w-full">
                             {/* Upper Tab Switcher */}
@@ -868,7 +867,6 @@ export default function StrategicPartnerships() {
                                     })}
                                 </div>
                             </div>
-
                             {/* Director Tab Panel */}
                             <AnimatePresence mode="wait">
                                 <motion.div
@@ -900,7 +898,6 @@ export default function StrategicPartnerships() {
                         </div>
                     </div>
                 </motion.div>
-
                 {/* ==================== OFFICE SLIDESHOW ==================== */}
                 <OfficeSlideshow />
 

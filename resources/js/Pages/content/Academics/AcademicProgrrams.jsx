@@ -15,6 +15,13 @@ import drDonnaCotejoPhoto from '../../../assets/images/DR_DONNA_COTEJO.png';
 import deanOrbetaPhoto from '../../../assets/images/Dr_Rowena_Orbeta.jpg';
 import deanChuaPhoto from '../../../assets/images/Dr_Liza_Chua.png';
 import karlPiosPhoto from '../../../assets/images/TSTI Trainers/karl-image.png';
+import carpentryNc2Image from '../../../assets/TSTI/qualification images/carpnc2-image.jpg';
+import eimNc2Image from '../../../assets/TSTI/qualification images/eimnc2-image.jpg';
+import housekeepingNc2Image from '../../../assets/TSTI/qualification images/hsknc2-image.jpg';
+import smawNc1Image from '../../../assets/TSTI/qualification images/smawnc1-image.jpg';
+import smawNc2Image from '../../../assets/TSTI/qualification images/smawnc2-image.jpg';
+import barangayHealthNc2Image from '../../../assets/TSTI/qualification images/bhsnc2-image.jpg';
+import plumbingNc2Image from '../../../assets/TSTI/qualification images/plmbngnc2-image.jpg';
 
 // --- Background tokens (matches the program pages) ---
 const PANEL = '#F3EFE4';
@@ -142,31 +149,307 @@ const PROGRAMS = [
         offerings: [
             {
                 name: 'Electrical Installation & Maintenance (EIM) NC II',
-                description: 'Equips learners with the competencies to install, maintain, and troubleshoot electrical wiring systems, fixtures, and equipment in residential, commercial, and industrial settings in accordance with the Philippine Electrical Code and TESDA standards.',
+                sector: 'Electrical and Electronics',
+                image: eimNc2Image,
+                description: 'The Electrical Installation and Maintenance NC II Qualification consists of competencies that a person must achieve to install and maintain electrical wiring, lighting, and related equipment and systems where the voltage does not exceed 600 volts in residential houses and buildings.',
+                legalBasis: 'Technical Education and Skills Development Act of 1994 (Republic Act No. 7796). Section 22, “Establishment and Administration of the National Trade Skills Standards,” mandates TESDA to establish national occupational skill standards and develop and implement a certification and accreditation program for trade testing.',
+                qualificationScope: 'This qualification is packaged from the competency map of the Electrical and Electronics sector (Annex A).',
+                competencyGroups: [
+                    {
+                        title: 'Basic Competencies',
+                        units: [
+                            ['500311105', 'Participate in workplace communication'],
+                            ['500311106', 'Work in a team environment'],
+                            ['500311107', 'Practice career professionalism'],
+                            ['500311108', 'Practice occupational health and safety procedures'],
+                        ],
+                    },
+                    {
+                        title: 'Common Competencies',
+                        units: [
+                            ['ELC311205', 'Use hand tools'],
+                            ['ELC311201', 'Perform mensuration and calculation'],
+                            ['ELC311202', 'Prepare and interpret technical drawing'],
+                            ['ELC311204', 'Apply quality standards'],
+                            ['ELC311206', 'Terminate and connect electrical wiring and electronic circuits'],
+                        ],
+                    },
+                    {
+                        title: 'Core Competencies',
+                        units: [
+                            ['ELC741301', 'Perform roughing-in activities, wiring and cabling works for single-phase distribution, power, lighting and auxiliary systems'],
+                            ['ELC741302', 'Install electrical protective devices for distribution, power, lighting, auxiliary, lightning protection and grounding systems'],
+                            ['ELC741303', 'Install wiring devices of floor and wall mounted outlets, lighting fixtures/switches, and auxiliary outlets'],
+                        ],
+                    },
+                ],
+                employmentOutcomes: [
+                    'Building-Wiring Electrician',
+                    'Residential/Commercial-Wiring Electrician',
+                    'Maintenance Electrician',
+                ],
             },
             {
-                name: 'Shielded Metal Arc Welding (SMAW) NC I & NC II',
-                description: 'A hands-on welding program covering arc welding techniques on carbon steel plates and pipes, weld inspection, and safety procedures. Learners are trained for both community-based and institution-based delivery, including the Mobile Training Program (MTP).',
+                name: 'Shielded Metal Arc Welding (SMAW) NC I',
+                sector: 'Manufacturing, Metals and Engineering',
+                image: smawNc1Image,
+                description: 'The Welding NC I (SMAW) Qualification consists of competencies that a person must achieve to weld carbon steel plate components as specified by layout, blueprints, diagrams, work orders, welding procedures, or oral instructions using SMAW welding equipment.',
+                legalBasis: 'Technical Education and Skills Development Act of 1994 (Republic Act No. 7796). Section 22, “Establishment and Administration of the National Trade Skills Standards,” mandates TESDA to establish national occupational skill standards and develop and implement a certification and accreditation program for trade testing.',
+                qualificationScope: 'This qualification conforms with AWS D1.1 Structural Welding Code; ASME IX Boiler and Pressure Vessel Code; API 1104 Code for Gas and Oil Pipeline Facilities; and ISO 9606-1 Qualification of Welders for Steel.',
+                competencyGroups: [
+                    {
+                        title: 'Basic Competencies',
+                        units: [
+                            ['500311101', 'Apply safety practices'],
+                            ['500311102', 'Interpret drawings and sketches'],
+                            ['500311103', 'Perform industry calculations'],
+                            ['500311104', 'Contribute to quality system'],
+                        ],
+                    },
+                    {
+                        title: 'Common Competencies',
+                        units: [
+                            ['MEE721201', 'Apply safety practices'],
+                            ['MEE721202', 'Interpret drawings and sketches'],
+                            ['MEE721203', 'Perform industry calculations'],
+                            ['MEE721204', 'Contribute to quality system'],
+                            ['MEE721205', 'Use hand tools'],
+                            ['MEE721206', 'Prepare weld materials'],
+                            ['MEE721207', 'Set up welding equipment'],
+                            ['MEE721208', 'Fit up weld materials'],
+                            ['MEE721209', 'Repair welds'],
+                        ],
+                    },
+                    {
+                        title: 'Core Competencies',
+                        units: [
+                            ['MEE721301', 'Weld carbon steel plates using SMAW'],
+                        ],
+                    },
+                ],
+                employmentOutcomes: ['Plate Welder (SMAW)'],
+            },
+            {
+                name: 'Shielded Metal Arc Welding (SMAW) NC II',
+                sector: 'Manufacturing, Metals and Engineering',
+                image: smawNc2Image,
+                description: 'The Shielded Metal Arc Welding (SMAW) NC II Qualification consists of competencies that a person must achieve to weld carbon steel plate and pipe components as specified by layout, blueprints, diagrams, work orders, welding procedures, or oral instructions using shielded metal arc welding equipment.',
+                legalBasis: 'Technical Education and Skills Development Act of 1994 (Republic Act No. 7796). Section 22, “Establishment and Administration of the National Trade Skills Standards,” mandates TESDA to establish national occupational skill standards and develop and implement a certification and accreditation program for trade testing.',
+                qualificationScope: 'This qualification conforms with American Welding Society (AWS) D1.1 Structural Welding Code; American Society of Mechanical Engineers (ASME) IX Boiler and Pressure Vessel Code; American Petroleum Institute (API) 1104 Code for Gas and Oil Pipeline Facilities; and International Standards Organization (ISO) 9606-1 Qualification of Welders for Steel.',
+                competencyGroups: [
+                    {
+                        title: 'Basic Competencies',
+                        units: [
+                            ['500311105', 'Participate in workplace communication'],
+                            ['500311106', 'Work in a team environment'],
+                            ['500311107', 'Practice career professionalism'],
+                            ['500311108', 'Practice occupational health and safety procedures'],
+                        ],
+                    },
+                    {
+                        title: 'Common Competencies',
+                        units: [
+                            ['MEE722201', 'Apply safety practices'],
+                            ['MEE721202', 'Interpret drawings and sketches'],
+                            ['MEE721203', 'Perform industry calculations'],
+                            ['MEE721204', 'Contribute to quality system'],
+                            ['MEE721205', 'Use hand tools'],
+                            ['MEE721206', 'Prepare weld materials'],
+                            ['MEE721207', 'Set up welding equipment'],
+                            ['MEE721208', 'Fit up weld materials'],
+                            ['MEE721209', 'Repair welds'],
+                        ],
+                    },
+                    {
+                        title: 'Core Competencies',
+                        units: [
+                            ['MEE721306', 'Weld carbon steel plates and pipes using SMAW'],
+                        ],
+                    },
+                ],
+                employmentOutcomes: ['SMAW Welder'],
             },
             {
                 name: 'Carpentry NC II',
-                description: 'Trains learners in layout, cutting, assembling, and installing wooden structures and fixtures using hand and power tools, following occupational health and safety standards for construction sites.',
+                sector: 'Construction',
+                image: carpentryNc2Image,
+                description: 'The Carpentry NC II Qualification consists of competencies in rough and finishing carpentry that a person must achieve in the fabrication and installation of wooden materials and basic roof assembly.',
+                legalBasis: 'Technical Education and Skills Development Act of 1994 (Republic Act No. 7796). Section 22, “Establishment and Administration of the National Trade Skills Standards,” mandates TESDA to establish national occupational skill standards and develop and implement a certification and accreditation program for trade testing.',
+                qualificationScope: 'This qualification is packaged from the competency map of the Construction – Civil Works sub-sector (Annex A).',
+                competencyGroups: [
+                    {
+                        title: 'Basic Competencies',
+                        units: [
+                            ['400311210', 'Participate in workplace communication'],
+                            ['400311211', 'Work in a team environment'],
+                            ['400311212', 'Solve/address general workplace problems'],
+                            ['400311213', 'Develop career and life decisions'],
+                            ['400311214', 'Contribute to workplace innovation'],
+                            ['400311215', 'Present relevant information'],
+                            ['400311216', 'Practice occupational safety and health policies and procedures'],
+                            ['400311217', 'Exercise efficient and effective sustainable practices in the workplace'],
+                            ['400311218', 'Practice entrepreneurial skills in the workplace'],
+                        ],
+                    },
+                    {
+                        title: 'Common Competencies',
+                        units: [
+                            ['CON931201', 'Prepare construction materials and tools'],
+                            ['CON311201', 'Observe procedures, specifications and manuals of instruction'],
+                            ['CON311203', 'Perform mensurations and calculations'],
+                            ['CON311204', 'Maintain tools and equipment'],
+                        ],
+                    },
+                    {
+                        title: 'Core Competencies',
+                        units: [
+                            ['CON711301', 'Layout reference lines'],
+                            ['CON711302', 'Fabricate, install and remove wooden formworks'],
+                            ['CON711303', 'Install wooden door jamb, window frame and panels'],
+                            ['CON711304', 'Install ceiling and wall frames and panels'],
+                            ['CON711305', 'Fabricate and install wooden stairs'],
+                            ['CON711306', 'Install wooden floor supports and panels'],
+                            ['CON711307', 'Fabricate and install roofing system'],
+                            ['CON711308', 'Fabricate and install wooden cabinet'],
+                        ],
+                    },
+                ],
+                employmentOutcomes: ['Rough Carpenter', 'Finishing Carpenter'],
             },
             {
-                name: 'Plumbing NC I & NC II',
-                description: 'Covers the installation, repair, and maintenance of water supply, drainage, and venting systems for residential and commercial buildings, including pipe fitting, fixtures installation, and leak testing.',
+                name: 'Plumbing NC II',
+                sector: 'Construction',
+                image: plumbingNc2Image,
+                description: 'The Plumbing NC II Qualification consists of competencies that a person must achieve in installing multiple units of plumbing systems with multi-point hot- and cold-water lines for medium-rise buildings. It also includes plumbing repair and maintenance work.',
+                legalBasis: 'Technical Education and Skills Development Act of 1994 (Republic Act No. 7796). Section 22, “Establishment and Administration of the National Trade Skills Standards,” mandates TESDA to establish national occupational skill standards and develop and implement a certification and accreditation program for trade testing.',
+                qualificationScope: 'This qualification is packaged from the competency map of the Construction – Civil Works sub-sector (Annex A).',
+                competencyGroups: [
+                    {
+                        title: 'Basic Competencies',
+                        units: [
+                            ['500311105', 'Participate in workplace communication'],
+                            ['500311106', 'Work in a team environment'],
+                            ['500311107', 'Practice career professionalism'],
+                            ['500311108', 'Practice occupational health and safety procedures'],
+                        ],
+                    },
+                    {
+                        title: 'Common Competencies',
+                        units: [
+                            ['CON931201', 'Prepare construction materials and tools'],
+                            ['CON311201', 'Observe procedures, specifications and manuals of instruction'],
+                            ['CON311203', 'Perform mensurations and calculations'],
+                            ['CON311204', 'Maintain tools and equipment'],
+                        ],
+                    },
+                    {
+                        title: 'Core Competencies',
+                        units: [
+                            ['CON712348', 'Prepare estimation of materials for multiple plumbing units'],
+                            ['CON712349', 'Perform multiple plumbing units installation and assemblies'],
+                            ['CON712350', 'Conduct pipe leak testing'],
+                            ['CON712351', 'Perform plumbing repair and maintenance work'],
+                        ],
+                    },
+                ],
+                employmentOutcomes: ['Plumber II'],
             },
             {
                 name: 'Construction Painting NC II',
                 description: 'Trains learners in surface preparation, paint mixing, and the application of decorative and protective coatings on interior and exterior building surfaces. It covers the proper use of brushes, rollers, and spray equipment, along with safety and quality standards for construction painting works.',
             },
             {
-                name: 'Housekeeping NC II & NC III',
-                description: 'Develops skills in guest room preparation, cleaning, laundry operations, and guest relations. Graduates are equipped for employment in hotels, resorts, and other hospitality establishments. Offered through institution-based and community-based delivery modes.',
+                name: 'Housekeeping NC II',
+                image: housekeepingNc2Image,
+                description: 'The Housekeeping NC II Qualification consists of competencies that a person must achieve to prepare guest rooms, clean public areas and equipment, provide housekeeping services, provide valet services, handle intoxicated guests, and launder linen and guest clothes in a range of accommodation services.',
+                legalBasis: 'Technical Education and Skills Development Act of 1994 (Republic Act No. 7796). Section 22, “Establishment and Administration of the National Trade Skills Standards,” mandates TESDA to establish national occupational skill standards and develop and implement a certification and accreditation program for trade testing.',
+                qualificationScope: 'This qualification is packaged from the competency map of the Tourism Sector (Hotel and Restaurant) (Annex A).',
+                competencyGroups: [
+                    {
+                        title: 'Basic Competencies',
+                        units: [
+                            ['500311105', 'Participate in workplace communication'],
+                            ['500311106', 'Work in a team environment'],
+                            ['500311107', 'Practice career professionalism'],
+                            ['500311108', 'Practice occupational health and safety procedures'],
+                        ],
+                    },
+                    {
+                        title: 'Common Competencies',
+                        units: [
+                            ['TRS311201', 'Develop and update industry knowledge'],
+                            ['TRS311202', 'Observe workplace hygiene procedures'],
+                            ['TRS311203', 'Perform computer operations'],
+                            ['TRS311204', 'Perform workplace and safety practices'],
+                            ['TRS311205', 'Provide effective customer service'],
+                        ],
+                    },
+                    {
+                        title: 'Core Competencies',
+                        units: [
+                            ['TRS5123111', 'Provide housekeeping services to guests'],
+                            ['TRS5123112', 'Clean and prepare rooms for incoming guests'],
+                            ['TRS5123113', 'Provide valet/butler service'],
+                            ['TRS5123114', 'Laundry linen and guest clothes'],
+                            ['TRS5123115', 'Clean public areas, facilities and equipment'],
+                            ['TRS5123122', 'Deal with/handle intoxicated guests'],
+                        ],
+                    },
+                ],
+                employmentOutcomes: [
+                    'Junior Cleaner',
+                    'Assistant Cleaner',
+                    'Assistant Public Area Cleaner',
+                    'Cleaner',
+                    'Public Area Cleaner',
+                    'Room/Cabin Attendant/Room Maid',
+                    'Laundry Attendant',
+                    'Housekeeping Attendant',
+                    'Butler',
+                ],
             },
             {
                 name: 'Barangay Health Services NC II',
-                description: 'Prepares learners to deliver basic health care services at the barangay level, including health promotion, disease prevention, maternal and child care, and first aid. Graduates are equipped to serve as barangay health workers and community health aides in partnership with local government units and rural health units.',
+                sector: 'Health Care',
+                image: barangayHealthNc2Image,
+                description: 'The Barangay Health Services NC II qualification prepares learners to support household health and well-being, share health information, maintain health-station supplies and records, and monitor the health status of households in their service area.',
+                institutionalContext: 'In 2018, under the administration of then Mayor Oscar S. Moreno, the Cagayan de Oro Technical Vocational Institute (CDO-TVI) was established by virtue of City Ordinance 13473-2018, with Councilor Suzette Magtajas-Daba as the principal author. The institute is owned and operated by the Local Government of Cagayan de Oro and offers TESDA-accredited programs, with a focus on construction and tourism. Its mission was to provide free center-based and community-based technical skills training, prioritizing out-of-school youth and low-income families. CDO-TVI is located in Barangay Agusan, District 2, Cagayan de Oro City.',
+                competencyGroups: [
+                    {
+                        title: 'Basic Competencies',
+                        units: [
+                            ['400311210', 'Participate in workplace communication'],
+                            ['400311211', 'Work in a team environment'],
+                            ['400311212', 'Solve/address general workplace problems'],
+                            ['400311213', 'Develop career and life decisions'],
+                            ['400311214', 'Contribute to workplace innovation'],
+                            ['400311215', 'Present relevant information'],
+                            ['400311216', 'Practice occupational safety and health policies and procedures'],
+                            ['400311217', 'Exercise efficient and effective sustainable practices in the workplace'],
+                            ['400311218', 'Practice entrepreneurial skills in the workplace'],
+                        ],
+                    },
+                    {
+                        title: 'Common Competencies',
+                        units: [
+                            ['HHC323201', 'Implement and monitor infection control policies and procedures'],
+                            ['HHC323202', 'Respond effectively to difficult/challenging behavior'],
+                            ['HHC323203', 'Apply basic first aid'],
+                            ['HHC323204', 'Maintain high standard of patient/client services'],
+                        ],
+                    },
+                    {
+                        title: 'Core Competencies',
+                        units: [
+                            ['HHC532301', 'Assist the household to identify health problems to promote health and well-being'],
+                            ['HHC532302', 'Share knowledge and skills among members to provide information, education and communication (IEC) and/or household teaching in disease prevention and control'],
+                            ['HHC532303', 'Ensure safekeeping of equipment, medical supplies, materials, and health records in health station'],
+                            ['HHC532304', 'Monitor health status of household members under his/her area of service coverage'],
+                            ['HHC532305', 'Maintain updated list/records of health activities'],
+                        ],
+                    },
+                ],
+                employmentOutcomes: ['Barangay Health Worker'],
             },
             {
                 name: 'Events Management Services NC III',
@@ -296,6 +579,7 @@ export default function AcademicPrograms() {
     const [imageError, setImageError] = useState(false);
     const [activeFilter, setActiveFilter] = useState('all');
     const [selectedProgram, setSelectedProgram] = useState(null);
+    const [expandedOffering, setExpandedOffering] = useState(null);
     const heroRef = useRef(null);
 
     useEffect(() => {
@@ -318,20 +602,6 @@ export default function AcademicPrograms() {
         if (!filter || !filter.match) return PROGRAMS;
         return PROGRAMS.filter(filter.match);
     }, [activeFilter]);
-
-    const totals = useMemo(
-        () =>
-            PROGRAMS.reduce(
-                (acc, p) => ({
-                    programs: acc.programs + p.stats.programs,
-                    departments: acc.departments + p.stats.departments,
-                    faculty: acc.faculty + p.stats.faculty,
-                    colleges: acc.colleges + 1,
-                }),
-                { programs: 0, departments: 0, faculty: 0, colleges: 0 }
-            ),
-        []
-    );
 
     return (
         <MainLayout
@@ -386,32 +656,6 @@ export default function AcademicPrograms() {
                         qualifications that will shape your future at the City College of Cagayan de Oro.
                     </motion.p>
                 </motion.div>
-            </div>
-
-            {/* === STATS STRIP === */}
-            <div className="relative -mt-10 z-20 max-w-6xl mx-auto px-6">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                    {[
-                        { label: 'Colleges', value: totals.colleges },
-                        { label: 'Programs', value: totals.programs },
-                        { label: 'Departments', value: totals.departments },
-                        { label: 'Faculty & Trainers', value: `${totals.faculty}+` },
-                    ].map((stat, i) => (
-                        <motion.div
-                            key={stat.label}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: i * 0.08, duration: 0.5 }}
-                            className="bg-white rounded-2xl border border-slate-200/80 shadow-md p-4 md:p-5 text-center"
-                        >
-                            <p className="text-2xl md:text-3xl font-bold vp-serif text-emerald-700">{stat.value}</p>
-                            <p className="mt-1 text-[10px] md:text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">
-                                {stat.label}
-                            </p>
-                        </motion.div>
-                    ))}
-                </div>
             </div>
 
             {/* === PROGRAM DIRECTORY === */}
@@ -526,14 +770,107 @@ export default function AcademicPrograms() {
                                 </h3>
                                 <div className="mt-3 space-y-4">
                                     {selectedProgram.offerings.map((offering) => (
-                                        <article
-                                            key={offering.name}
-                                            className="rounded-xl border border-slate-200 p-4"
-                                        >
-                                            <h4 className="font-bold text-slate-900">{offering.name}</h4>
-                                            <p className="mt-2 text-sm leading-relaxed text-slate-600">
-                                                {offering.description}
-                                            </p>
+                                        <article key={offering.name} className="overflow-hidden rounded-xl border border-slate-200">
+                                            <button
+                                                type="button"
+                                                aria-expanded={expandedOffering === offering.name}
+                                                onClick={() => setExpandedOffering(
+                                                    expandedOffering === offering.name ? null : offering.name
+                                                )}
+                                                className="flex w-full items-center justify-between gap-4 p-4 text-left transition-colors hover:bg-slate-50"
+                                            >
+                                                <span>
+                                                    <span className="block font-bold text-slate-900">{offering.name}</span>
+                                                    {offering.sector && (
+                                                        <span className="mt-1 block text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                                                            {offering.sector} Sector
+                                                        </span>
+                                                    )}
+                                                </span>
+                                                <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600">
+                                                    <svg
+                                                        className={`h-4 w-4 transition-transform ${expandedOffering === offering.name ? 'rotate-180' : ''}`}
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 9-7 7-7-7" />
+                                                    </svg>
+                                                </span>
+                                            </button>
+                                            {expandedOffering === offering.name && (
+                                                <div className="border-t border-slate-200 p-4">
+                                                    <div className={offering.image ? 'grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(240px,0.8fr)]' : ''}>
+                                                        <div>
+                                                            <p className="text-sm leading-relaxed text-slate-600">
+                                                                {offering.description}
+                                                            </p>
+                                                            {offering.legalBasis && (
+                                                                <div className="mt-5">
+                                                                    <h5 className="text-sm font-bold text-slate-800">Legal Basis</h5>
+                                                                    <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                                                                        {offering.legalBasis}
+                                                                    </p>
+                                                                </div>
+                                                            )}
+                                                            {offering.qualificationScope && (
+                                                                <div className="mt-4">
+                                                                    <h5 className="text-sm font-bold text-slate-800">Qualification Scope</h5>
+                                                                    <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                                                                        {offering.qualificationScope}
+                                                                    </p>
+                                                                </div>
+                                                            )}
+                                                            {offering.institutionalContext && (
+                                                                <div className="mt-5 rounded-lg border border-slate-200 bg-white p-4">
+                                                                    <h5 className="text-sm font-bold text-slate-800">
+                                                                        Institutional Background
+                                                                    </h5>
+                                                                    <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                                                                        {offering.institutionalContext}
+                                                                    </p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        {offering.image && (
+                                                            <img
+                                                                src={offering.image}
+                                                                alt={`${offering.name} qualification information`}
+                                                                loading="lazy"
+                                                                className="h-auto w-full self-start rounded-lg border border-slate-200 object-contain"
+                                                            />
+                                                        )}
+                                                    </div>
+                                                    {offering.competencyGroups?.map((group) => (
+                                                        <div key={group.title} className="mt-5">
+                                                            <h5 className="text-sm font-bold text-slate-800">{group.title}</h5>
+                                                            <ul className="mt-2 space-y-2">
+                                                                {group.units.map(([code, unit]) => (
+                                                                    <li
+                                                                        key={code}
+                                                                        className="grid gap-1 text-sm leading-relaxed text-slate-600 sm:grid-cols-[7rem_1fr]"
+                                                                    >
+                                                                        <span className="font-mono text-xs font-semibold text-slate-500">{code}</span>
+                                                                        <span>{unit}</span>
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    ))}
+                                                    {offering.employmentOutcomes && (
+                                                        <div className="mt-5">
+                                                            <h5 className="text-sm font-bold text-slate-800">
+                                                                A person who achieves this qualification is competent to be:
+                                                            </h5>
+                                                            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-600">
+                                                                {offering.employmentOutcomes.map((outcome) => (
+                                                                    <li key={outcome}>{outcome}</li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
                                         </article>
                                     ))}
                                 </div>

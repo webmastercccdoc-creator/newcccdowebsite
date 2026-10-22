@@ -194,19 +194,19 @@ const FILTERS = [
 ];
 
 // --- Program card ----------------------------------------------------------
-const ProgramCard = ({ program, idx }) => (
+const ProgramCard = ({ program, idx, onViewDetails }) => (
     <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.15 }}
         transition={{ delay: idx * 0.08, duration: 0.55, ease: [0.33, 1, 0.68, 1] }}
-        className="group relative flex flex-col bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden"
+        className="group relative flex h-full min-h-[540px] flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
     >
         {/* Accent bar */}
         <div className="h-[4px] w-full" style={{ background: program.accentHex }} />
 
         {/* Banner strip */}
-        <div className="relative w-full aspect-[16/9] overflow-hidden bg-slate-200">
+        <div className="relative h-56 w-full overflow-hidden bg-slate-200">
             <img
                 src={program.banner}
                 alt={program.name}
@@ -215,59 +215,42 @@ const ProgramCard = ({ program, idx }) => (
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
             <span
-                className="absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.16em] text-white shadow-md"
+                className="absolute left-5 top-5 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-white shadow-md"
                 style={{ background: program.accentHex }}
             >
                 {program.code}
             </span>
-            <h3 className="absolute bottom-3 left-4 right-4 text-white vp-serif font-bold text-lg md:text-xl leading-tight drop-shadow-md">
+            <h3 className="absolute bottom-5 left-5 right-5 text-white vp-serif font-bold text-xl md:text-2xl leading-tight drop-shadow-md">
                 {program.name}
             </h3>
         </div>
 
         {/* Body */}
-        <div className="flex flex-col flex-1 p-5 md:p-6">
-            {/* Complete program offerings */}
-            <div>
+        <div className="flex flex-1 flex-col p-6 md:p-7">
+            <div className="flex-1">
                 <p className="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-bold mb-2">
-                    All Programs Offered ({program.offerings.length})
+                    Programs Offered ({program.offerings.length})
                 </p>
-                <div className="space-y-4">
-                    {program.offerings.map((offering) => (
-                        <div
+                <ul className="space-y-2">
+                    {program.offerings.slice(0, 2).map((offering) => (
+                        <li
                             key={offering.name}
-                            className="border-l-2 pl-3"
+                            className="border-l-2 py-1 pl-4 text-base font-semibold leading-snug text-slate-800 line-clamp-2"
                             style={{ borderColor: `${program.accentHex}80` }}
                         >
-                            <h4 className="text-sm font-bold text-slate-800 leading-snug">
-                                {offering.name}
-                            </h4>
-                            <p className="mt-1.5 text-sm text-slate-600 leading-relaxed">
-                                {offering.description}
-                            </p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            <div className="mt-5">
-                <p className="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-bold mb-2">
-                    Departments and Sectors
-                </p>
-                <ul className="flex flex-wrap gap-2">
-                    {program.departments.map((department) => (
-                        <li
-                            key={department}
-                            className="px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700"
-                        >
-                            {department}
+                            {offering.name}
                         </li>
                     ))}
                 </ul>
+                {program.offerings.length > 2 && (
+                    <p className="mt-2 text-xs font-medium text-slate-500">
+                        +{program.offerings.length - 2} more programs
+                    </p>
+                )}
             </div>
 
             {/* Leader */}
-            <div className="mt-5 pt-4 border-t border-slate-100 flex items-center gap-3">
+            <div className="mt-5 min-h-[72px] border-t border-slate-100 pt-5 flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-100 ring-2 ring-white shadow-sm flex-shrink-0">
                     <img
                         src={program.leader.photo}
@@ -277,17 +260,26 @@ const ProgramCard = ({ program, idx }) => (
                     />
                 </div>
                 <div className="min-w-0">
-                    <p className="text-xs font-bold text-slate-800">{program.leader.name}</p>
-                    <p className="text-[10px] uppercase tracking-wider text-slate-400">
+                    <p className="text-xs font-bold text-slate-800 line-clamp-1">{program.leader.name}</p>
+                    <p className="text-[10px] uppercase tracking-wider text-slate-400 line-clamp-2">
                         {program.leader.role}
                     </p>
                 </div>
             </div>
 
+            <button
+                type="button"
+                onClick={() => onViewDetails(program)}
+                className="mt-4 w-full rounded-xl border px-4 py-3 text-sm font-semibold transition-colors hover:bg-slate-50"
+                style={{ color: program.accentHex, borderColor: `${program.accentHex}55` }}
+            >
+                View all details
+            </button>
+
             {/* CTA */}
             <a
                 href={program.route}
-                className="mt-5 inline-flex items-center justify-between gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-colors duration-300"
+                className="mt-3 inline-flex w-full items-center justify-between gap-2 rounded-xl px-5 py-3.5 text-sm font-bold text-white shadow-sm transition-all duration-300 hover:brightness-110"
                 style={{ background: program.accentHex }}
             >
                 Explore {program.code}
@@ -303,11 +295,23 @@ const ProgramCard = ({ program, idx }) => (
 export default function AcademicPrograms() {
     const [imageError, setImageError] = useState(false);
     const [activeFilter, setActiveFilter] = useState('all');
+    const [selectedProgram, setSelectedProgram] = useState(null);
     const heroRef = useRef(null);
 
     useEffect(() => {
         document.title = 'Academic Programs - City College of Cagayan de Oro';
     }, []);
+
+    useEffect(() => {
+        if (!selectedProgram) return undefined;
+
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') setSelectedProgram(null);
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [selectedProgram]);
 
     const filteredPrograms = useMemo(() => {
         const filter = FILTERS.find((f) => f.id === activeFilter);
@@ -412,7 +416,7 @@ export default function AcademicPrograms() {
 
             {/* === PROGRAM DIRECTORY === */}
             <section className="relative py-20 md:py-28">
-                <div className="max-w-7xl mx-auto px-6">
+                <div className="mx-auto max-w-6xl px-6">
                     <div className="text-center mb-10">
                         <Kicker textClass="text-amber-600" ruleClass="bg-amber-500" align="center">
                             Explore
@@ -455,15 +459,129 @@ export default function AcademicPrograms() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -16 }}
                             transition={{ duration: 0.35, ease: 'easeOut' }}
-                            className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+                            className="grid auto-rows-fr grid-cols-1 gap-7 sm:grid-cols-2"
                         >
                             {filteredPrograms.map((program, idx) => (
-                                <ProgramCard key={program.id} program={program} idx={idx} />
+                                <ProgramCard
+                                    key={program.id}
+                                    program={program}
+                                    idx={idx}
+                                    onViewDetails={setSelectedProgram}
+                                />
                             ))}
                         </motion.div>
                     </AnimatePresence>
                 </div>
             </section>
+
+            <AnimatePresence>
+                {selectedProgram && (
+                    <motion.div
+                        className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/65 p-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onMouseDown={(event) => {
+                            if (event.target === event.currentTarget) {
+                                setSelectedProgram(null);
+                            }
+                        }}
+                    >
+                        <motion.section
+                            role="dialog"
+                            aria-modal="true"
+                            aria-labelledby="program-details-title"
+                            className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl md:p-8"
+                            initial={{ y: 20, scale: 0.98 }}
+                            animate={{ y: 0, scale: 1 }}
+                            exit={{ y: 12, scale: 0.98 }}
+                        >
+                            <button
+                                type="button"
+                                onClick={() => setSelectedProgram(null)}
+                                aria-label="Close program details"
+                                className="absolute right-4 top-4 rounded-full p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+                            >
+                                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+
+                            <p
+                                className="text-xs font-bold uppercase tracking-[0.16em]"
+                                style={{ color: selectedProgram.accentHex }}
+                            >
+                                {selectedProgram.code}
+                            </p>
+                            <h2
+                                id="program-details-title"
+                                className="mt-2 pr-8 text-2xl font-bold text-slate-900 vp-serif md:text-3xl"
+                            >
+                                {selectedProgram.name}
+                            </h2>
+
+                            <div className="mt-7">
+                                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500">
+                                    All Programs Offered
+                                </h3>
+                                <div className="mt-3 space-y-4">
+                                    {selectedProgram.offerings.map((offering) => (
+                                        <article
+                                            key={offering.name}
+                                            className="rounded-xl border border-slate-200 p-4"
+                                        >
+                                            <h4 className="font-bold text-slate-900">{offering.name}</h4>
+                                            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+                                                {offering.description}
+                                            </p>
+                                        </article>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="mt-6 grid gap-6 sm:grid-cols-2">
+                                <div>
+                                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500">
+                                        Departments and Sectors
+                                    </h3>
+                                    <ul className="mt-3 flex flex-wrap gap-2">
+                                        {selectedProgram.departments.map((department) => (
+                                            <li
+                                                key={department}
+                                                className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700"
+                                            >
+                                                {department}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500">
+                                        Areas of Focus
+                                    </h3>
+                                    <ul className="mt-3 flex flex-wrap gap-2">
+                                        {selectedProgram.focus.map((area) => (
+                                            <li
+                                                key={area}
+                                                className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700"
+                                            >
+                                                {area}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div className="mt-6 border-t border-slate-200 pt-4">
+                                <p className="font-semibold text-slate-900">{selectedProgram.leader.name}</p>
+                                <p className="mt-1 text-xs uppercase tracking-wide text-slate-500">
+                                    {selectedProgram.leader.role}
+                                </p>
+                            </div>
+                        </motion.section>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* === LEADERSHIP SHOWCASE === */}
             <section

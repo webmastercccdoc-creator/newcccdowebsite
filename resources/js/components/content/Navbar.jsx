@@ -187,7 +187,7 @@ const Navbar = () => {
         },
         {
             name: 'Research',
-            href: 'https://sites.google.com/view/ritts-cccdo/home',
+            href: '/research',
         },
         {
             name: 'Extension',

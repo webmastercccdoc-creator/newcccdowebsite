@@ -6,7 +6,8 @@ import "../../../../css/home.css";
 import { initLandingAnimations } from "../../../home-animations";
 import ArticlesCoverflow from "./ArticlesCoverflow";
 import sdgHomeImage from "../../../assets/images/sdg-home.png";
-import bannerVideo from "../../../assets/video/video-banner.mp4";
+
+const bannerVideo = "/videos/intro.mp4";
 
 // Ranking Logos
 import homeLogo from "../../../assets/logos/home-logo.png";

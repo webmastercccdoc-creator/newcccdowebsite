@@ -121,7 +121,7 @@ class DashboardController extends Controller
                 'pending' => (int) $dept['pending'],
                 'rejected' => (int) $dept['rejected'],
                 'rank' => $index + 1,
-                'rankIcon' => $index === 0 ? '🥇' : ($index === 1 ? '🥈' : ($index === 2 ? '🥉' : '#' . ($index + 1)))
+                'rankIcon' => $index === 0 ? 'ðŸ¥‡' : ($index === 1 ? 'ðŸ¥ˆ' : ($index === 2 ? 'ðŸ¥‰' : '#' . ($index + 1)))
             ];
         }
 
@@ -277,7 +277,7 @@ class DashboardController extends Controller
                 'pending' => (int) $dept->pending,
                 'rejected' => (int) $dept->rejected,
                 'rank' => $index + 1,
-                'rankIcon' => $index === 0 ? '🥇' : ($index === 1 ? '🥈' : ($index === 2 ? '🥉' : '#' . ($index + 1)))
+                'rankIcon' => $index === 0 ? 'ðŸ¥‡' : ($index === 1 ? 'ðŸ¥ˆ' : ($index === 2 ? 'ðŸ¥‰' : '#' . ($index + 1)))
             ];
         });
 

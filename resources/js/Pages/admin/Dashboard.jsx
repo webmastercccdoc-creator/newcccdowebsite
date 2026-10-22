@@ -5,8 +5,7 @@ import AdminLayout from '../../layouts/AdminLayout';
 export default function Dashboard({ 
     user = null,
     stats: initialStats = null,
-    departmentStats: initialDepartmentStats = null,
-    userRank: initialUserRank = null
+    recentActivity: initialRecentActivity = null
 }) {
     const [stats, setStats] = useState({
         totalArticles: 0,
@@ -15,17 +14,15 @@ export default function Dashboard({
         rejected: 0
     });
     const [isLoading, setIsLoading] = useState(true);
-    const [departmentStats, setDepartmentStats] = useState([]);
-    const [userRank, setUserRank] = useState(null);
+    const [recentActivity, setRecentActivity] = useState([]);
     const [currentUser, setCurrentUser] = useState(user);
     const [showAllDepartments, setShowAllDepartments] = useState(false);
 
     useEffect(() => {
         // If data is passed from server (Inertia), use it
-        if (initialStats && initialDepartmentStats) {
+        if (initialStats) {
             setStats(initialStats);
-            setDepartmentStats(initialDepartmentStats);
-            setUserRank(initialUserRank);
+            setRecentActivity(initialRecentActivity || []);
             setIsLoading(false);
         } else {
             // Otherwise fetch from API
@@ -46,8 +43,7 @@ export default function Dashboard({
                 pending: 0,
                 rejected: 0
             });
-            setDepartmentStats(data.departmentStats || []);
-            setUserRank(data.userRank || null);
+            setRecentActivity(data.recentActivity || []);
             if (data.user) {
                 setCurrentUser(data.user);
             }
@@ -151,49 +147,51 @@ export default function Dashboard({
     const hiddenCount = totalDepartments - 1;
 
     return (
-        <AdminLayout title="Dashboard">
-            {/* Welcome Section */}
-            <div className="mb-6">
-                <h1 className="text-2xl font-bold text-gray-800">
-                    Welcome back, {currentUser?.firstname || currentUser?.name || 'Admin'}! 👋
-                </h1>
-                <p className="text-gray-600 text-sm mt-1">
-                    Here's an overview of your articles and department performance
-                </p>
-                {currentUser?.departments && currentUser.departments.length > 0 && (
-                    <div className="mt-2 flex flex-wrap items-center gap-2">
-                        <span className="text-xs text-gray-500">Your Departments:</span>
-                        {displayDepartments.map((dept, index) => (
-                            <span key={index} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-200">
-                                {dept}
-                            </span>
-                        ))}
-                        {!showAllDepartments && hiddenCount > 0 && (
-                            <button
-                                onClick={() => setShowAllDepartments(true)}
-                                className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
-                            >
-                                +{hiddenCount} more
-                            </button>
-                        )}
-                        {showAllDepartments && hiddenCount > 0 && (
-                            <button
-                                onClick={() => setShowAllDepartments(false)}
-                                className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
-                            >
-                                Show less
-                            </button>
-                        )}
-                    </div>
-                )}
-            </div>
-
-            {/* Statistics Cards - Solid Colors */}
+        <AdminLayout
+            title="Dashboard"
+            headerBelowTitle={
+                <div className="mt-4">
+                    <h2 className="text-2xl font-bold text-gray-800">
+                        Welcome back, {currentUser?.firstname || currentUser?.name || 'Admin'}! 👋
+                    </h2>
+                    <p className="text-gray-600 text-sm mt-1">
+                        Here's an overview of your articles and department performance
+                    </p>
+                    {currentUser?.departments && currentUser.departments.length > 0 && (
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
+                            <span className="text-xs text-gray-500">Your Departments:</span>
+                            {displayDepartments.map((dept, index) => (
+                                <span key={index} className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-200">
+                                    {dept}
+                                </span>
+                            ))}
+                            {!showAllDepartments && hiddenCount > 0 && (
+                                <button
+                                    onClick={() => setShowAllDepartments(true)}
+                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
+                                >
+                                    +{hiddenCount} more
+                                </button>
+                            )}
+                            {showAllDepartments && hiddenCount > 0 && (
+                                <button
+                                    onClick={() => setShowAllDepartments(false)}
+                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200 transition-colors cursor-pointer"
+                                >
+                                    Show less
+                                </button>
+                            )}
+                        </div>
+                    )}
+                </div>
+            }
+        >
+            {/* Statistics Cards - Solid Colors with Hover Effects */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {statCards.map((stat, index) => (
                     <div 
                         key={index} 
-                        className={`${stat.cardBg} rounded-xl shadow-lg`}
+                        className={`${stat.cardBg} rounded-xl shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl hover:scale-105 hover:-translate-y-1 cursor-pointer`}
                     >
                         <div className="p-6">
                             <div className="flex items-center justify-between">
@@ -205,7 +203,7 @@ export default function Dashboard({
                                         {stat.value}
                                     </p>
                                 </div>
-                                <div className="p-3 rounded-xl bg-white/20 backdrop-blur-sm">
+                                <div className="p-3 rounded-xl bg-white/20 backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
                                     <div className="text-white">
                                         {stat.icon}
                                     </div>

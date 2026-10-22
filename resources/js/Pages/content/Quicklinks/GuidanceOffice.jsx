@@ -1004,7 +1004,15 @@ const TABS = [
                                             A brief interactive webinar discussing common student
                                             mental health challenges, healthy coping strategies,
                                             the importance of lived experiences, supportive
-                                            communication, help-seeking, and appropriate referral.
+                                            communication, help-seeking, and appropriate referral.{" "}
+                                            <a
+                                                href="https://drive.google.com/file/d/12QzEIeW6JRcSkCYdS2x8G1oZumKSgLOv/view?usp=sharing"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="font-semibold text-[#157d3c] hover:underline"
+                                            >
+                                                (Access Resource)
+                                            </a>
                                         </span>
                                     </span>
                                 </li>

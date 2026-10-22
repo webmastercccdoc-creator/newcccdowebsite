@@ -177,7 +177,7 @@ const Navbar = () => {
         },
         {
             name: 'Academic Programs',
-            href: '/Programs',
+            href: '/programs',
             dropdown: [
                 { name: 'College of Education', href: '/programs/college-of-education', description: 'Teacher education and development programs' },
                 { name: 'College of Arts and Sciences', href: '/programs/college-of-arts-and-sciences', description: 'Liberal arts, sciences, and humanities' },
@@ -487,9 +487,19 @@ const Navbar = () => {
                                                         {/* Dropdown Footer */}
                                                         <div className="border-t border-green-200/60 bg-gradient-to-r from-green-50/80 to-green-100/50 backdrop-blur-sm p-5">
                                                             <div className="flex items-center justify-between">
-                                                                <span className="text-sm text-green-700 font-semibold tracking-wide font-sans">
-                                                                    Browse all {item.name} →
-                                                                </span>
+                                                                {item.name === 'Academic Programs' ? (
+                                                                    <a
+                                                                        href={item.href}
+                                                                        onClick={() => setOpenDropdown(null)}
+                                                                        className="text-sm text-green-700 font-semibold tracking-wide font-sans"
+                                                                    >
+                                                                        Browse all {item.name} →
+                                                                    </a>
+                                                                ) : (
+                                                                    <span className="text-sm text-green-700 font-semibold tracking-wide font-sans">
+                                                                        Browse all {item.name} →
+                                                                    </span>
+                                                                )}
                                                             </div>
                                                         </div>
                                                     </div>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Sidebar from '../components/admin/Sidebar';
 import Navbar from '../components/admin/Navbar';
 
-export default function AdminLayout({ title, children, activePage }) {
+export default function AdminLayout({ title, children, activePage, headerContent, headerBelowTitle }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
 
@@ -71,9 +71,15 @@ export default function AdminLayout({ title, children, activePage }) {
                 {/* Main Content - Scrollable */}
                 <main className="flex-1 px-3 md:px-5 py-4 overflow-y-auto">
                     <div className="w-full h-full">
-                        <h1 className="mb-4 text-2xl md:text-3xl font-bold text-gray-900">
-                            {title}
-                        </h1>
+                        <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                            <div>
+                                <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">
+                                    {title}
+                                </h1>
+                                {headerBelowTitle}
+                            </div>
+                            {headerContent}
+                        </div>
                         <div className="w-full h-auto">
                             {children}
                         </div>

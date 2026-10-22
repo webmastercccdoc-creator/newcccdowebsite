@@ -42,12 +42,8 @@ class HomeController extends Controller
                 // Normalize image path for frontend
                 $bannerPath = $promotion->banner_image_path ?: $promotion->image_path;
                 $carouselPath = $promotion->carousel_image_path ?: $bannerPath;
-                $promotion->banner_image_url = $bannerPath && !str_starts_with($bannerPath, 'http')
-                    ? asset('storage/' . $bannerPath)
-                    : $bannerPath;
-                $promotion->carousel_image_url = $carouselPath && !str_starts_with($carouselPath, 'http')
-                    ? asset('storage/' . $carouselPath)
-                    : $carouselPath;
+                $promotion->banner_image_url = $this->imageUrl($bannerPath);
+                $promotion->carousel_image_url = $this->imageUrl($carouselPath);
                 $promotion->image_url = $promotion->carousel_image_url;
                 
                 // Ensure alt text exists
@@ -64,5 +60,26 @@ class HomeController extends Controller
             'newsArticles' => $newsArticles,
             'promotions' => $promotions, // Add promotions to the view data
         ]);
+    }
+
+    private function imageUrl(?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+
+        $path = trim($path);
+        if (preg_match('/^(?:https?:)?\/\//i', $path) || str_starts_with($path, 'data:')) {
+            return $path;
+        }
+
+        $path = ltrim($path, '/');
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, strlen('storage/'));
+        } elseif (str_starts_with($path, 'public/')) {
+            $path = substr($path, strlen('public/'));
+        }
+
+        return asset('storage/' . $path);
     }
 }

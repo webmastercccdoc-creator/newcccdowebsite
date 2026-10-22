@@ -318,14 +318,22 @@ export function initLandingAnimations(slides = []) {
         return new Promise((resolve, reject) => {
             const img = new Image();
             img.onload = () => resolve(img);
-            img.onerror = reject;
+            img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
             img.src = src;
         });
     }
 
     async function loadImages() {
-        const promises = slideData.flatMap(({ image, bannerImage }) => [image, bannerImage].map(loadImage));
-        return Promise.all(promises);
+        const sources = [...new Set(
+            slideData.flatMap(({ image, bannerImage }) => [image, bannerImage]).filter(Boolean)
+        )];
+        const results = await Promise.allSettled(sources.map(loadImage));
+
+        results.forEach((result, index) => {
+            if (result.status === 'rejected') {
+                console.warn('Carousel image failed to load:', sources[index], result.reason);
+            }
+        });
     }
 
     // ── Scroll-reveal for sections below the carousel ──
@@ -384,23 +392,15 @@ export function initLandingAnimations(slides = []) {
         counters.forEach((c) => observer.observe(c));
     }
 
-    async function start() {
-        try {
-            await loadImages();
+    function start() {
+        init();
+        setTimeout(() => {
             if (mounted) {
-                init();
-                // Slight delay so DOM is painted
-                setTimeout(() => {
-                    if (mounted) {
-                        initScrollReveal();
-                        initCountUp();
-                    }
-                }, 100);
+                initScrollReveal();
+                initCountUp();
             }
-        } catch (error) {
-            console.error('One or more images failed to load', error);
-            if (mounted) init();
-        }
+        }, 100);
+        loadImages();
     }
 
     start();

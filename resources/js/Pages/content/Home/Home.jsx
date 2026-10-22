@@ -6,12 +6,10 @@ import "../../../../css/home.css";
 import { initLandingAnimations } from "../../../home-animations";
 import ArticlesCoverflow from "./ArticlesCoverflow";
 import sdgHomeImage from "../../../assets/images/sdg-home.png";
+import bannerVideo from "../../../assets/video/video-banner.mp4";
 
 // Ranking Logos
 import homeLogo from "../../../assets/logos/home-logo.png";
-
-// Import Video
-import bannerVideo from "../../../assets/video/video-banner.mp4";
 
 // Import Student Image
 import studentsImage from "../../../assets/images/students-home.png";
@@ -352,6 +350,27 @@ export default function Home({ newsArticles = [], promotions = [] }) {
         return false;
     }, []);
 
+    // Play the intro without preloading the full video before playback.
+    useEffect(() => {
+        if (!videoRef.current || !showVideo) return;
+
+        const video = videoRef.current;
+        video.play().catch((error) => {
+            console.warn("Intro video autoplay failed:", error);
+        });
+
+        const handleVideoEnd = () => {
+            setIsFading(true);
+            setTimeout(() => {
+                setShowVideo(false);
+                setIsFading(false);
+            }, 1000);
+        };
+
+        video.addEventListener("ended", handleVideoEnd);
+        return () => video.removeEventListener("ended", handleVideoEnd);
+    }, [showVideo]);
+
     // Update slides per view and mobile state on resize
     useEffect(() => {
         const updateView = () => {
@@ -363,34 +382,6 @@ export default function Home({ newsArticles = [], promotions = [] }) {
         window.addEventListener("resize", updateView);
         return () => window.removeEventListener("resize", updateView);
     }, [getSlidesPerView, checkIsMobile]);
-
-    // Auto-play the video and start fade out when it ends
-    useEffect(() => {
-        if (videoRef.current && showVideo) {
-            videoRef.current.play().catch((error) => {
-                console.log("Video autoplay failed:", error);
-            });
-
-            const handleVideoEnd = () => {
-                setIsFading(true);
-                setTimeout(() => {
-                    setShowVideo(false);
-                    setIsFading(false);
-                }, 1000);
-            };
-
-            videoRef.current.addEventListener("ended", handleVideoEnd);
-
-            return () => {
-                if (videoRef.current) {
-                    videoRef.current.removeEventListener(
-                        "ended",
-                        handleVideoEnd,
-                    );
-                }
-            };
-        }
-    }, [showVideo]);
 
     // Reset to middle position when initializing (Desktop) or start position (Mobile)
     useEffect(() => {
@@ -421,7 +412,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
 
     const goToSlide = useCallback(
         (index) => {
-            if (isTransitioning || totalSlides === 0) return;
+            if (isTransitioning || totalSlides === 0 || showVideo) return;
 
             // Clamp the index to valid range
             const maxIndex = totalSlides * 3 - 1;
@@ -441,7 +432,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
     );
 
     const goToNextSlide = useCallback(() => {
-        if (isTransitioning || totalSlides === 0 || showVideo) return;
+        if (isTransitioning || totalSlides === 0) return;
 
         // On mobile: no infinite scroll, stop at the end
         if (isMobile) {
@@ -750,16 +741,12 @@ export default function Home({ newsArticles = [], promotions = [] }) {
             >
                 <div className="indicator"></div>
 
-                {/* Video Banner Overlay */}
                 {showVideo && (
                     <div
                         className={`video-banner-overlay ${isFading ? "fade-out" : ""}`}
                         style={
                             videoAspectRatio
-                                ? {
-                                      aspectRatio: videoAspectRatio,
-                                      height: "auto",
-                                  }
+                                ? { aspectRatio: videoAspectRatio, height: "auto" }
                                 : undefined
                         }
                     >
@@ -768,14 +755,11 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                             className="video-banner"
                             muted
                             playsInline
-                            preload="auto"
+                            preload="metadata"
                             onLoadedMetadata={(event) => {
-                                const { videoWidth, videoHeight } =
-                                    event.currentTarget;
+                                const { videoWidth, videoHeight } = event.currentTarget;
                                 if (videoWidth && videoHeight) {
-                                    setVideoAspectRatio(
-                                        `${videoWidth} / ${videoHeight}`,
-                                    );
+                                    setVideoAspectRatio(`${videoWidth} / ${videoHeight}`);
                                 }
                             }}
                         >
@@ -1206,7 +1190,7 @@ export default function Home({ newsArticles = [], promotions = [] }) {
                             {/* View All Button */}
                             <div className="news-view-all-wrapper">
                                 <a
-                                    href="/news/latest"
+                                    href="/article/latest"
                                     className="news-view-all-btn"
                                 >
                                     View All News

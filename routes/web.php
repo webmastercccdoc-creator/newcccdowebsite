@@ -76,6 +76,10 @@ Route::get('/sas', function () {
     return Inertia::render('content/Quicklinks/SAS');
 })->name('quicklinks.sas');
 
+Route::get('/health', function () {
+    return Inertia::render('content/Quicklinks/HealthServiceOffice');
+})->name('quicklinks.health');
+
 Route::get('/ollpd', function () {
     return Inertia::render('content/Quicklinks/OLLPD');
 })->name('quicklinks.ollpd');
@@ -141,6 +145,10 @@ Route::get('/offices/vp-research-extension', function () {
 // ============================================
 // ACADEMICS / PROGRAMS PAGES
 // ============================================
+Route::get('/programs', function () {
+    return Inertia::render('content/Academics/AcademicProgrrams');
+})->name('academics.programs');
+
 Route::get('/programs/college-of-education', function () {
     return Inertia::render('content/Academics/CollegeEducation');
 })->name('academics.college-of-education');

@@ -349,14 +349,6 @@ function AboutSubTabs() {
                                             8:00 AM – 5:00 PM
                                         </td>
                                     </tr>
-                                    <tr className="transition-colors hover:bg-[#f0f7f2]">
-                                        <td className="px-4 py-3 font-semibold text-[#1a1a1a]">
-                                            Saturday
-                                        </td>
-                                        <td className="px-4 py-3 text-gray-700">
-                                            By appointment only
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>

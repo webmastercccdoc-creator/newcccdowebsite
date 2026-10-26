@@ -119,14 +119,39 @@ export default function SDG() {
     }, []);
 
     const [activeHoverIndex, setActiveHoverIndex] = useState(null);
-    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [selectedIndex, setSelectedIndex] = useState(() => {
+        if (typeof window === 'undefined') return null;
+
+        const sdgNumber = Number(window.location.hash.slice(1));
+        return Number.isInteger(sdgNumber) && sdgNumber >= 1 && sdgNumber <= 17
+            ? sdgNumber - 1
+            : null;
+    });
+
+    useEffect(() => {
+        const syncSelectedSdg = () => {
+            const sdgNumber = Number(window.location.hash.slice(1));
+            setSelectedIndex(
+                Number.isInteger(sdgNumber) && sdgNumber >= 1 && sdgNumber <= 17
+                    ? sdgNumber - 1
+                    : null
+            );
+        };
+
+        window.addEventListener('hashchange', syncSelectedSdg);
+        return () => window.removeEventListener('hashchange', syncSelectedSdg);
+    }, []);
 
     const handleTileClick = (index) => {
+        if (index >= 17) return;
+
         setSelectedIndex(index);
+        window.location.hash = String(index + 1);
     };
 
     const handleBack = () => {
         setSelectedIndex(null);
+        window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
     };
 
     const isDetailView = selectedIndex !== null;

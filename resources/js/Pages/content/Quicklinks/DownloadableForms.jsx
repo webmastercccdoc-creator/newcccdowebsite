@@ -19,13 +19,13 @@ const pdfModules = import.meta.glob(
     { eager: true }
 );
 
-// ============ Category configuration ============
 const FOLDER_TO_CATEGORY = {
     "Internationalization": "Internationalization",
     "Code Of Ethics": "Code of Ethics",
     "Data Privacy": "Data Privacy",
     "Financial Report": "Financial Report",
     "Academic Affairs Services": "Academic Affairs Services",
+    "Student Affair Services": "Student Affair Services",
 };
 
 const CATEGORY_ORDER = [
@@ -34,6 +34,7 @@ const CATEGORY_ORDER = [
     "Data Privacy",
     "Financial Report",
     "Academic Affairs Services",
+    "Student Affair Services",
 ];
 
 const FORMS_PER_PAGE = 6;
@@ -250,10 +251,10 @@ export default function DownloadableForms() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // Build category list: "All" + only categories that actually have files
+    // Keep configured categories visible even when their folders have no PDFs yet.
     const categories = useMemo(() => {
         const present = new Set(forms.map((f) => f.category));
-        const ordered = CATEGORY_ORDER.filter((c) => present.has(c));
+        const ordered = CATEGORY_ORDER;
         const extras = [...present].filter(
             (c) => !CATEGORY_ORDER.includes(c) && c !== "Uncategorized"
         );

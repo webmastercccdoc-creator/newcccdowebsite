@@ -847,6 +847,7 @@ export default function AddArticles({
             type="text"
             id="title"
             name="title"
+            maxLength={500}
             value={formData.title}
             onChange={handleChange}
             disabled={isReadOnlyView}

@@ -134,6 +134,14 @@ export default function AddArticles({
     element.replaceWith('\n');
   });
 
+  document.querySelectorAll('a').forEach((anchor) => {
+    const href = anchor.getAttribute('href');
+    if (!href) return;
+
+    const label = anchor.textContent.trim();
+    anchor.replaceWith(label && label !== href ? `[${label}](${href})` : href);
+  });
+
   return document.body.textContent
     .replace(/\u00a0/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
@@ -839,6 +847,7 @@ export default function AddArticles({
             type="text"
             id="title"
             name="title"
+            maxLength={500}
             value={formData.title}
             onChange={handleChange}
             disabled={isReadOnlyView}
@@ -887,7 +896,7 @@ export default function AddArticles({
           )}
           {departmentOptions.length === 0 && !isLoadingDepartments && (
             <p className="mt-1.5 text-sm text-amber-600">
-              ⚠️ No departments assigned to you. Please contact your administrator.
+              No departments assigned to you. Please contact your administrator.
             </p>
           )}
         </div>
@@ -989,7 +998,7 @@ export default function AddArticles({
             <p className="mt-1.5 text-sm text-red-500">{errors.content}</p>
           )}
           <p className="mt-1 text-xs text-gray-500">
-            💡 Tip: Press <kbd className="px-1 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs font-mono">Enter</kbd> to create a new paragraph.
+            Paste a URL or use [link text](https://example.com); links are clickable in the published article. Press <kbd className="px-1 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs font-mono">Enter</kbd> to create a new paragraph.
           </p>
         </div>
 
@@ -1070,11 +1079,11 @@ export default function AddArticles({
           )}
           {!formData.title && !formData.content && (
             <p className="mt-2 text-xs text-amber-600">
-              ⚠️ Please add a title and content first for auto-detection
+             Please add a title and content first for auto-detection
             </p>
           )}
           <p className="mt-2 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg p-2">
-            ⚠️ <strong>Note:</strong> AI auto-detection provides suggestions only and may not always be accurate. Please carefully review the content to determine the real and appropriate SDGs.
+             <strong>Note:</strong> AI auto-detection provides suggestions only and may not always be accurate. Please carefully review the content to determine the real and appropriate SDGs.
           </p>
         </div>
 

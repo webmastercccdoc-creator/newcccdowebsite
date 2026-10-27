@@ -44,6 +44,24 @@ class ArticlesStoreTest extends TestCase
         ]);
     }
 
+    public function test_it_accepts_article_titles_up_to_500_characters(): void
+    {
+        $user = User::factory()->create();
+        $title = str_repeat('A', 500);
+
+        $response = $this->actingAs($user)->post('/admin/articles', [
+            'title' => $title,
+            'content' => 'Article content.',
+            'department' => 'Research',
+            'date' => '2026-08-14',
+            'status' => 'Draft',
+            'sdg' => [6],
+        ]);
+
+        $response->assertStatus(201);
+        $this->assertDatabaseHas('news_articles', ['title' => $title]);
+    }
+
     public function test_it_updates_article_when_sdg_values_are_sent_in_form_format(): void
     {
         $user = User::factory()->create();

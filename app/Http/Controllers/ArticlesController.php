@@ -220,7 +220,7 @@ class ArticlesController extends Controller
     public function suggestSdgs(Request $request)
     {
         $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:500'],
             'content' => ['required', 'string', 'max:30000'],
         ]);
 
@@ -323,7 +323,7 @@ class ArticlesController extends Controller
         $request->merge(['sdg' => $normalizedSdg]);
 
         $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:500'],
             'content' => ['required', 'string'],
             'department' => ['nullable', 'string', 'max:255'],
             'status' => ['nullable', 'string'],
@@ -550,7 +550,7 @@ class ArticlesController extends Controller
         $request->merge(['sdg' => $normalizedSdg]);
 
         $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:500'],
             'content' => ['required', 'string'],
             'department' => ['nullable', 'string', 'max:255'],
             'status' => ['nullable', 'string'],

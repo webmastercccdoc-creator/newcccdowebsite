@@ -120,7 +120,7 @@ export default function ViewArticle({ article: initialArticle = null, articleIma
 
         // Normalize plain-text content that does not already contain paragraph elements.
         let paragraphs = Array.from(container.querySelectorAll('p'));
-        if (!paragraphs.length) {
+        if (!paragraphs.length && container.children.length === 0) {
             const textContent = container.textContent?.replace(/\r\n/g, '\n').trim();
             if (textContent) {
                 const paragraphBlocks = textContent
@@ -144,6 +144,46 @@ export default function ViewArticle({ article: initialArticle = null, articleIma
                 }
             }
         }
+
+        const textWalker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+        const textNodes = [];
+        while (textWalker.nextNode()) {
+            if (!textWalker.currentNode.parentElement?.closest('a, code, pre, script, style')) {
+                textNodes.push(textWalker.currentNode);
+            }
+        }
+
+        const linkPattern = /\[([^\]]+)\]\(((?:https?:\/\/|www\.)[^)\s]+)\)|((?:https?:\/\/|www\.)[^\s]+)/gi;
+        textNodes.forEach((textNode) => {
+            const text = textNode.textContent;
+            linkPattern.lastIndex = 0;
+            if (!linkPattern.test(text)) return;
+            linkPattern.lastIndex = 0;
+
+            const fragment = document.createDocumentFragment();
+            let lastIndex = 0;
+            let match;
+
+            while ((match = linkPattern.exec(text))) {
+                fragment.append(text.slice(lastIndex, match.index));
+
+                const isMarkdownLink = Boolean(match[1]);
+                const rawUrl = match[2] || match[3];
+                const trailingPunctuation = isMarkdownLink ? '' : (rawUrl.match(/[.,!?;:]+$/)?.[0] || '');
+                const url = trailingPunctuation ? rawUrl.slice(0, -trailingPunctuation.length) : rawUrl;
+                const link = document.createElement('a');
+                link.href = url.startsWith('www.') ? `https://${url}` : url;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                link.textContent = isMarkdownLink ? match[1] : url;
+                link.className = 'text-green-700 underline break-all hover:text-green-900';
+                fragment.append(link, trailingPunctuation);
+                lastIndex = match.index + match[0].length;
+            }
+
+            fragment.append(text.slice(lastIndex));
+            textNode.replaceWith(fragment);
+        });
 
         const hasEmbeddedImages = /<img\s+/i.test(container.innerHTML);
         if (!images.length || hasEmbeddedImages) {

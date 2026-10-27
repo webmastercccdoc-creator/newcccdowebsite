@@ -114,6 +114,14 @@ const Footer = () => {
                             </li>
                             <li>
                                 <Link
+                                    href="/chre"
+                                    className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300"
+                                >
+                                    Center of Human Rights EducAtion (CHRE)
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
                                     href="/health"
                                     className="font-sans text-white font-medium hover:text-yellow-400 transition-colors duration-300"
                                 >

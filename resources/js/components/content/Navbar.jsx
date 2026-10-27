@@ -4,6 +4,7 @@ import logoSrc from '../../assets/logos/cccdoclogo2.png';
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [openDropdown, setOpenDropdown] = useState(null);
+    const [mobileOpenDropdown, setMobileOpenDropdown] = useState(null);
     const [isScrolled, setIsScrolled] = useState(false);
     const hoverTimeoutRef = useRef(null);
     const dropdownRef = useRef(null);
@@ -45,6 +46,7 @@ const Navbar = () => {
         const handleResize = () => {
             if (window.innerWidth >= 768) {
                 setIsMobileMenuOpen(false);
+                setMobileOpenDropdown(null);
             }
         };
         window.addEventListener('resize', handleResize);
@@ -56,6 +58,7 @@ const Navbar = () => {
         const handleEsc = (event) => {
             if (event.key === 'Escape') {
                 setOpenDropdown(null);
+                setMobileOpenDropdown(null);
                 setIsMobileMenuOpen(false);
             }
         };
@@ -128,6 +131,10 @@ const Navbar = () => {
 
     const toggleDropdown = (menu) => {
         setOpenDropdown(openDropdown === menu ? null : menu);
+    };
+
+    const toggleMobileDropdown = (menu) => {
+        setMobileOpenDropdown(mobileOpenDropdown === menu ? null : menu);
     };
 
     const getDropdownStyle = (menu) => {
@@ -538,7 +545,10 @@ const Navbar = () => {
 
                         {/* Mobile Menu Button */}
                         <button
-                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            onClick={() => {
+                                setIsMobileMenuOpen(!isMobileMenuOpen);
+                                setMobileOpenDropdown(null);
+                            }}
                             className="rounded-lg p-2 text-black hover:bg-green-50 hover:text-black transition-colors xl:hidden"
                             aria-expanded={isMobileMenuOpen}
                             aria-controls="mobile-menu"
@@ -572,17 +582,17 @@ const Navbar = () => {
                                     {item.dropdown ? (
                                         <>
                                             <button
-                                                onClick={() => toggleDropdown(item.name)}
+                                                onClick={() => toggleMobileDropdown(item.name)}
                                                 className={`
                                                     flex w-full items-center justify-between rounded-lg px-4 py-3 text-[16px] font-medium
                                                     transition-colors text-black hover:bg-green-50 hover:text-black font-sans
-                                                    ${openDropdown === item.name ? 'bg-green-50 text-black' : ''}
+                                                    ${mobileOpenDropdown === item.name ? 'bg-green-50 text-black' : ''}
                                                 `}
-                                                aria-expanded={openDropdown === item.name}
+                                                aria-expanded={mobileOpenDropdown === item.name}
                                             >
                                                 {item.name}
                                                 <svg
-                                                    className={`h-5 w-5 transition-transform duration-200 ${openDropdown === item.name ? 'rotate-180' : ''}`}
+                                                    className={`h-5 w-5 transition-transform duration-200 ${mobileOpenDropdown === item.name ? 'rotate-180' : ''}`}
                                                     fill="none"
                                                     viewBox="0 0 24 24"
                                                     stroke="currentColor"
@@ -595,7 +605,7 @@ const Navbar = () => {
                                             {/* Mobile Sub-menu */}
                                             <div className={`
                                                 ml-2 space-y-1 overflow-y-auto transition-all duration-200 bg-white shadow-inner rounded-lg
-                                                ${openDropdown === item.name ? 'max-h-[400px] opacity-100 p-2' : 'max-h-0 opacity-0 p-0'}
+                                                ${mobileOpenDropdown === item.name ? 'max-h-[400px] opacity-100 p-2' : 'max-h-0 opacity-0 p-0'}
                                             `}>
                                                 {item.dropdown.map((subItem) => (
                                                     <a
@@ -604,6 +614,7 @@ const Navbar = () => {
                                                         className="block px-4 py-3 text-sm text-black transition-colors hover:bg-green-50 hover:text-black rounded-lg font-sans border-b border-gray-100 last:border-b-0"
                                                         onClick={() => {
                                                             setOpenDropdown(null);
+                                                            setMobileOpenDropdown(null);
                                                             setIsMobileMenuOpen(false);
                                                         }}
                                                     >

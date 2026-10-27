@@ -88,6 +88,18 @@ Route::get('/research', function () {
     return Inertia::render('content/Research/ResearchInnovationTechnologyTransfer');
 })->name('research');
 
+Route::get('/research/higalaay', function () {
+    return Inertia::render('content/Research/HigalaayJournal');
+})->name('research.higalaay');
+
+Route::get('/research/mindanao-journal', function () {
+    return Inertia::render('content/Research/MindanaoJournal');
+})->name('research.mindanao-journal');
+
+Route::get('/oro-journal', function () {
+    return Inertia::render('content/Research/OroJournal');
+})->name('research.oro-journal');
+
 // API endpoints for URL Shortener
 Route::post('/shorten-url', [UrlShortenerController::class, 'shorten'])->name('url.shorten');
 Route::post('/lookup-url', [UrlShortenerController::class, 'lookup'])->name('url.lookup');

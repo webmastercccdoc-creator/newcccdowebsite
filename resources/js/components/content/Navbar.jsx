@@ -188,6 +188,12 @@ const Navbar = () => {
         {
             name: 'Research',
             href: '/research',
+            dropdown: [
+                { name: 'Research, Innovation, and Technology Transfer Services', href: '/research', description: 'Research programs, support, and services' },
+                { name: 'Higalaay Multidisciplinary Research Abstract', href: '/research/higalaay', description: 'Browse Higalaay research abstract volumes' },
+                { name: 'Mindanao Journal of Alternative Education', href: '/research/mindanao-journal', description: 'Browse the journal volumes' },
+                { name: 'Oro Journal of Sustainability and Development Research', href: '/oro-journal', description: 'Explore the journal and its inaugural issue' },
+            ]
         },
         {
             name: 'Extension',

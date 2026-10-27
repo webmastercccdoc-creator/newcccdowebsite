@@ -26,6 +26,7 @@ const FOLDER_TO_CATEGORY = {
     "Financial Report": "Financial Report",
     "Academic Affairs Services": "Academic Affairs Services",
     "Student Affair Services": "Student Affair Services",
+    "Extension and Social Development": "Extension and Social Development",
 };
 
 const CATEGORY_ORDER = [
@@ -35,6 +36,7 @@ const CATEGORY_ORDER = [
     "Financial Report",
     "Academic Affairs Services",
     "Student Affair Services",
+    "Extension and Social Development",
 ];
 
 const FORMS_PER_PAGE = 6;

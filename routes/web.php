@@ -80,6 +80,10 @@ Route::get('/health', function () {
     return Inertia::render('content/Quicklinks/HealthServiceOffice');
 })->name('quicklinks.health');
 
+Route::get('/chre', function () {
+    return Inertia::render('content/Quicklinks/CHRE');
+})->name('quicklinks.CHRE');
+
 Route::get('/ollpd', function () {
     return Inertia::render('content/Quicklinks/OLLPD');
 })->name('quicklinks.ollpd');

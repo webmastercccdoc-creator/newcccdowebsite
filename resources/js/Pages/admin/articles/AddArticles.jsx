@@ -896,7 +896,7 @@ export default function AddArticles({
           )}
           {departmentOptions.length === 0 && !isLoadingDepartments && (
             <p className="mt-1.5 text-sm text-amber-600">
-              тЪая╕П No departments assigned to you. Please contact your administrator.
+              No departments assigned to you. Please contact your administrator.
             </p>
           )}
         </div>
@@ -1079,11 +1079,11 @@ export default function AddArticles({
           )}
           {!formData.title && !formData.content && (
             <p className="mt-2 text-xs text-amber-600">
-              тЪая╕П Please add a title and content first for auto-detection
+             Please add a title and content first for auto-detection
             </p>
           )}
           <p className="mt-2 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg p-2">
-            тЪая╕П <strong>Note:</strong> AI auto-detection provides suggestions only and may not always be accurate. Please carefully review the content to determine the real and appropriate SDGs.
+             <strong>Note:</strong> AI auto-detection provides suggestions only and may not always be accurate. Please carefully review the content to determine the real and appropriate SDGs.
           </p>
         </div>
 

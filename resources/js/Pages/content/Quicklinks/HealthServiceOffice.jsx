@@ -217,13 +217,13 @@ function AboutSubTabs() {
                                 },
                                 {
                                     image: vuelvanImage,
-                                    name: "Glen E. Vuelvan",
+                                    name: "Glen E. Vuelvan, RN, MN",
                                     roles: ["College Nurse"],
                                 },
                                 {
                                     image: sagunImage,
                                     name: "Ma. Jennifer E. Sagun",
-                                    roles: ["Nursing Assistant"],
+                                    roles: ["Clinic Nursing Aide"],
                                 },
                             ].map((person) => (
                                 <div
@@ -788,8 +788,8 @@ const DIRECTOR_TABS = [
                     engagement.
                 </p>
 
-                {/* ===== Health Services Dashboard Table ===== */}
-                <div className="mb-8 w-full min-w-0 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+                // ===== Health Services Dashboard Table =====
+                `<div className="mb-8 w-full min-w-0 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
                     <div className="border-b border-gray-200 bg-[#f0f7f2] px-5 py-4 text-center">
                         <h3 className="text-sm font-extrabold uppercase tracking-widest text-[#157d3c]">
                             Health Services Dashboard
@@ -816,8 +816,8 @@ const DIRECTOR_TABS = [
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white">
                                 {[
-                                    { label: "Medical and Dental Consultations/Clinic Visits", y2024: "117", y2025: "4,770", y2026: "—" },
-                                    { label: "Referrals to Other Health Institutions", y2024: "10", y2025: "59", y2026: "—" },
+                                    { label: "Medical and Dental Consultations/Clinic Visits", y2024: "237", y2025: "3,306", y2026: "—" },
+                                    { label: "Referrals to Other Health Institutions", y2024: "10", y2025: "65", y2026: "—" },
                                     { label: "Request for Medical Certification", y2024: "8", y2025: "19", y2026: "—" },
                                     { label: "Online Consultations", y2024: "0", y2025: "0", y2026: "—" },
                                     { label: "Persons with Disabilities Identification and Management", y2024: "10", y2025: "15", y2026: "—" },
@@ -847,10 +847,10 @@ const DIRECTOR_TABS = [
                                         Total Services Availed
                                     </td>
                                     <td className="px-4 py-3 text-center text-[#157d3c]">
-                                        145
+                                        265
                                     </td>
                                     <td className="px-4 py-3 text-center text-[#157d3c]">
-                                        4,834
+                                        3,410
                                     </td>
                                     <td className="px-4 py-3 text-center text-[#157d3c]">
                                         —
@@ -859,8 +859,7 @@ const DIRECTOR_TABS = [
                             </tbody>
                         </table>
                     </div>
-                </div>
-
+                </div>`
                 {/* ===== Data Privacy & Confidentiality Statement ===== */}
                 <div className="mt-6 rounded-xl border border-[#157d3c] bg-[#f0f7f2] p-5">
                     <h4 className="mb-2 flex items-center gap-2 text-sm font-extrabold uppercase tracking-widest text-[#1a1a1a]">

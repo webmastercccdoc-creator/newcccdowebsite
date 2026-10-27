@@ -408,7 +408,7 @@ export default function AddArticles({
         
         // Optional: Show a success message with count
         if (data.count > 0) {
-          console.log(`тЬЕ ${data.count} SDGs detected successfully`);
+          console.log(`✅ ${data.count} SDGs detected successfully`);
         }
       })
       .catch(error => {
@@ -1028,7 +1028,7 @@ export default function AddArticles({
                     Analyzing...
                   </>
                 ) : (
-                  'ЁЯдЦ Auto Detect SDG'
+                  '🤖 Auto Detect SDG'
                 )}
               </button>
               <button

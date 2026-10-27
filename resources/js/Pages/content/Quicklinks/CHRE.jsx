@@ -1518,7 +1518,7 @@ export default function CHRE() {
                                         </svg>
                                         <span>
                                             <strong>Email:</strong>{" "}
-                                            jeanloquillanocdo@mail.com
+                                        jeanloquillanocdo@mail.com
                                         </span>
                                     </li>
                                     <li className="flex items-start gap-2.5">

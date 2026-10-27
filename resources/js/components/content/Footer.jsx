@@ -112,7 +112,6 @@ const Footer = () => {
                                     Office for Lifelong Learning and Professional Development
                                 </Link>
                             </li>
-                            <li></li>
                             <li>
                                 <Link
                                     href="/chre"

@@ -788,8 +788,8 @@ const DIRECTOR_TABS = [
                     engagement.
                 </p>
 
-                // ===== Health Services Dashboard Table =====
-                `<div className="mb-8 w-full min-w-0 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+                {/* ===== Health Services Dashboard Table ===== */}
+                <div className="mb-8 w-full min-w-0 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
                     <div className="border-b border-gray-200 bg-[#f0f7f2] px-5 py-4 text-center">
                         <h3 className="text-sm font-extrabold uppercase tracking-widest text-[#157d3c]">
                             Health Services Dashboard
@@ -859,7 +859,7 @@ const DIRECTOR_TABS = [
                             </tbody>
                         </table>
                     </div>
-                </div>`
+                </div>
                 {/* ===== Data Privacy & Confidentiality Statement ===== */}
                 <div className="mt-6 rounded-xl border border-[#157d3c] bg-[#f0f7f2] p-5">
                     <h4 className="mb-2 flex items-center gap-2 text-sm font-extrabold uppercase tracking-widest text-[#1a1a1a]">

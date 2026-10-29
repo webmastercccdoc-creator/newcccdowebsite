@@ -145,15 +145,23 @@ const Navbar = () => {
         }
 
         const bounds = menuItem.getBoundingClientRect();
+        // Make the dropdown width responsive, maxing out at 950px
         const width = Math.min(950, window.innerWidth - 32);
-        const centeredLeft = bounds.left + (bounds.width - width) / 2;
+        
+        // Center the dropdown relative to the menu item
+        const centeredLeft = bounds.left + (bounds.width / 2) - (width / 2);
+        
+        // Keep it inside the screen bounds
         const left = Math.max(16, Math.min(centeredLeft, window.innerWidth - width - 16));
 
         return {
-            position: 'fixed',
-            top: `${bounds.bottom + 12}px`,
-            left: `${left}px`,
+            position: 'absolute',
+            // This positions it directly below the navbar, preventing overlap
+            top: 'calc(100% + 8px)', 
+            // Calculate the left offset relative to the menu item container
+            left: `${left - bounds.left}px`, 
             width: `${width}px`,
+            zIndex: 60,
         };
     };
 
@@ -167,7 +175,6 @@ const Navbar = () => {
                 { name: 'Message of the Mayor', href: '/about/mayors-message', description: 'A message from our city mayor' },
                 { name: 'Vision & Mission', href: '/about/mission-vision', description: 'Our guiding principles and aspirations' },
                 { name: 'Goals & Objectives', href: '/about/goals-core-values', description: 'The values that drive our institution' },
-                // { name: 'Graduate Attributes', href: '/about/graduate-attributes', description: 'Characteristics expected of our graduates' },
                 { name: 'Governing Board', href: '/about/governing-board', description: 'Meet our board of directors' },
                 { name: 'Organizational Chart', href: '/about/organizational-chart', description: 'View our organizational structure' },
             ]
@@ -417,10 +424,10 @@ const Navbar = () => {
                                                     className={`
                                                         flex items-center justify-center gap-1 rounded-xl px-1
                                                         transition-all duration-300 cubic-bezier(0.4, 0, 0.2, 1)
-                                                        text-black hover:bg-green-50 hover:text-black hover:shadow-lg
-                                                        whitespace-nowrap font-sans
-                                                        ${isScrolled ? 'text-[16px] py-2' : 'text-[16px] font-semibold py-2.5'}
-                                                        ${openDropdown === item.name ? 'bg-green-50 text-black shadow-lg' : ''}
+                                                        text-black hover:text-black
+                                                        whitespace-nowrap font-sans font-normal
+                                                        ${isScrolled ? 'text-[16px] py-2' : 'text-[16px] py-2.5'}
+                                                        ${openDropdown === item.name ? 'text-black' : ''}
                                                     `}
                                                     aria-expanded={openDropdown === item.name}
                                                     aria-haspopup="true"
@@ -441,7 +448,7 @@ const Navbar = () => {
                                                 {openDropdown === item.name && (
                                                     <div
                                                         ref={dropdownRef}
-                                                        className="origin-top bg-white/95 backdrop-blur-lg shadow-2xl ring-1 ring-gray-200 transition-all duration-300 ease-out rounded-xl font-sans"
+                                                        className="origin-top bg-white shadow-2xl ring-1 ring-gray-200 transition-all duration-300 ease-out rounded-none font-sans"
                                                         role="menu"
                                                         style={{
                                                             ...getDropdownStyle(item.name),
@@ -450,15 +457,15 @@ const Navbar = () => {
                                                         onMouseEnter={handleDropdownMouseEnter}
                                                         onMouseLeave={handleDropdownMouseLeave}
                                                     >
-                                                        <div className="p-6">
+                                                        <div className="p-3 bg-white">
                                                             {/* Dropdown Header */}
-                                                            <div className="mb-5 pb-5 border-b border-green-200/60">
+                                                            <div className="mb-2 pb-2 border-b border-green-200/60">
                                                                 <div className="flex items-center justify-between">
                                                                     <div>
-                                                                        <h3 className="text-xl font-bold text-green-800 tracking-tight font-sans">
+                                                                        <h3 className="text-lg font-bold text-green-800 tracking-tight font-sans">
                                                                             {item.name}
                                                                         </h3>
-                                                                        <p className="text-sm text-gray-600 mt-1.5 font-medium font-sans">
+                                                                        <p className="text-xs text-gray-600 mt-1 font-medium font-sans">
                                                                             {item.name === 'About Us' && 'Learn about our institution'}
                                                                             {item.name === 'Programs' && 'Explore our academic offerings'}
                                                                             {item.name === 'Research' && 'Discover our research initiatives'}
@@ -466,50 +473,50 @@ const Navbar = () => {
                                                                             {item.name === 'News' && 'Stay updated with latest news'}
                                                                         </p>
                                                                     </div>
-                                                                    <div className="h-12 w-1.5 bg-gradient-to-b from-green-400 via-green-500 to-green-600 rounded-full shadow-lg"></div>
+                                                                    <div className="h-10 w-1.5 bg-gradient-to-b from-green-400 via-green-500 to-green-600 rounded-full shadow-lg"></div>
                                                                 </div>
                                                             </div>
 
                                                             {/* Dynamic Grid Items based on dropdown count */}
                                                             <div
-                                                                className="grid gap-4"
+                                                                className="grid gap-2"
                                                                 style={{ gridTemplateColumns: `repeat(${Math.min(item.dropdown.length, 3)}, minmax(0, 1fr))` }}
                                                             >
                                                                 {item.dropdown.map((subItem) => (
                                                                     <a
                                                                         key={subItem.name}
                                                                         href={subItem.href}
-                                                                        className="group relative px-5 py-4 text-left transition-all duration-300 hover:bg-gradient-to-br hover:from-green-50 hover:to-green-100 hover:text-black border-2 border-transparent hover:border-green-300/60 rounded-xl hover:shadow-md font-sans"
+                                                                        className="group relative px-2 py-1.5 text-left transition-all duration-300 text-black hover:text-black border-2 border-transparent rounded-xl font-sans"
                                                                         role="menuitem"
                                                                         onClick={() => setOpenDropdown(null)}
                                                                     >
-                                                                        <div className="text-[16px] font-semibold text-black group-hover:text-black font-sans">
+                                                                        <div className="text-[16px] font-normal text-black group-hover:text-black font-sans">
                                                                             {subItem.name}
                                                                         </div>
                                                                         {subItem.description && (
-                                                                            <div className="text-[14px] text-gray-600 mt-2 group-hover:text-gray-800 leading-relaxed font-sans">
+                                                                            <div className="text-[14px] text-gray-600 mt-0.5 group-hover:text-gray-800 leading-snug font-sans">
                                                                                 {subItem.description}
                                                                             </div>
                                                                         )}
-                                                                        <div className="mt-3 h-1 w-0 bg-gradient-to-r from-green-400 to-green-600 transition-all duration-300 group-hover:w-full rounded-full"></div>
+                                                                        <div className="mt-1.5 h-0.5 w-0 bg-gradient-to-r from-green-400 to-green-600 transition-all duration-300 group-hover:w-full rounded-full"></div>
                                                                     </a>
                                                                 ))}
                                                             </div>
                                                         </div>
 
                                                         {/* Dropdown Footer */}
-                                                        <div className="border-t border-green-200/60 bg-gradient-to-r from-green-50/80 to-green-100/50 backdrop-blur-sm p-5">
+                                                        <div className="border-t border-green-200/60 bg-white p-3">
                                                             <div className="flex items-center justify-between">
                                                                 {item.name === 'Academic Programs' ? (
                                                                     <a
                                                                         href={item.href}
                                                                         onClick={() => setOpenDropdown(null)}
-                                                                        className="text-sm text-green-700 font-semibold tracking-wide font-sans"
+                                                                        className="text-xs text-green-700 font-semibold tracking-wide font-sans"
                                                                     >
                                                                         Browse all {item.name} →
                                                                     </a>
                                                                 ) : (
-                                                                    <span className="text-sm text-green-700 font-semibold tracking-wide font-sans">
+                                                                    <span className="text-xs text-green-700 font-semibold tracking-wide font-sans">
                                                                         Browse all {item.name} →
                                                                     </span>
                                                                 )}
@@ -525,9 +532,9 @@ const Navbar = () => {
                                                 rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                                                 className={`
                                                     flex items-center justify-center rounded-xl px-1
-                                                    text-black transition-all duration-300 hover:bg-green-50 hover:text-black hover:shadow-lg 
-                                                    whitespace-nowrap font-sans
-                                                    ${isScrolled ? 'text-[16px] py-2' : 'text-[17px] font-semibold py-2.5'}
+                                                    text-black transition-all duration-300 hover:text-black
+                                                    whitespace-nowrap font-sans font-normal
+                                                    ${isScrolled ? 'text-[16px] py-2' : 'text-[17px] py-2.5'}
                                                 `}
                                             >
                                                 {item.name}
@@ -549,7 +556,7 @@ const Navbar = () => {
                                 setIsMobileMenuOpen(!isMobileMenuOpen);
                                 setMobileOpenDropdown(null);
                             }}
-                            className="rounded-lg p-2 text-black hover:bg-green-50 hover:text-black transition-colors xl:hidden"
+                            className="rounded-lg p-2 text-black hover:text-black transition-colors xl:hidden"
                             aria-expanded={isMobileMenuOpen}
                             aria-controls="mobile-menu"
                             aria-label="Toggle navigation menu"
@@ -584,9 +591,9 @@ const Navbar = () => {
                                             <button
                                                 onClick={() => toggleMobileDropdown(item.name)}
                                                 className={`
-                                                    flex w-full items-center justify-between rounded-lg px-4 py-3 text-[16px] font-medium
-                                                    transition-colors text-black hover:bg-green-50 hover:text-black font-sans
-                                                    ${mobileOpenDropdown === item.name ? 'bg-green-50 text-black' : ''}
+                                                    flex w-full items-center justify-between rounded-lg px-4 py-2.5 text-[16px] font-normal
+                                                    transition-colors text-black hover:text-black font-sans
+                                                    ${mobileOpenDropdown === item.name ? 'text-black' : ''}
                                                 `}
                                                 aria-expanded={mobileOpenDropdown === item.name}
                                             >
@@ -604,23 +611,23 @@ const Navbar = () => {
 
                                             {/* Mobile Sub-menu */}
                                             <div className={`
-                                                ml-2 space-y-1 overflow-y-auto transition-all duration-200 bg-white shadow-inner rounded-lg
-                                                ${mobileOpenDropdown === item.name ? 'max-h-[400px] opacity-100 p-2' : 'max-h-0 opacity-0 p-0'}
+                                                ml-2 space-y-1 overflow-y-auto transition-all duration-200 bg-white shadow-inner rounded-none
+                                                ${mobileOpenDropdown === item.name ? 'max-h-[400px] opacity-100 p-1.5' : 'max-h-0 opacity-0 p-0'}
                                             `}>
                                                 {item.dropdown.map((subItem) => (
                                                     <a
                                                         key={subItem.name}
                                                         href={subItem.href}
-                                                        className="block px-4 py-3 text-sm text-black transition-colors hover:bg-green-50 hover:text-black rounded-lg font-sans border-b border-gray-100 last:border-b-0"
+                                                        className="block px-3 py-1.5 text-sm text-black transition-colors hover:text-black rounded-lg font-sans border-b border-gray-100 last:border-b-0"
                                                         onClick={() => {
                                                             setOpenDropdown(null);
                                                             setMobileOpenDropdown(null);
                                                             setIsMobileMenuOpen(false);
                                                         }}
                                                     >
-                                                        <div className="text-[16px] font-medium font-sans">{subItem.name}</div>
+                                                        <div className="text-[16px] font-normal font-sans">{subItem.name}</div>
                                                         {subItem.description && (
-                                                            <div className="text-[14px] text-gray-500 mt-0.5 font-sans">{subItem.description}</div>
+                                                            <div className="text-[14px] text-gray-500 mt-0.5 leading-snug font-sans">{subItem.description}</div>
                                                         )}
                                                     </a>
                                                 ))}
@@ -631,7 +638,7 @@ const Navbar = () => {
                                             href={item.href}
                                             target={item.href.startsWith('http') ? '_blank' : undefined}
                                             rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                                            className="block rounded-lg px-4 py-3 text-[14px] font-medium text-black transition-colors hover:bg-green-50 hover:text-black font-sans"
+                                            className="block rounded-lg px-4 py-2.5 text-[14px] font-normal text-black transition-colors hover:text-black font-sans"
                                             onClick={() => setIsMobileMenuOpen(false)}
                                         >
                                             {item.name}

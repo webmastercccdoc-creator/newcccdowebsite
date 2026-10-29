@@ -991,6 +991,14 @@ const TABS = [
                                             listening, emotional validation, breaking mental health
                                             stigma, supporting peers, and recognizing when someone
                                             may need additional assistance.
+                                            <a
+                                                href="https://drive.google.com/file/d/1kxPEyRVdOTnS3YgeioOb8cljXxIX0U18/view?usp=sharing"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="font-semibold text-[#157d3c] hover:underline"
+                                            >
+                                                (Access Resource)
+                                            </a>
                                         </span>
                                     </span>
                                 </li>
@@ -1027,6 +1035,14 @@ const TABS = [
                                             belonging, empathy, self-care, and help-seeking.
                                             Selected clips will be compiled into the campaign
                                             culmination video.
+                                            <a
+                                                href="https://drive.google.com/file/d/1KrTzx8waBxVTlvfXv8VLccGDl4TsrEjG/view?usp=sharing"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="font-semibold text-[#157d3c] hover:underline"
+                                            >
+                                                (Access Resource)
+                                            </a>
                                         </span>
                                     </span>
                                 </li>

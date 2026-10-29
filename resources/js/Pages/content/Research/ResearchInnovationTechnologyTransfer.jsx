@@ -1,86 +1,10 @@
-import { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import MainLayout from '../../../layouts/MainLayout';
 import AnimatedBannerText from '../../../components/content/AnimatedBannerText';
 import researchBannerImg from '../../../assets/banner/coregoals-banner.png';
 import joelPotanePhoto from '../../../assets/images/JOEL_POTANE.png';
 
-const editorialBoard = [
-    { name: 'Jean T. Loquillano, PhD', role: 'Editor-in-Chief' },
-    { name: 'Joel D. Potane, PhD', role: 'Managing Editor' },
-    { name: 'Ray Butch D. Mahinay, PhD', role: 'Senior Editors' },
-    { name: 'Olga C. Alonsabe, PhD', role: 'Senior Editors' },
-    { name: 'Jonathan A. Madronero, MSc', role: 'Senior Editors' },
-    { name: 'Mary Joy C. Teodosio, DBA', role: 'Copy Editors' },
-    { name: 'Psyche B. Cambo, MAIE', role: 'Copy Editors' },
-    { name: 'Mark Janubas, MAED', role: 'Copy Editors' },
-    { name: 'Erlouise Vargas, MAED', role: 'Copy Editors' },
-    { name: 'Charlie Cosmiano, MTTE', role: 'Copy Editors' },
-    { name: 'Jason Herrera, MITO', role: 'Copy Editors' },
-    { name: 'Joseph Barillo, MBA', role: 'Copy Editors' },
-    { name: 'Ma. Katerina Janubas, MAED', role: 'Copy Editors' },
-];
-
-const advisoryBoard = [
-    { name: 'Jestoni P. Babia, EdD', role: 'Administration' },
-    { name: 'Helmae E. Tapanan, EdD', role: 'Administration' },
-    { name: 'Kurt S. Candilas, PhD', role: 'Administration' },
-    { name: 'Mark Raymond Tan, EdD', role: 'Administration' },
-    { name: 'Donna Grace I. Cotejo, DA', role: 'College Dean' },
-    { name: 'Liza L. Chua, DevEdD, PhD', role: 'College Dean' },
-    { name: 'Rowena R. Orbeta, DM', role: 'College Dean' },
-    { name: 'Ronald Donceras, PhD (USA)', role: 'International Advisor' },
-    { name: 'Yin Mon Swe, MEd (Myanmar)', role: 'International Advisor' },
-    { name: 'Say Sokun Pharoth, MEd (Cambodia)', role: 'International Advisor' },
-    { name: 'Nabiilah Tjandra, S. Tr.T. (Indonesia)', role: 'International Advisor' },
-    { name: 'Souksamay Inthavongsa, MEd (Laos)', role: 'International Advisor' },
-    { name: 'Jesse James Fabela', role: 'Layout and Design' },
-    { name: 'Howard Christian Aranar', role: 'Layout and Design' },
-];
-
-const tabs = [
-    { id: 'about', label: 'Bionote', shortLabel: 'Bionote' },
-    { id: 'editorial-board', label: 'Editorial Board', shortLabel: 'Board' },
-    { id: 'advisory-board', label: 'Advisory Board', shortLabel: 'Advisory' },
-];
-
-function BoardMemberCard({ member, index }) {
-    const nameParts = member.name
-        .split(',')[0]
-        .replace(/\b(Dr|Mr|Ms)\.?\s*/gi, '')
-        .trim()
-        .split(/\s+/);
-    const initials = `${nameParts[0]?.[0] || ''}${nameParts[nameParts.length - 1]?.[0] || ''}`.toUpperCase();
-
-    return (
-        <motion.article
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2, delay: Math.min(index * 0.02, 0.16) }}
-            className="group flex min-h-[88px] items-center gap-3 rounded-xl border border-gray-200 border-l-4 border-l-[#157d3c] bg-white p-4 shadow-sm transition-shadow duration-200 hover:shadow-md"
-        >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f0f7f2] text-xs font-bold text-[#157d3c] ring-1 ring-[#157d3c]/10 transition-colors group-hover:bg-[#157d3c] group-hover:text-white">
-                {initials}
-            </div>
-            <div className="min-w-0 flex-1">
-                <h3 className="text-sm font-bold leading-snug text-[#173b27]">
-                    {member.name}
-                </h3>
-                <p className="mt-1 text-xs font-medium text-gray-500">
-                    {member.role}
-                </p>
-            </div>
-            <span className="self-start text-[10px] font-semibold tabular-nums text-gray-400">
-                {String(index + 1).padStart(2, '0')}
-            </span>
-        </motion.article>
-    );
-}
-
 export default function ResearchInnovationTechnologyTransfer() {
-    const [activeTab, setActiveTab] = useState(tabs[0].id);
-    const activeBoardMembers = activeTab === 'editorial-board' ? editorialBoard : advisoryBoard;
-
     return (
         <MainLayout
             maxWidth="full"
@@ -123,17 +47,44 @@ export default function ResearchInnovationTechnologyTransfer() {
                                     <p className="mt-1 text-xs font-semibold leading-tight text-[#1a1a1a] sm:text-sm md:text-base">
                                         Director of Research, Innovation, and Technology Transfer Services
                                     </p>
-                                    <a
-                                        href="https://orcid.org/0000-0003-0210-8149"
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#f0f7f2] px-3 py-1.5 text-xs font-semibold text-[#157d3c] transition-colors hover:bg-[#e3f1e7]"
-                                    >
-                                        <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#a6ce39] text-[9px] font-bold text-white">
-                                            iD
-                                        </span>
-                                        ORCID: 0000-0003-0210-8149
-                                    </a>
+                                    <div className="mt-3 flex justify-center gap-3">
+                                        <a
+                                            href="https://orcid.org/0000-0003-0210-8149"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            aria-label="ORCID profile"
+                                            title="ORCID"
+                                            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#a6ce39] transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#157d3c]"
+                                        >
+                                            <span className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-white text-[11px] font-bold tracking-tight text-white">
+                                                iD
+                                            </span>
+                                        </a>
+                                        <a
+                                            href="https://scholar.google.com/citations?user=nJqgrxAAAAAJ&hl=en&oi=ao"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            aria-label="Google Scholar profile"
+                                            title="Google Scholar"
+                                            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#157d3c]"
+                                        >
+                                            <svg viewBox="0 0 32 32" className="h-7 w-7" aria-hidden="true">
+                                                <path fill="#4285f4" d="M3 12.2 16 5l13 7.2-13 7.2L3 12.2Z" />
+                                                <path fill="#1a73e8" d="M8 15v6.2c0 3.2 3.6 5.8 8 5.8s8-2.6 8-5.8V15l-8 4.4L8 15Z" />
+                                                <path fill="#fbbc04" d="M28 13v8h2v-9.1l-2 .1Z" />
+                                            </svg>
+                                        </a>
+                                        <a
+                                            href="https://adscientificindex.com/scientist/joel-d-potane/4976407/"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            aria-label="AD Scientific Index profile"
+                                            title="AD Scientific Index"
+                                            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#157d3c] text-sm font-extrabold tracking-tight text-white transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#157d3c]"
+                                        >
+                                            AD
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
 
@@ -203,76 +154,19 @@ export default function ResearchInnovationTechnologyTransfer() {
 
                         <div className="min-w-0 w-full flex-1">
                             <div className="-mx-8 -mt-8 mb-8 border-b border-gray-200 bg-[#f0f7f2] md:-mx-10 md:-mt-10 lg:-mx-14 lg:-mt-14">
-                                <div
-                                    className="flex w-full items-stretch overflow-x-auto"
-                                    role="tablist"
-                                    aria-label="Research services information"
-                                >
-                                    {tabs.map((tab) => {
-                                        const isActive = activeTab === tab.id;
-                                        return (
-                                            <button
-                                                key={tab.id}
-                                                type="button"
-                                                role="tab"
-                                                id={`research-tab-${tab.id}`}
-                                                aria-selected={isActive}
-                                                aria-controls={`research-panel-${tab.id}`}
-                                                onClick={() => setActiveTab(tab.id)}
-                                                className={`relative flex-1 shrink-0 whitespace-nowrap px-6 py-5 text-sm font-semibold tracking-wide transition-colors duration-200 focus:outline-none ${
-                                                    isActive
-                                                        ? 'bg-[#157d3c] text-white'
-                                                        : 'bg-transparent text-gray-600 hover:bg-[#f5c518] hover:text-[#1a1a1a]'
-                                                }`}
-                                            >
-                                                <span className="hidden sm:inline">{tab.label}</span>
-                                                <span className="sm:hidden">{tab.shortLabel}</span>
-                                                {isActive && (
-                                                    <motion.span
-                                                        layoutId="activeResearchTabIndicator"
-                                                        className="absolute bottom-0 left-0 right-0 h-1 rounded-t-full bg-[#f5c518]"
-                                                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                                                    />
-                                                )}
-                                            </button>
-                                        );
-                                    })}
+                                <div className="flex w-full items-stretch">
+                                    <div className="relative flex-1 bg-[#157d3c] px-6 py-5 text-center text-sm font-semibold tracking-wide text-white">
+                                        Bionote
+                                        <span className="absolute bottom-0 left-0 right-0 h-1 bg-[#f5c518]" />
+                                    </div>
                                 </div>
                             </div>
-
-                            <AnimatePresence mode="wait">
-                                <motion.section
-                                    key={activeTab}
-                                    role="tabpanel"
-                                    id={`research-panel-${activeTab}`}
-                                    aria-labelledby={`research-tab-${activeTab}`}
-                                    initial={{ opacity: 0, y: 15 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    transition={{ duration: 0.3 }}
-                                >
-                                    <h2 className="m-0 mb-4 text-center text-2xl font-extrabold tracking-tight text-[#1a1a1a] md:text-3xl">
-                                        {activeTab === 'about' ? (
-                                            <>
-                                                Bio <span className="text-[#157d3c]">Note</span>
-                                            </>
-                                        ) : activeTab === 'editorial-board' ? (
-                                            <>
-                                                Editorial <span className="text-[#157d3c]">Board</span>
-                                            </>
-                                        ) : (
-                                            <>
-                                                Advisory <span className="text-[#157d3c]">Board</span>
-                                            </>
-                                        )}
-                                    </h2>
-                                    <div className="mx-auto mb-6 h-1 w-16 rounded-full bg-[#f5c518]" />
-
-                                    {activeTab === 'about' ? (
-                                        <div className="mx-auto max-w-3xl">
-                                            <p className="mb-4 text-sm font-bold uppercase tracking-widest text-[#157d3c]">
-                                                Bionote
-                                            </p>
+                            <section aria-labelledby="director-profile-title">
+                                <h2 id="director-profile-title" className="m-0 mb-4 text-center text-2xl font-extrabold tracking-tight text-[#1a1a1a] md:text-3xl">
+                                    Bio <span className="text-[#157d3c]">Note</span>
+                                </h2>
+                                <div className="mx-auto mb-6 h-1 w-16 rounded-full bg-[#f5c518]" />
+                                <div className="mx-auto max-w-3xl">
                                             <p className="mb-4 text-justify leading-relaxed text-gray-700">
                                                 <strong className="text-[#1a1a1a]">Dr. Joel D. Potane</strong> is
                                                 the Director of Research, Innovation, and Technology Transfer
@@ -316,33 +210,8 @@ export default function ResearchInnovationTechnologyTransfer() {
                                                 His work centers on research, science education, innovation,
                                                 technology, sustainability, and research capacity building.
                                             </p>
-                                        </div>
-                                    ) : (
-                                        <>
-                                            <div className="mx-auto mb-7 flex max-w-5xl flex-wrap items-center justify-center gap-3 text-center">
-                                                <p className="text-sm leading-6 text-gray-600">
-                                                    {activeTab === 'editorial-board'
-                                                        ? 'Meet the editors supporting the quality and integrity of our scholarly publications.'
-                                                        : 'Meet the advisors and collaborators contributing expertise to research and publication.'}
-                                                </p>
-                                                <span className="rounded-full border border-[#f5c518]/60 bg-[#fff9df] px-3 py-1 text-xs font-bold text-[#765d12]">
-                                                    {activeBoardMembers.length} members
-                                                </span>
-                                            </div>
-                                            <div className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                                                {activeBoardMembers.map((member, index) => (
-                                                    <BoardMemberCard
-                                                        key={member.name}
-                                                        member={member}
-                                                        index={index}
-                                                        boardType={activeTab === 'editorial-board' ? 'Editorial Board' : 'Advisory Board'}
-                                                    />
-                                                ))}
-                                            </div>
-                                        </>
-                                    )}
-                                </motion.section>
-                            </AnimatePresence>
+                                </div>
+                            </section>
                         </div>
                     </div>
                 </motion.div>

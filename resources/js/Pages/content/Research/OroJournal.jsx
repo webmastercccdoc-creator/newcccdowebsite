@@ -80,7 +80,41 @@ const journalSections = [
     { id: 'review', label: 'Editorial and Peer Review Process', icon: ['M9 11l3 3L22 4', 'M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11'] },
     { id: 'ethics', label: 'Publication Ethics and Policies', icon: ['M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z', 'M9 12h6', 'M12 9v6'] },
     { id: 'archives', label: 'Archives and Indexing', icon: ['M3 4h18v4H3z', 'M5 8v12h14V8', 'M10 12h4', 'M10 16h4'] },
+    { id: 'boards', label: 'Editorial Boards', icon: ['M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2', 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z', 'M20 21v-2a4 4 0 0 0-3-3.87', 'M16 3.13a4 4 0 0 1 0 7.75'] },
     { id: 'contact', label: 'Contact', icon: ['M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z', 'M12 10a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z'] },
+];
+
+const editorialBoard = [
+    { name: 'Jean T. Loquillano, PhD', role: 'Editor-in-Chief' },
+    { name: 'Joel D. Potane, PhD', role: 'Managing Editor' },
+    { name: 'Ray Butch D. Mahinay, PhD', role: 'Senior Editors' },
+    { name: 'Olga C. Alonsabe, PhD', role: 'Senior Editors' },
+    { name: 'Jonathan A. Madronero, MSc', role: 'Senior Editors' },
+    { name: 'Mary Joy C. Teodosio, DBA', role: 'Copy Editors' },
+    { name: 'Psyche B. Cambo, MAIE', role: 'Copy Editors' },
+    { name: 'Mark Janubas, MAED', role: 'Copy Editors' },
+    { name: 'Erlouise Vargas, MAED', role: 'Copy Editors' },
+    { name: 'Charlie Cosmiano, MTTE', role: 'Copy Editors' },
+    { name: 'Jason Herrera, MITO', role: 'Copy Editors' },
+    { name: 'Joseph Barillo, MBA', role: 'Copy Editors' },
+    { name: 'Ma. Katerina Janubas, MAED', role: 'Copy Editors' },
+];
+
+const advisoryBoard = [
+    { name: 'Jestoni P. Babia, EdD', role: 'Administration' },
+    { name: 'Helmae E. Tapanan, EdD', role: 'Administration' },
+    { name: 'Kurt S. Candilas, PhD', role: 'Administration' },
+    { name: 'Mark Raymond Tan, EdD', role: 'Administration' },
+    { name: 'Donna Grace I. Cotejo, DA', role: 'College Dean' },
+    { name: 'Liza L. Chua, DevEdD, PhD', role: 'College Dean' },
+    { name: 'Rowena R. Orbeta, DM', role: 'College Dean' },
+    { name: 'Ronald Donceras, PhD (USA)', role: 'International Advisor' },
+    { name: 'Yin Mon Swe, MEd (Myanmar)', role: 'International Advisor' },
+    { name: 'Say Sokun Pharoth, MEd (Cambodia)', role: 'International Advisor' },
+    { name: 'Nabiilah Tjandra, S. Tr.T. (Indonesia)', role: 'International Advisor' },
+    { name: 'Souksamay Inthavongsa, MEd (Laos)', role: 'International Advisor' },
+    { name: 'Jesse James Fabela', role: 'Layout and Design' },
+    { name: 'Howard Christian Aranar', role: 'Layout and Design' },
 ];
 
 const authorDocuments = [
@@ -237,8 +271,50 @@ function DocumentIcon({ className = 'h-6 w-6' }) {
     );
 }
 
+function groupBoardMembers(members) {
+    return members.reduce((groups, member) => {
+        let group = groups.find((item) => item.role === member.role);
+
+        if (!group) {
+            group = { role: member.role, members: [] };
+            groups.push(group);
+        }
+
+        group.members.push(member);
+        return groups;
+    }, []);
+}
+
+function BoardMemberCard({ member }) {
+    const nameParts = member.name.split(',')[0].trim().split(/\s+/);
+    const initials = `${nameParts[0]?.[0] || ''}${nameParts[nameParts.length - 1]?.[0] || ''}`.toUpperCase();
+
+    return (
+        <motion.article
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            whileHover={{ y: -3 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="group relative flex min-h-[104px] min-w-0 items-center gap-3 overflow-hidden rounded-xl border border-[#e4e6df] bg-white p-4 shadow-[0_5px_18px_rgba(27,48,36,0.04)] transition-shadow hover:border-[#c5ad70] hover:shadow-[0_12px_26px_rgba(27,48,36,0.09)] sm:gap-4 sm:p-5"
+        >
+            <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-[#d8b45c] to-[#9a7125] opacity-70 transition-opacity group-hover:opacity-100" />
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#d9e2d7] bg-[#edf2eb] font-serif text-sm font-semibold text-[#214b35] transition-colors group-hover:border-[#214b35] group-hover:bg-[#214b35] group-hover:text-[#f1d88a] sm:h-12 sm:w-12">
+                {initials}
+            </span>
+            <span className="min-w-0 flex-1 py-1">
+                <span className="block break-words text-sm font-semibold leading-5 text-[#263d30] sm:text-[15px]">
+                    {member.name}
+                </span>
+            </span>
+            <span aria-hidden="true" className="shrink-0 font-serif text-lg text-[#b8a774] transition-transform group-hover:translate-x-0.5">›</span>
+        </motion.article>
+    );
+}
+
 export default function OroJournal() {
     const [activeContentTab, setActiveContentTab] = useState('about');
+    const [activeBoard, setActiveBoard] = useState('editorial');
     const [activeGuidelinePage, setActiveGuidelinePage] = useState(null);
     const [guidelineCarouselPage, setGuidelineCarouselPage] = useState(0);
     const [isIssueOpen, setIsIssueOpen] = useState(false);
@@ -1014,6 +1090,100 @@ export default function OroJournal() {
                                 <strong className="block text-xs uppercase tracking-[0.14em] text-[#9a7125]">Editorial Independence</strong>
                                 Institutional management does not override editorial decisions or confer preferential treatment.
                             </p>
+                        </div>
+                    </motion.div>
+                </section>
+                )}
+
+                {activeContentTab === 'boards' && (
+                <section id="boards" className="scroll-mt-20 bg-[#f8f7f2] px-4 py-10 sm:px-8 sm:py-16 lg:px-16">
+                    <motion.div {...sectionMotion} className="mx-auto max-w-[1240px]">
+                        <SectionHeading
+                            eyebrow="Editorial Governance"
+                            title="The people behind the journal"
+                            description="Our editorial and advisory boards bring together academic leadership, publication expertise, and international perspectives to guide the Oro Journal."
+                        />
+                        <div className="mb-8 overflow-hidden rounded-2xl bg-[#17372b] p-5 text-white shadow-[0_16px_40px_rgba(23,55,43,0.12)] sm:p-7 lg:flex lg:items-center lg:justify-between lg:gap-8">
+                            <div className="min-w-0">
+                                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#e5c76f]">Meet the board</p>
+                                <p className="mt-2 font-serif text-2xl font-semibold sm:text-3xl">
+                                    {activeBoard === 'editorial' ? 'Editorial Board' : 'Advisory Board'}
+                                </p>
+                                <p className="mt-2 max-w-2xl text-sm leading-6 text-white/70">
+                                    {activeBoard === 'editorial'
+                                        ? 'Editorial leadership, peer review, and manuscript preparation.'
+                                        : 'Institutional and international guidance for research and publication.'}
+                                </p>
+                            </div>
+                            <div
+                                className="mt-5 grid w-full grid-cols-2 rounded-xl border border-white/15 bg-white/5 p-1 sm:inline-flex lg:mt-0 lg:w-auto lg:shrink-0"
+                                role="tablist"
+                                aria-label="Journal boards"
+                            >
+                                {[
+                                    { id: 'editorial', label: 'Editorial Board', shortLabel: 'Editorial', count: editorialBoard.length },
+                                    { id: 'advisory', label: 'Advisory Board', shortLabel: 'Advisory', count: advisoryBoard.length },
+                                ].map((board) => {
+                                    const isActive = activeBoard === board.id;
+
+                                    return (
+                                        <button
+                                            key={board.id}
+                                            type="button"
+                                            role="tab"
+                                            id={`journal-board-tab-${board.id}`}
+                                            aria-selected={isActive}
+                                            aria-controls="journal-board-panel"
+                                            onClick={() => setActiveBoard(board.id)}
+                                            className={`flex min-h-11 min-w-0 items-center justify-center gap-1.5 rounded-lg px-2 text-[10px] font-bold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#e5c76f] sm:gap-2 sm:px-4 sm:text-xs ${
+                                                isActive
+                                                    ? 'bg-[#f1d88a] text-[#17372b] shadow-sm'
+                                                    : 'text-white/75 hover:bg-white/10 hover:text-white'
+                                            }`}
+                                        >
+                                            <span className="sm:hidden">{board.shortLabel}</span>
+                                            <span className="hidden sm:inline">{board.label}</span>
+                                            <span className="tabular-nums">{String(board.count).padStart(2, '0')}</span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                        <div
+                            id="journal-board-panel"
+                            role="tabpanel"
+                            aria-labelledby={`journal-board-tab-${activeBoard}`}
+                            tabIndex={0}
+                        >
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={activeBoard}
+                                    initial={{ opacity: 0, y: 12 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -8 }}
+                                    transition={{ duration: 0.25 }}
+                                    className="space-y-8 sm:space-y-10"
+                                >
+                                    {groupBoardMembers(activeBoard === 'editorial' ? editorialBoard : advisoryBoard).map((group) => (
+                                        <section key={group.role} aria-label={group.role}>
+                                            <div className="mb-3 flex items-center gap-3 sm:mb-4">
+                                                <h3 className="shrink-0 text-[10px] font-bold uppercase tracking-[0.16em] text-[#8b712f] sm:text-xs">
+                                                    {group.role}
+                                                </h3>
+                                                <span aria-hidden="true" className="h-px flex-1 bg-[#dedfd7]" />
+                                                <span className="shrink-0 rounded-full bg-[#e9eee8] px-2.5 py-1 text-[10px] font-semibold tabular-nums text-[#53645a]">
+                                                    {String(group.members.length).padStart(2, '0')}
+                                                </span>
+                                            </div>
+                                            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                                                {group.members.map((member) => (
+                                                    <BoardMemberCard key={member.name} member={member} />
+                                                ))}
+                                            </div>
+                                        </section>
+                                    ))}
+                                </motion.div>
+                            </AnimatePresence>
                         </div>
                     </motion.div>
                 </section>

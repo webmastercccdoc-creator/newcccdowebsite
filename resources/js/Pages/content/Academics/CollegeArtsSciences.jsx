@@ -358,8 +358,8 @@ export default function CollegeArtsSciences() {
         { name: "CHARLIE JOB SUMILI, MAFil", role: "FULL-TIME FACULTY,\nBACOMM", photo: charlieSumiliPhoto },
         { name: "WENEFREDO DELLAVA, PhD", role: "PART-TIME FACULTY,\nBACOMM", photo: wenefredoDellavaPhoto },
         { name: "KURT S. CANDILAS, PhD", role: "PART-TIME FACULTY,\nBACOMM", photo: kurtCandilasPhoto },
-        { name: "JONATHAN MADRONERO", role: "PART-TIME FACULTY,\nBACOMM", photo: jonathanMadroneroPhoto },
-        { name: "JEROME L TORRES", role: "PART-TIME FACULTY,\nBACOMM", photo: jeromeTorresPhoto },
+        { name: "JONATHAN MADRONERO, MS Stats", role: "PART-TIME FACULTY,\nBACOMM", photo: jonathanMadroneroPhoto },
+        { name: "JEROME L TORRES, MAED", role: "PART-TIME FACULTY,\nBACOMM", photo: jeromeTorresPhoto },
         { name: "AGA EMM D. MAHINAY, PhD", role: "Faculty", photo: agaMahinayPhoto },
     ];
 

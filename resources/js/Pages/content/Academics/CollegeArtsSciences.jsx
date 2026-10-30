@@ -354,10 +354,10 @@ export default function CollegeArtsSciences() {
 
     const bacommFaculty = [
         { name: "DONNA GRACE I. COTEJO", role: "PROGRAM HEAD,\nBACOMM", photo: drDonnaCotejoPhoto },
-        { name: "ELDIN D. CAMPOSO", role: "FULL-TIME FACULTY,\nBACOMM", photo: eldinCamposoPhoto },
-        { name: "CHARLIE JOB SUMILI", role: "FULL-TIME FACULTY,\nBACOMM", photo: charlieSumiliPhoto },
-        { name: "WENEFREDO DELLAVA", role: "PART-TIME FACULTY,\nBACOMM", photo: wenefredoDellavaPhoto },
-        { name: "KURT S. CANDILAS", role: "PART-TIME FACULTY,\nBACOMM", photo: kurtCandilasPhoto },
+        { name: "ELDIN D. CAMPOSO, MAEd", role: "FULL-TIME FACULTY,\nBACOMM", photo: eldinCamposoPhoto },
+        { name: "CHARLIE JOB SUMILI, MAFil", role: "FULL-TIME FACULTY,\nBACOMM", photo: charlieSumiliPhoto },
+        { name: "WENEFREDO DELLAVA, PhD", role: "PART-TIME FACULTY,\nBACOMM", photo: wenefredoDellavaPhoto },
+        { name: "KURT S. CANDILAS, PhD", role: "PART-TIME FACULTY,\nBACOMM", photo: kurtCandilasPhoto },
         { name: "JONATHAN MADRONERO", role: "PART-TIME FACULTY,\nBACOMM", photo: jonathanMadroneroPhoto },
         { name: "JEROME L TORRES", role: "PART-TIME FACULTY,\nBACOMM", photo: jeromeTorresPhoto },
         { name: "AGA EMM D. MAHINAY, PhD", role: "Faculty", photo: agaMahinayPhoto },

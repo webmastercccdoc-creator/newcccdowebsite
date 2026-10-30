@@ -28,6 +28,7 @@ import pancracioSaboridroPhoto from '../../../assets/images/PANCRACIO_SABORIDRO.
 import psycheCamboPhoto from '../../../assets/images/PSYCHE_CAMBO.png';
 import jeanLoquillanoPhoto from '../../../assets/images/JEAN_LOQUILLANO.png';
 import ghayMagansaPhoto from '../../../assets/images/GHAY_MAGANSA.png';
+import agaMahinayPhoto from '../../../assets/images/AGA_MAHINAY.png';
 
 // --- Faculty Photo & Background Imports ---
 const facultyPlaceholder = 'https://placehold.co/400x500/e2e8f0/1e293b?text=Faculty+Photo';
@@ -315,7 +316,7 @@ export default function CollegeEducation() {
         { name: "CHARLITO M. CASTRODES, PhD-TM", role: "Program Chairperson", photo: charlitoCastrodesPhoto },
         { name: "AIZA MAE D. CAHANSA, MASE", role: "Faculty", photo: aizaCahansaPhoto },
         { name: "MARY VIL ACENAS, MAED", role: "Faculty", photo: maryAcenasPhoto },
-        { name: "ENGR. JAMILLE DABLIO", role: "Faculty", photo: jamilleDablioPhoto },
+        { name: "ENGR. JAMELE GEM E. DABLIO", role: "Faculty", photo: jamilleDablioPhoto },
     ];
 
     const professionalEducationFaculty = [
@@ -323,7 +324,7 @@ export default function CollegeEducation() {
         { name: "HELMAE E. TAPANAN, EdD", role: "Faculty", photo: drHelmaeTapananPhoto },
         { name: "RAY BUTCH D. MAGHINAY, PhD", role: "Faculty", photo: drButchMahinayPhoto },
         { name: "JONATHAN A. MADRONERO, MS", role: "Faculty", photo: jonathanMadroneroPhoto },
-        { name: "AGA EMM D. MAHINAY, PhD", role: "Faculty"},
+        { name: "AGA EMM D. MAHINAY, PhD", role: "Faculty", photo: agaMahinayPhoto },
         { name: "JEAN T. LOQUILLANO, PhD", role: "Faculty", photo: jeanLoquillanoPhoto },
         { name: "GHAY MARIE PIANAR-MAGANSA, LPT", role: "Faculty", photo: ghayMagansaPhoto },
         { name: "JOEL D. POTANE, PhD", role: "Faculty", photo: joelPotanePhoto  },

@@ -387,7 +387,7 @@ export default function TechnicalSkillsTechnologyInstitute() {
             shortLabel: "Construction",
             trainers: [
                 {
-                    name: "Romulo P. Araña",
+                    name: "Romulo L. Araña",
                     image: romuloAranaImg,
                     qualification: "Trainer, EIM NCII",
                 },

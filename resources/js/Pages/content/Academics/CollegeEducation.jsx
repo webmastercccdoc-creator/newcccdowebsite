@@ -315,8 +315,8 @@ export default function CollegeEducation() {
     const btledFaculty = [
         { name: "CHARLITO M. CASTRODES, PhD-TM", role: "Program Chairperson", photo: charlitoCastrodesPhoto },
         { name: "AIZA MAE D. CAHANSA, MASE", role: "Faculty", photo: aizaCahansaPhoto },
-        { name: "MARY VIL ACENAS, MAED", role: "Faculty", photo: maryAcenasPhoto },
-        { name: "ENGR. JAMELE GEM E. DABLIO", role: "Faculty", photo: jamilleDablioPhoto },
+        { name: "MARY VIL C. ACENAS, MAED", role: "Faculty", photo: maryAcenasPhoto },
+        { name: "ENGR. JAMELE GEM E. DABLO", role: "Faculty", photo: jamilleDablioPhoto },
     ];
 
     const professionalEducationFaculty = [

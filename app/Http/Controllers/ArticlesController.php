@@ -41,7 +41,7 @@ class ArticlesController extends Controller
             'status',
             'created_by'
         )
-        ->where('status', 'approved')
+        ->whereIn('status', ['approved', 'pending'])
         ->orderByDesc('date')
         ->get()
         ->filter(function ($article) use ($userDepartments) {
@@ -159,7 +159,7 @@ class ArticlesController extends Controller
      */
     public function approve()
     {
-        // 🆕 Check if user has permission to approve articles
+        // ðŸ†• Check if user has permission to approve articles
         if (!$this->hasPermission('approve_articles')) {
             if (request()->expectsJson() || request()->ajax() || request()->wantsJson()) {
                 return response()->json([
@@ -297,7 +297,7 @@ class ArticlesController extends Controller
      */
     public function store(Request $request)
     {
-        // 🆕 Check if user has permission to create articles
+        // ðŸ†• Check if user has permission to create articles
         if (!$this->hasPermission('articles')) {
             return response()->json([
                 'success' => false,
@@ -521,7 +521,7 @@ class ArticlesController extends Controller
      */
     public function update(Request $request, NewsArticle $article)
     {
-        // 🆕 Check if user has permission to edit articles
+        // ðŸ†• Check if user has permission to edit articles
         if (!$this->hasPermission('articles')) {
             if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
                 return response()->json([
@@ -693,7 +693,7 @@ class ArticlesController extends Controller
      */
     public function destroy(NewsArticle $article)
     {
-        // 🆕 Check if user has permission to delete articles
+        // ðŸ†• Check if user has permission to delete articles
         if (!$this->hasPermission('user_management')) {
             if (request()->expectsJson() || request()->ajax() || request()->wantsJson()) {
                 return response()->json([
@@ -722,7 +722,7 @@ class ArticlesController extends Controller
      */
     public function approveArticle(Request $request, NewsArticle $article)
     {
-        // 🆕 Check if user has permission to approve articles
+        // ðŸ†• Check if user has permission to approve articles
         if (!$this->hasPermission('approve_articles')) {
             if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
                 return response()->json([
@@ -774,7 +774,7 @@ class ArticlesController extends Controller
      */
     public function rejectArticle(Request $request, NewsArticle $article)
     {
-        // 🆕 Check if user has permission to approve articles (reject is part of approval flow)
+        // ðŸ†• Check if user has permission to approve articles (reject is part of approval flow)
         if (!$this->hasPermission('approve_articles')) {
             if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
                 return response()->json([
@@ -826,7 +826,7 @@ class ArticlesController extends Controller
      */
     public function archiveArticle(Request $request, NewsArticle $article)
     {
-        // 🆕 Check if user has permission to archive articles (requires 'articles' permission)
+        // ðŸ†• Check if user has permission to archive articles (requires 'articles' permission)
         if (!$this->hasPermission('articles')) {
             if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
                 return response()->json([
@@ -909,7 +909,7 @@ class ArticlesController extends Controller
     }
 
     /**
-     * 🆕 Helper method to check if user has a specific permission
+     * ðŸ†• Helper method to check if user has a specific permission
      * 
      * @param string $permission
      * @return bool

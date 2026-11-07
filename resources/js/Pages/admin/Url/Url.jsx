@@ -3,6 +3,7 @@ import { usePage } from '@inertiajs/react';
 import axios from 'axios';
 import AdminLayout from '../../../layouts/AdminLayout';
 import Modal, { ConfirmModal } from '../../../components/admin/Modal';
+import LoadingSpinner from '../../../components/LoadingSpinner';
 import CreateShortenUrl from './CreateShortenUrl';
 import EditShortenUrl from './EditShortenUrl';
 
@@ -10,6 +11,7 @@ export default function Url() {
   const { auth } = usePage();
   const { user } = auth || {};
 
+  const [userPermissions, setUserPermissions] = useState([]);
   const [shortenedUrl, setShortenedUrl] = useState('');
   const [qrCode, setQrCode] = useState('');
   const [urls, setUrls] = useState([]);
@@ -18,18 +20,37 @@ export default function Url() {
   const [error, setError] = useState('');
   const [copySuccess, setCopySuccess] = useState('');
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [actionSuccess, setActionSuccess] = useState(null);
+  const [selectedQrCode, setSelectedQrCode] = useState(null);
   const [confirmation, setConfirmation] = useState(null);
   const [isConfirmationLoading, setIsConfirmationLoading] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedPendingIds, setSelectedPendingIds] = useState([]);
   
   // Search and Filter states
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('all');
   const [activeTab, setActiveTab] = useState('all'); // 'all', 'pending', 'rejected'
   
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(3);
+  const pageGroupSize = 5;
+
+  useEffect(() => {
+    const fetchUserPermissions = async () => {
+      try {
+        const response = await axios.get('/user/permissions');
+        setUserPermissions(response.data?.user?.permissions || []);
+      } catch (error) {
+        console.error('Failed to fetch user permissions:', error);
+        setUserPermissions([]);
+      }
+    };
+
+    fetchUserPermissions();
+  }, []);
+
+  const canManageUrls = userPermissions.includes('user_management');
 
   // Edit states - Updated for Modal
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -48,10 +69,10 @@ export default function Url() {
     fetchUrls();
   }, []);
 
-  // Filter URLs when search term, filter type, or active tab changes
+  // Filter URLs when search term or active tab changes
   useEffect(() => {
     filterUrls();
-  }, [searchTerm, filterType, urls, activeTab]);
+  }, [searchTerm, urls, activeTab]);
 
   const fetchUrls = async () => {
     try {
@@ -91,7 +112,7 @@ export default function Url() {
       filtered = filtered.filter(url => url.status === 'approved' || !url.status);
     }
 
-    // Then filter by search term
+    // Then filter by search term (searches both short URL and original URL)
     if (searchTerm.trim() !== '') {
       const term = searchTerm.toLowerCase().trim();
       filtered = filtered.filter((url) => {
@@ -99,13 +120,7 @@ export default function Url() {
         const originalUrlLower = url.original_url.toLowerCase();
         const shortUrlLower = fullShortUrl.toLowerCase();
 
-        if (filterType === 'short_url') {
-          return shortUrlLower.includes(term);
-        } else if (filterType === 'original_url') {
-          return originalUrlLower.includes(term);
-        } else {
-          return shortUrlLower.includes(term) || originalUrlLower.includes(term);
-        }
+        return shortUrlLower.includes(term) || originalUrlLower.includes(term);
       });
     }
 
@@ -115,21 +130,19 @@ export default function Url() {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-  };
-
-  const handleFilterChange = (e) => {
-    setFilterType(e.target.value);
+    setSelectedPendingIds([]);
   };
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
     setCurrentPage(1);
+    setSelectedPendingIds([]);
   };
 
   const clearSearch = () => {
     setSearchTerm('');
-    setFilterType('all');
     setCurrentPage(1);
+    setSelectedPendingIds([]);
   };
 
   // Pagination calculations
@@ -140,6 +153,13 @@ export default function Url() {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+  };
+
+  const getVisiblePageNumbers = () => {
+    const groupStart = Math.floor((currentPage - 1) / pageGroupSize) * pageGroupSize + 1;
+    const groupEnd = Math.min(totalPages, groupStart + pageGroupSize - 1);
+
+    return Array.from({ length: groupEnd - groupStart + 1 }, (_, index) => groupStart + index);
   };
 
   const handlePrevPage = () => {
@@ -198,6 +218,28 @@ export default function Url() {
     document.body.removeChild(link);
   };
 
+  const handleGenerateQrCode = (url) => {
+    const fullShortUrl = getFullShortUrl(url.short_code, url.short_url);
+    setSelectedQrCode({
+      code: url.short_code,
+      shortUrl: fullShortUrl,
+      imageUrl: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(fullShortUrl)}`
+    });
+  };
+
+  const handleDownloadSelectedQrCode = () => {
+    if (!selectedQrCode) return;
+
+    const link = document.createElement('a');
+    link.href = selectedQrCode.imageUrl;
+    link.download = `short-url-${selectedQrCode.code || 'qr-code'}.png`;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleDelete = async (id) => {
     setConfirmation({ type: 'delete', id });
   };
@@ -209,7 +251,10 @@ export default function Url() {
       await axios.delete(`/admin/shorten-url/${confirmation.id}`);
       setConfirmation(null);
       await fetchUrls();
-      alert('The shortened URL was deleted successfully.');
+      setActionSuccess({
+        title: 'URL deleted successfully',
+        message: 'The shortened URL has been deleted.'
+      });
     } catch (error) {
       console.error('Failed to delete URL:', error);
       alert('Failed to delete URL.');
@@ -231,7 +276,10 @@ export default function Url() {
       await fetchUrls();
       setIsEditModalOpen(false);
       setEditingUrl(null);
-      alert('The URL was updated successfully.');
+      setActionSuccess({
+        title: 'URL updated successfully',
+        message: 'Your changes to the shortened URL have been saved.'
+      });
     } catch (error) {
       console.error('Error refreshing URLs:', error);
       alert('Failed to update URL.');
@@ -257,7 +305,10 @@ export default function Url() {
       if (response.data.success) {
         setConfirmation(null);
         await fetchUrls();
-        alert('The URL has been approved successfully.');
+        setActionSuccess({
+          title: 'URL approved successfully',
+          message: 'The shortened URL has been approved and is now active.'
+        });
       }
     } catch (error) {
       console.error('Failed to approve URL:', error);
@@ -271,6 +322,79 @@ export default function Url() {
     setConfirmation({ type: 'reject', id });
   };
 
+  const pendingFilteredIds = filteredUrls
+    .filter((url) => url.status === 'pending')
+    .map((url) => url.id);
+  const areAllPendingSelected = pendingFilteredIds.length > 0
+    && pendingFilteredIds.every((id) => selectedPendingIds.includes(id));
+
+  const handleTogglePendingSelection = (id) => {
+    setSelectedPendingIds((selectedIds) => (
+      selectedIds.includes(id)
+        ? selectedIds.filter((selectedId) => selectedId !== id)
+        : [...selectedIds, id]
+    ));
+  };
+
+  const handleToggleSelectAllPending = () => {
+    setSelectedPendingIds((selectedIds) => (
+      areAllPendingSelected
+        ? selectedIds.filter((id) => !pendingFilteredIds.includes(id))
+        : [...new Set([...selectedIds, ...pendingFilteredIds])]
+    ));
+  };
+
+  const handleBulkStatus = (status) => {
+    const ids = selectedPendingIds.filter((id) => pendingFilteredIds.includes(id));
+    if (ids.length > 0) {
+      setConfirmation({ type: status === 'approved' ? 'bulkApprove' : 'bulkReject', ids });
+    }
+  };
+
+  const confirmBulkStatus = async () => {
+    const status = confirmation.type === 'bulkApprove' ? 'approved' : 'rejected';
+    const actionLabel = status === 'approved' ? 'approved' : 'rejected';
+    setIsConfirmationLoading(true);
+
+    try {
+      const results = await Promise.allSettled(
+        confirmation.ids.map(async (id) => {
+          const response = await axios.put(`/admin/shorten-url/${id}/status`, { status });
+          if (!response.data.success) {
+            throw new Error(response.data.message || `Failed to ${actionLabel} URL ${id}.`);
+          }
+          return id;
+        })
+      );
+      const successfulIds = results
+        .filter((result) => result.status === 'fulfilled')
+        .map((result) => result.value);
+      const failedCount = results.length - successfulIds.length;
+
+      setConfirmation(null);
+      setSelectedPendingIds((selectedIds) => selectedIds.filter((id) => !successfulIds.includes(id)));
+      await fetchUrls();
+
+      setActionSuccess({
+        title: failedCount === 0
+          ? `${successfulIds.length} URLs ${actionLabel} successfully`
+          : `Some URLs could not be ${actionLabel}`,
+        message: failedCount === 0
+          ? `All ${successfulIds.length} selected URLs were ${actionLabel}.`
+          : `${successfulIds.length} URLs were ${actionLabel}, and ${failedCount} failed. Failed URLs remain selected so you can retry.`
+      });
+    } catch (error) {
+      console.error(`Failed to ${actionLabel} selected URLs:`, error);
+      setConfirmation(null);
+      setActionSuccess({
+        title: 'Unable to refresh URLs',
+        message: 'The status updates may have completed, but the list could not be refreshed. Reload the page to verify their status.'
+      });
+    } finally {
+      setIsConfirmationLoading(false);
+    }
+  };
+
   const confirmReject = async () => {
     setIsConfirmationLoading(true);
 
@@ -279,7 +403,10 @@ export default function Url() {
       if (response.data.success) {
         setConfirmation(null);
         await fetchUrls();
-        alert('The URL has been rejected.');
+        setActionSuccess({
+          title: 'URL rejected',
+          message: 'The shortened URL has been rejected.'
+        });
       }
     } catch (error) {
       console.error('Failed to reject URL:', error);
@@ -401,7 +528,7 @@ export default function Url() {
             </nav>
           </div>
 
-          {/* Search and Filters */}
+          {/* Search */}
           <div className="bg-gray-100 border-b border-gray-200 shadow-sm p-4">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="md:w-80 relative flex-shrink-0">
@@ -432,29 +559,17 @@ export default function Url() {
                 )}
               </div>
 
-              <div className="flex-1 flex flex-wrap gap-4">
-                <select
-                  value={filterType}
-                  onChange={handleFilterChange}
-                  className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none text-sm bg-white min-w-[130px]"
+              {searchTerm && (
+                <button
+                  onClick={clearSearch}
+                  className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg transition-colors flex items-center gap-2 border border-gray-200 bg-white w-fit"
                 >
-                  <option value="all">All Fields</option>
-                  <option value="short_url">Short URL</option>
-                  <option value="original_url">Original URL</option>
-                </select>
-
-                {(searchTerm || filterType !== 'all') && (
-                  <button
-                    onClick={clearSearch}
-                    className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg transition-colors flex items-center gap-2 border border-gray-200 bg-white"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    Clear
-                  </button>
-                )}
-              </div>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Clear
+                </button>
+              )}
             </div>
 
             <div className="mt-3 text-sm text-gray-600">
@@ -464,7 +579,6 @@ export default function Url() {
                 <span>
                   Found <span className="font-medium text-gray-800">{filteredUrls.length}</span> URL{filteredUrls.length !== 1 ? 's' : ''}
                   {searchTerm && <span> matching "<span className="font-medium text-gray-800">{searchTerm}</span>"</span>}
-                  {filterType !== 'all' && <span> in <span className="font-medium text-gray-800">{filterType.replace('_', ' ')}</span></span>}
                 </span>
               )}
             </div>
@@ -478,7 +592,7 @@ export default function Url() {
               {searchTerm ? (
                 <>
                   <p className="text-gray-500 font-medium">No results found for "{searchTerm}"</p>
-                  <p className="text-gray-400 text-sm mt-1">Try adjusting your search or filter</p>
+                  <p className="text-gray-400 text-sm mt-1">Try adjusting your search</p>
                 </>
               ) : (
                 <>
@@ -493,31 +607,108 @@ export default function Url() {
             </div>
           ) : (
             <>
-              <div className="w-full overflow-hidden">
-                <table className="w-full table-fixed">
+              {canManageUrls && activeTab === 'pending' && selectedPendingIds.length > 0 && (
+                <div className="mb-6 flex flex-col gap-4 rounded-xl border border-gray-300 bg-gray-100 p-4 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-sm font-medium text-gray-800">
+                    {selectedPendingIds.length} URL{selectedPendingIds.length !== 1 ? 's' : ''} selected
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleBulkStatus('approved')}
+                      disabled={isConfirmationLoading}
+                      className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 hover:shadow disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Approve Selected
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleBulkStatus('rejected')}
+                      disabled={isConfirmationLoading}
+                      className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-red-700 hover:shadow disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      Reject Selected
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedPendingIds([])}
+                      disabled={isConfirmationLoading}
+                      className="inline-flex items-center gap-2 rounded-lg bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      Clear Selection
+                    </button>
+                  </div>
+                </div>
+              )}
+              <div className="w-full overflow-x-auto">
+                <table className="w-full min-w-[1200px] table-fixed">
                   <thead className="bg-gray-700 text-white">
                     <tr>
-                      <th className="w-[25%] px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Short URL</th>
-                      <th className="w-[40%] px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Original URL</th>
-                      <th className="w-[10%] px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Status</th>
-                      <th className="w-[25%] px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Actions</th>
+                      <th className="w-[7%] px-3 py-3 text-left text-xs font-medium uppercase tracking-wider border-r border-gray-500">
+                        {canManageUrls && activeTab === 'pending' ? (
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              checked={areAllPendingSelected}
+                              onChange={handleToggleSelectAllPending}
+                              className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                              aria-label="Select all filtered pending URLs"
+                            />
+                            #
+                          </div>
+                        ) : '#'}
+                      </th>
+                      <th className="w-[10%] px-3 py-3 text-left text-xs font-medium uppercase tracking-wider border-r border-gray-500">Code</th>
+                      <th className="w-[15%] px-3 py-3 text-left text-xs font-medium uppercase tracking-wider border-r border-gray-500">Short URL</th>
+                      <th className="w-[26%] px-3 py-3 text-left text-xs font-medium uppercase tracking-wider border-r border-gray-500">Original URL</th>
+                      <th className="w-[11%] px-3 py-3 text-left text-xs font-medium uppercase tracking-wider border-r border-gray-500">Status</th>
+                      <th className="w-[34%] px-3 py-3 text-center text-xs font-medium uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {currentUrls.map((url) => {
+                    {currentUrls.map((url, index) => {
                       const fullShortUrl = getFullShortUrl(url.short_code, url.short_url);
                       const status = url.status || 'approved';
+                      const rowNumber = indexOfFirstItem + index + 1;
                       
                       return (
-                        <tr key={url.id} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-6 py-4">
-                            <div className="flex items-center justify-center gap-2">
+                        <tr 
+                          key={url.id} 
+                          className={`transition-colors ${index % 2 === 0 ? 'bg-white hover:bg-gray-50' : 'bg-gray-50 hover:bg-gray-100'}`}
+                        >
+                          <td className="px-3 py-4 text-left text-sm font-medium text-gray-700">
+                            <div className="flex items-center gap-2">
+                              {canManageUrls && status === 'pending' && (
+                                <input
+                                  type="checkbox"
+                                  checked={selectedPendingIds.includes(url.id)}
+                                  onChange={() => handleTogglePendingSelection(url.id)}
+                                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                  aria-label={`Select URL ${url.short_code}`}
+                                />
+                              )}
+                              {rowNumber}
+                            </div>
+                          </td>
+                          <td className="px-3 py-4 text-left text-sm text-gray-700">
+                            <span className="block truncate" title={url.short_code || ''}>
+                              {url.short_code || '-'}
+                            </span>
+                          </td>
+                          <td className="px-3 py-4">
+                            <div className="flex items-center gap-2">
                               <div className="flex-1 min-w-0">
                                 <a
                                   href={fullShortUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-blue-600 hover:text-blue-800 hover:underline font-medium text-sm truncate block text-center"
+                                  className="text-blue-600 hover:text-blue-800 hover:underline font-medium text-sm truncate block"
                                 >
                                   {fullShortUrl}
                                 </a>
@@ -533,16 +724,22 @@ export default function Url() {
                               </button>
                             </div>
                           </td>
-                          <td className="px-6 py-4">
-                            <div className="truncate text-sm text-gray-600 text-center">
+                          <td className="px-3 py-4 text-left text-sm text-gray-600">
+                            <a
+                              href={url.original_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block truncate hover:text-blue-700 hover:underline"
+                              title={url.original_url}
+                            >
                               {url.original_url}
-                            </div>
+                            </a>
                           </td>
-                          <td className="px-6 py-4 text-center">
+                          <td className="px-3 py-4 text-left">
                             {getStatusBadge(status)}
                           </td>
-                          <td className="px-6 py-4">
-                            <div className="flex items-center justify-center gap-1.5 flex-wrap">
+                          <td className="px-3 py-4 text-center">
+                            <div className="flex flex-nowrap items-center justify-center gap-1 whitespace-nowrap">
                               {/* View Button - Only show for approved URLs */}
                               {(status === 'approved' || !status) && (
                                 <button
@@ -558,7 +755,7 @@ export default function Url() {
                                 </button>
                               )}
                               
-                              {status === 'pending' && (
+                              {canManageUrls && status === 'pending' && (
                                 <>
                                   <button
                                     onClick={() => handleApprove(url.id)}
@@ -583,7 +780,7 @@ export default function Url() {
                                 </>
                               )}
                               
-                              {(status === 'approved' || status === 'rejected') && (
+                              {canManageUrls && (status === 'approved' || status === 'rejected') && (
                                 <button
                                   onClick={() => handleEdit(url)}
                                   className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-white bg-yellow-500 hover:bg-yellow-600 rounded-lg transition-colors duration-200 whitespace-nowrap"
@@ -595,17 +792,30 @@ export default function Url() {
                                   Edit
                                 </button>
                               )}
-                              
+
                               <button
-                                onClick={() => handleDelete(url.id)}
-                                className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200 whitespace-nowrap"
-                                title="Delete"
+                                onClick={() => handleGenerateQrCode(url)}
+                                className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-white bg-gray-600 hover:bg-gray-700 rounded-lg transition-colors duration-200 whitespace-nowrap"
+                                title="Generate QR Code"
                               >
                                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM20 14v2m-6 4h2m4-1v2m1-5v2" />
                                 </svg>
-                                Delete
+                                QR Code
                               </button>
+                              
+                              {canManageUrls && (
+                                <button
+                                  onClick={() => handleDelete(url.id)}
+                                  className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200 whitespace-nowrap"
+                                  title="Delete"
+                                >
+                                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                  Delete
+                                </button>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -634,7 +844,7 @@ export default function Url() {
                       Previous
                     </button>
                     <div className="flex gap-1">
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                      {getVisiblePageNumbers().map((pageNum) => (
                         <button
                           key={pageNum}
                           onClick={() => handlePageChange(pageNum)}
@@ -687,31 +897,45 @@ export default function Url() {
             ? confirmApprove
             : confirmation?.type === 'reject'
               ? confirmReject
-              : confirmDelete
+              : confirmation?.type === 'bulkApprove' || confirmation?.type === 'bulkReject'
+                ? confirmBulkStatus
+                : confirmDelete
         }
         title={
           confirmation?.type === 'approve'
             ? 'Approve URL?'
             : confirmation?.type === 'reject'
               ? 'Reject URL?'
-              : 'Delete shortened URL?'
+              : confirmation?.type === 'bulkApprove'
+                ? 'Approve selected URLs?'
+                : confirmation?.type === 'bulkReject'
+                  ? 'Reject selected URLs?'
+                  : 'Delete shortened URL?'
         }
         message={
           confirmation?.type === 'approve'
             ? 'Are you sure you want to approve this URL?'
             : confirmation?.type === 'reject'
               ? 'Are you sure you want to reject this URL?'
-              : 'This action cannot be undone.'
+              : confirmation?.type === 'bulkApprove'
+                ? `Are you sure you want to approve ${confirmation.ids.length} selected URLs?`
+                : confirmation?.type === 'bulkReject'
+                  ? `Are you sure you want to reject ${confirmation.ids.length} selected URLs?`
+                  : 'This action cannot be undone.'
         }
         confirmText={
           confirmation?.type === 'approve'
             ? 'Approve'
             : confirmation?.type === 'reject'
               ? 'Reject'
-              : 'Delete'
+              : confirmation?.type === 'bulkApprove'
+                ? 'Approve Selected'
+                : confirmation?.type === 'bulkReject'
+                  ? 'Reject Selected'
+                  : 'Delete'
         }
         confirmColor={
-          confirmation?.type === 'approve'
+          confirmation?.type === 'approve' || confirmation?.type === 'bulkApprove'
             ? 'bg-green-600 hover:bg-green-700'
             : 'bg-red-600 hover:bg-red-700'
         }
@@ -774,6 +998,80 @@ export default function Url() {
           </div>
         </div>
       </Modal>
+
+      <Modal
+        isOpen={Boolean(actionSuccess)}
+        onClose={() => setActionSuccess(null)}
+        title={actionSuccess?.title || 'Action completed'}
+        size="sm"
+      >
+        <div className="space-y-5">
+          <p className="text-sm text-gray-600">{actionSuccess?.message}</p>
+          <div className="flex justify-center">
+            <button
+              type="button"
+              onClick={() => setActionSuccess(null)}
+              className="px-6 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={Boolean(selectedQrCode)}
+        onClose={() => setSelectedQrCode(null)}
+        title="Short URL QR Code"
+        size="sm"
+      >
+        {selectedQrCode && (
+          <div className="flex flex-col items-center gap-4">
+            <p className="w-full truncate text-left text-sm text-gray-600" title={selectedQrCode.shortUrl}>
+              {selectedQrCode.shortUrl}
+            </p>
+            <img
+              src={selectedQrCode.imageUrl}
+              alt={`QR code for ${selectedQrCode.shortUrl}`}
+              className="h-64 w-64 rounded-lg border border-gray-200 p-2"
+            />
+            <div className="flex w-full justify-center gap-3">
+              <button
+                type="button"
+                onClick={handleDownloadSelectedQrCode}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Download QR Code
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedQrCode(null)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {confirmation && isConfirmationLoading && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="rounded-xl bg-white px-10 py-8 shadow-2xl">
+            <LoadingSpinner
+              size={48}
+              color="text-gray-700"
+              text={
+                confirmation.type === 'approve'
+                  ? 'Approving URL...'
+                  : confirmation.type === 'reject'
+                    ? 'Rejecting URL...'
+                    : 'Deleting URL...'
+              }
+            />
+          </div>
+        </div>
+      )}
     </AdminLayout>
   );
 }

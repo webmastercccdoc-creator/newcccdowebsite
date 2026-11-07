@@ -140,7 +140,7 @@ class UserAccessController extends Controller
     }
 
     /**
-     * Get approved articles for the current user based on assigned department(s)
+     * Get approved and pending articles for the current user based on assigned department(s)
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -173,7 +173,7 @@ class UserAccessController extends Controller
             'status',
             'created_by'
         )
-            ->where('status', 'approved')
+            ->whereIn('status', ['approved', 'pending'])
             ->orderByDesc('date')
             ->get()
             ->filter(function ($article) use ($userDepartments) {

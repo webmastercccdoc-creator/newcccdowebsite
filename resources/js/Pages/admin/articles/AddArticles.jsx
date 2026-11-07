@@ -2,6 +2,8 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Modal from '@/components/admin/Modal';
+import { ConfirmModal } from '@/components/admin/Modal';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function AddArticles({ 
   isOpen, 
@@ -33,6 +35,13 @@ export default function AddArticles({
   const [isReviewEditing, setIsReviewEditing] = useState(false);
   const [userDepartments, setUserDepartments] = useState([]);
   const [isLoadingDepartments, setIsLoadingDepartments] = useState(false);
+
+  // 🆕 Confirmation & Success modal states
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [savedArticleAfterSuccess, setSavedArticleAfterSuccess] = useState(null);
+
   const fileInputRef = useRef(null);
 
   const effectiveIsEditing = isEditing || isReviewEditing;
@@ -128,25 +137,25 @@ export default function AddArticles({
   ];
 
   const htmlToText = (html = '') => {
-  const document = new DOMParser().parseFromString(html, 'text/html');
+    const document = new DOMParser().parseFromString(html, 'text/html');
 
-  document.querySelectorAll('br').forEach((element) => {
-    element.replaceWith('\n');
-  });
+    document.querySelectorAll('br').forEach((element) => {
+      element.replaceWith('\n');
+    });
 
-  document.querySelectorAll('a').forEach((anchor) => {
-    const href = anchor.getAttribute('href');
-    if (!href) return;
+    document.querySelectorAll('a').forEach((anchor) => {
+      const href = anchor.getAttribute('href');
+      if (!href) return;
 
-    const label = anchor.textContent.trim();
-    anchor.replaceWith(label && label !== href ? `[${label}](${href})` : href);
-  });
+      const label = anchor.textContent.trim();
+      anchor.replaceWith(label && label !== href ? `[${label}](${href})` : href);
+    });
 
-  return document.body.textContent
-    .replace(/\u00a0/g, ' ')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
-};
+    return document.body.textContent
+      .replace(/\u00a0/g, ' ')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  };
 
   // ============================================
   // FETCH USER'S DEPARTMENTS
@@ -596,7 +605,8 @@ export default function AddArticles({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  // 🆕 handleSubmit now opens the confirmation modal after validation
+  const handleSubmit = (e) => {
     e.preventDefault();
     
     if (!isFormReady) {
@@ -610,7 +620,15 @@ export default function AddArticles({
       return;
     }
 
+    // 🆕 Show confirmation modal before actually submitting
+    setShowConfirmModal(true);
+  };
+
+  // 🆕 Actual submission (called after user confirms)
+  const performSubmit = async () => {
+    setShowConfirmModal(false);
     setIsSubmitting(true);
+    setSavedArticleAfterSuccess(null);
 
     try {
       const submitData = new FormData();
@@ -686,27 +704,34 @@ export default function AddArticles({
         displayStatus = 'Archived';
       }
 
-      if (onSave) {
-        onSave({
-          ...savedArticle,
-          status: displayStatus,
-          imagePreviews: responseImages.map(img => img.image_path || img.image),
-        });
-      }
-      
-      // Show success alert based on action
-      if (effectiveIsEditing) {
-        alert('Article updated successfully!');
-      } else {
-        alert('Article created successfully!');
-      }
-      
-      handleClear();
-      onClose();
+      setSavedArticleAfterSuccess({
+        ...savedArticle,
+        status: displayStatus,
+        imagePreviews: responseImages.map(img => img.image_path || img.image),
+      });
+
+const msg = effectiveIsEditing
+  ? 'Article updated successfully! Your changes have been saved and submitted for review. Your article will be published on the website once it has been approved by the admin.'
+  : 'Article created successfully! Your article has been submitted for review. Your article will be published on the website once it has been approved by the admin.';
+      setSuccessMessage(msg);
+      setShowSuccessModal(true);
     } catch (error) {
       console.error('Error saving article:', error);
-      
-      if (error.response?.data?.errors) {
+      setSavedArticleAfterSuccess(null);
+
+      const responseMessage = error.response?.data?.message || '';
+      const isCsrfError = error.response?.status === 419
+        || /csrf|token mismatch|page expired/i.test(responseMessage);
+
+      if (isCsrfError) {
+        const errorMsg = 'Your session may have expired or the security token is no longer valid. Please reload the page and try again.';
+        setErrors(prev => ({
+          ...prev,
+          submit: errorMsg
+        }));
+        setSuccessMessage(errorMsg);
+        setShowSuccessModal(true);
+      } else if (error.response?.data?.errors) {
         const validationErrors = error.response.data.errors;
         const newErrors = {};
         Object.keys(validationErrors).forEach(field => {
@@ -723,32 +748,53 @@ export default function AddArticles({
           ...prev,
           submit: `Validation error: ${errorDetails}`
         }));
-        alert(`Validation error:\n${errorDetails}`);
+        // 🆕 Show error in the success modal
+        setSuccessMessage(`Validation error:\n${errorDetails}`);
+        setShowSuccessModal(true);
       } else if (error.response?.status === 404) {
         const errorMsg = 'Article not found. Please refresh and try again.';
         setErrors(prev => ({
           ...prev,
           submit: errorMsg
         }));
-        alert(errorMsg);
+        setSuccessMessage(errorMsg);
+        setShowSuccessModal(true);
       } else if (error.response?.status === 422) {
         const errorMsg = error.response?.data?.message || 'Validation failed. Check the console for details.';
         setErrors(prev => ({
           ...prev,
           submit: errorMsg
         }));
-        alert(errorMsg);
+        setSuccessMessage(errorMsg);
+        setShowSuccessModal(true);
       } else {
         const errorMsg = error.response?.data?.message || 'Unable to save article. Please try again.';
         setErrors(prev => ({
           ...prev,
           submit: errorMsg
         }));
-        alert(errorMsg);
+        setSuccessMessage(errorMsg);
+        setShowSuccessModal(true);
       }
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleSuccessClose = () => {
+    setShowSuccessModal(false);
+    setSuccessMessage('');
+
+    if (!savedArticleAfterSuccess) {
+      return;
+    }
+
+    if (onSave) {
+      onSave(savedArticleAfterSuccess);
+    }
+    setSavedArticleAfterSuccess(null);
+    handleClear();
+    if (onClose) onClose();
   };
 
   // ============================================
@@ -867,8 +913,9 @@ export default function AddArticles({
             Department <span className="text-red-500">*</span>
           </label>
           {isLoadingDepartments ? (
-            <div className="w-full px-4 py-2.5 border rounded-lg bg-gray-50 text-gray-500">
-              Loading departments...
+            <div className="w-full px-4 py-2.5 border rounded-lg bg-gray-50 flex items-center gap-2">
+              <LoadingSpinner size={18} color="text-gray-500" />
+              <span className="text-gray-500 text-sm">Loading departments...</span>
             </div>
           ) : (
             <select
@@ -979,9 +1026,11 @@ export default function AddArticles({
 
         {/* Content - Full Width */}
         <div>
-          <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1.5">
-            Content <span className="text-red-500">*</span>
-          </label>
+          <div className="flex items-center justify-between mb-1.5">
+            <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+              Content <span className="text-red-500">*</span>
+            </label>
+          </div>
           <textarea
             id="content"
             name="content"
@@ -998,8 +1047,13 @@ export default function AddArticles({
             <p className="mt-1.5 text-sm text-red-500">{errors.content}</p>
           )}
           <p className="mt-1 text-xs text-gray-500">
-            Paste a URL or use [link text](https://example.com); links are clickable in the published article. Press <kbd className="px-1 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs font-mono">Enter</kbd> to create a new paragraph.
+            Paste a URL or use <code className="px-1 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs">[link text](https://example.com)</code> to make links clickable in the published article.
           </p>
+              <span className="text-xs text-gray-500 flex items-center gap-1">
+              Press
+              <kbd className="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs font-mono">Enter</kbd>
+              for a new paragraph
+            </span>
         </div>
 
         {/* SDG - Full Width with Auto Select Button */}
@@ -1021,10 +1075,7 @@ export default function AddArticles({
               >
                 {isAutoSelecting ? (
                   <>
-                    <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
+                    <LoadingSpinner size={12} color="text-white" />
                     Analyzing...
                   </>
                 ) : (
@@ -1106,10 +1157,7 @@ export default function AddArticles({
               >
                 {isSubmitting ? (
                   <>
-                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
+                    <LoadingSpinner size={16} color="text-white" />
                     Saving...
                   </>
                 ) : (
@@ -1175,10 +1223,7 @@ export default function AddArticles({
               >
                 {isSubmitting ? (
                   <>
-                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                    </svg>
+                    <LoadingSpinner size={16} color="text-white" />
                     {isEditing ? 'Updating...' : 'Creating...'}
                   </>
                 ) : (
@@ -1189,6 +1234,76 @@ export default function AddArticles({
           )}
         </div>
       </form>
+
+      {/* 🆕 Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={performSubmit}
+        title={effectiveIsEditing ? 'Update Article' : 'Create Article'}
+        message={
+          effectiveIsEditing
+            ? 'Are you sure you want to save the changes to this article?'
+            : 'Are you sure you want to create this article? It will be submitted for review.'
+        }
+        confirmText={effectiveIsEditing ? 'Save Changes' : 'Create Article'}
+        cancelText="Cancel"
+        confirmColor="bg-emerald-600 hover:bg-emerald-700"
+        loading={isSubmitting}
+      />
+
+      {/* 🆕 Success Modal — stays open until user clicks OK */}
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={handleSuccessClose}
+        title="Success"
+        message={successMessage}
+      />
+
+      {/* 🆕 Full-screen submitting overlay */}
+      {isSubmitting && (
+        <div className="fixed inset-0 z-[70] flex flex-col items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-xl shadow-2xl px-10 py-8 flex flex-col items-center gap-4">
+            <LoadingSpinner
+              size={56}
+              color="text-emerald-600"
+              text={effectiveIsEditing ? 'Updating article...' : 'Creating article...'}
+            />
+            <p className="text-xs text-gray-500">Please don't close this window</p>
+          </div>
+        </div>
+      )}
     </Modal>
+  );
+}
+
+// ============================================
+// 🆕 Success Modal component (appended)
+// ============================================
+function SuccessModal({ isOpen, onClose, title = 'Success', message = '' }) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
+        <div className="flex flex-col items-center text-center">
+          <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
+            <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
+          <p className="text-sm text-gray-600 whitespace-pre-line mb-6">{message}</p>
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full px-5 py-2.5 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors"
+          >
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import AdminLayout from '../../../layouts/AdminLayout';
-import Banner from './Banner';
 import Department from './Department';
 
 export default function Settings() {
@@ -8,15 +7,12 @@ export default function Settings() {
 
     const tabs = [
         { id: 'department', label: 'Department' },
-        { id: 'banner', label: 'Banner' },
     ];
 
     const renderTabContent = () => {
         switch (activeTab) {
             case 'department':
                 return <Department />;
-            case 'banner':
-                return <Banner />;
             default:
                 return null;
         }

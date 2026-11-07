@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from '../../../components/admin/Modal';
+import LoadingSpinner from '../../../components/LoadingSpinner';
 
 export default function CreateShortenUrl({ 
   isOpen, 
   onClose, 
   onSave, 
   onSuccess, 
-  showAlert,
   url = null,
   isEditing = false,
   isLoading = false
@@ -43,15 +43,11 @@ export default function CreateShortenUrl({
     e.preventDefault();
     setError('');
     
-    if (isEditing) {
-      setIsSubmitting(true);
-    } else {
-      setIsSubmitting(true);
-    }
+    setIsSubmitting(true);
 
     // Validate URL
     if (!originalUrl) {
-      await showAlert('warning', 'URL required', 'Please enter a URL.');
+      setError('Please enter a URL.');
       setIsSubmitting(false);
       return;
     }
@@ -90,7 +86,6 @@ export default function CreateShortenUrl({
           }
           resetForm();
           onClose();
-          await showAlert('success', 'URL updated', 'The URL was updated successfully.');
         } else {
           // For create mode
           const generatedUrl = response.data.shortened_url || response.data.short_url;
@@ -105,23 +100,36 @@ export default function CreateShortenUrl({
           if (onSuccess) {
             onSuccess({
               shortenedUrl: generatedUrl,
-              qrCode: response.data.qr_code || ''
+              qrCode: response.data.qr_code || '',
+              status: response.data.url_status
             });
           }
         }
       } else {
-        await showAlert('error', isEditing ? 'Update failed' : 'Unable to shorten URL', response.data.message || (isEditing ? 'Failed to update URL.' : 'Failed to shorten URL.'));
+        const responseMessage = response.data.message || '';
+        const isCsrfError = /csrf|token mismatch|page expired/i.test(responseMessage);
+
+        setError(
+          isCsrfError
+            ? 'Your session may have expired or the security token is no longer valid. Please reload the page and try again.'
+            : responseMessage || (isEditing ? 'Failed to update URL.' : 'Failed to shorten URL.')
+        );
       }
     } catch (error) {
       console.error(isEditing ? 'Error updating URL:' : 'Error shortening URL:', error);
       let errorMessage = isEditing ? 'Failed to update URL. Please try again.' : 'Failed to shorten URL. Please try again.';
-      if (error.response?.data?.message) {
+      const serverMessage = error.response?.data?.message || '';
+      const isCsrfError = error.response?.status === 419
+        || /csrf|token mismatch|page expired/i.test(serverMessage);
+
+      if (isCsrfError) {
+        errorMessage = 'Your session may have expired or the security token is no longer valid. Please reload the page and try again.';
+      } else if (serverMessage) {
         errorMessage = error.response.data.message;
       } else if (error.response?.data?.errors) {
         errorMessage = Object.values(error.response.data.errors).flat().join(', ');
       }
       setError(errorMessage);
-      await showAlert('error', isEditing ? 'Update failed' : 'Unable to shorten URL', errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -214,6 +222,18 @@ export default function CreateShortenUrl({
           </button>
         </div>
       </form>
+
+      {(isSubmitting || isLoading) && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="rounded-xl bg-white px-10 py-8 shadow-2xl">
+            <LoadingSpinner
+              size={48}
+              color="text-gray-700"
+              text={isEditing ? 'Updating URL...' : 'Creating URL...'}
+            />
+          </div>
+        </div>
+      )}
     </Modal>
   );
 }

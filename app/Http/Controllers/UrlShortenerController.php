@@ -151,10 +151,19 @@ class UrlShortenerController extends Controller
             return $this->formatSuccessResponse($existingUrl, 'URL already shortened. Here is your existing link.');
         }
 
-        // Generate short code
-        $shortCode = $customPath 
-            ? $this->validateCustomPath($customPath) 
-            : $this->generateShortCode();
+        // Validate a custom code separately so duplicate codes receive a clear response.
+        if ($customPath) {
+            $shortCode = $this->validateCustomPath($customPath);
+
+            if (!$shortCode) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'That custom code is already in use. Please choose another one.',
+                ], 422);
+            }
+        } else {
+            $shortCode = $this->generateShortCode();
+        }
 
         if (!$shortCode) {
             return response()->json([

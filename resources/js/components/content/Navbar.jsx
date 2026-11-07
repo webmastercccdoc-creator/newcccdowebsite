@@ -145,21 +145,14 @@ const Navbar = () => {
         }
 
         const bounds = menuItem.getBoundingClientRect();
-        // Make the dropdown width responsive, maxing out at 950px
         const width = Math.min(950, window.innerWidth - 32);
-        
-        // Center the dropdown relative to the menu item
         const centeredLeft = bounds.left + (bounds.width / 2) - (width / 2);
-        
-        // Keep it inside the screen bounds
         const left = Math.max(16, Math.min(centeredLeft, window.innerWidth - width - 16));
 
         return {
             position: 'absolute',
-            // This positions it directly below the navbar, preventing overlap
-            top: 'calc(100% + 8px)', 
-            // Calculate the left offset relative to the menu item container
-            left: `${left - bounds.left}px`, 
+            top: 'calc(100% + 8px)',
+            left: `${left - bounds.left}px`,
             width: `${width}px`,
             zIndex: 60,
         };
@@ -324,7 +317,6 @@ const Navbar = () => {
 
                         {/* Right side - Social Icons and Enroll Now Button */}
                         <div className="flex items-center gap-2 sm:gap-3">
-                            {/* Social Media Icons - Always visible */}
                             {socialLinks.map((social) => (
                                 <a
                                     key={social.name}
@@ -338,10 +330,8 @@ const Navbar = () => {
                                 </a>
                             ))}
 
-                            {/* Separator - Hidden on mobile, shown on sm+ */}
                             <span className="text-white/30 hidden sm:inline">|</span>
 
-                            {/* Enroll Now Button - Hidden on mobile, shown on sm+ */}
                             <a
                                 href="/apply"
                                 className="hidden sm:flex items-center gap-1.5 rounded-full bg-white px-3 sm:px-4 py-1 text-[10px] sm:text-xs font-semibold text-green-700 transition-all duration-300 hover:bg-green-50 hover:shadow-md hover:scale-105"
@@ -352,7 +342,6 @@ const Navbar = () => {
                                 Enroll Now
                             </a>
 
-                            {/* Mobile only: Small Enroll Now text link with white background */}
                             <a
                                 href="/apply"
                                 className="sm:hidden flex items-center gap-1 rounded-full bg-white px-3 py-1 text-[10px] font-semibold text-green-700 transition-all duration-300 hover:bg-green-50 hover:shadow-md"
@@ -424,10 +413,10 @@ const Navbar = () => {
                                                     className={`
                                                         flex items-center justify-center gap-1 rounded-xl px-1
                                                         transition-all duration-300 cubic-bezier(0.4, 0, 0.2, 1)
-                                                        text-black hover:text-black
                                                         whitespace-nowrap font-sans font-normal
                                                         ${isScrolled ? 'text-[16px] py-2' : 'text-[16px] py-2.5'}
-                                                        ${openDropdown === item.name ? 'text-black' : ''}
+                                                        ${openDropdown === item.name ? 'text-[#D4AF37]' : 'text-black'}
+                                                        hover:text-[#D4AF37]
                                                     `}
                                                     aria-expanded={openDropdown === item.name}
                                                     aria-haspopup="true"
@@ -467,10 +456,12 @@ const Navbar = () => {
                                                                         </h3>
                                                                         <p className="text-xs text-gray-600 mt-1 font-medium font-sans">
                                                                             {item.name === 'About Us' && 'Learn about our institution'}
-                                                                            {item.name === 'Programs' && 'Explore our academic offerings'}
+                                                                            {item.name === 'Clusters' && 'Explore our offices'}
+                                                                            {item.name === 'Academic Programs' && 'Explore our academic offerings'}
                                                                             {item.name === 'Research' && 'Discover our research initiatives'}
                                                                             {item.name === 'Extension' && 'Community engagement and outreach'}
-                                                                            {item.name === 'News' && 'Stay updated with latest news'}
+                                                                            {item.name === 'SDG & Internationalization' && 'Global sustainability and impact'}
+                                                                            {item.name === 'News & Events' && 'Stay updated with latest news'}
                                                                         </p>
                                                                     </div>
                                                                     <div className="h-10 w-1.5 bg-gradient-to-b from-green-400 via-green-500 to-green-600 rounded-full shadow-lg"></div>
@@ -486,11 +477,11 @@ const Navbar = () => {
                                                                     <a
                                                                         key={subItem.name}
                                                                         href={subItem.href}
-                                                                        className="group relative px-2 py-1.5 text-left transition-all duration-300 text-black hover:text-black border-2 border-transparent rounded-xl font-sans"
+                                                                        className="group relative px-2 py-1.5 text-left transition-all duration-300 border-2 border-transparent rounded-xl font-sans"
                                                                         role="menuitem"
                                                                         onClick={() => setOpenDropdown(null)}
                                                                     >
-                                                                        <div className="text-[16px] font-normal text-black group-hover:text-black font-sans">
+                                                                        <div className="text-[16px] font-normal text-black transition-colors duration-300 group-hover:text-[#D4AF37] font-sans">
                                                                             {subItem.name}
                                                                         </div>
                                                                         {subItem.description && (
@@ -498,7 +489,7 @@ const Navbar = () => {
                                                                                 {subItem.description}
                                                                             </div>
                                                                         )}
-                                                                        <div className="mt-1.5 h-0.5 w-0 bg-gradient-to-r from-green-400 to-green-600 transition-all duration-300 group-hover:w-full rounded-full"></div>
+                                                                        <div className="mt-1.5 h-0.5 w-0 bg-gradient-to-r from-[#D4AF37] to-[#B8960C] transition-all duration-300 group-hover:w-full rounded-full"></div>
                                                                     </a>
                                                                 ))}
                                                             </div>
@@ -532,7 +523,7 @@ const Navbar = () => {
                                                 rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                                                 className={`
                                                     flex items-center justify-center rounded-xl px-1
-                                                    text-black transition-all duration-300 hover:text-black
+                                                    text-black transition-all duration-300 hover:text-[#D4AF37]
                                                     whitespace-nowrap font-sans font-normal
                                                     ${isScrolled ? 'text-[16px] py-2' : 'text-[17px] py-2.5'}
                                                 `}
@@ -556,7 +547,7 @@ const Navbar = () => {
                                 setIsMobileMenuOpen(!isMobileMenuOpen);
                                 setMobileOpenDropdown(null);
                             }}
-                            className="rounded-lg p-2 text-black hover:text-black transition-colors xl:hidden"
+                            className="rounded-lg p-2 text-black hover:text-[#D4AF37] transition-colors xl:hidden"
                             aria-expanded={isMobileMenuOpen}
                             aria-controls="mobile-menu"
                             aria-label="Toggle navigation menu"
@@ -592,8 +583,9 @@ const Navbar = () => {
                                                 onClick={() => toggleMobileDropdown(item.name)}
                                                 className={`
                                                     flex w-full items-center justify-between rounded-lg px-4 py-2.5 text-[16px] font-normal
-                                                    transition-colors text-black hover:text-black font-sans
-                                                    ${mobileOpenDropdown === item.name ? 'text-black' : ''}
+                                                    transition-colors font-sans
+                                                    ${mobileOpenDropdown === item.name ? 'text-[#D4AF37]' : 'text-black'}
+                                                    hover:text-[#D4AF37]
                                                 `}
                                                 aria-expanded={mobileOpenDropdown === item.name}
                                             >
@@ -618,14 +610,14 @@ const Navbar = () => {
                                                     <a
                                                         key={subItem.name}
                                                         href={subItem.href}
-                                                        className="block px-3 py-1.5 text-sm text-black transition-colors hover:text-black rounded-lg font-sans border-b border-gray-100 last:border-b-0"
+                                                        className="group block px-3 py-1.5 text-sm transition-colors rounded-lg font-sans border-b border-gray-100 last:border-b-0"
                                                         onClick={() => {
                                                             setOpenDropdown(null);
                                                             setMobileOpenDropdown(null);
                                                             setIsMobileMenuOpen(false);
                                                         }}
                                                     >
-                                                        <div className="text-[16px] font-normal font-sans">{subItem.name}</div>
+                                                        <div className="text-[16px] font-normal text-black transition-colors duration-300 group-hover:text-[#D4AF37] font-sans">{subItem.name}</div>
                                                         {subItem.description && (
                                                             <div className="text-[14px] text-gray-500 mt-0.5 leading-snug font-sans">{subItem.description}</div>
                                                         )}
@@ -638,7 +630,7 @@ const Navbar = () => {
                                             href={item.href}
                                             target={item.href.startsWith('http') ? '_blank' : undefined}
                                             rel={item.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                                            className="block rounded-lg px-4 py-2.5 text-[14px] font-normal text-black transition-colors hover:text-black font-sans"
+                                            className="block rounded-lg px-4 py-2.5 text-[14px] font-normal text-black transition-colors hover:text-[#D4AF37] font-sans"
                                             onClick={() => setIsMobileMenuOpen(false)}
                                         >
                                             {item.name}

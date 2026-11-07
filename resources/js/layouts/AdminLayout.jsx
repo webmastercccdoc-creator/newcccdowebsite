@@ -1,10 +1,31 @@
 import { useState, useEffect } from 'react';
+import { router } from '@inertiajs/react';
 import Sidebar from '../components/admin/Sidebar';
 import Navbar from '../components/admin/Navbar';
+import LoadingSpinner from '../components/LoadingSpinner';
+
+let isAdminNavigationInProgress = false;
 
 export default function AdminLayout({ title, children, activePage, headerContent, headerBelowTitle }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const [isNavigating, setIsNavigating] = useState(isAdminNavigationInProgress);
+
+    useEffect(() => {
+        const removeStartListener = router.on('start', () => {
+            isAdminNavigationInProgress = true;
+            setIsNavigating(true);
+        });
+        const removeFinishListener = router.on('finish', () => {
+            isAdminNavigationInProgress = false;
+            setIsNavigating(false);
+        });
+
+        return () => {
+            removeStartListener();
+            removeFinishListener();
+        };
+    }, []);
 
     // Check if screen is mobile on mount and resize
     useEffect(() => {
@@ -86,6 +107,23 @@ export default function AdminLayout({ title, children, activePage, headerContent
                     </div>
                 </main>
             </div>
+
+            {isNavigating && (
+                <div
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-white/70 backdrop-blur-sm"
+                    role="status"
+                    aria-live="polite"
+                    aria-busy="true"
+                >
+                    <div className="rounded-xl bg-white px-10 py-8 shadow-xl">
+                        <LoadingSpinner
+                            size={56}
+                            color="text-gray-700"
+                            text="Loading page..."
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

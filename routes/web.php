@@ -367,6 +367,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/admin/articles/{article}', [ArticlesController::class, 'destroy'])->name('admin.articles.destroy');
     Route::put('/admin/articles/{article}/approve', [ArticlesController::class, 'approveArticle'])->name('admin.articles.approve');
     Route::put('/admin/articles/{article}/reject', [ArticlesController::class, 'rejectArticle'])->name('admin.articles.reject');
+    Route::put('/admin/articles/{article}/restore', [ArticlesController::class, 'restoreArticle'])->name('admin.articles.restore');
     Route::put('/admin/articles/{article}/archive', [ArticlesController::class, 'archiveArticle'])->name('admin.articles.archive');
 
     // ============================================

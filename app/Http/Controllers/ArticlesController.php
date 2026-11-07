@@ -822,6 +822,37 @@ class ArticlesController extends Controller
     }
 
     /**
+     * Restore a rejected article to pending review.
+     */
+    public function restoreArticle(Request $request, NewsArticle $article)
+    {
+        if (!$this->hasPermission('approve_articles')) {
+            if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized: You do not have permission to restore articles',
+                ], 403);
+            }
+
+            return redirect()->route('admin.approve-articles')->with('error', 'You do not have permission to restore articles.');
+        }
+
+        $article->update([
+            'status' => 'pending',
+        ]);
+
+        if ($request->expectsJson() || $request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Article restored to pending review.',
+                'article' => $article,
+            ]);
+        }
+
+        return redirect()->route('admin.approve-articles')->with('success', 'Article restored to pending review.');
+    }
+
+    /**
      * Archive an article by resetting its status to pending.
      */
     public function archiveArticle(Request $request, NewsArticle $article)

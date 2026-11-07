@@ -15,9 +15,12 @@ export default function Articles({ articles: initialArticles, departments = [] }
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // 🆕 Add permissions state
+  // Add permissions state
   const [userPermissions, setUserPermissions] = useState([]);
   const [loadingPermissions, setLoadingPermissions] = useState(true);
+
+  // ✅ FIX #13: track fetch error separately from "no articles"
+  const [articlesFetchError, setArticlesFetchError] = useState(false);
 
   // Search and filter states
   const [searchQuery, setSearchQuery] = useState('');
@@ -36,15 +39,14 @@ export default function Articles({ articles: initialArticles, departments = [] }
   const [articleToArchive, setArticleToArchive] = useState(null);
   const [isArchiving, setIsArchiving] = useState(false);
 
-  // 🆕 Success / Error modal states (replaces native alert())
+  // Success / Error modal states
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  // Pending action to run after success modal is dismissed
   const [pendingSuccessAction, setPendingSuccessAction] = useState(null);
 
-  // 🆕 Fetch user permissions
+  // Fetch user permissions
   useEffect(() => {
     const fetchUserPermissions = async () => {
       try {
@@ -75,10 +77,13 @@ export default function Articles({ articles: initialArticles, departments = [] }
 
         const userArticles = Array.isArray(response?.data?.articles) ? response.data.articles : [];
         setArticles(userArticles);
+        setArticlesFetchError(false);
       } catch (error) {
         console.error('Failed to fetch user articles:', error);
         if (isMounted) {
-          setArticles([]);
+          // ✅ FIX #13: only clear list if we had no SSR data, and flag the error
+          setArticlesFetchError(true);
+          setArticles(prev => (prev.length > 0 ? prev : []));
         }
       }
     };
@@ -90,15 +95,15 @@ export default function Articles({ articles: initialArticles, departments = [] }
     };
   }, []);
 
-  // 🆕 Permission check helper
+  // Permission check helper
   const hasPermission = (permission) => {
     return userPermissions.includes(permission);
   };
 
-  // 🆕 Helper to open success modal + run post-success callback on dismiss
+  // ✅ FIX #10: pass the callback directly (no lazy-wrapper footgun)
   const openSuccessModal = (message, onDismiss = null) => {
     setSuccessMessage(message);
-    setPendingSuccessAction(() => onDismiss);
+    setPendingSuccessAction(onDismiss ? () => onDismiss : null);
     setShowSuccessModal(true);
   };
 
@@ -117,7 +122,15 @@ export default function Articles({ articles: initialArticles, departments = [] }
     }
   };
 
-  // Filter articles based on search and filters
+  // ✅ FIX #4: guard against non-string content in getContentPreview
+  const getContentPreview = (content) => {
+    if (typeof content !== 'string' || !content.trim()) return 'No content available';
+    const plainText = content.replace(/<[^>]*>/g, '');
+    const preview = plainText.substring(0, 100);
+    return preview.length < plainText.length ? preview + '...' : preview;
+  };
+
+  // Filter articles
   const filteredArticles = articles.filter(article => {
     const normalizedSearchQuery = searchQuery.toLowerCase();
     const matchesSearch = [article.title, article.department, article.created_by]
@@ -127,7 +140,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
     return matchesSearch && matchesStatus && matchesDepartment;
   });
 
-  // Calculate pagination
+  // Pagination
   const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -241,22 +254,21 @@ export default function Articles({ articles: initialArticles, departments = [] }
       const response = await axios.put(`/admin/articles/${articleToArchive}/archive`, { status: 'pending' });
 
       if (response.status === 200 || response.data?.success) {
+        // ✅ FIX #3: functional update (no stale closure)
         setArticles(prevArticles =>
           prevArticles.map(article =>
             article.id === articleToArchive ? { ...article, status: 'Pending' } : article
           )
         );
         setShowArchiveModal(false);
-        const archivedId = articleToArchive;
         setArticleToArchive(null);
-        // 🆕 Custom success modal (no native alert)
+        // ✅ FIX #3: dead var `archivedId` removed
         openSuccessModal('Article moved back to pending status successfully. It will remain hidden from the website while it awaits approval.');
       }
     } catch (error) {
       console.error('Failed to archive article:', error);
       setShowArchiveModal(false);
       setArticleToArchive(null);
-      // 🆕 Custom error modal (no native alert)
       openErrorModal(error.response?.data?.message || 'Failed to archive article. Please try again.');
     } finally {
       setIsArchiving(false);
@@ -268,13 +280,13 @@ export default function Articles({ articles: initialArticles, departments = [] }
     try {
       const response = await axios.delete(`/admin/articles/${articleToDelete}`);
       console.log('Delete response:', response);
-      
+
       if (response.data?.success) {
-        setArticles(articles.filter(article => article.id !== articleToDelete));
+        // ✅ FIX #8: functional update (no stale `articles` closure)
+        setArticles(prev => prev.filter(article => article.id !== articleToDelete));
         setShowDeleteModal(false);
-        const deletedId = articleToDelete;
         setArticleToDelete(null);
-        // 🆕 Custom success modal (no native alert)
+        // ✅ FIX #3: dead var `deletedId` removed
         openSuccessModal('Article deleted successfully. It has been removed from your articles list and is no longer available to view.');
       }
     } catch (error) {
@@ -283,7 +295,6 @@ export default function Articles({ articles: initialArticles, departments = [] }
       console.error('Error status:', error.response?.status);
       setShowDeleteModal(false);
       setArticleToDelete(null);
-      // 🆕 Custom error modal (no native alert)
       openErrorModal(error.response?.data?.message || 'Failed to delete article. Please try again.');
     } finally {
       setIsDeleting(false);
@@ -319,12 +330,26 @@ export default function Articles({ articles: initialArticles, departments = [] }
     };
 
     if (editingArticle) {
-      setArticles(articles.map(a => 
+      // ✅ FIX #8: functional update
+      setArticles(prev => prev.map(a =>
         a.id === normalizedArticle.id ? normalizedArticle : a
       ));
     } else {
+      // ✅ FIX #2: only prepend when we actually have an id; otherwise refetch
       if (normalizedArticle.id) {
-        setArticles([normalizedArticle, ...articles]);
+        setArticles(prev => [normalizedArticle, ...prev]);
+      } else {
+        // Server didn't return an id (or onSave didn't include one) — refetch
+        // so the new article actually appears in the list.
+        (async () => {
+          try {
+            const response = await axios.get('/user/articles');
+            const userArticles = Array.isArray(response?.data?.articles) ? response.data.articles : [];
+            setArticles(userArticles);
+          } catch (err) {
+            console.error('Failed to refresh articles after save:', err);
+          }
+        })();
       }
     }
     setShowAddModal(false);
@@ -347,11 +372,11 @@ export default function Articles({ articles: initialArticles, departments = [] }
     const maxVisible = 5;
     let start = Math.max(1, currentPage - 2);
     let end = Math.min(totalPages, start + maxVisible - 1);
-    
+
     if (end - start < maxVisible - 1) {
       start = Math.max(1, end - maxVisible + 1);
     }
-    
+
     for (let i = start; i <= end; i++) {
       pages.push(i);
     }
@@ -360,13 +385,10 @@ export default function Articles({ articles: initialArticles, departments = [] }
 
   const uniqueDepartments = ['All', ...new Set(articles.map(a => a.department).filter(Boolean))];
 
-  const getContentPreview = (content) => {
-    if (!content) return 'No content available';
-    const plainText = content.replace(/<[^>]*>/g, '');
-    const preview = plainText.substring(0, 100);
-    return preview.length < plainText.length ? preview + '...' : preview;
-  };
-  
+  // ✅ FIX #5: don't render action buttons until permissions have resolved,
+  //          so they don't flash in/out on first paint.
+  const permissionsReady = !loadingPermissions;
+
   return (
     <AdminLayout title="Articles">
       {/* Header with Add Article Button */}
@@ -379,10 +401,10 @@ export default function Articles({ articles: initialArticles, departments = [] }
             Showing approved and pending articles assigned to your department(s)
           </p>
         </div>
-        
-        {/* 🆕 Only show Create button if user has 'articles' permission */}
-        {hasPermission('articles') && (
-          <button 
+
+        {/* ✅ FIX #5: gate on permissionsReady to avoid flash */}
+        {permissionsReady && hasPermission('articles') && (
+          <button
             onClick={handleAddNew}
             className="mt-3 sm:mt-0 bg-gray-600 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
           >
@@ -399,10 +421,10 @@ export default function Articles({ articles: initialArticles, departments = [] }
         <div className="flex flex-col md:flex-row gap-4" autoComplete="off">
           {/* Search Input */}
           <div className="md:w-80 relative flex-shrink-0">
-            <svg 
+            <svg
               className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-              fill="none" 
-              stroke="currentColor" 
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -477,7 +499,10 @@ export default function Articles({ articles: initialArticles, departments = [] }
         </div>
 
         <div className="mt-3 text-sm text-gray-600">
-          {filteredArticles.length === 0 ? (
+          {/* ✅ FIX #13: show a distinct error message when the fetch failed */}
+          {articlesFetchError ? (
+            <span className="text-red-600">Failed to load articles. Please refresh the page.</span>
+          ) : filteredArticles.length === 0 ? (
             <span>No articles found matching your criteria</span>
           ) : (
             <span>
@@ -507,8 +532,8 @@ export default function Articles({ articles: initialArticles, departments = [] }
             <tbody className="divide-y divide-gray-200">
               {currentArticles.length > 0 ? (
                 currentArticles.map((article, index) => (
-                  <tr 
-                    key={article.id} 
+                  <tr
+                    key={article.id}
                     className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}
                   >
                     <td className="py-3 px-4 text-gray-500 text-xs font-medium">
@@ -546,60 +571,64 @@ export default function Articles({ articles: initialArticles, departments = [] }
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center justify-center gap-2">
-                        {String(article.status).toLowerCase() !== 'pending' && (
-                          <button
-                            type="button"
-                            onClick={() => handleView(article)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all shadow-sm hover:shadow"
-                          >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                            View
-                          </button>
-                        )}
+                        {permissionsReady ? (
+                          <>
+                            {String(article.status).toLowerCase() !== 'pending' && (
+                              <button
+                                type="button"
+                                onClick={() => handleView(article)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all shadow-sm hover:shadow"
+                              >
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                View
+                              </button>
+                            )}
 
-                        {/* 🆕 Edit - Only show if user has 'articles' permission */}
-                        {hasPermission('articles') && (
-                          <button
-                            type="button"
-                            onClick={() => handleEdit(article.id)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-all shadow-sm hover:shadow"
-                          >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
-                            Edit
-                          </button>
-                        )}
+                            {hasPermission('articles') && (
+                              <button
+                                type="button"
+                                onClick={() => handleEdit(article.id)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-all shadow-sm hover:shadow"
+                              >
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                                Edit
+                              </button>
+                            )}
 
-                        {/* 🆕 Archive - Only show if user has 'articles' permission */}
-                        {hasPermission('articles') && String(article.status).toLowerCase() !== 'pending' && (
-                          <button
-                            type="button"
-                            onClick={() => handleArchive(article.id)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gray-600 hover:bg-gray-700 rounded-lg transition-all shadow-sm hover:shadow"
-                          >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M7 8V6a1 1 0 011-1h8a1 1 0 011 1v2m-9 4h10l-1 8H7l-1-8z" />
-                            </svg>
-                            Archive
-                          </button>
-                        )}
+                            {hasPermission('articles') && String(article.status).toLowerCase() !== 'pending' && (
+                              <button
+                                type="button"
+                                onClick={() => handleArchive(article.id)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gray-600 hover:bg-gray-700 rounded-lg transition-all shadow-sm hover:shadow"
+                              >
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M7 8V6a1 1 0 011-1h8a1 1 0 011 1v2m-9 4h10l-1 8H7l-1-8z" />
+                                </svg>
+                                Archive
+                              </button>
+                            )}
 
-                        {/* 🆕 Delete - Only show if user has 'user_management' permission */}
-                        {hasPermission('user_management') && (
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(article.id)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all shadow-sm hover:shadow"
-                          >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                            Delete
-                          </button>
+                            {hasPermission('user_management') && (
+                              <button
+                                type="button"
+                                onClick={() => handleDelete(article.id)}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all shadow-sm hover:shadow"
+                              >
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                Delete
+                              </button>
+                            )}
+                          </>
+                        ) : (
+                          // ✅ FIX #5: placeholder while permissions load
+                          <span className="text-xs text-gray-400">Loading…</span>
                         )}
                       </div>
                     </td>
@@ -612,11 +641,16 @@ export default function Articles({ articles: initialArticles, departments = [] }
                       <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
                       </svg>
-                      <p className="text-gray-500 font-medium">No articles found</p>
+                      <p className="text-gray-500 font-medium">
+                        {articlesFetchError ? 'Could not load articles' : 'No articles found'}
+                      </p>
                       <p className="text-gray-400 text-sm mt-1">
-                        {searchQuery || statusFilter !== 'Approved' || departmentFilter !== 'All'
-                          ? 'Try adjusting your search or filters'
-                          : 'Click "Add New Article" to create one.'}
+                        {articlesFetchError
+                          ? 'Please refresh the page to try again.'
+                          : searchQuery || statusFilter !== 'Approved' || departmentFilter !== 'All'
+                            ? 'Try adjusting your search or filters'
+                            // ✅ FIX #12: copy now matches the actual button label
+                            : 'Click "Create New Article" to create one.'}
                       </p>
                     </div>
                   </td>
@@ -647,7 +681,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
                   </svg>
                   Previous
                 </button>
-                
+
                 {getPageNumbers().map((page) => (
                   <button
                     key={page}
@@ -662,7 +696,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
                     {page}
                   </button>
                 ))}
-                
+
                 <button
                   type="button"
                   onClick={() => handlePageChange(currentPage + 1)}
@@ -711,7 +745,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
         departments={departments}
       />
 
-      {/* Archive Confirmation Modal — uses LoadingSpinner on the button via `loading` prop */}
+      {/* Archive Confirmation Modal */}
       <ConfirmModal
         isOpen={showArchiveModal}
         onClose={() => {
@@ -727,7 +761,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
         loading={isArchiving}
       />
 
-      {/* Delete Confirmation Modal — uses LoadingSpinner on the button via `loading` prop */}
+      {/* Delete Confirmation Modal */}
       <ConfirmModal
         isOpen={showDeleteModal}
         onClose={() => {
@@ -775,7 +809,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
         </div>
       </Modal>
 
-      {/* 🆕 Error Modal — replaces native alert() for errors */}
+      {/* Error Modal */}
       <ErrorModal
         isOpen={showErrorModal}
         onClose={() => {
@@ -790,7 +824,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
 }
 
 // ============================================
-// 🆕 Error Modal component (no native alert)
+// Error Modal component (no native alert)
 // ============================================
 function ErrorModal({ isOpen, onClose, title = 'Error', message = '' }) {
   if (!isOpen) return null;

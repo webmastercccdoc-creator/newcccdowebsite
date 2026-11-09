@@ -29,6 +29,14 @@ function htmlToText(html = '') {
   return doc.body.textContent.replace(/\u00a0/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
 }
 
+// Limit a title to a maximum number of words, appending "..." if truncated
+function limitWords(text = '', maxWords = 7) {
+  if (!text) return '';
+  const words = String(text).trim().split(/\s+/);
+  if (words.length <= maxWords) return words.join(' ');
+  return words.slice(0, maxWords).join(' ') + '...';
+}
+
 export default function ApproveArticles({ articles: initialArticles = [], departments = [] }) {
   const normalizeStatus = (status) => {
     const raw = String(status ?? '').trim();
@@ -675,7 +683,7 @@ export default function ApproveArticles({ articles: initialArticles = [], depart
                           onClick={() => handleView(article)}
                           className="font-semibold text-gray-800 hover:text-emerald-600 transition-colors text-left"
                         >
-                          {article.title}
+                          {limitWords(article.title, 7)}
                         </button>
                         <p className="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
                           {getContentPreview(article.content)}

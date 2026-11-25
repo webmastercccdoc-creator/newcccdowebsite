@@ -23,14 +23,14 @@ import sdg16 from '../../../assets/images/sdg16.png';
 import sdg17 from '../../../assets/images/sdg17.png';
 
 const directorTabs = [
-    { id: 'bionote', label: 'Bionote', shortLabel: 'Bionote' },
-    { id: 'about', label: 'About RITTS', shortLabel: 'About' },
-    { id: 'general-functions', label: 'General Functions', shortLabel: 'Functions' },
+    { id: 'bionote', anchor: '1', label: 'Bionote' },
+    { id: 'about', anchor: '2', label: 'About RITTS' },
+    { id: 'general-functions', anchor: '3', label: 'General Functions' },
 ];
 
 const contentTabs = [
-    { id: 'faculty-research', label: 'Faculty Research', shortLabel: 'Research' },
-    { id: 'rice-news', label: 'RITTS News', shortLabel: 'News' },
+    { id: 'faculty-research', anchor: '4', label: 'Faculty Research' },
+    { id: 'rice-news', anchor: '5', label: 'RITTS News' },
 ];
 
 const NEWS_PAGE_SIZE = 4;
@@ -467,6 +467,43 @@ export default function ResearchInnovationTechnologyTransfer() {
         return () => controller.abort();
     }, []);
 
+    useEffect(() => {
+        let scrollTimeout;
+
+        const goToHash = () => {
+            const hash = window.location.hash.slice(1);
+            const directorTab = directorTabs.find((tab) => tab.anchor === hash);
+            const contentTab = contentTabs.find((tab) => tab.anchor === hash);
+            let panelId;
+
+            if (directorTab) {
+                setActiveDirectorTab(directorTab.id);
+                panelId = `director-panel-${directorTab.id}`;
+            } else if (contentTab) {
+                setActiveContentTab(contentTab.id);
+                panelId = `content-panel-${contentTab.id}`;
+            } else {
+                return;
+            }
+
+            window.clearTimeout(scrollTimeout);
+            scrollTimeout = window.setTimeout(() => {
+                document.getElementById(panelId)?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                });
+            }, 400);
+        };
+
+        goToHash();
+        window.addEventListener('hashchange', goToHash);
+
+        return () => {
+            window.clearTimeout(scrollTimeout);
+            window.removeEventListener('hashchange', goToHash);
+        };
+    }, []);
+
     return (
         <MainLayout
             maxWidth="full"
@@ -559,17 +596,19 @@ export default function ResearchInnovationTechnologyTransfer() {
                                                 type="button"
                                                 role="tab"
                                                 id={`director-tab-${tab.id}`}
+                                                aria-label={`Section ${tab.anchor.padStart(2, '0')}: ${tab.label}`}
                                                 aria-selected={isActive}
                                                 aria-controls={`director-panel-${tab.id}`}
-                                                onClick={() => setActiveDirectorTab(tab.id)}
+                                                onClick={() => {
+                                                    window.location.hash = tab.anchor;
+                                                }}
                                                 className={`relative flex-1 shrink-0 whitespace-nowrap px-6 py-5 text-sm font-semibold tracking-wide transition-colors duration-200 focus:outline-none ${
                                                     isActive
                                                         ? 'bg-[#157d3c] text-white'
                                                         : 'bg-transparent text-gray-600 hover:bg-[#f5c518] hover:text-[#1a1a1a]'
                                                 }`}
                                             >
-                                                <span className="hidden lg:inline">{tab.label}</span>
-                                                <span className="lg:hidden">{tab.shortLabel}</span>
+                                                <span>{tab.label}</span>
                                                 {isActive && (
                                                     <motion.span
                                                         layoutId="activeResearchDirectorTab"
@@ -589,6 +628,7 @@ export default function ResearchInnovationTechnologyTransfer() {
                                     role="tabpanel"
                                     id={`director-panel-${activeDirectorTab}`}
                                     aria-labelledby={`director-tab-${activeDirectorTab}`}
+                                    className="scroll-mt-24"
                                     variants={tabPanelVariants}
                                     initial="hidden"
                                     animate="visible"
@@ -628,17 +668,19 @@ export default function ResearchInnovationTechnologyTransfer() {
                                         type="button"
                                         role="tab"
                                         id={`content-tab-${tab.id}`}
+                                        aria-label={`Section ${tab.anchor.padStart(2, '0')}: ${tab.label}`}
                                         aria-selected={isActive}
                                         aria-controls={`content-panel-${tab.id}`}
-                                        onClick={() => setActiveContentTab(tab.id)}
+                                        onClick={() => {
+                                            window.location.hash = tab.anchor;
+                                        }}
                                         className={`relative flex-1 shrink-0 whitespace-nowrap px-6 py-5 text-sm font-semibold tracking-wide transition-colors duration-200 focus:outline-none ${
                                             isActive
                                                 ? 'bg-[#157d3c] text-white'
                                                 : 'bg-transparent text-gray-600 hover:bg-[#f5c518] hover:text-[#1a1a1a]'
                                         }`}
                                     >
-                                        <span className="hidden sm:inline">{tab.label}</span>
-                                        <span className="sm:hidden">{tab.shortLabel}</span>
+                                        <span>{tab.label}</span>
                                         {isActive && (
                                             <motion.span
                                                 layoutId="activeResearchContentTab"
@@ -659,6 +701,7 @@ export default function ResearchInnovationTechnologyTransfer() {
                                 role="tabpanel"
                                 id={`content-panel-${activeContentTab}`}
                                 aria-labelledby={`content-tab-${activeContentTab}`}
+                                className="scroll-mt-24"
                                 variants={tabPanelVariants}
                                 initial="hidden"
                                 animate="visible"

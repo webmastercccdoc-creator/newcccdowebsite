@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import AdminLayout from '../../../layouts/AdminLayout';
 import axios from 'axios';
 import { ConfirmModal } from '@/components/admin/Modal';
@@ -9,7 +9,7 @@ import ParticipantsModal from './ParticipantsModal';
 export default function Events() {
     const [events, setEvents] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 8;
+    const itemsPerPage = 5; // Changed to match the 5 items per page in the image
 
     // Search and filter states
     const [searchQuery, setSearchQuery] = useState('');
@@ -37,10 +37,18 @@ export default function Events() {
     // Permissions state
     const [userPermissions, setUserPermissions] = useState([]);
 
+    // Dropdown state
+    const [openDropdownId, setOpenDropdownId] = useState(null);
+
     useEffect(() => {
         document.title = "Events - City College of Cagayan de Oro";
         fetchEvents();
         fetchUserPermissions();
+
+        // Close dropdown when clicking outside
+        const handleClickOutside = () => setOpenDropdownId(null);
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
     }, []);
 
     const fetchUserPermissions = async () => {
@@ -95,6 +103,7 @@ export default function Events() {
 
     // Handle opening participants modal
     const handleViewParticipants = async (event) => {
+        setOpenDropdownId(null);
         setSelectedEvent(event);
         await Promise.all([
             fetchParticipants(event.id),
@@ -198,39 +207,40 @@ export default function Events() {
     const currentEvents = filteredEvents.slice(startIndex, endIndex);
 
     const getStatusBadge = (status) => {
-        const statusStyles = {
-            'active': 'bg-emerald-100 text-emerald-700 border border-emerald-200',
-            'upcoming': 'bg-blue-100 text-blue-700 border border-blue-200',
-            'completed': 'bg-gray-100 text-gray-700 border border-gray-200',
-            'cancelled': 'bg-red-100 text-red-700 border border-red-200'
-        };
-        return statusStyles[status] || 'bg-gray-100 text-gray-700 border border-gray-200';
-    };
-
-    const getStatusIcon = (status) => {
-        const icons = {
-            'active': (
-                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-            ),
-            'upcoming': (
-                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-2a6 6 0 100-12 6 6 0 000 12zm-1-8a1 1 0 00-2 0v3a1 1 0 001 1h2a1 1 0 100-2h-1V8z" clipRule="evenodd" />
-                </svg>
-            ),
-            'completed': (
-                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-            ),
-            'cancelled': (
-                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l-1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-            )
-        };
-        return icons[status] || null;
+        if (status === 'active') {
+            return (
+                <span className="inline-flex items-center gap-1.5 rounded-md bg-[#e6f4ea] px-3 py-1 text-xs font-medium text-[#1e8e3e]">
+                    <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                    Active
+                </span>
+            );
+        } else if (status === 'upcoming') {
+            return (
+                <span className="inline-flex items-center gap-1.5 rounded-md bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
+                    <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                    </svg>
+                    Upcoming
+                </span>
+            );
+        } else if (status === 'cancelled') {
+            return (
+                <span className="inline-flex items-center gap-1.5 rounded-md bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
+                    <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                    Cancelled
+                </span>
+            );
+        } else {
+            return (
+                <span className="inline-flex items-center gap-1.5 rounded-md bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                    {status || 'Unknown'}
+                </span>
+            );
+        }
     };
 
     const handleAddNew = () => {
@@ -239,11 +249,13 @@ export default function Events() {
     };
 
     const handleEdit = (event) => {
+        setOpenDropdownId(null);
         setEditingEvent(event);
         setShowAddModal(false);
     };
 
     const handleDelete = (id) => {
+        setOpenDropdownId(null);
         setEventToDelete(id);
         setShowDeleteModal(true);
     };
@@ -267,6 +279,7 @@ export default function Events() {
     };
 
     const handleToggleStatus = (event) => {
+        setOpenDropdownId(null);
         setEventToToggle(event);
         setShowStatusModal(true);
     };
@@ -375,313 +388,331 @@ export default function Events() {
 
     const getToggleButtonInfo = (status) => {
         if (status === 'active') {
-            return {
-                text: 'Cancel',
-                icon: (
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                ),
-                color: 'bg-orange-500 hover:bg-orange-600',
-                modalMessage: 'This event will be cancelled and will no longer be visible on the website.'
-            };
+            return { text: 'Cancel Event', icon: <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg> };
         } else if (status === 'cancelled') {
-            return {
-                text: 'Activate',
-                icon: (
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                ),
-                color: 'bg-emerald-600 hover:bg-emerald-700',
-                modalMessage: 'This event will become visible on the website.'
-            };
+            return { text: 'Activate Event', icon: <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg> };
         }
         return null;
     };
 
     return (
         <AdminLayout title="Events Management">
-            {/* Header with Create Event Button */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-                <div>
-                    <p className="text-sm text-gray-600">
-                        Manage all events
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                        Create, edit, and manage events
-                    </p>
-                </div>
-                {hasPermission('events') && (
-                    <button
-                        onClick={handleAddNew}
-                        className="mt-3 sm:mt-0 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
-                    >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
-                        Create New Event
-                    </button>
-                )}
-            </div>
-
-            {/* Search and Filters */}
-            <div className="bg-gray-100 border border-gray-200 shadow-sm p-4 mb-6">
-                <div className="flex flex-col md:flex-row gap-4">
-                    <div className="md:w-80 relative flex-shrink-0">
-                        <svg 
-                            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-                            fill="none" 
-                            stroke="currentColor" 
-                            viewBox="0 0 24 24"
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        <input
-                            type="text"
-                            placeholder="Search events by title, location, or department..."
-                            value={searchQuery}
-                            onChange={(e) => handleFilterChange(setSearchQuery, e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none text-sm bg-white"
-                        />
-                        {searchQuery && (
-                            <button
-                                onClick={() => handleFilterChange(setSearchQuery, '')}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                            >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        )}
+            <div className="space-y-6">
+                
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <p className="text-sm text-gray-600">Manage all events</p>
+                        <p className="text-xs text-gray-500 mt-1">Create, edit, and manage events</p>
                     </div>
-
-                    <div className="flex-1 flex flex-wrap gap-4">
-                        <select
-                            value={statusFilter}
-                            onChange={(e) => handleFilterChange(setStatusFilter, e.target.value)}
-                            className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none text-sm bg-white min-w-[130px]"
+                    {hasPermission('events') && (
+                        <button
+                            onClick={handleAddNew}
+                            className="mt-3 sm:mt-0 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-sm w-fit"
                         >
-                            <option value="all">All Status</option>
-                            <option value="active">Active</option>
-                            <option value="upcoming">Upcoming</option>
-                            <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-
-                        {(searchQuery || statusFilter !== 'all') && (
-                            <button
-                                onClick={() => {
-                                    setSearchQuery('');
-                                    setStatusFilter('all');
-                                    setCurrentPage(1);
-                                }}
-                                className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg transition-colors flex items-center gap-2 border border-gray-200 bg-white"
-                            >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                </svg>
-                                Clear
-                            </button>
-                        )}
-                    </div>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                            Create New Event
+                        </button>
+                    )}
                 </div>
 
-                <div className="mt-3 text-sm text-gray-600">
-                    {filteredEvents.length === 0 ? (
-                        <span>No events found matching your criteria</span>
-                    ) : (
-                        <span>
+                {/* Main Container */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    
+                    {/* Search & Filter */}
+                    <div className="border-b border-gray-200 p-4">
+                        <div className="flex flex-col md:flex-row gap-4">
+                            <div className="md:w-96 relative flex-shrink-0">
+                                <svg 
+                                    className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+                                    fill="none" 
+                                    stroke="currentColor" 
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                <input
+                                    type="text"
+                                    placeholder="Search events by title, location, or department..."
+                                    value={searchQuery}
+                                    onChange={(e) => handleFilterChange(setSearchQuery, e.target.value)}
+                                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none text-sm bg-white"
+                                />
+                                {searchQuery && (
+                                    <button
+                                        onClick={() => handleFilterChange(setSearchQuery, '')}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                )}
+                            </div>
+
+                            <div className="flex-1 flex flex-wrap gap-4">
+                                <select
+                                    value={statusFilter}
+                                    onChange={(e) => handleFilterChange(setStatusFilter, e.target.value)}
+                                    className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none text-sm bg-white min-w-[130px]"
+                                >
+                                    <option value="all">All Status</option>
+                                    <option value="active">Active</option>
+                                    <option value="upcoming">Upcoming</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+
+                                {(searchQuery || statusFilter !== 'all') && (
+                                    <button
+                                        onClick={() => {
+                                            setSearchQuery('');
+                                            setStatusFilter('all');
+                                            setCurrentPage(1);
+                                        }}
+                                        className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center gap-2 border border-gray-300 bg-white"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        </svg>
+                                        Clear
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                        <div className="mt-3 text-sm text-gray-600">
                             Found <span className="font-medium text-gray-800">{filteredEvents.length}</span> event{filteredEvents.length !== 1 ? 's' : ''}
                             {searchQuery && <span> matching "<span className="font-medium text-gray-800">{searchQuery}</span>"</span>}
                             {statusFilter !== 'all' && <span> with status <span className="font-medium text-gray-800">{statusFilter}</span></span>}
-                        </span>
+                        </div>
+                    </div>
+
+                    {/* Table */}
+                    <div className="w-full overflow-visible">
+                        <table className="w-full text-left border-collapse table-fixed">
+                            <thead className="bg-[#f8f9fa] border-b border-gray-200">
+                                <tr>
+                                    <th className="w-[6%] px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">#</th>
+                                    <th className="w-[34%] px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Title & Content</th>
+                                    <th className="w-[15%] px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Location / Dept</th>
+                                    <th className="w-[12%] px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th className="w-[13%] px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th className="w-[20%] px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                                {currentEvents.length > 0 ? (
+                                    currentEvents.map((event, index) => {
+                                        const toggleInfo = getToggleButtonInfo(event.status);
+                                        const rowNumber = startIndex + index + 1;
+
+                                        return (
+                                            <tr 
+                                                key={event.id} 
+                                                className="transition-colors hover:bg-gray-50 bg-white"
+                                            >
+                                                <td className="px-6 py-4 text-sm font-medium text-gray-500">
+                                                    {String(rowNumber).padStart(2, '0')}
+                                                </td>
+                                                
+                                                <td className="px-6 py-4">
+                                                    <div className="flex flex-col gap-1">
+                                                        <span className="font-semibold text-gray-900 text-sm break-words" title={event.title}>
+                                                            {event.title}
+                                                        </span>
+                                                        <p className="text-xs text-gray-500 line-clamp-2">
+                                                            {getContentPreview(event.description)}
+                                                        </p>
+                                                    </div>
+                                                </td>
+
+                                                <td className="px-6 py-4">
+                                                    <div className="flex flex-col gap-0.5 text-sm text-gray-600">
+                                                        <span className="font-medium">{event.location || '—'}</span>
+                                                        <span className="text-xs text-gray-400">{event.department || 'N/A'}</span>
+                                                    </div>
+                                                </td>
+
+                                                <td className="px-6 py-4">
+                                                    <div className="flex flex-col gap-0.5 text-sm text-gray-600">
+                                                        <span className="whitespace-nowrap">{formatDate(event.date)}</span>
+                                                        <span className="text-xs text-gray-500 whitespace-nowrap">{event.time ? formatTime(event.time) : ''}</span>
+                                                    </div>
+                                                </td>
+
+                                                <td className="px-6 py-4">
+                                                    {getStatusBadge(event.status)}
+                                                </td>
+
+                                                <td className="px-6 py-4 text-center">
+                                                    <div className="flex items-center justify-center gap-2">
+                                                        {/* View Button (Opens Participants) */}
+                                                        {hasPermission('events') && (
+                                                            <button
+                                                                onClick={() => handleViewParticipants(event)}
+                                                                className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-900"
+                                                            >
+                                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                                </svg>
+                                                                View
+                                                            </button>
+                                                        )}
+
+                                                        {/* More Dropdown */}
+                                                        <div className="relative">
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setOpenDropdownId(openDropdownId === event.id ? null : event.id);
+                                                                }}
+                                                                className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-900"
+                                                            >
+                                                                More
+                                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                                                </svg>
+                                                            </button>
+
+                                                            {/* Dropdown Menu */}
+                                                            {openDropdownId === event.id && (
+                                                                <div 
+                                                                    className="absolute right-0 mt-1 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-50 focus:outline-none"
+                                                                    onClick={(e) => e.stopPropagation()}
+                                                                >
+                                                                    <div className="py-1" role="menu">
+                                                                        
+                                                                        {/* Edit */}
+                                                                        {hasPermission('events') && (
+                                                                            <button
+                                                                                onClick={() => handleEdit(event)}
+                                                                                className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                                                role="menuitem"
+                                                                            >
+                                                                                <svg className="mr-3 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                                                </svg>
+                                                                                Edit Event
+                                                                            </button>
+                                                                        )}
+
+                                                                        {/* Toggle Status */}
+                                                                        {hasPermission('events') && toggleInfo && (event.status === 'active' || event.status === 'cancelled') && (
+                                                                            <button
+                                                                                onClick={() => handleToggleStatus(event)}
+                                                                                className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                                                role="menuitem"
+                                                                            >
+                                                                                <div className="mr-3">
+                                                                                    {toggleInfo.icon}
+                                                                                </div>
+                                                                                {toggleInfo.text}
+                                                                            </button>
+                                                                        )}
+
+                                                                        {/* Delete */}
+                                                                        {hasPermission('user_management') && (
+                                                                            <>
+                                                                                <div className="border-t border-gray-100 my-1"></div>
+                                                                                <button
+                                                                                    onClick={() => handleDelete(event.id)}
+                                                                                    className="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                                                                                    role="menuitem"
+                                                                                >
+                                                                                    <svg className="mr-3 h-4 w-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                                                    </svg>
+                                                                                    Delete Event
+                                                                                </button>
+                                                                            </>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                ) : (
+                                    <tr>
+                                        <td colSpan="6" className="py-12 text-center bg-white">
+                                            <div className="flex flex-col items-center justify-center">
+                                                <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                                <p className="text-gray-500 font-medium">No events found</p>
+                                                <p className="text-gray-400 text-sm mt-1">
+                                                    {searchQuery || statusFilter !== 'all'
+                                                        ? 'Try adjusting your search or filters'
+                                                        : 'No events available.'}
+                                                </p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Pagination */}
+                    {filteredEvents.length > 0 && (
+                        <div className="px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between bg-white gap-4 rounded-b-xl">
+                            <div className="text-sm text-gray-500">
+                                Showing <span className="font-medium text-gray-900">{filteredEvents.length > 0 ? startIndex + 1 : 0}</span> to{' '}
+                                <span className="font-medium text-gray-900">{Math.min(endIndex, filteredEvents.length)}</span> of{' '}
+                                <span className="font-medium text-gray-900">{filteredEvents.length}</span> events
+                            </div>
+                            
+                            <div className="flex items-center gap-1">
+                                <button
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                    className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                    </svg>
+                                    Previous
+                                </button>
+                                
+                                <div className="flex gap-1 mx-2">
+                                    {getPageNumbers().map((page) => (
+                                        <button
+                                            key={page}
+                                            onClick={() => handlePageChange(page)}
+                                            className={`w-9 h-9 flex items-center justify-center text-sm font-medium rounded-lg transition-colors ${
+                                                currentPage === page
+                                                    ? 'bg-[#2c3e50] text-white border border-[#2c3e50]'
+                                                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                                            }`}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <button
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
+                                    className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                >
+                                    Next
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                     )}
                 </div>
             </div>
 
-            {/* Events Table */}
-            <div className="bg-white border border-gray-200 shadow-lg overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                        <thead>
-                            <tr className="bg-gray-700 text-white">
-                                <th className="text-left py-3 px-3 font-semibold text-xs uppercase tracking-wider border-r border-gray-600 w-[50px]">#</th>
-                                <th className="text-left py-3 px-3 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Title</th>
-                                <th className="text-left py-3 px-3 font-semibold text-xs uppercase tracking-wider border-r border-gray-600 w-[120px]">Location</th>
-                                <th className="text-left py-3 px-3 font-semibold text-xs uppercase tracking-wider border-r border-gray-600 w-[110px]">Date</th>
-                                <th className="text-left py-3 px-3 font-semibold text-xs uppercase tracking-wider border-r border-gray-600 w-[90px]">Time</th>
-                                <th className="text-left py-3 px-3 font-semibold text-xs uppercase tracking-wider border-r border-gray-600 w-[100px]">Status</th>
-                                <th className="text-center py-3 px-2 font-semibold text-xs uppercase tracking-wider w-[220px]">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            {currentEvents.length > 0 ? (
-                                currentEvents.map((event, index) => {
-                                    const toggleInfo = getToggleButtonInfo(event.status);
-                                    return (
-                                        <tr 
-                                            key={event.id} 
-                                            className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-200 transition-all duration-200`}
-                                        >
-                                            <td className="py-3 px-3 text-gray-500 text-xs font-medium border-r border-gray-200 text-center">
-                                                {String(startIndex + index + 1).padStart(2, '0')}
-                                            </td>
-                                            <td className="py-3 px-3 border-r border-gray-200 max-w-[200px]">
-                                                <div>
-                                                    <span className="font-semibold text-gray-800 text-sm block truncate" title={event.title}>
-                                                        {event.title}
-                                                    </span>
-                                                    <p className="text-xs text-gray-500 mt-0.5 truncate max-w-[180px]">
-                                                        {getContentPreview(event.description)}
-                                                    </p>
-                                                </div>
-                                            </td>
-                                            <td className="py-3 px-3 text-gray-600 text-sm border-r border-gray-200 truncate max-w-[120px]">
-                                                {event.location || '—'}
-                                            </td>
-                                            <td className="py-3 px-3 text-gray-600 text-sm border-r border-gray-200 whitespace-nowrap">
-                                                {formatDate(event.date)}
-                                            </td>
-                                            <td className="py-3 px-3 text-gray-600 text-sm border-r border-gray-200 whitespace-nowrap">
-                                                {event.time ? formatTime(event.time) : '—'}
-                                            </td>
-                                            <td className="py-3 px-3 border-r border-gray-200">
-                                                <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getStatusBadge(event.status)}`}>
-                                                    {getStatusIcon(event.status)}
-                                                    {event.status}
-                                                </span>
-                                            </td>
-                                            <td className="py-3 px-2">
-                                                <div className="flex items-center justify-center gap-1 flex-nowrap">
-                                                    {/* Participants Button */}
-                                                    {hasPermission('events') && (
-                                                        <button
-                                                            onClick={() => handleViewParticipants(event)}
-                                                            className="inline-flex items-center gap-0.5 px-2 py-1.5 text-xs font-medium text-white bg-cyan-600 hover:bg-cyan-700 rounded-lg transition-all shadow-sm hover:shadow whitespace-nowrap"
-                                                            title="View and manage participants"
-                                                        >
-                                                            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                                            </svg>
-                                                            <span className="text-[10px]">Part.</span>
-                                                        </button>
-                                                    )}
-
-                                                    {/* Toggle Status Button */}
-                                                    {hasPermission('events') && 
-                                                     toggleInfo && 
-                                                     (event.status === 'active' || event.status === 'cancelled') && (
-                                                        <button
-                                                            onClick={() => handleToggleStatus(event)}
-                                                            className={`inline-flex items-center gap-0.5 px-2 py-1.5 text-xs font-medium text-white rounded-lg transition-all shadow-sm hover:shadow whitespace-nowrap ${toggleInfo.color}`}
-                                                        >
-                                                            {toggleInfo.icon}
-                                                            <span className="text-[10px]">{toggleInfo.text}</span>
-                                                        </button>
-                                                    )}
-
-                                                    {/* Edit Button */}
-                                                    {hasPermission('events') && (
-                                                        <button
-                                                            onClick={() => handleEdit(event)}
-                                                            className="inline-flex items-center gap-0.5 px-2 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all shadow-sm hover:shadow whitespace-nowrap"
-                                                        >
-                                                            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                            </svg>
-                                                            <span className="text-[10px]">Edit</span>
-                                                        </button>
-                                                    )}
-
-                                                    {/* Delete Button */}
-                                                    {hasPermission('user_management') && (
-                                                        <button
-                                                            onClick={() => handleDelete(event.id)}
-                                                            className="inline-flex items-center gap-0.5 px-2 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all shadow-sm hover:shadow whitespace-nowrap"
-                                                        >
-                                                            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                            </svg>
-                                                            <span className="text-[10px]">Delete</span>
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    );
-                                })
-                            ) : (
-                                <tr>
-                                    <td colSpan="7" className="py-12 text-center bg-gray-50">
-                                        <div className="flex flex-col items-center justify-center">
-                                            <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                            <p className="text-gray-500 font-medium">No events found</p>
-                                            <p className="text-gray-400 text-sm mt-1">
-                                                {searchQuery || statusFilter !== 'all'
-                                                    ? 'Try adjusting your search or filters'
-                                                    : 'No events available.'}
-                                            </p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-
-                {/* Pagination */}
-                {filteredEvents.length > 0 && (
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 border-t border-gray-200 bg-gray-50">
-                        <p className="text-sm text-gray-600">
-                            Showing <span className="font-medium text-gray-800">{filteredEvents.length > 0 ? startIndex + 1 : 0}</span> to{' '}
-                            <span className="font-medium text-gray-800">{Math.min(endIndex, filteredEvents.length)}</span> of{' '}
-                            <span className="font-medium text-gray-800">{filteredEvents.length}</span> events
-                        </p>
-                        <div className="flex gap-1">
-                            <button
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-white hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 bg-white"
-                            >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                                </svg>
-                                Previous
-                            </button>
-                            
-                            {getPageNumbers().map((page) => (
-                                <button
-                                    key={page}
-                                    onClick={() => handlePageChange(page)}
-                                    className={`px-3.5 py-1.5 text-sm rounded-lg transition-all ${
-                                        currentPage === page
-                                            ? 'bg-gray-700 text-white hover:bg-gray-800 shadow-sm'
-                                            : 'text-gray-600 hover:bg-white border border-transparent hover:border-gray-300 bg-white'
-                                    }`}
-                                >
-                                    {page}
-                                </button>
-                            ))}
-                            
-                            <button
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                                className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-white hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 bg-white"
-                            >
-                                Next
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* Add Event Modal */}
+            {/* Modals */}
             <AddEvent
                 isOpen={showAddModal}
                 onClose={() => {
@@ -691,7 +722,6 @@ export default function Events() {
                 onCreated={handleEventCreated}
             />
 
-            {/* Edit Event Modal */}
             <EditEvent
                 isOpen={Boolean(editingEvent) && !showAddModal}
                 onClose={() => setEditingEvent(null)}
@@ -699,7 +729,6 @@ export default function Events() {
                 eventId={editingEvent?.id}
             />
 
-            {/* Status Toggle Confirmation Modal */}
             <ConfirmModal
                 isOpen={showStatusModal}
                 onClose={() => {
@@ -719,7 +748,6 @@ export default function Events() {
                 loading={isToggling}
             />
 
-            {/* Delete Confirmation Modal */}
             <ConfirmModal
                 isOpen={showDeleteModal}
                 onClose={() => {
@@ -735,7 +763,6 @@ export default function Events() {
                 loading={isDeleting}
             />
 
-            {/* Participants Modal */}
             <ParticipantsModal
                 isOpen={showParticipantsModal}
                 onClose={() => {

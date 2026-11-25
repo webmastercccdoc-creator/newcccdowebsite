@@ -37,6 +37,7 @@ const accessControlOptions = [
   { id: 'content', label: 'Content' },
   { id: 'user_management', label: 'User Management' },
   { id: 'events', label: 'Events' },
+  { id: 'account_settings', label: 'Account Settings' },
   { id: 'settings', label: 'Settings' },
   { id: 'shorten_url', label: 'Shorten URL' }
 ];

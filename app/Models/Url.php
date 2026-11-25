@@ -11,6 +11,7 @@ class Url extends Model
         'short_code',
         'clicks',
         'status',
+        'department',
     ];
 
     protected $casts = [

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import AdminLayout from '@/layouts/AdminLayout';
 import AddArticles from './AddArticles';
@@ -38,6 +38,10 @@ export default function Articles({ articles: initialArticles, departments = [] }
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [articleToArchive, setArticleToArchive] = useState(null);
   const [isArchiving, setIsArchiving] = useState(false);
+
+  // Dropdown state
+  const [openDropdownId, setOpenDropdownId] = useState(null);
+  const dropdownRef = useRef(null);
 
   // Success / Error modal states
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -81,7 +85,6 @@ export default function Articles({ articles: initialArticles, departments = [] }
       } catch (error) {
         console.error('Failed to fetch user articles:', error);
         if (isMounted) {
-          // ✅ FIX #13: only clear list if we had no SSR data, and flag the error
           setArticlesFetchError(true);
           setArticles(prev => (prev.length > 0 ? prev : []));
         }
@@ -95,12 +98,22 @@ export default function Articles({ articles: initialArticles, departments = [] }
     };
   }, []);
 
+  // Click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenDropdownId(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   // Permission check helper
   const hasPermission = (permission) => {
     return userPermissions.includes(permission);
   };
 
-  // ✅ FIX #10: pass the callback directly (no lazy-wrapper footgun)
   const openSuccessModal = (message, onDismiss = null) => {
     setSuccessMessage(message);
     setPendingSuccessAction(onDismiss ? () => onDismiss : null);
@@ -122,7 +135,6 @@ export default function Articles({ articles: initialArticles, departments = [] }
     }
   };
 
-  // ✅ FIX #4: guard against non-string content in getContentPreview
   const getContentPreview = (content) => {
     if (typeof content !== 'string' || !content.trim()) return 'No content available';
     const plainText = content.replace(/<[^>]*>/g, '');
@@ -232,6 +244,7 @@ export default function Articles({ articles: initialArticles, departments = [] }
 
       setShowAddModal(false);
       setEditingArticle(article);
+      setOpenDropdownId(null);
     } catch (error) {
       console.error('Failed to load article details:', error);
       openErrorModal('Failed to load article details. Please try again.');
@@ -241,11 +254,13 @@ export default function Articles({ articles: initialArticles, departments = [] }
   const handleDelete = (id) => {
     setArticleToDelete(id);
     setShowDeleteModal(true);
+    setOpenDropdownId(null);
   };
 
   const handleArchive = (id) => {
     setArticleToArchive(id);
     setShowArchiveModal(true);
+    setOpenDropdownId(null);
   };
 
   const confirmArchive = async () => {
@@ -254,7 +269,6 @@ export default function Articles({ articles: initialArticles, departments = [] }
       const response = await axios.put(`/admin/articles/${articleToArchive}/archive`, { status: 'pending' });
 
       if (response.status === 200 || response.data?.success) {
-        // ✅ FIX #3: functional update (no stale closure)
         setArticles(prevArticles =>
           prevArticles.map(article =>
             article.id === articleToArchive ? { ...article, status: 'Pending' } : article
@@ -262,7 +276,6 @@ export default function Articles({ articles: initialArticles, departments = [] }
         );
         setShowArchiveModal(false);
         setArticleToArchive(null);
-        // ✅ FIX #3: dead var `archivedId` removed
         openSuccessModal('Article moved back to pending status successfully. It will remain hidden from the website while it awaits approval.');
       }
     } catch (error) {
@@ -282,11 +295,9 @@ export default function Articles({ articles: initialArticles, departments = [] }
       console.log('Delete response:', response);
 
       if (response.data?.success) {
-        // ✅ FIX #8: functional update (no stale `articles` closure)
         setArticles(prev => prev.filter(article => article.id !== articleToDelete));
         setShowDeleteModal(false);
         setArticleToDelete(null);
-        // ✅ FIX #3: dead var `deletedId` removed
         openSuccessModal('Article deleted successfully. It has been removed from your articles list and is no longer available to view.');
       }
     } catch (error) {
@@ -330,17 +341,13 @@ export default function Articles({ articles: initialArticles, departments = [] }
     };
 
     if (editingArticle) {
-      // ✅ FIX #8: functional update
       setArticles(prev => prev.map(a =>
         a.id === normalizedArticle.id ? normalizedArticle : a
       ));
     } else {
-      // ✅ FIX #2: only prepend when we actually have an id; otherwise refetch
       if (normalizedArticle.id) {
         setArticles(prev => [normalizedArticle, ...prev]);
       } else {
-        // Server didn't return an id (or onSave didn't include one) — refetch
-        // so the new article actually appears in the list.
         (async () => {
           try {
             const response = await axios.get('/user/articles');
@@ -385,333 +392,377 @@ export default function Articles({ articles: initialArticles, departments = [] }
 
   const uniqueDepartments = ['All', ...new Set(articles.map(a => a.department).filter(Boolean))];
 
-  // ✅ FIX #5: don't render action buttons until permissions have resolved,
-  //          so they don't flash in/out on first paint.
   const permissionsReady = !loadingPermissions;
+  const hasActiveFilters = searchQuery || statusFilter !== 'Approved' || departmentFilter !== 'All';
 
   return (
     <AdminLayout title="Articles">
-      {/* Header with Add Article Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-        <div>
-          <p className="text-sm text-gray-600">
-            Approved and pending articles from your department
-          </p>
-          <p className="text-xs text-gray-500 mt-1">
-            Showing approved and pending articles assigned to your department(s)
-          </p>
-        </div>
-
-        {/* ✅ FIX #5: gate on permissionsReady to avoid flash */}
-        {permissionsReady && hasPermission('articles') && (
-          <button
-            onClick={handleAddNew}
-            className="mt-3 sm:mt-0 bg-gray-600 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            Create New Article
-          </button>
-        )}
-      </div>
-
-      {/* Search and Filters - Light Grey Background */}
-      <div className="bg-gray-100 border border-gray-200 shadow-sm p-4 mb-6">
-        <div className="flex flex-col md:flex-row gap-4" autoComplete="off">
-          {/* Search Input */}
-          <div className="md:w-80 relative flex-shrink-0">
-            <svg
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search articles by title, department, or author..."
-              value={searchQuery}
-              onChange={(e) => handleFilterChange(setSearchQuery, e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }
-              }}
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none text-sm bg-white"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => handleFilterChange(setSearchQuery, '')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
+      <div className="font-sans">
+        {/* Header with Add Article Button */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+          <div>
+            <p className="text-sm text-gray-600">
+              Approved and pending articles from your department
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              Showing approved and pending articles assigned to your department(s)
+            </p>
           </div>
 
-          {/* Filters */}
-          <div className="flex-1 flex flex-wrap gap-4">
-            <select
-              value={statusFilter}
-              onChange={(e) => handleFilterChange(setStatusFilter, e.target.value)}
-              className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none text-sm bg-white min-w-[130px]"
+          {permissionsReady && hasPermission('articles') && (
+            <button
+              onClick={handleAddNew}
+              className="mt-3 sm:mt-0 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 shadow-sm"
             >
-              <option value="All">All Status</option>
-              <option value="Approved">Approved</option>
-              <option value="Pending">Pending</option>
-            </select>
-
-            <select
-              value={departmentFilter}
-              onChange={(e) => handleFilterChange(setDepartmentFilter, e.target.value)}
-              className="w-full min-w-[190px] sm:w-auto px-3 py-2 pr-9 border border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all outline-none text-sm bg-white"
-            >
-              <option value="All">All Departments</option>
-              {uniqueDepartments.map(dept => (
-                <option key={dept} value={dept}>{dept}</option>
-              ))}
-            </select>
-
-            {(searchQuery || statusFilter !== 'Approved' || departmentFilter !== 'All') && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchQuery('');
-                  setStatusFilter('Approved');
-                  setDepartmentFilter('All');
-                  setCurrentPage(1);
-                }}
-                className="px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg transition-colors flex items-center gap-2 border border-gray-200 bg-white"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                Clear
-              </button>
-            )}
-          </div>
-        </div>
-
-        <div className="mt-3 text-sm text-gray-600">
-          {/* ✅ FIX #13: show a distinct error message when the fetch failed */}
-          {articlesFetchError ? (
-            <span className="text-red-600">Failed to load articles. Please refresh the page.</span>
-          ) : filteredArticles.length === 0 ? (
-            <span>No articles found matching your criteria</span>
-          ) : (
-            <span>
-              Found <span className="font-medium text-gray-800">{filteredArticles.length}</span> article{filteredArticles.length !== 1 ? 's' : ''}
-              {searchQuery && <span> matching "<span className="font-medium text-gray-800">{searchQuery}</span>"</span>}
-              {statusFilter !== 'Approved' && <span> with status <span className="font-medium text-gray-800">{statusFilter}</span></span>}
-              {departmentFilter !== 'All' && <span> in <span className="font-medium text-gray-800">{departmentFilter}</span></span>}
-            </span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              Create New Article
+            </button>
           )}
         </div>
-      </div>
 
-      {/* Articles Table */}
-      <div className="bg-white border border-gray-200 shadow-lg overflow-hidden">
-        <div className="overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-700 text-white">
-                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">#</th>
-                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Title & Content</th>
-                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Department</th>
-                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Status</th>
-                <th className="text-left py-4 px-4 font-semibold text-xs uppercase tracking-wider border-r border-gray-600">Date</th>
-                <th className="text-center py-4 px-4 font-semibold text-xs uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {currentArticles.length > 0 ? (
-                currentArticles.map((article, index) => (
-                  <tr
-                    key={article.id}
-                    className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}
-                  >
-                    <td className="py-3 px-4 text-gray-500 text-xs font-medium">
-                      {String(startIndex + index + 1).padStart(2, '0')}
-                    </td>
-                    <td className="py-3 px-4 max-w-[260px]">
-                      <div className="flex flex-col min-w-0 w-full">
+        {/* Improved Search and Filters */}
+        <div className="bg-white border border-gray-200 shadow-sm rounded-xl mb-6 overflow-hidden">
+          <div className="p-4 flex flex-col md:flex-row gap-4 items-stretch md:items-center" autoComplete="off">
+            
+            {/* Search Input */}
+            <div className="relative flex-1 w-full max-w-lg">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder="Search articles by title, department, or author..."
+                value={searchQuery}
+                onChange={(e) => handleFilterChange(setSearchQuery, e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }
+                }}
+                className="block w-full pl-10 pr-10 py-2.5 text-sm border border-gray-300 rounded-lg bg-gray-50 placeholder-gray-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all shadow-sm"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => handleFilterChange(setSearchQuery, '')}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
+
+            {/* Dropdown Filters */}
+            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+              <div className="relative min-w-[140px]">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => handleFilterChange(setStatusFilter, e.target.value)}
+                  className="w-full appearance-none block pl-3 pr-10 py-2.5 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all shadow-sm cursor-pointer"
+                >
+                  <option value="All">All Status</option>
+                  <option value="Approved">Approved</option>
+                  <option value="Pending">Pending</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+
+              <div className="relative min-w-[190px]">
+                <select
+                  value={departmentFilter}
+                  onChange={(e) => handleFilterChange(setDepartmentFilter, e.target.value)}
+                  className="w-full appearance-none block pl-3 pr-10 py-2.5 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all shadow-sm cursor-pointer"
+                >
+                  <option value="All">All Departments</option>
+                  {uniqueDepartments.map(dept => (
+                    <option key={dept} value={dept}>{dept}</option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Clear Filters Button */}
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setStatusFilter('Approved');
+                    setDepartmentFilter('All');
+                    setCurrentPage(1);
+                  }}
+                  className="px-3 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 border border-gray-300 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-sm whitespace-nowrap"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Filter Results Summary */}
+          <div className="bg-gray-50 border-t border-gray-200 px-4 py-2.5 text-sm text-gray-600 flex items-center justify-between">
+            {articlesFetchError ? (
+              <span className="text-red-600 font-medium flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Failed to load articles. Please refresh the page.
+              </span>
+            ) : filteredArticles.length === 0 ? (
+              <span>No articles found matching your criteria</span>
+            ) : (
+              <span>
+                Found <span className="font-semibold text-gray-900">{filteredArticles.length}</span> article{filteredArticles.length !== 1 ? 's' : ''}
+                {searchQuery && <span> matching "<span className="font-semibold text-gray-900">{searchQuery}</span>"</span>}
+                {statusFilter !== 'Approved' && <span> with status <span className="font-semibold text-gray-900">{statusFilter}</span></span>}
+                {departmentFilter !== 'All' && <span> in <span className="font-semibold text-gray-900">{departmentFilter}</span></span>}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Articles Table */}
+        <div className="bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm min-w-[900px] font-sans">
+              <thead className="bg-gray-100 border-b border-gray-200 text-gray-700">
+                <tr>
+                  <th className="text-left py-3 px-4 font-semibold text-xs uppercase tracking-wider w-12">#</th>
+                  <th className="text-left py-3 px-4 font-semibold text-xs uppercase tracking-wider">Title &amp; Content</th>
+                  <th className="text-left py-3 px-4 font-semibold text-xs uppercase tracking-wider w-40">Department</th>
+                  <th className="text-left py-3 px-4 font-semibold text-xs uppercase tracking-wider w-32">Status</th>
+                  <th className="text-left py-3 px-4 font-semibold text-xs uppercase tracking-wider w-28">Date</th>
+                  <th className="text-center py-3 px-4 font-semibold text-xs uppercase tracking-wider w-[200px]">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {currentArticles.length > 0 ? (
+                  currentArticles.map((article, index) => (
+                    <tr
+                      key={article.id}
+                      className={`transition-colors ${
+                        index % 2 === 0
+                          ? 'bg-white hover:bg-gray-50'
+                          : 'bg-gray-50/60 hover:bg-gray-100/70'
+                      }`}
+                    >
+                      <td className="py-3 px-4 text-gray-500 text-xs font-medium">
+                        {String(startIndex + index + 1).padStart(2, '0')}
+                      </td>
+
+                      {/* Title & Content - Ensures Title is Fully Visible and Bold */}
+                      <td className="py-3 px-4">
+                        <div className="flex flex-col">
+                          <span className="font-bold text-gray-900 whitespace-normal leading-tight">
+                            {article.title}
+                          </span>
+                          <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                            {getContentPreview(article.content)}
+                          </p>
+                        </div>
+                      </td>
+
+                      <td className="py-3 px-4">
                         <span
-                          className="font-semibold text-gray-800 truncate w-full"
-                          title={article.title}
+                          className="inline-block max-w-full truncate px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200"
+                          title={article.department}
                         >
-                          {article.title}
+                          {article.department}
                         </span>
-                        <p
-                          className="text-xs text-gray-500 mt-0.5 truncate w-full"
-                          title={getContentPreview(article.content)}
+                      </td>
+
+                      <td className="py-3 px-4">
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getStatusBadge(
+                            article.status
+                          )}`}
                         >
-                          {getContentPreview(article.content)}
+                          {getStatusIcon(article.status)}
+                          {article.status}
+                        </span>
+                      </td>
+
+                      <td className="py-3 px-4 text-gray-500 text-sm whitespace-nowrap">
+                        {article.date}
+                      </td>
+
+                      <td className="py-3 px-4">
+                        <div className="flex items-center justify-center gap-2">
+                          {permissionsReady ? (
+                            <>
+                              {/* View Button */}
+                              {String(article.status).toLowerCase() !== 'pending' && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleView(article)}
+                                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm"
+                                >
+                                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                  </svg>
+                                  View
+                                </button>
+                              )}
+
+                              {/* More Actions Dropdown */}
+                              {(hasPermission('articles') || hasPermission('user_management')) && (
+                                <div className="relative" ref={openDropdownId === article.id ? dropdownRef : null}>
+                                  <button
+                                    type="button"
+                                    onClick={() => setOpenDropdownId(openDropdownId === article.id ? null : article.id)}
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm"
+                                  >
+                                    More
+                                    <svg className="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                  </button>
+
+                                  {/* Dropdown Menu */}
+                                  {openDropdownId === article.id && (
+                                    <div className="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-1">
+                                      {hasPermission('articles') && (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleEdit(article.id)}
+                                          className="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                                        >
+                                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                          </svg>
+                                          Edit
+                                        </button>
+                                      )}
+                                      {String(article.status).toLowerCase() !== 'pending' && hasPermission('articles') && (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleArchive(article.id)}
+                                          className="w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                                        >
+                                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M7 8V6a1 1 0 011-1h8a1 1 0 011 1v2m-9 4h10l-1 8H7l-1-8z" />
+                                          </svg>
+                                          Archive
+                                        </button>
+                                      )}
+                                      {hasPermission('user_management') && (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleDelete(article.id)}
+                                          className="w-full text-left px-4 py-2 text-xs text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                        >
+                                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                          </svg>
+                                          Delete
+                                        </button>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            <span className="text-xs text-gray-400">Loading…</span>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" className="py-12 text-center bg-gray-50">
+                      <div className="flex flex-col items-center justify-center">
+                        <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                        </svg>
+                        <p className="text-gray-500 font-medium">
+                          {articlesFetchError ? 'Could not load articles' : 'No articles found'}
+                        </p>
+                        <p className="text-gray-400 text-sm mt-1">
+                          {articlesFetchError
+                            ? 'Please refresh the page to try again.'
+                            : hasActiveFilters
+                              ? 'Try adjusting your search or filters'
+                              : 'Click "Create New Article" to create one.'}
                         </p>
                       </div>
                     </td>
-                    <td className="py-3 px-4">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
-                        {article.department}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${getStatusBadge(article.status)}`}>
-                        {getStatusIcon(article.status)}
-                        {article.status}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-gray-500 text-sm">
-                      {article.date}
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center justify-center gap-2">
-                        {permissionsReady ? (
-                          <>
-                            {String(article.status).toLowerCase() !== 'pending' && (
-                              <button
-                                type="button"
-                                onClick={() => handleView(article)}
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all shadow-sm hover:shadow"
-                              >
-                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
-                                View
-                              </button>
-                            )}
-
-                            {hasPermission('articles') && (
-                              <button
-                                type="button"
-                                onClick={() => handleEdit(article.id)}
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-all shadow-sm hover:shadow"
-                              >
-                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
-                                Edit
-                              </button>
-                            )}
-
-                            {hasPermission('articles') && String(article.status).toLowerCase() !== 'pending' && (
-                              <button
-                                type="button"
-                                onClick={() => handleArchive(article.id)}
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-gray-600 hover:bg-gray-700 rounded-lg transition-all shadow-sm hover:shadow"
-                              >
-                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M7 8V6a1 1 0 011-1h8a1 1 0 011 1v2m-9 4h10l-1 8H7l-1-8z" />
-                                </svg>
-                                Archive
-                              </button>
-                            )}
-
-                            {hasPermission('user_management') && (
-                              <button
-                                type="button"
-                                onClick={() => handleDelete(article.id)}
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-all shadow-sm hover:shadow"
-                              >
-                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                                Delete
-                              </button>
-                            )}
-                          </>
-                        ) : (
-                          // ✅ FIX #5: placeholder while permissions load
-                          <span className="text-xs text-gray-400">Loading…</span>
-                        )}
-                      </div>
-                    </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="6" className="py-12 text-center bg-gray-50">
-                    <div className="flex flex-col items-center justify-center">
-                      <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-                      </svg>
-                      <p className="text-gray-500 font-medium">
-                        {articlesFetchError ? 'Could not load articles' : 'No articles found'}
-                      </p>
-                      <p className="text-gray-400 text-sm mt-1">
-                        {articlesFetchError
-                          ? 'Please refresh the page to try again.'
-                          : searchQuery || statusFilter !== 'Approved' || departmentFilter !== 'All'
-                            ? 'Try adjusting your search or filters'
-                            // ✅ FIX #12: copy now matches the actual button label
-                            : 'Click "Create New Article" to create one.'}
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        {filteredArticles.length > 0 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 border-t border-gray-200 bg-gray-50">
-            <p className="text-sm text-gray-600">
-              Showing <span className="font-medium text-gray-800">{filteredArticles.length > 0 ? startIndex + 1 : 0}</span> to{' '}
-              <span className="font-medium text-gray-800">{Math.min(endIndex, filteredArticles.length)}</span> of{' '}
-              <span className="font-medium text-gray-800">{filteredArticles.length}</span> articles
-            </p>
-            {filteredArticles.length > itemsPerPage && (
-              <div className="flex gap-1">
-                <button
-                  type="button"
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-white hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 bg-white"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                  Previous
-                </button>
-
-                {getPageNumbers().map((page) => (
-                  <button
-                    key={page}
-                    type="button"
-                    onClick={() => handlePageChange(page)}
-                    className={`px-3.5 py-1.5 text-sm rounded-lg transition-all ${
-                      currentPage === page
-                        ? 'bg-gray-700 text-white hover:bg-gray-800 shadow-sm'
-                        : 'text-gray-600 hover:bg-white border border-transparent hover:border-gray-300 bg-white'
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ))}
-
-                <button
-                  type="button"
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-white hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 bg-white"
-                >
-                  Next
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </div>
-            )}
+                )}
+              </tbody>
+            </table>
           </div>
-        )}
+
+          {/* Pagination */}
+          {filteredArticles.length > 0 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 border-t border-gray-200 bg-gray-50">
+              <p className="text-sm text-gray-600">
+                Showing <span className="font-medium text-gray-800">{filteredArticles.length > 0 ? startIndex + 1 : 0}</span> to{' '}
+                <span className="font-medium text-gray-800">{Math.min(endIndex, filteredArticles.length)}</span> of{' '}
+                <span className="font-medium text-gray-800">{filteredArticles.length}</span> articles
+              </p>
+              {filteredArticles.length > itemsPerPage && (
+                <div className="flex gap-1">
+                  <button
+                    type="button"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-white hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 bg-white"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Previous
+                  </button>
+
+                  {getPageNumbers().map((page) => (
+                    <button
+                      key={page}
+                      type="button"
+                      onClick={() => handlePageChange(page)}
+                      className={`px-3.5 py-1.5 text-sm rounded-lg transition-all ${
+                        currentPage === page
+                          ? 'bg-gray-700 text-white hover:bg-gray-800 shadow-sm'
+                          : 'text-gray-600 hover:bg-white border border-transparent hover:border-gray-300 bg-white'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+
+                  <button
+                    type="button"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-white hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 bg-white"
+                  >
+                    Next
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Add/Edit Article Modal */}
@@ -830,7 +881,7 @@ function ErrorModal({ isOpen, onClose, title = 'Error', message = '' }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 font-sans">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
       <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-md p-6">
         <div className="flex flex-col items-center text-center">

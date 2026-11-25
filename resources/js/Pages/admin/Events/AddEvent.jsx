@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { usePage } from '@inertiajs/react';
 import axios from 'axios';
 import Modal from '@/components/admin/Modal';
 
@@ -26,6 +27,9 @@ export default function AddEvent({
     isEditing = false,
     event = null,
 }) {
+    const { auth } = usePage();
+    const user = auth?.user;
+
     const [form, setForm] = useState(initialForm);
     const [errors, setErrors] = useState({});
     const [submitError, setSubmitError] = useState('');
@@ -34,10 +38,19 @@ export default function AddEvent({
     const [imageFile, setImageFile] = useState(null);
     const [imageValidation, setImageValidation] = useState(null);
 
+    const userDepartmentNames = Array.from(
+        new Set((user?.departments ?? []).map((department) => department?.name).filter(Boolean))
+    );
+    const defaultDepartment = userDepartmentNames[0] || '';
+
     useEffect(() => {
         if (!isEditing || !event) {
             if (!isOpen) return;
-            setForm(initialForm);
+            setForm({
+                ...initialForm,
+                // Auto-assign the user's department by default for new events
+                department: defaultDepartment,
+            });
             setPreviewImage(null);
             setImageFile(null);
             setImageValidation(null);
@@ -51,14 +64,14 @@ export default function AddEvent({
             date: event.date || '',
             time: event.time || '',
             status: event.status || 'active',
-            department: event.department || '',
+            department: event.department || defaultDepartment,
             image: null,
             image_alt_text: event.image_alt_text || '',
         });
         setPreviewImage(event.banner_image_url || null);
         setImageFile(null);
         setImageValidation(null);
-    }, [isEditing, event, isOpen]);
+    }, [isEditing, event, isOpen, defaultDepartment]);
 
     const updateField = (field, value) => {
         setForm((current) => ({ ...current, [field]: value }));
@@ -66,17 +79,18 @@ export default function AddEvent({
         setSubmitError('');
     };
 
-    // Convert "14:30" → "14:30:00", leave empty string as-is
     const normalizeTime = (value) => {
-    if (!value) return '';
-    // Strip seconds: "09:49:00" → "09:49"
-    const match = value.match(/^(\d{2}):(\d{2})/);
-    if (match) return `${match[1]}:${match[2]}`;
-    return value;
-};
+        if (!value) return '';
+        const match = value.match(/^(\d{2}):(\d{2})/);
+        if (match) return `${match[1]}:${match[2]}`;
+        return value;
+    };
 
     const clearForm = () => {
-        setForm(initialForm);
+        setForm({
+            ...initialForm,
+            department: defaultDepartment,
+        });
         setErrors({});
         setSubmitError('');
         setPreviewImage(null);
@@ -245,7 +259,6 @@ export default function AddEvent({
             }
             onClose();
         } catch (error) {
-
             if (error.response?.status === 422) {
                 setErrors(error.response.data.errors || {});
             } else {
@@ -262,6 +275,13 @@ export default function AddEvent({
         { value: 'completed', label: 'Completed' },
         { value: 'cancelled', label: 'Cancelled' },
     ];
+
+    const departmentOptions = Array.from(
+        new Set([
+            ...userDepartmentNames,
+            ...(form.department && !userDepartmentNames.includes(form.department) ? [form.department] : []),
+        ])
+    );
 
     const renderImageValidationInfo = () => {
         if (!imageValidation) return null;
@@ -349,6 +369,34 @@ export default function AddEvent({
                         className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                         placeholder="Enter event location"
                     />
+                </div>
+
+                {/* Department Dropdown */}
+                <div>
+                    <label htmlFor="event-department" className="mb-1 block text-sm font-medium text-gray-700">
+                        Department
+                    </label>
+                    <select
+                        id="event-department"
+                        value={form.department}
+                        onChange={(event) => updateField('department', event.target.value)}
+                        className={`w-full rounded-lg border ${errors.department ? 'border-red-500' : 'border-gray-300'} px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white`}
+                    >
+                        <option value="" disabled>Select Department</option>
+                        {departmentOptions.map((department) => (
+                            <option key={department} value={department}>
+                                {department}
+                            </option>
+                        ))}
+                    </select>
+                    {errors.department && <p className="mt-1 text-sm text-red-600">{errors.department[0]}</p>}
+                    <p className="mt-1 text-xs text-gray-500">
+                        {userDepartmentNames.length > 1
+                            ? 'Select from the departments assigned to your account.'
+                            : userDepartmentNames.length === 1
+                                ? 'Your department is automatically assigned based on your account.'
+                                : 'No department is assigned to your account.'}
+                    </p>
                 </div>
 
                 {/* Date and Time */}
@@ -469,7 +517,7 @@ export default function AddEvent({
                         id="event-status"
                         value={form.status}
                         onChange={(event) => updateField('status', event.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
                     >
                         {statusOptions.map((option) => (
                             <option key={option.value} value={option.value}>

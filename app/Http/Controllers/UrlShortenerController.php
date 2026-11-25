@@ -27,9 +27,11 @@ class UrlShortenerController extends Controller
     public function list()
     {
         $domain = rtrim(config('app.url'), '/');
+        $user = auth()->user();
+        $urls = $this->getVisibleUrls($user);
 
         return response()->json([
-            'urls' => Url::latest()->get()->map(function ($url) use ($domain) {
+            'urls' => $urls->map(function ($url) use ($domain) {
                 return [
                     'id' => $url->id,
                     'short_code' => $url->short_code,
@@ -37,6 +39,9 @@ class UrlShortenerController extends Controller
                     'original_url' => $url->long_url,
                     'clicks' => $url->clicks,
                     'status' => $url->status,
+                    'department' => trim((string) $url->department) !== ''
+                        ? $url->department
+                        : 'No department',
                     'created_at' => $url->created_at,
                 ];
             }),
@@ -48,11 +53,13 @@ class UrlShortenerController extends Controller
      */
     public function urlStatusCounts()
     {
+        $visibleUrls = $this->getVisibleUrls(auth()->user());
+
         return response()->json([
             'success' => true,
             'counts' => [
-                'pending' => Url::where('status', 'pending')->count(),
-                'rejected' => Url::where('status', 'rejected')->count(),
+                'pending' => $visibleUrls->where('status', 'pending')->count(),
+                'rejected' => $visibleUrls->where('status', 'rejected')->count(),
             ],
         ]);
     }
@@ -76,6 +83,7 @@ class UrlShortenerController extends Controller
         $validator = Validator::make($request->all(), [
             'original_url' => 'required|url|max:2048',
             'path' => 'nullable|alpha_dash|max:100|min:3',
+            'department' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -103,6 +111,9 @@ class UrlShortenerController extends Controller
         $url->update([
             'long_url' => $this->normalizeUrl($request->input('original_url')),
             'short_code' => $shortCode,
+            'department' => $request->filled('department')
+                ? trim($request->input('department'))
+                : 'No department',
         ]);
 
         return $this->formatSuccessResponse($url, 'Shortened URL updated successfully.');
@@ -118,6 +129,7 @@ class UrlShortenerController extends Controller
             'long_url' => 'required_without:original_url|nullable|url|max:2048',
             'original_url' => 'required_without:long_url|nullable|url|max:2048',
             'path' => 'nullable|alpha_dash|max:100|min:3',
+            'department' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -130,11 +142,16 @@ class UrlShortenerController extends Controller
 
         $longUrl = $this->normalizeUrl($request->input('long_url') ?? $request->input('original_url'));
         $customPath = $request->input('path');
+        $department = $request->filled('department')
+            ? trim((string) $request->input('department'))
+            : 'No department';
 
         // Check if URL already exists
         $existingUrl = Url::where('long_url', $longUrl)->first();
 
         if ($existingUrl) {
+            $existingUrl->update(['department' => $department]);
+
             if ($customPath) {
                 $customShortCode = $this->validateCustomPath($customPath, $existingUrl->id);
 
@@ -178,6 +195,7 @@ class UrlShortenerController extends Controller
             'short_code' => $shortCode,
             'clicks' => 0,
             'status' => 'pending',
+            'department' => $department,
         ]);
 
         $domain = rtrim(config('app.url'), '/');
@@ -354,6 +372,108 @@ class UrlShortenerController extends Controller
     }
 
     /**
+     * Return the current user's department for URLs without an explicit department.
+     */
+    private function getCurrentUserDepartment(): ?string
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return null;
+        }
+
+        $department = $user->departments()->orderBy('departments.name')->value('departments.name');
+
+        return $department ?: (trim((string) ($user->department ?? '')) ?: 'No department');
+    }
+
+    /**
+     * Match a stored URL department against an accessible department name or slug.
+     */
+    private function departmentMatches($urlDepartment, $accessibleDepartment): bool
+    {
+        if (empty($urlDepartment) || empty($accessibleDepartment)) {
+            return false;
+        }
+
+        $urlDepartment = trim((string) $urlDepartment);
+        $accessibleDepartment = trim((string) $accessibleDepartment);
+
+        if (strtolower($urlDepartment) === 'no department'
+            || strtolower($accessibleDepartment) === 'no department') {
+            return strtolower($urlDepartment) === strtolower($accessibleDepartment);
+        }
+
+        $normalize = function ($value) {
+            return preg_replace('/[^a-z0-9]+/', '', strtolower((string) $value));
+        };
+
+        $urlValue = $normalize($urlDepartment);
+        $accessibleValue = $normalize($accessibleDepartment);
+
+        if ($urlValue !== '' && $urlValue === $accessibleValue) {
+            return true;
+        }
+
+        $urlSlug = Str::slug($urlDepartment);
+        $accessibleSlug = Str::slug($accessibleDepartment);
+
+        return $urlSlug !== '' && $urlSlug === $accessibleSlug;
+    }
+
+    /**
+     * Get shortened URLs visible to the authenticated user.
+     */
+    private function getVisibleUrls($user)
+    {
+        $urls = Url::latest()->get();
+
+        if (!$user) {
+            return collect([]);
+        }
+
+        $canViewAllDepartments =
+            strtolower((string) ($user->role ?? '')) === 'admin';
+
+        if ($canViewAllDepartments) {
+            return $urls;
+        }
+
+        $accessibleDepartments = $user->departments()
+            ->get(['departments.id', 'departments.name', 'departments.slug'])
+            ->flatMap(function ($department) {
+                return [$department->name, $department->slug];
+            })
+            ->filter()
+            ->map(function ($department) {
+                return trim((string) $department);
+            })
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        $legacyDepartment = trim((string) ($user->department ?? ''));
+        if ($legacyDepartment !== '') {
+            $accessibleDepartments[] = $legacyDepartment;
+        }
+
+        if (empty($accessibleDepartments)) {
+            return collect([]);
+        }
+
+        return $urls->filter(function ($url) use ($accessibleDepartments) {
+            foreach ($accessibleDepartments as $department) {
+                if ($this->departmentMatches($url->department, $department)) {
+                    return true;
+                }
+            }
+
+            return false;
+        })->values();
+    }
+
+    /**
      * Generate a unique short code
      */
     private function generateShortCode()
@@ -415,6 +535,9 @@ class UrlShortenerController extends Controller
             'url_status' => $url->status,
             'qr_code' => $this->generateQrCode($shortUrl),
             'clicks' => $url->clicks,
+            'department' => trim((string) $url->department) !== ''
+                ? $url->department
+                : 'No department',
             'created_at' => $url->created_at->toDateTimeString(),
         ]);
     }

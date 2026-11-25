@@ -229,7 +229,8 @@ const UrlShortener = () => {
                 },
                 body: JSON.stringify({
                     long_url: longUrl,
-                    path: customPath
+                    path: customPath,
+                    department: 'No department'
                 })
             });
 

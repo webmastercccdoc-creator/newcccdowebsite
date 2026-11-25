@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { usePage } from '@inertiajs/react';
 import axios from 'axios';
 import Modal from '../../../components/admin/Modal';
 import LoadingSpinner from '../../../components/LoadingSpinner';
@@ -10,18 +11,127 @@ export default function CreateShortenUrl({
   onSuccess, 
   url = null,
   isEditing = false,
-  isLoading = false
+  isLoading = false,
+  departments = []
 }) {
+  const page = usePage();
+  const auth = page.props?.auth || page.auth;
+  const authenticatedUser = auth?.user;
   const [originalUrl, setOriginalUrl] = useState('');
   const [shortCode, setShortCode] = useState('');
+  const [department, setDepartment] = useState('');
+  const [departmentOptions, setDepartmentOptions] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+
+  const normalizeDepartments = (departmentList) => {
+    if (!Array.isArray(departmentList)) {
+      return [];
+    }
+
+    return departmentList
+      .map((dept) => {
+        if (typeof dept === 'string') {
+          return { id: dept, name: dept, slug: dept };
+        }
+
+        const name = dept.name || dept.label || dept.value;
+        if (!name) {
+          return null;
+        }
+
+        return {
+          id: dept.id || dept.slug || name,
+          name,
+          slug: dept.slug || name,
+        };
+      })
+      .filter(Boolean);
+  };
+
+  useEffect(() => {
+    const legacyDepartment = authenticatedUser?.department
+      ? [{
+          id: authenticatedUser.department,
+          name: authenticatedUser.department,
+          slug: authenticatedUser.department,
+        }]
+      : [];
+
+    const initialDepartments = normalizeDepartments(
+      authenticatedUser?.departments?.length
+        ? authenticatedUser.departments
+        : (departments.length ? departments : legacyDepartment)
+    );
+
+    const options = initialDepartments.some(
+      (dept) => (dept.name || '').toLowerCase() === 'no department'
+    )
+      ? initialDepartments
+      : [...initialDepartments, { id: 'no-department', name: 'No department', slug: 'no-department' }];
+
+    setDepartmentOptions(options);
+
+    if (!isEditing && !department && initialDepartments.length === 1) {
+      setDepartment(initialDepartments[0].name);
+    }
+  }, [authenticatedUser?.departments, authenticatedUser?.department, departments, isEditing]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const fetchUserDepartments = async () => {
+      try {
+        const response = await axios.get('/user/departments');
+        const responseDepartments = Array.isArray(response.data?.departments)
+          ? response.data.departments
+          : Array.isArray(response.data)
+            ? response.data
+            : (response.data?.department_names || []).map((name, index) => ({
+                id: response.data.department_slugs?.[index] || name,
+                name,
+                slug: response.data.department_slugs?.[index] || name,
+              }));
+
+        let fetchedDepartments = normalizeDepartments(responseDepartments);
+
+        if (fetchedDepartments.length === 0 && authenticatedUser?.department) {
+          fetchedDepartments = normalizeDepartments([{
+            id: authenticatedUser.department,
+            name: authenticatedUser.department,
+            slug: authenticatedUser.department,
+          }]);
+        }
+
+        const options = fetchedDepartments.some(
+          (dept) => (dept.name || '').toLowerCase() === 'no department'
+        )
+          ? fetchedDepartments
+          : [...fetchedDepartments, { id: 'no-department', name: 'No department', slug: 'no-department' }];
+
+        setDepartmentOptions(options);
+
+        if (!isEditing) {
+          setDepartment((currentDepartment) =>
+            currentDepartment || fetchedDepartments[0]?.name || ''
+          );
+        }
+      } catch (fetchError) {
+        console.error('Failed to fetch user departments:', fetchError);
+      }
+    };
+
+    fetchUserDepartments();
+  }, [isOpen, isEditing]);
 
   // Populate form when editing
   useEffect(() => {
     if (isEditing && url) {
       setOriginalUrl(url.original_url || '');
       setShortCode(url.short_code || '');
+      setDepartment(url.department || '');
     } else {
       resetForm();
     }
@@ -30,6 +140,7 @@ export default function CreateShortenUrl({
   const resetForm = () => {
     setOriginalUrl('');
     setShortCode('');
+    setDepartment('');
     setError('');
     setIsSubmitting(false);
   };
@@ -61,6 +172,7 @@ export default function CreateShortenUrl({
 
       const payload = {
         original_url: urlToSubmit,
+        department: department.trim() || null,
       };
 
       // Add custom short code if provided
@@ -159,6 +271,47 @@ export default function CreateShortenUrl({
               disabled={isSubmitting || isLoading}
               autoFocus
             />
+          </div>
+
+          {/* Department */}
+          <div>
+            <label htmlFor="modalDepartment" className="block text-sm font-medium text-gray-700 mb-1">
+              Department <span className="text-xs font-normal text-gray-500">(Optional)</span>
+            </label>
+            {departmentOptions.length > 0 ? (
+              <select
+                id="modalDepartment"
+                value={department}
+                onChange={(e) => setDepartment(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-colors bg-white"
+                disabled={isSubmitting || isLoading}
+              >
+                <option value="">Select a department</option>
+                {departmentOptions.map((dept) => {
+                  const value = dept.name || dept.slug || dept.id;
+                  const label = dept.name || dept.label || dept.slug || dept.id;
+                  return (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  );
+                })}
+              </select>
+            ) : (
+              <input
+                type="text"
+                id="modalDepartment"
+                value={department}
+                onChange={(e) => setDepartment(e.target.value)}
+                placeholder="e.g. Marketing, IT, HR"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-400 focus:border-gray-400 outline-none transition-colors"
+                disabled={isSubmitting || isLoading}
+                maxLength={100}
+              />
+            )}
+            <p className="mt-1 text-xs text-gray-500">
+              Optionally tag this URL with the department it belongs to.
+            </p>
           </div>
 
           {/* Custom Short Code */}

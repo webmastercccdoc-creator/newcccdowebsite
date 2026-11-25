@@ -1,43 +1,26 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, router, usePage } from '@inertiajs/react';
 
 // Create a singleton cache outside the component
 let cachedMenus = null;
-let cachedUser = null;
 let isMenusFetching = false;
 let menusFetchPromise = null;
 
 export default function Sidebar() {
-  const { url, auth } = usePage();
-  const { user: initialUser } = auth || {};
+  const { url } = usePage();
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [menus, setMenus] = useState(cachedMenus || []);
   const [articleCounts, setArticleCounts] = useState({ pending: 0, rejected: 0 });
   const [urlCounts, setUrlCounts] = useState({ pending: 0, rejected: 0 });
   const [shake, setShake] = useState(false);
-  const [user, setUser] = useState(cachedUser || initialUser || null);
   const [isLoading, setIsLoading] = useState(!cachedMenus);
 
   const effectivePendingCount = Number(articleCounts.pending || 0);
   const hasPendingArticles = effectivePendingCount > 0;
   const effectivePendingUrlCount = Number(urlCounts.pending || 0);
   const hasPendingUrls = effectivePendingUrlCount > 0;
-
-  const handleLogout = async () => {
-    try {
-      await axios.post('/logout');
-      setTimeout(() => {
-        window.location.href = '/login-page';
-      }, 100);
-    } catch (error) {
-      console.error('Logout failed:', error);
-      setTimeout(() => {
-        window.location.href = '/login-page';
-      }, 100);
-    }
-  };
 
   // Fetch user permissions and menus - using cached data
   useEffect(() => {
@@ -85,34 +68,6 @@ export default function Sidebar() {
       }
     })();
   }, []);
-
-  // Fetch user data if not cached
-  useEffect(() => {
-    if (cachedUser) {
-      setUser(cachedUser);
-      return;
-    }
-
-    if (initialUser) {
-      cachedUser = initialUser;
-      setUser(initialUser);
-      return;
-    }
-
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get('/user/profile');
-        if (response.data.user) {
-          cachedUser = response.data.user;
-          setUser(response.data.user);
-        }
-      } catch (error) {
-        console.error('Failed to fetch user data:', error);
-      }
-    };
-
-    fetchUserData();
-  }, [initialUser]);
 
   // Fetch article counts for pending articles
   useEffect(() => {
@@ -181,6 +136,7 @@ export default function Sidebar() {
     if (url.startsWith('/admin/users')) return '/admin/usersmanagement';
     if (url.startsWith('/admin/settings')) return '/admin/settings';
     if (url.startsWith('/dashboard') || url === '/admin') return '/dashboard';
+     if (url.startsWith('/account-settings') || url === '/admin') return '/dashboard';
     return url;
   };
 
@@ -260,6 +216,15 @@ export default function Sidebar() {
         </svg>
       )
     },
+    account_settings: {
+      name: 'Account Settings',
+      href: '/admin/account-settings',
+      icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      )
+    },
     user_management: {
       name: 'User Management',
       href: '/admin/usersmanagement',
@@ -281,18 +246,47 @@ export default function Sidebar() {
     },
   };
 
-  // Build nav items from menus
-  const navItems = menus.map(menu => {
-    const config = menuConfig[menu.id];
-    if (!config) return null;
+  // Group menu IDs into sections
+  const menuGroups = [
+    {
+      id: 'overview',
+      title: 'Overview',
+      items: ['dashboard']
+    },
+    {
+      id: 'content',
+      title: 'Content Management',
+      items: ['articles', 'approve_articles', 'shorten_url', 'promotions', 'events', 'research', 'content']
+    },
+    {
+      id: 'admin',
+      title: 'Administration',
+      items: ['user_management', 'settings', 'account_settings']
+    }
+  ];
+
+  // Build grouped nav items from menus
+  const groupedNavItems = menuGroups.map(group => {
+    const items = group.items
+      .map(id => {
+        const menu = menus.find(m => m.id === id);
+        if (!menu) return null;
+        const config = menuConfig[id];
+        if (!config) return null;
+        return {
+          name: config.name,
+          href: config.href,
+          icon: config.icon,
+          id: id
+        };
+      })
+      .filter(Boolean);
 
     return {
-      name: config.name,
-      href: config.href,
-      icon: config.icon,
-      id: menu.id
+      ...group,
+      items
     };
-  }).filter(Boolean);
+  }).filter(group => group.items.length > 0);
 
   return (
     <aside
@@ -353,206 +347,181 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {/* Navigation */}
+      {/* Navigation - Grouped */}
       <nav className={`flex-1 px-3 py-4 ${isCollapsed ? 'overflow-hidden' : 'overflow-y-auto'} transition-all duration-300`} aria-label="Main navigation">
-        <ul className="space-y-1">
-          {navItems.map((item) => (
-            <li key={item.id} className="relative">
-              {(() => {
-                const NavItem = Link;
+        <div className="space-y-6">
+          {groupedNavItems.map((group) => (
+            <div key={group.id}>
+              {/* Group Title */}
+              <div className={`
+                px-3 mb-2
+                transition-all duration-300 ease-in-out
+                ${isCollapsed
+                  ? 'opacity-0 max-h-0 overflow-hidden mb-0'
+                  : 'opacity-100 max-h-10'
+                }
+              `}>
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  {group.title}
+                </h3>
+              </div>
 
-                return <NavItem
-                href={item.href}
-                onClick={(event) => {
-                  event.preventDefault();
-                  router.visit(item.href, {
-                    preserveScroll: true,
-                    preserveState: true,
-                    replace: false,
-                  });
-                }}
-                className={`
-                  flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium group
-                  ${activeItem === item.href
-                    ? 'bg-gray-800 text-white shadow-sm'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                  }
-                  ${isCollapsed ? 'justify-center gap-0' : 'justify-start'}
-                  transition-all duration-300 ease-in-out
-                  relative
-                `}
-                aria-current={activeItem === item.href ? 'page' : undefined}
-                title={isCollapsed ? item.name : undefined}
-              >
-                <span className={`
-                  flex-shrink-0 flex items-center justify-center w-6 h-6
-                  transition-all duration-300 ease-in-out
-                  ${activeItem === item.href
-                    ? 'text-white'
-                    : 'text-gray-500 group-hover:text-gray-700'
-                  }
-                `}>
-                  {item.icon}
-                </span>
-                <span className={`
-                  font-medium whitespace-nowrap overflow-hidden
-                  transition-all duration-300 ease-in-out origin-left
-                  ${isCollapsed
-                    ? 'opacity-0 max-w-0 -translate-x-2 pointer-events-none'
-                    : 'opacity-100 max-w-[160px] translate-x-0'
-                  }
-                  ${activeItem === item.href
-                    ? 'text-white'
-                    : 'text-gray-700 group-hover:text-gray-800'
-                  }
-                `}>
-                  {item.name}
-                </span>
+              {/* Collapsed mode divider */}
+              {isCollapsed && (
+                <div className="flex justify-center mb-2">
+                  <div className="w-8 h-px bg-gray-200" />
+                </div>
+              )}
 
-                {/* Bell Icon for Approve Articles with count badge */}
-                {item.id === 'approve_articles' && hasPendingArticles && (
-                  <>
-                    {/* Expanded mode: bell + count on the right */}
-                    <div className={`
-                      ml-auto flex items-center gap-1.5
-                      transition-all duration-300 ease-in-out
-                      ${isCollapsed
-                        ? 'opacity-0 w-0 overflow-hidden pointer-events-none'
-                        : 'opacity-100 w-auto'
-                      }
-                    `}>
-                      <svg
-                        className={`w-5 h-5 text-amber-500 flex-shrink-0 ${shake ? 'animate-shake' : 'animate-pulse'}`}
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9" />
-                      </svg>
+              {/* Group Items */}
+              <ul className="space-y-1">
+                {group.items.map((item) => (
+                  <li key={item.id} className="relative">
+                    {(() => {
+                      const NavItem = Link;
+
+                      return <NavItem
+                      href={item.href}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        router.visit(item.href, {
+                          preserveScroll: true,
+                          preserveState: true,
+                          replace: false,
+                        });
+                      }}
+                      className={`
+                        flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium group
+                        ${activeItem === item.href
+                          ? 'bg-green-800 text-white shadow-sm'
+                          : 'text-gray-700 hover:bg-gray-300 hover:text-gray-900'
+                        }
+                        ${isCollapsed ? 'justify-center gap-0' : 'justify-start'}
+                        transition-all duration-300 ease-in-out
+                        relative
+                      `}
+                      aria-current={activeItem === item.href ? 'page' : undefined}
+                      title={isCollapsed ? item.name : undefined}
+                    >
                       <span className={`
-                        inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold shadow-lg
-                        ${shake ? 'animate-shake' : ''}
+                        flex-shrink-0 flex items-center justify-center w-6 h-6
+                        transition-all duration-300 ease-in-out
+                        ${activeItem === item.href
+                          ? 'text-white'
+                          : 'text-gray-500 group-hover:text-gray-900'
+                        }
                       `}>
-                        {effectivePendingCount > 99 ? '99+' : effectivePendingCount}
+                        {item.icon}
                       </span>
-                    </div>
-
-                    {/* Collapsed mode: floating badge on top-right */}
-                    <span className={`
-                      absolute -right-0.5 -top-0.5 inline-flex h-5 w-5 items-center justify-center
-                      rounded-full bg-red-500 text-[9px] text-white font-bold shadow-lg ring-2 ring-white
-                      transition-all duration-300 ease-in-out
-                      ${isCollapsed
-                        ? 'opacity-100 scale-100 pointer-events-auto'
-                        : 'opacity-0 scale-0 pointer-events-none'
-                      }
-                      ${shake ? 'animate-shake' : ''}
-                    `}>
-                      {effectivePendingCount > 99 ? '99+' : effectivePendingCount}
-                    </span>
-                  </>
-                )}
-
-                {/* Bell Icon for pending shortened URLs with count badge */}
-                {item.id === 'shorten_url' && hasPendingUrls && (
-                  <>
-                    {/* Expanded mode: bell + count on the right */}
-                    <div className={`
-                      ml-auto flex items-center gap-1.5
-                      transition-all duration-300 ease-in-out
-                      ${isCollapsed
-                        ? 'opacity-0 w-0 overflow-hidden pointer-events-none'
-                        : 'opacity-100 w-auto'
-                      }
-                    `}>
-                      <svg
-                        className={`w-5 h-5 text-amber-500 flex-shrink-0 ${shake ? 'animate-shake' : 'animate-pulse'}`}
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9" />
-                      </svg>
                       <span className={`
-                        inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold shadow-lg
-                        ${shake ? 'animate-shake' : ''}
+                        font-medium whitespace-nowrap overflow-hidden
+                        transition-all duration-300 ease-in-out origin-left
+                        ${isCollapsed
+                          ? 'opacity-0 max-w-0 -translate-x-2 pointer-events-none'
+                          : 'opacity-100 max-w-[160px] translate-x-0'
+                        }
+                        ${activeItem === item.href
+                          ? 'text-white'
+                          : 'text-gray-700 group-hover:text-gray-900'
+                        }
                       `}>
-                        {effectivePendingUrlCount > 99 ? '99+' : effectivePendingUrlCount}
+                        {item.name}
                       </span>
-                    </div>
 
-                    {/* Collapsed mode: floating badge on top-right */}
-                    <span className={`
-                      absolute -right-0.5 -top-0.5 inline-flex h-5 w-5 items-center justify-center
-                      rounded-full bg-red-500 text-[9px] text-white font-bold shadow-lg ring-2 ring-white
-                      transition-all duration-300 ease-in-out
-                      ${isCollapsed
-                        ? 'opacity-100 scale-100 pointer-events-auto'
-                        : 'opacity-0 scale-0 pointer-events-none'
-                      }
-                      ${shake ? 'animate-shake' : ''}
-                    `}>
-                      {effectivePendingUrlCount > 99 ? '99+' : effectivePendingUrlCount}
-                    </span>
-                  </>
-                )}
-              </NavItem>;
-              })()}
-            </li>
+                      {/* Bell Icon for Approve Articles with count badge */}
+                      {item.id === 'approve_articles' && hasPendingArticles && (
+                        <>
+                          {/* Expanded mode: bell + count on the right */}
+                          <div className={`
+                            ml-auto flex items-center gap-1.5
+                            transition-all duration-300 ease-in-out
+                            ${isCollapsed
+                              ? 'opacity-0 w-0 overflow-hidden pointer-events-none'
+                              : 'opacity-100 w-auto'
+                            }
+                          `}>
+                            <svg
+                              className={`w-5 h-5 text-amber-500 flex-shrink-0 ${shake ? 'animate-shake' : 'animate-pulse'}`}
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9" />
+                            </svg>
+                            <span className={`
+                              inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold shadow-lg
+                              ${shake ? 'animate-shake' : ''}
+                            `}>
+                              {effectivePendingCount > 99 ? '99+' : effectivePendingCount}
+                            </span>
+                          </div>
+
+                          {/* Collapsed mode: floating badge on top-right */}
+                          <span className={`
+                            absolute -right-0.5 -top-0.5 inline-flex h-5 w-5 items-center justify-center
+                            rounded-full bg-red-500 text-[9px] text-white font-bold shadow-lg ring-2 ring-white
+                            transition-all duration-300 ease-in-out
+                            ${isCollapsed
+                              ? 'opacity-100 scale-100 pointer-events-auto'
+                              : 'opacity-0 scale-0 pointer-events-none'
+                            }
+                            ${shake ? 'animate-shake' : ''}
+                          `}>
+                            {effectivePendingCount > 99 ? '99+' : effectivePendingCount}
+                          </span>
+                        </>
+                      )}
+
+                      {/* Bell Icon for pending shortened URLs with count badge */}
+                      {item.id === 'shorten_url' && hasPendingUrls && (
+                        <>
+                          {/* Expanded mode: bell + count on the right */}
+                          <div className={`
+                            ml-auto flex items-center gap-1.5
+                            transition-all duration-300 ease-in-out
+                            ${isCollapsed
+                              ? 'opacity-0 w-0 overflow-hidden pointer-events-none'
+                              : 'opacity-100 w-auto'
+                            }
+                          `}>
+                            <svg
+                              className={`w-5 h-5 text-amber-500 flex-shrink-0 ${shake ? 'animate-shake' : 'animate-pulse'}`}
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0a3 3 0 11-6 0m6 0H9" />
+                            </svg>
+                            <span className={`
+                              inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold shadow-lg
+                              ${shake ? 'animate-shake' : ''}
+                            `}>
+                              {effectivePendingUrlCount > 99 ? '99+' : effectivePendingUrlCount}
+                            </span>
+                          </div>
+
+                          {/* Collapsed mode: floating badge on top-right */}
+                          <span className={`
+                            absolute -right-0.5 -top-0.5 inline-flex h-5 w-5 items-center justify-center
+                            rounded-full bg-red-500 text-[9px] text-white font-bold shadow-lg ring-2 ring-white
+                            transition-all duration-300 ease-in-out
+                            ${isCollapsed
+                              ? 'opacity-100 scale-100 pointer-events-auto'
+                              : 'opacity-0 scale-0 pointer-events-none'
+                            }
+                            ${shake ? 'animate-shake' : ''}
+                          `}>
+                            {effectivePendingUrlCount > 99 ? '99+' : effectivePendingUrlCount}
+                          </span>
+                        </>
+                      )}
+                    </NavItem>;
+                    })()}
+                  </li>
+                ))}
+              </ul>
+            </div>
           ))}
-        </ul>
+        </div>
       </nav>
-
-      {/* Footer - User Info and Logout */}
-      <div className="border-t border-gray-200 p-4 bg-white flex-shrink-0 transition-all duration-300">
-        {isCollapsed ? (
-          /* Collapsed state: only the centered logout button */
-          <div className="flex items-center justify-center">
-            <button
-              onClick={handleLogout}
-              className="p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-gray-400 hover:text-red-600"
-              aria-label="Logout"
-              title="Sign Out"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-            </button>
-          </div>
-        ) : (
-          /* Expanded state: avatar + user info + logout */
-          <div className="flex items-center gap-3 justify-start">
-            {/* Avatar */}
-            <div className="flex-shrink-0">
-              <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </div>
-            </div>
-
-            {/* User info + logout */}
-            <div className="flex-1 min-w-0 flex items-center gap-2">
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-800 truncate">
-                  {user?.name || 'User'}
-                </p>
-                <p className="text-xs text-gray-500 truncate">
-                  {user?.email || 'user@example.com'}
-                </p>
-              </div>
-              <button
-                onClick={handleLogout}
-                className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-gray-400 hover:text-red-600 flex-shrink-0"
-                aria-label="Logout"
-                title="Sign Out"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
 
       {/* Animations */}
       <style>{`

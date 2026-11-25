@@ -380,6 +380,12 @@ class UserAccessController extends Controller
                 'route' => 'admin.content'
             ],
             [
+                'id' => 'account_settings',
+                'name' => 'Account Settings',
+                'required_permission' => 'account_settings',
+                'route' => 'admin.account-settings'
+            ],
+            [
                 'id' => 'user_management',
                 'name' => 'User Management',
                 'required_permission' => 'user_management',
